@@ -9,10 +9,11 @@ export const NameTripModal = ({ open, tripData, onClose }) => {
 
     useEffect(() => {
         loadCityImg()
+        console.log(tripData)
     }, [])
 
     const getCityImg = async () => {
-        const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${tripData.cityName}-${tripData.state}`)
+        const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${tripData.cityName}-${tripData.state}-landmarks`)
         return response.status === 200 ? response.data : "error" 
         // .then((response) => {
         //         console.log(response.results[0].urls.regular)
@@ -27,7 +28,7 @@ export const NameTripModal = ({ open, tripData, onClose }) => {
     }
 
     const sendData = () => {
-        
+
     }
 
     return (
@@ -39,7 +40,8 @@ export const NameTripModal = ({ open, tripData, onClose }) => {
                         close
                     </span>
                     <div className="xx-large bold700 font-jakarta w-80 my-3">
-                        Name your trip to <span className="purple-text">{tripData.cityName}</span>
+                        Name your trip to <span className="purple-text">{tripData.cityName}, {tripData.country}</span>
+                    <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link>here</Link> to find the right one</p>
                     </div>
                     <input className="input-model" placeholder='Enter a name for your trip' required />
                     {/* <img src="https://i.imgur.com/sCT1BpF.jpg" alt="" className="tripModal-img my-3" /> */}

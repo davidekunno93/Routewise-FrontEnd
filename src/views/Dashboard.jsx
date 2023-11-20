@@ -23,6 +23,7 @@ export const Dashboard = () => {
     const [calendarOpen, setCalendarOpen] = useState(false)
     const [city, setCity] = useState(null);
     const [state, setState] = useState(null);
+    const [country, setCountry] =useState(null);
     const [geocode, setGeocode] = useState(null);
     const [tripData, setTripData] = useState(null);
     const [specifyCityOpen, setSpecifyCityOpen] = useState(false)
@@ -118,9 +119,10 @@ export const Dashboard = () => {
         let tripInfo = {
             cityName: city,
             state: state,
+            country: country,
             geocode: geocode,
-            startDate: range.startDate,
-            endDate: range.endDate,
+            startDate: range[0].startDate,
+            endDate: range[0].endDate,
         }
         setTripData(tripInfo)
         setOpenTripModal(true)
@@ -187,7 +189,15 @@ export const Dashboard = () => {
         
         if (data.length > 1) {
             // go to Select which City you want
-            setCityOptions(data)
+            let dataNew = []
+            let states = []
+            for (let i=0;i<data.length;i++) {
+                if (!states.includes(data[i].state)) {
+                    dataNew.push(data[i])
+                }
+                states.push(data[i].state)
+            }
+            setCityOptions(dataNew)
             setSpecifyCityOpen(true)
         } else {
             // go to trip name modal
@@ -221,9 +231,15 @@ export const Dashboard = () => {
     const updateState = (stateName) => {
         setState(stateName)
     }   
+    const updateCountry = (countryName) => {
+        setCountry(countryName)
+    }
     const updateGeocode = (geocode) => {
         setGeocode(geocode)
     }
+    useEffect(() => {
+        console.log(city)
+    }, [city])
 
     return (
         <>
@@ -231,7 +247,7 @@ export const Dashboard = () => {
                 <DatePicker selected={departDate} onChange={(departDate) => setDepartDate(departDate)} />
             </div>
              */}
-            <SpecifyCity open={specifyCityOpen} cities={cityOptions} updateCity2={updateCity2} updateState={updateState} openNameTripModal={openNameTripModal} updateGeocode={updateGeocode} onClose={() => closeSpecifyCity()} />
+            <SpecifyCity open={specifyCityOpen} cities={cityOptions} updateCity2={updateCity2} updateState={updateState} updateCountry={updateCountry} openNameTripModal={openNameTripModal} updateGeocode={updateGeocode} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
                 <h1 onClick={() => changeCC()} className="page-title">Hi Josh, (emoji)</h1>

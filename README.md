@@ -19,6 +19,8 @@ BackEnd (Kate) checkpoints
 *make mobile responsive
 *show number of items in that day when you collapse itinerary day
 *make sticky map + suggestions 100vh in itinerary page
+*different api for loading city names?
+*loading screen while city options load
 
 geoapify api place objects
 calendar selection
@@ -26,6 +28,11 @@ draggable place objects
 Save itinerary button at the bottom of itinerary page
 keep star priority of places in itinerary page?
 trips recorded on dashboard
+
+APIs 
+- geoapify geocoding API for city names
+- unsplash api for city images
+
 
 
 addPlaces page <-- tripID -- Destination, tripName
