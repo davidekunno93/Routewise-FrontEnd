@@ -16,15 +16,7 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
     function wait(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms))
     }
-    const completeSignIn = () => {
-        sendData()
-        wait(1000).then(() => {
-            // console.log(auth.currentUser)
-            setUser(auth.currentUser)
-            navigate('/survey')
-            closeAll()
-        })
-    }
+    
     // const sendDataTest = async () => {
     //     let data = {
     //         uid: 'authUser.uid',
@@ -50,8 +42,25 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
         console.log(data)
         const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(data) , {
             headers : {"Content-Type" : "application/json"}
-        }).then((response => console.log(response)))
-        .catch((error) => console.log(error))
+        })
+        // .then((response => handleData(response)))
+        // .catch((error) => console.log(error))
+        return response.status === 200 ? completeSignIn(response) : handleError(response)
+    }
+
+    const handleError = (response) => {
+        console.log(response)
+        // modal saying error creating your account - please try again
+        // delete firebase authenticated user
+    }
+    const completeSignIn = (response) => {
+        console.log(response)
+        wait(1000).then(() => {
+            // console.log(auth.currentUser)
+            setUser(auth.currentUser)
+            navigate('/survey')
+            closeAll()
+        })
     }
     useEffect(() => {
         wait(4000).then(() => {
@@ -59,7 +68,7 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
                 displayName: displayName,
                 photoURL: "https://i.imgur.com/cf5lgSl.png"
             }).then(() => {
-                completeSignIn()
+                sendData()
                 // console.log('profile name and url added!')
             }).catch((error) => {
                 console.log(error)

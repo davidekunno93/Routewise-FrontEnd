@@ -40,20 +40,34 @@ export const Navbar = () => {
       // photoURL: authUser.photoURL
     }
     console.log(data)
+    // kate's url = https://routewise-backend.onrender.com
     const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(data), {
       headers: { "Content-Type": "application/json" }
     }).then((response => console.log(response)))
       .catch((error) => console.log(error))
   }
 
+  const sendTripDataTest = () => {
+    let data = {
+      uid: "1234567",
+      tripName: "Big Apple",
+      Destination: "New York City, New York",
+      DestinationImgUrl: "https://i.imgur.com/RxO0dfy.jpg",
+      startDate: "11/17/2023",
+      endDate: "11/20/2023"
+    }
+  }
+
+
   const sendDataTest = async () => {
     let data = {
-        uid: '12345678',
-        displayName: 'authUser.displayName',
-        email: 'teste@email.com',
+        uid: 'helloMotto123',
+        displayName: 'displayName1',
+        email: 'pleasework@email.com',
         // photoURL: authUser.photoURL
     }
     console.log(data)
+    // kate's url = https://routewise-backend.onrender.com
     const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(data) , {
         headers : {"Content-Type" : "application/json"}
     }).then((response => console.log(response)))
@@ -63,10 +77,13 @@ export const Navbar = () => {
   return (
     <>
       <div className='navbar bg-white w-100 flx-r just-sb'>
+        {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         <Link className='ml-5' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo mt-3h" /></Link>
         <Link className="model-link mt-4" to='/survey'><div>Survey</div></Link>
-        <Link className="model-link mt-4" to='dashboard'><div>Dashboard</div></Link>
-        <button onClick={() => sendDataTest()} className='btn-primaryflex'>Communicate w/ Kate</button>
+        <Link className="model-link mt-4" to='/dashboard'><div>Dashboard</div></Link>
+        <Link className="model-link mt-4" to='/add-places'><div>Add Places</div></Link>
+        <Link className="model-link mt-4" to='/itinerary'><div>Itinerary</div></Link>
+        {/* <button onClick={() => sendDataTest()} className='btn-primaryflex model-btn'>Communicate w/ Kate</button> */}
         {user ?
           <div className="right-btns flx-r mt-3h position-relative">
             <p className='m-0 mt-2 inline mx-2'>{user.displayName}</p>

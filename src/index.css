@@ -218,6 +218,28 @@ button:focus-visible {
   font-size: 72px;
 }
 
+.w-1{
+  width: 100px;
+}
+.w-1h{
+  width: 150px;
+}
+.w-2{
+  width: 200px;
+}
+.w-2h{
+  width: 250px;
+}
+.w-3{
+  width: 300px;
+}
+.w-3h{
+  width: 350px;
+}
+.top-128{
+  top: 128px;
+}
+
 
 .w-25 {
   width: 25%;
@@ -246,6 +268,9 @@ button:focus-visible {
 .w-95 {
   width: 95%;
 }
+.w-98 {
+  width: 98%;
+}
 .w-100 {
   width: 100%;
 }
@@ -267,7 +292,15 @@ button:focus-visible {
 .nine {
   background-color: aquamarine;
 }
-
+.small-pic{
+  width: 40px;
+}
+.med-pic{
+  width: 75px;
+}
+.large-pic{
+  width: 120px;
+}
 .position-relative{
   position: relative;
 }
@@ -364,6 +397,11 @@ button:focus-visible {
   transition: 0.3s;
   /* transform: translateX(-350px); */
 }
+.inner2{
+  white-space: nowrap;
+  transition: 3.0s ease;
+  /* transform: translateX(-100%); */
+}
 .abs-center{
   position: absolute;
   top: 50%;
@@ -375,6 +413,13 @@ button:focus-visible {
   /* top: 50%; */
   left: 50%;
   transform: translateX(-50%); 
+  
+}
+.abs-bottom-10{
+  bottom: 10px;
+}
+.abs-bottom-30{
+  bottom: 30px;
 }
 .hero-title{
   font-size: 60px;
@@ -424,7 +469,7 @@ button:focus-visible {
 }
 .modal{
   position: fixed;
-  z-index: 1000;
+  z-index: 100000;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -436,15 +481,24 @@ button:focus-visible {
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.7);
-  z-index: 999;
+  z-index: 99999;
 }
 
 .routewise-logo{
   height: 45px; 
   margin-left: 5%;
 }
+.vertical-logo{
+  width: 100px;
+}
 .model-link{
   color: transparent;
+}
+.model-btn{
+  opacity: 0;
+}
+.model-btn:hover{
+  opacity: 1;
 }
 .bird-logo{
   width: 70px;
@@ -471,7 +525,100 @@ button:focus-visible {
   box-shadow: 0px 0px 25px rgba(63, 125, 216, 0.15);
   transition-duration: 0.3s;
 }
+.form-input2 {
+  border: none;
+  color: black;
+  border-bottom: 2px solid rgba(32, 32, 32, 0.75);
+  font-size: medium;
+  padding-left: 6px;
+  height: 30px;
+  transition-duration: 0.4s;
+  background-color: #f7f6ff;
+}
 
+.form-input2:hover {
+  box-shadow: 0 4px 8px rgba(140, 197, 243, 0.5);
+  border-bottom: 2px solid rgb(108, 108, 108);
+  transition-duration: 0.2s;
+  padding-left: 10px;
+  background-color: rgba(245, 245, 245, 0.8);
+}
+.h-100{
+  height: 100%;
+}
+.searchBar{
+  height: 70px;
+  /* overflow: hidden; */
+}
+.input-search-map-overlay {
+  height: 44px;
+  width: calc(90% - 16px);
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px solid gray;
+  font-size: medium;
+  background-color: white;
+  padding-left: 36px;
+  padding-right: 42px;
+  transition-duration: 0.3s;
+  top: 16px;
+  left: 16px;
+}
+
+.input-search-map-overlay2 {
+  height: 44px;
+  width: calc(100% - 16px);
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px solid gray;
+  font-size: medium;
+  background-color: white;
+  padding-left: 36px;
+  padding-right: 42px;
+  transition-duration: 0.3s;
+  top: 16px;
+  left: 16px;
+}
+.flowBox-searchBar {
+  height: 44px;
+  width: calc(100% - 6px);
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 2px solid gray;
+  font-size: medium;
+  background-color: white;
+  padding-left: 36px;
+  padding-right: 42px;
+  transition-duration: 0.3s;
+  top: 16px;
+  left: 6px;
+}
+.flowBox-location-icon-placeholder{
+  opacity: 0.5;
+  top: 25px;
+  left: 16px;
+  z-index: 1;
+}
+.location-icon-placeholder{
+  opacity: 0.5;
+  top: 25px;
+  left: 24px;
+  z-index: 1;
+}
+.search-icon-overlay{
+  opacity: 0.5;
+  top: 22px;
+  right: calc(10% + 16px);
+  font-size: xx-large;
+  z-index: 1;
+}
+.search-icon-overlay2{
+  opacity: 0.5;
+  top: 22px;
+  right: 12px;
+  font-size: xx-large;
+  z-index: 1;
+}
 .btn-model {
   width: 320px;
   height: 55px;
@@ -510,10 +657,29 @@ button:focus-visible {
   /* filter: brightness(85%); */
   background-color: #B2AFD6;
 }
+.btn-secondaryflex {
+  padding: 12px 20px;
+  color: white;
+  font-size: large;
+  border-radius: 8px;
+  /* border: 2px solid #6663FC; */
+  background-color: #6663FC;
+  transition: 0.3s;
+}
+.btn-secondaryflex:hover {
+  /* filter: brightness(95%); */
+  /* transform: translateY(-5px); */
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
+  background-color: #3F3899;
+  transition: 0.3s;
+}
+.btn-secondaryflex:active{
+  /* filter: brightness(85%); */
+  background-color: #0F0680;
+}
 .btn-primaryflex2 {
   padding: 16px 32px;
   color: white;
-  font-size: large;
   border-radius: 8px;
   /* border: 2px solid #6663FC; */
   background-color: #6663FC;
@@ -539,6 +705,7 @@ button:focus-visible {
   transition: 0.3s;
   cursor: default;
 }
+
 .btn-primaryflex {
   padding: 12px 20px;
   color: white;
@@ -555,6 +722,29 @@ button:focus-visible {
   transition: 0.3s;
 }
 .btn-primaryflex:active{
+  /* filter: brightness(85%); */
+  background-color: #0F0680;
+}
+.btn-primaryflex-overlay {
+  padding: 11.5px 20px;
+  color: white;
+  border-radius: 0px 8px 8px 0px;
+  /* border: 2px solid #6663FC; */
+  background-color: #6663FC;
+  transition: 0.3s;
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  right: 0;
+}
+.btn-primaryflex-overlay:hover {
+  /* filter: brightness(95%); */
+  /* transform: translateY(-5px); */
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
+  background-color: #3F3899;
+  transition: 0.3s;
+}
+.btn-primaryflex-overlay:active{
   /* filter: brightness(85%); */
   background-color: #0F0680;
 }
@@ -668,6 +858,21 @@ button:focus-visible {
 .align-c{
   align-items: center;
 }
+.align-l{
+  align-items: start;
+}
+.align-r{
+  align-items: end;
+}
+.aligns-c{
+  align-self: center;
+}
+.aligns-l{
+  align-self: self-start;
+}
+.aligns-r{
+  align-self: self-end;
+}
 
 .password-collapsible{
   height: 0px;
@@ -707,6 +912,9 @@ button:focus-visible {
 .color-gains{
   color: gainsboro;
 }
+.border-right{
+border-right: 1px black solid;
+}
 .border-black{
   border: 1px solid black;
 }
@@ -722,12 +930,7 @@ button:focus-visible {
 .border-red2{
   border: 2px solid red;
 }
-.entry-error{
-  border: 2px solid red;
-}
-.entry-error:valid {
-  border: 2px solid gainsboro;
-}
+
 .closeBtn {
   position: absolute;
   top: 16px;
@@ -747,6 +950,14 @@ button:focus-visible {
   /* bottom: 0px; */
   /* right: 40%; */
 }
+.remove-btn{
+  width: 30px;
+  height: 30px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+}
 
 .bg-seethru{
   position: fixed;
@@ -755,6 +966,7 @@ button:focus-visible {
   width: 100vw;
   z-index: 1;
 }
+
 
 h1{
   font-family: 'Plus Jakarta Sans';
@@ -797,8 +1009,40 @@ p{
   font-size: xxx-large;
 }
 .page-heading{
+  font-family: 'Plus Jakarta Sans';
   font-size: 40px;
   font-weight: 500;
+}
+.page-heading-bold{
+  font-family: 'Plus Jakarta Sans';
+  font-size: 40px;
+  font-weight: 700;
+}
+.page-subheading{
+  font-family: 'Plus Jakarta Sans';
+  font-size: 30px;
+  font-weight: 500;
+}
+.page-subheading-bold{
+  font-family: 'Plus Jakarta Sans';
+  font-size: 30px;
+  font-weight: 700;
+}
+.page-subsubheading{
+  font-family: 'Plus Jakarta Sans';
+  font-size: 24px;
+  font-weight: 500;
+}
+.page-subsubheading-bold{
+  font-family: 'Plus Jakarta Sans';
+  font-size: 24px;
+  font-weight: 700;
+}
+.gray-box{
+  width: 96%;
+  height: 650px;
+  background-color: gainsboro;
+  border-radius: 12px;
 }
 .page-text{
   font-size: large;
@@ -916,6 +1160,104 @@ p{
 .card2-title{
   font-size: x-large;
 }
+.tripModal-img{
+  width: 376px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.add-places-card{
+  background-color: rgb(245, 245, 245);
+  color: gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  height: 150px;
+  justify-content: center;
+}
+.placeCard{
+  width: 100%;
+  height: 130px;
+  border: 2px solid gainsboro;
+  border-radius: 12px;
+  background-color: white;
+  overflow: hidden;
+}
+.placeCard-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.placeCard-body{
+  padding-left: 16px;
+}
+.onHover-50{
+  opacity: 0;
+  transition: 0.2s;
+}
+.placeCard:hover .onHover-50:hover{
+  opacity: 0.35;
+  transition: 0.2s;
+}
+.onHover-fade{
+  transition: 0.2s;
+  cursor: pointer;
+}
+.onHover-fade:hover{
+  opacity: 0.35;
+  transition: 0.2s;
+}
+.placeCard:hover .onHover-50{
+  opacity: 0.5;
+  transition: 0.2s;
+}
+.star-empty{
+  width: 20px;
+  opacity: 0.5;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.star-empty:hover{
+  opacity: 0.3;
+  transition: 0.2s;
+}
+.star-full{
+  width: 20px;
+  cursor: pointer;
+}
+.body-section{
+  height: 650px;
+}
+.placeCards{
+  height: 540px;
+  overflow: scroll;
+}
+.body-title{
+  font-family: 'Plus Jakarta Sans';
+  font-size: x-large;
+  font-weight: 600;
+  margin-top: 4px;
+  margin-bottom: 0px;
+}
+.body-info{
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 400;
+  color: rgb(102, 37, 183);
+  font-size: medium;
+  margin-top: 0px;
+}
+.body-address{
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 400;
+  font-size: medium;
+  color: rgb(150, 150, 150);
+}
+.empty-star{
+  filter: invert() brightness(70%);
+  width: 30px;
+}
+
 
 .page-container80{
   width: 80%;
@@ -923,6 +1265,14 @@ p{
 }
 .page-container90{
   width: 90%;
+  margin: auto;
+}
+.page-container96{
+  width: 96%;
+  margin: auto;
+}
+.page-container98{
+  width: 98%;
   margin: auto;
 }
 .progress-bar-container{
@@ -1022,7 +1372,8 @@ p{
 .input-normal{
   height: 50px;
   width: 95%;
-  border-radius: 12px;
+  border-radius: 8px;
+  /* border: none; */
   border: 2px solid gainsboro;
   padding-left: 16px;
   font-size: large;
@@ -1030,10 +1381,17 @@ p{
 .input-normal2{
   height: 50px;
   width: 92%;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 2px solid gainsboro;
   padding-left: 16px;
   font-size: large;
+}
+
+.entry-error{
+  border: 2px solid red;
+}
+.entry-error:valid {
+  border: 2px solid gainsboro;
 }
 .map{
   height: 300px;
@@ -1053,8 +1411,241 @@ p{
   align-items: center;
   text-align: center;
 }
+.specifyCity-box{
+  background-color: white;
+  width: 450px;
+  height: 300px;
+  padding: 32px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.itinerary-c1{
+  width: 30px;
+  border-right: 2px solid gainsboro;
+  transition: 0.3s;
+}
+.z-1{
+  z-index: 1;
+}
+.z-100{
+  z-index: 100;
+}
+.z-1000{
+  z-index: 1000;
+}
+.z-10000{
+  z-index: 10000;
+}
+.day-date{
+  width: 120px;
+  margin: auto;
+  color: gray;
+  font-size: large;
+  
+}
+.arrowToOpen{
+  transition: 0.3s;
+}
+.arrowToClose{
+  width: 166px;
+}
+.h-0{
+  height: 0px;
+}
+.flowBody-collapsible{
+  /* height: min-content; */
+  /* height: 500px; */
+  transition: 0.5s;
+}
+.it-column1{
+  transition: 0.3s;
+}
+
+.flow-header{
+  background-color: #F0EFFF;
+  padding: 8px 16px;
+  border-radius: 12px;
+}
+.flow-box{
+  margin-top: 15px;
+}
+
+.flowBody{
+  transition: 0.3s;
+}
+#expandArrow{
+  /* transform: rotate(-90deg); */
+  transition: 0.2s;
+}
+.td-2{
+  transition-duration: 0.2s;
+}
+.td-3{
+  transition-duration: 0.3s;
+}
+.td-4{
+  transition-duration: 0.4s;
+}
+.td-5{
+  transition-duration: 0.5s;
+}
+.input-special{
+  width: 80%;
+  background-color: transparent;
+  border: none;
+  font-size: large;
+  font-family: 'Plus Jakarta Sans';
+  color: gray;
+  /* border-bottom: 2px solid gainsboro; */
+}
+.addPlace-expand{
+  height: 30px;
+  transition-duration: 0.2s;
+}
+.btn-overlay-right{
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  right: 12px;
+}
+.bird-load-logo{
+  width: 70px;
+}
+.block{
+  display: block;
+}
+
+.leaflet-container{
+  height: 100%;
+  width: 100%;
+  border-radius: 12px;
+}
+.mapBox{
+  width: 500px;
+  height: 500px;
+}
+.it-map{
+  width: 96%;
+  height: 60vh;
+  background-color: gainsboro;
+  border-radius: 12px;
+}
+.sticky{
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+.card-model{
+  border: 1px solid rgb(190, 190, 190);
+  width: 250px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cardModel-img{
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+.cardModel-text{
+  padding: 12px;
+}
+.addIcon{
+  border: 2px solid black;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  right: 10px;
+  bottom: 34px;
+  background-color: white;
+}
+.suggestion-row{
+  white-space: nowrap;
+  /* overflow: scroll; */
+  width: 400px;
+}
+.inflex{
+  display: inline-flex;
+}
+.hideOverFlow{
+  overflow: hidden;
+}
+.hideOverflow{
+  overflow: hidden;
+}
+.heroCarouselContainer{
+  overflow: hidden;
+}
+.w-100vw{
+  width: 100vw;
+}
+.imgFrame-12-5{
+  width: 100vw;
+  height: calc(100vw / 12 * 5);
+  /* background-color: gray; */
+  overflow: hidden;
+  display: inline-flex;
+  /* width: 100%; */
+  /* justify-content: center; */
+  align-items: center;
+}
+.dot-indicator{
+  width: 20px;
+}
+
+.calendarInput{
+  height: 50px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius:8px;
+  border: 2px solid gainsboro;
+  font-size: medium;
+  background-color: white;
+  padding-left: 12px;
+  transition-duration: 0.3s;
+  color: gray;
+  font-family: 'Plus Jakarta Sans';
+}
+.calendarInput2{
+  height: 50px;
+  width: 92%;
+  border-radius: 12px;
+  border: 2px solid gainsboro;
+  padding-left: 16px;
+  font-size: large;
+}
+.calendarWrap{
+  display: inline-block;
+  position: relative;
+}
+.calendarElement{
+  position: absolute;
+  left: 0%;
+  /* transform: translateX(-50%); */
+  top: 40px;
+  border-radius: 8px;
+  /* border: 1px solid blue; */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.07);
+  z-index: 2000;
+}
+.inputIcon-right{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+
 .italic-placeholder::-webkit-input-placeholder {
+  font-family: 'Plus Jakarta Sans';
   font-style: italic;
+}
+.bold-placeholder::-webkit-input-placeholder {
+  font-weight: 600;
 }
 .inline{
   display: inline;
@@ -1339,6 +1930,18 @@ p{
 }
 .pad28 {
   padding: 28px;
+}
+.pb-2{
+  padding-bottom: 10px;
+}
+.pb-3{
+  padding-bottom: 15px;
+}
+.pb-4{
+  padding-bottom: 20px;
+}
+.pb-5{
+  padding-bottom: 25px;
 }
 
 .d-none {

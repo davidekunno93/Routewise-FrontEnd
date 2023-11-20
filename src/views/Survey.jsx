@@ -8,24 +8,43 @@ export const Survey = () => {
     const { user, setUser } = useContext(DataContext);
     const [categories, setCategories] = useState(
         {
-            landmarks: false,
-            nature: false,
             shopping: false,
-            food: false,
-            spa: false,
+            nature: false,
+            landmarks: false,
             entertainment: false,
-            art: false
+            relaxation: false,
+            food: false,
+            arts: false
         }
     );
 
     const navigate = useNavigate()
 
     const completeSurvey = () => {
-        sendData()
         progressLoadingAnimation()
         wait(2000).then(() => {
             navigate('/dashboard')
         })
+    }
+    const sendDataTest = async () => {
+        let data = {
+            uid: '1234567',
+            categories: {
+                shopping: true,
+                nature: true,
+                landmarks: false,
+                entertainment: false,
+                relaxation: false,
+                food: true,
+                arts: false
+            }
+        }
+        console.log(data)
+        const response = await axios.post('https://routewise-backend.onrender.com/profile/user_info', JSON.stringify(data), {
+            headers: { "Content-Type": "application/json" }
+        })
+            .then((response) => console.log(response))
+            .catch((error) => console.log(error))
     }
 
     const sendData = async () => {
@@ -35,11 +54,14 @@ export const Survey = () => {
         }
         console.log(data)
         const response = await axios.post('https://routewise-backend.onrender.com/profile/user_info', JSON.stringify(data), {
-            headers: {"Content-Type" : "application/json"}
-        }).then((response) => console.log(response))
-        .catch((error) => console.log(error))
+            headers: { "Content-Type": "application/json" }
+        })
+        // .then((response) => console.log(response))
+        // .catch((error) => console.log(error))
+        progressLoadingAnimationStall()
+        return response.status === 200 ? completeSurvey() : handleError(response)
     }
-    
+
     // useEffect(() => {
     //     console.log(categories)
     // }, [categories])
@@ -67,17 +89,27 @@ export const Survey = () => {
             nodeFlex.style.height = '30px'
         })
     }
-    const progressLoadingAnimation = () => {
+    const progressLoadingAnimationStall = () => {
         const progressBar = document.getElementById('progress-bar-full')
-        const node2Flex = document.getElementById('node2-flex')
         const progressCheckmark2 = document.getElementById('progress-checkmark2')
-        progressBar.style.transition = '1.5s ease'
+        progressBar.style.transition = '10s ease'
         progressCheckmark2.classList.remove('o-none')
         wait(200).then(() => {
             progressBar.style.width = '93%'
         })
+    }
+    const progressLoadingAnimation = () => {
+        const progressBar = document.getElementById('progress-bar-full')
+        const node2Flex = document.getElementById('node2-flex')
+        // const progressCheckmark2 = document.getElementById('progress-checkmark2')
+        // progressBar.style.transition = '1.5s ease'
+        // progressCheckmark2.classList.remove('o-none')
+        // wait(200).then(() => {
+        //     progressBar.style.width = '93%'
+        // })
         wait(1500).then(() => {
             progressBar.style.transition = '1.0s ease'
+            progressBar.style.width = '93%'
             node2Flex.style.width = '30px'
             node2Flex.style.height = '30px'
         })
@@ -209,7 +241,7 @@ export const Survey = () => {
                     })}
 
                 </div>
-                <button onClick={() => completeSurvey()} className="btn-primaryflex2 right mt-3">
+                <button onClick={() => sendData()} className="btn-primaryflex2 right mt-3">
                     <p className='inline'>Continue</p>
                     <span className="material-symbols-outlined v-bott ml-2">
                         arrow_forward
