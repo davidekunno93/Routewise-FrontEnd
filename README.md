@@ -21,6 +21,9 @@ BackEnd (Kate) checkpoints
 *make sticky map + suggestions 100vh in itinerary page
 *different api for loading city names?
 *loading screen while city options load
+*on dashboard, if no city entered and user tries to add trip, code error feedback
+*make more aesthetic scrollers
+*if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
 
 geoapify api place objects
 calendar selection
@@ -30,10 +33,17 @@ keep star priority of places in itinerary page?
 trips recorded on dashboard
 
 APIs 
-- geoapify geocoding API for city names
+- api ninjas geocoding API for city names
 - unsplash api for city images
 
 
 
 addPlaces page <-- tripID -- Destination, tripName
 itinerary page <-- tripID, days(places) 
+
+
+
+text input boxes - white text
+sign in error
+sign up error
+catch error for emails already in use

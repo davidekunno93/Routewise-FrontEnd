@@ -259,14 +259,14 @@ export const Itinerary = () => {
                 <span className="material-symbols-outlined btn-symbol v-align x-large">
                   expand_more
                 </span>
-                <p className="inline v-align">Location #1</p>
+                <p className="inline v-align white-text">Location #1</p>
               </button>
 
               <div className="it-datesPanel w-100 flx-c mt-3">
                 {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
                   return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
-                    <p className="it-dateBlock my-1 flx-1">{day.dayShort}</p>
-                    <p className="it-dayBlock my-1 flx-1">{day.dateShort}</p>
+                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.dayShort}</p>
+                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.dateShort}</p>
                   </div>
                 }) : null
                 }
@@ -282,7 +282,7 @@ export const Itinerary = () => {
                     <span className="material-symbols-outlined v-tbott mr-2">
                         arrow_back
                     </span>
-                    <p className="inline large">Back</p>
+                    <p className="inline large purple-text">Back</p>
                 </Link>
             <p className="page-heading-bold m-0">Hey Josh,</p>
             <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary</p>

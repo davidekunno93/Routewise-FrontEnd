@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const SpecifyCity = ({ open, cities, updateCity2, updateState, updateCountry, updateGeocode, openNameTripModal, onClose }) => {
+export const SpecifyCity = ({ open, cities, tripData, setTripData, openNameTripModal, onClose }) => {
     if (!open) return null
 
-    function wait(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms))
-    }
+
     
 
     const [finished, setFinished] = useState(false);
@@ -18,12 +16,12 @@ export const SpecifyCity = ({ open, cities, updateCity2, updateState, updateCoun
     
 
     const handleSelect = (cityName, state, country, lat, lon) => {
-        let geocode = [lat, lon]
-        console.log(cityName, state, geocode)
-        updateCity2(cityName)
-        updateState(state)
-        updateCountry(country)
-        updateGeocode(geocode)
+        let tripInfo = {...tripData}
+        tripInfo.cityName = cityName
+        tripInfo.state = state
+        tripInfo.country = country
+        tripInfo.geocode = [lat, lon]
+        setTripData(tripInfo)
         updateFinished()
         // onClose()
         // openNameTripModal()

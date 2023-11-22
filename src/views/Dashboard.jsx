@@ -10,21 +10,20 @@ import { DateRange } from 'react-date-range';
 import format from 'date-fns/format';
 import { addDays } from 'date-fns'
 import { SpecifyCity } from './SpecifyCity';
+import { Loading } from '../components/Loading';
+import { LoadingModal } from '../components/LoadingModal';
 
 
 
 export const Dashboard = () => {
     // login require
     const [openTripModal, setOpenTripModal] = useState(false)
-    const [departDate, setDepartDate] = useState(new Date());
+    const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
     const [fullTranslated, setFullTranslated] = useState(false);
     const [mapCenter, setMapCenter] = useState(null);
     const [calendarOpen, setCalendarOpen] = useState(false)
     const [city, setCity] = useState(null);
-    const [state, setState] = useState(null);
-    const [country, setCountry] =useState(null);
-    const [geocode, setGeocode] = useState(null);
     const [tripData, setTripData] = useState(null);
     const [specifyCityOpen, setSpecifyCityOpen] = useState(false)
     const [cityOptions, setCityOptions] = useState([
@@ -116,15 +115,15 @@ export const Dashboard = () => {
 
 
     const openNameTripModal = () => {
-        let tripInfo = {
-            cityName: city,
-            state: state,
-            country: country,
-            geocode: geocode,
-            startDate: range[0].startDate,
-            endDate: range[0].endDate,
-        }
-        setTripData(tripInfo)
+        // let tripInfo = {
+        //     cityName: city,
+        //     state: state,
+        //     country: country,
+        //     geocode: geocode,
+        //     startDate: range[0].startDate,
+        //     endDate: range[0].endDate,
+        // }
+        // setTripData(tripInfo)
         setOpenTripModal(true)
     }
     const closeNameTripModal = () => {
@@ -156,42 +155,90 @@ export const Dashboard = () => {
     }
     const refOne = useRef(null);
 
-    
+
 
 
     const getCity = async () => {
         if (!city) {
-            // please enter city name
+            // if there is no city entered --> please enter city name
             let cityInput = document.getElementById('cityInput')
             cityInput.classList.add('entry-error')
         } else {
+            // if there is a city entered
+            startLoading()
             const index = city.indexOf(',')
-            if (index > -1) { // if the user input includes a "," 
+            // if the user input includes a "," -- it contains city and state/country
+            if (index > -1) {
                 let cityNoSpaces = city.replace(/ /g, '')
                 const cityArr = cityNoSpaces.split(',')
                 // console.log(cityArr)
                 const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`, {
                     headers: { 'X-Api-Key': apiKey }
-                }).then((response => handleCityStateResponse(response)))
-                    .catch((error) => console.log(error))
+                }).then((response => openNewTrip(response)))
+                    .catch((error) => {
+                        console.log(error)
+                        stopLoading()
+                    })
                 // go to TripName Modal automatically
             } else {
+                // if user enters just a city name with no ","
                 const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${city}`, {
                     headers: { 'X-Api-Key': apiKey }
-                }).then((response => handleCityResponse(response)))
-                    .catch((error) => console.log(error))
+                }).then((response => openNewTrip(response)))
+                    .catch((error) => {
+                        console.log(error)
+                        stopLoading()
+                    })
             }
         }
     }
+
+
+    const openNewTrip = (response) => {
+        // if no response catch error***
+        let data = response.data
+        let geocode = [data[0].latitude, data[0].longitude]
+        let tripInfo = {
+            cityName: data[0].name,
+            state: data[0].state,
+            country: data[0].country,
+            geocode: geocode,
+            startDate: range[0].startDate,
+            endDate: range[0].endDate,
+        }
+        let dataNew = []
+        let states = []
+        for (let i = 0; i < data.length; i++) {
+            if (!states.includes(data[i].state)) {
+                dataNew.push(data[i])
+            }
+            states.push(data[i].state)
+        }
+        setCityOptions(dataNew)
+
+        setTripData(tripInfo)
+        stopLoading()
+        openNameTripModal()
+
+        // take first response.data index and use name/state/country/lat/lon 
+        // coerse to tripData and open Name Trip modal, using tripData as props
+    }
+
+    const changeCity = () => {
+        setOpenTripModal(false)
+        setSpecifyCityOpen(true)
+    }
+
+
     const handleCityResponse = (response) => {
         let data = response.data
         console.log(data)
-        
+
         if (data.length > 1) {
             // go to Select which City you want
             let dataNew = []
             let states = []
-            for (let i=0;i<data.length;i++) {
+            for (let i = 0; i < data.length; i++) {
                 if (!states.includes(data[i].state)) {
                     dataNew.push(data[i])
                 }
@@ -201,12 +248,14 @@ export const Dashboard = () => {
             setSpecifyCityOpen(true)
         } else {
             // go to trip name modal
-            
+
         }
         if (typeof data === 'undefined') {
             console.log('new plan')
         }
     }
+
+
 
     const handleCityStateResponse = (response) => {
         let data = response.data[0]
@@ -225,21 +274,17 @@ export const Dashboard = () => {
     const closeSpecifyCity = () => {
         setSpecifyCityOpen(false);
     }
-    const updateCity2 = (cityName) => {
-        setCity(cityName)
-    }
-    const updateState = (stateName) => {
-        setState(stateName)
-    }   
-    const updateCountry = (countryName) => {
-        setCountry(countryName)
-    }
-    const updateGeocode = (geocode) => {
-        setGeocode(geocode)
-    }
+
     useEffect(() => {
         console.log(city)
     }, [city])
+
+    const startLoading = () => {
+        setLoading(true);
+    }
+    const stopLoading = () => {
+        setLoading(false);
+    }
 
     return (
         <>
@@ -247,8 +292,10 @@ export const Dashboard = () => {
                 <DatePicker selected={departDate} onChange={(departDate) => setDepartDate(departDate)} />
             </div>
              */}
-            <SpecifyCity open={specifyCityOpen} cities={cityOptions} updateCity2={updateCity2} updateState={updateState} updateCountry={updateCountry} openNameTripModal={openNameTripModal} updateGeocode={updateGeocode} onClose={() => closeSpecifyCity()} />
-            <NameTripModal open={openTripModal} tripData={tripData} onClose={() => closeNameTripModal()} />
+            <LoadingModal open={loading} width={450} height={500} onClose={() => stopLoading()} />
+
+            <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} openNameTripModal={openNameTripModal} setTripData={setTripData} onClose={() => closeSpecifyCity()} />
+            <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
                 <h1 onClick={() => changeCC()} className="page-title">Hi Josh, (emoji)</h1>
                 <div className="selection-box flx-c">

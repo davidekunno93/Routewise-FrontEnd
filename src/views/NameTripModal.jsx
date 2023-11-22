@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const NameTripModal = ({ open, tripData, onClose }) => {
+export const NameTripModal = ({ open, tripData, changeCity, onClose }) => {
     // send Kate Data
     if (!open) return null
     const [cityImg, setCityImg] = useState(null)
@@ -27,6 +27,7 @@ export const NameTripModal = ({ open, tripData, onClose }) => {
         setCityImg(data.results[0].urls.regular)
     }
 
+
     const sendData = () => {
 
     }
@@ -40,8 +41,8 @@ export const NameTripModal = ({ open, tripData, onClose }) => {
                         close
                     </span>
                     <div className="xx-large bold700 font-jakarta w-80 my-3">
-                        Name your trip to <span className="purple-text">{tripData.cityName}, {tripData.country}</span>
-                    <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link>here</Link> to find the right one</p>
+                        Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span>
+                    <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link onClick={changeCity}>here</Link> to find the right one</p>
                     </div>
                     <input className="input-model" placeholder='Enter a name for your trip' required />
                     {/* <img src="https://i.imgur.com/sCT1BpF.jpg" alt="" className="tripModal-img my-3" /> */}

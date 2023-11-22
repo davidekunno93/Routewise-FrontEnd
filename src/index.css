@@ -268,6 +268,9 @@ button:focus-visible {
 .w-95 {
   width: 95%;
 }
+.w-96 {
+  width: 96%;
+}
 .w-98 {
   width: 98%;
 }
@@ -294,12 +297,15 @@ button:focus-visible {
 }
 .small-pic{
   width: 40px;
+  object-fit: contain;
 }
 .med-pic{
   width: 75px;
+  object-fit: contain;
 }
 .large-pic{
   width: 120px;
+  object-fit: contain;
 }
 .position-relative{
   position: relative;
@@ -467,6 +473,19 @@ button:focus-visible {
   z-index: 1002;
   overflow: hidden;
 }
+.loadingBox{
+  background-color: white;
+  /* width: 500px; defined in element style {{}} */ 
+  /* height: 550px; define in element style {{}} */
+  padding: 32px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  /* margin-top: 25px; */
+  position: absolute;
+  z-index: 1002;
+  overflow: hidden;
+}
 .modal{
   position: fixed;
   z-index: 100000;
@@ -516,6 +535,7 @@ button:focus-visible {
   border-radius: 8px;
   border: 2px solid gainsboro;
   font-size: medium;
+  color: black;
   background-color: rgba(225, 225, 225, 0.0);
   padding-left: 12px;
   transition-duration: 0.3s;
@@ -552,7 +572,7 @@ button:focus-visible {
 }
 .input-search-map-overlay {
   height: 44px;
-  width: calc(90% - 16px);
+  width: calc(90% - 64px);
   box-sizing: border-box;
   border-radius: 8px;
   border: 2px solid gray;
@@ -562,7 +582,7 @@ button:focus-visible {
   padding-right: 42px;
   transition-duration: 0.3s;
   top: 16px;
-  left: 16px;
+  left: 64px;
 }
 
 .input-search-map-overlay2 {
@@ -602,13 +622,13 @@ button:focus-visible {
 .location-icon-placeholder{
   opacity: 0.5;
   top: 25px;
-  left: 24px;
+  left: 72px;
   z-index: 1;
 }
 .search-icon-overlay{
   opacity: 0.5;
   top: 22px;
-  right: calc(10% + 16px);
+  right: calc(10% + 8px);
   font-size: xx-large;
   z-index: 1;
 }
@@ -618,6 +638,15 @@ button:focus-visible {
   right: 12px;
   font-size: xx-large;
   z-index: 1;
+}
+.mapSearch-dropdown{
+  position: absolute;
+  background-color: white;
+  width: calc(90% - 64px);
+  /* height: 240px; */
+  top: 60px;
+  left: 64px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .btn-model {
   width: 320px;
@@ -684,6 +713,9 @@ button:focus-visible {
   /* border: 2px solid #6663FC; */
   background-color: #6663FC;
   transition: 0.3s;
+}
+.gray-text{
+  color: gray;
 }
 .btn-primaryflex2:hover {
   /* filter: brightness(95%); */
@@ -881,6 +913,9 @@ button:focus-visible {
 #password-input{
   transition: 0.3s;
 }
+input{
+  color: black;
+}
 
 .icon-right{
   position: absolute;
@@ -970,9 +1005,11 @@ border-right: 1px black solid;
 
 h1{
   font-family: 'Plus Jakarta Sans';
+  color: #242424;
 }
 p{
   font-family: 'Plus Jakarta Sans';
+  color: #242424;
 }
 .font-jakarta{
   font-family: 'Plus Jakarta Sans';
@@ -1208,6 +1245,30 @@ p{
   opacity: 0.35;
   transition: 0.2s;
 }
+.onHover-fadelite{
+  transition: 0.2s;
+  cursor: pointer;
+}
+.onHover-fadelite:hover{
+  opacity: 0.75;
+  transition: 0.2s;
+}
+.onHover-black{
+  transition: 0.2s;
+  cursor: pointer;
+}
+.onHover-black:hover{
+  filter: brightness(0%);
+  transition: 0.2s;
+}
+.onHover-option{
+  transition: 0.2s;
+  cursor: pointer;
+}
+.onHover-option:hover{
+  background-color: rgb(240, 240, 240);
+  transition: 0.2s;
+}
 .placeCard:hover .onHover-50{
   opacity: 0.5;
   transition: 0.2s;
@@ -1237,6 +1298,8 @@ p{
   font-family: 'Plus Jakarta Sans';
   font-size: x-large;
   font-weight: 600;
+  height: 34px;
+  overflow: hidden;
   margin-top: 4px;
   margin-bottom: 0px;
 }
@@ -1257,7 +1320,9 @@ p{
   filter: invert() brightness(70%);
   width: 30px;
 }
-
+.flx-end{
+  align-items: flex-end;
+}
 
 .page-container80{
   width: 80%;
@@ -1567,6 +1632,9 @@ p{
   /* overflow: scroll; */
   width: 400px;
 }
+.ws-nowrap{
+  white-space: nowrap;
+}
 .inflex{
   display: inline-flex;
 }
@@ -1860,6 +1928,9 @@ p{
 }
 .ml-8 {
   margin-left: 80px;
+}
+.mr-1 {
+  margin-right: 5px;
 }
 .mr-2 {
   margin-right: 10px;

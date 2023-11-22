@@ -29,7 +29,7 @@ export const FlowBox = ({ id, addSearchOpen, addSearchClose, toggleFlow, day }) 
 
                     <div id={`addPlace-expand-${id}`} className="addPlace-expand ml- m-auto">
                         <Link onClick={() => addSearchOpen(id)} id={`addPlacesBtn-${id}`} className=''>
-                            <p className="right-text m-0"><span className="material-symbols-outlined v-bott mx-2">
+                            <p className="right-text m-0"><span className="material-symbols-outlined v-bott mx-2 purple-text">
                                 add
                             </span>
                                 Add Places</p>
