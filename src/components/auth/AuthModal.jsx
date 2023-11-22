@@ -20,24 +20,6 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
         return new Promise(resolve => setTimeout(resolve, ms))
     }
 
-    // const expandPassword = () => {
-    //     if (emailExpand === false) {
-    //         const password_collapsible = document.getElementById('password-collapsible')
-    //         const password_input = document.getElementById('password-input')
-    //         const continueEmail = document.getElementById('continueEmail')
-    //         password_collapsible.style.height = '60px'
-    //         password_input.classList.remove('d-none')
-    //         wait(100).then(() => {
-    //             continueEmail.innerText = 'Sign up with email'
-    //             password_input.classList.remove('o-none')
-    //         })
-    //         setEmailExpand(true)
-    //     }
-    //     if (emailExpand === true) {
-    //         console.log('It is time...')
-    //         signUpWithEmail()
-    //     }
-    // }
 
     const navigate = useNavigate()
 
@@ -163,14 +145,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                 <input id='registerEmail' onChange={(e) => updateRegisterEmail(e)} type='text' className='input-model' required />
                                 <span className='title font-jakarta'>Email</span>
                             </div>
-                            {/* <div id='password-collapsible' className="password-collapsible">
-                                <div id='password-input' className="inputBox d-none o-none">
-                                    <input id='password' onChange={(e) => updatePassword(e)} type='password' className='input-model' required />
-                                    <span className='title font-jakarta'>Password</span>
-                                    <div id='showPasswordOpen' onClick={() => showPassword()} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/DkqcKz7.png" alt="" className="icon-xsmall center o-80" /></div>
-                                    <div id='showPasswordClose' onClick={() => hidePassword()} className='icon-right flx-c just-ce d-none'><img src="https://i.imgur.com/yoo70zI.png" alt="" className="icon-xsmall center o-80" /></div>
-                                </div>
-                            </div> */}
+                            
                             <button id='continueEmail' onClick={() => continueWithEmail()} className='btn-primary bg-white font-jakarta bg-lightpurple white-text'>Continue with email</button>
                             <div className='m-0 small mt-3 font-jakarta'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
                         </div>

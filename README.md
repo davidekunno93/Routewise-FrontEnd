@@ -22,8 +22,9 @@ BackEnd (Kate) checkpoints
 *different api for loading city names?
 *loading screen while city options load
 *on dashboard, if no city entered and user tries to add trip, code error feedback
-*make more aesthetic scrollers
+*make more aesthetic scrollbars
 *if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
+*add extra destinations to a trip
 
 geoapify api place objects
 calendar selection
@@ -43,7 +44,9 @@ itinerary page <-- tripID, days(places)
 
 
 
-text input boxes - white text
+Xtext input boxes - white text
 sign in error
-sign up error
+Xsign up error
 catch error for emails already in use
+Xget w/Kate to sort out auth
+>>>>>Kate's db's only allow uids that have already been authenticated

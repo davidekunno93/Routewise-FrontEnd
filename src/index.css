@@ -48,6 +48,9 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+button p{
+  color: white;
+}
 /* button:hover {
   border-color: #646cff;
 } */
@@ -349,6 +352,12 @@ button:focus-visible {
   height: 85px;
   /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
   z-index: 100;
+}
+.nav-link{
+  color: #646CFF;
+}
+.nav-link:hover{
+  color: #529aff;
 }
 .right-btns{
   margin-right: 5%;

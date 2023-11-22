@@ -202,9 +202,13 @@ export const Dashboard = () => {
             cityName: data[0].name,
             state: data[0].state,
             country: data[0].country,
-            geocode: geocode,
-            startDate: range[0].startDate,
-            endDate: range[0].endDate,
+            destinationLat: geocode[0],
+            destinationLong: geocode[1],
+            startDate: format(range[0].startDate, "MM/dd/yyyy"),
+            endDate: format(range[0].endDate, "MM/dd/yyyy"),
+        }
+        if (typeof tripInfo.state === 'undefined') {
+            tripInfo.state = ""
         }
         let dataNew = []
         let states = []

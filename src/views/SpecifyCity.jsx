@@ -44,9 +44,10 @@ export const SpecifyCity = ({ open, cities, tripData, setTripData, openNameTripM
                         <div className="xx-large bold700 font-jakarta w-80 my-3">
                             Select your destination
                         </div>
+                        
                         <div className="">
                             {cities.map((city, i) => {
-                                return <Link onClick={() => handleSelect(city.name, city.state, city.country, city.latitude, city.longitude)} key={i}><p className="large">{city.name}, {city.country === 'US' ? city.state + ", " : null} {city.country}</p></Link>
+                                return <Link onClick={() => handleSelect(city.name, city.state, city.country, city.latitude, city.longitude)} key={i}><p className="large nav-link">{city.name}, {city.country === 'US' ? city.state + ", " : null} {city.country}</p></Link>
                             })}
 
                         </div>

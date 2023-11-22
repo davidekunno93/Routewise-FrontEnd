@@ -174,7 +174,7 @@ export const AddPlaces = () => {
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link>
-                <p onClick={() => resetSearch()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to *city*</p>
+                <p onClick={() => resetSearch()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">*city*</span></p>
                 <div className="flx-r onHover-fadelite">
                     <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
                         add
@@ -258,8 +258,8 @@ export const AddPlaces = () => {
                                         <span className="material-symbols-outlined xx-large">
                                             location_on
                                         </span>
-                                        <p className="large bold700 my-1">Add some places</p>
-                                        <p className="m-0 w-50 center-text">Use the search bar on the map to add places that you want to go</p>
+                                        <p className="large bold700 my-1 o-50">Add some places</p>
+                                        <p className="m-0 w-50 center-text o-50">Use the search bar on the map to add places that you want to go</p>
                                     </div>
 
                                 }
