@@ -1731,6 +1731,9 @@ p{
 .bold-placeholder::-webkit-input-placeholder {
   font-weight: 600;
 }
+.inline-block{
+  display: inline-block;
+}
 .inline{
   display: inline;
 }

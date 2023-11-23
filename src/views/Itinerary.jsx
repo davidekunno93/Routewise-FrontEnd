@@ -5,6 +5,7 @@ import { SearchPlace } from '../components/SearchPlace'
 import { FlowBox } from '../components/FlowBox'
 import { useRef } from 'react'
 import { OpenMap } from '../components/OpenMap'
+import auth from '../firebase'
 
 export const Itinerary = () => {
   const [markers, setMarkers] = useState(null);
@@ -284,7 +285,7 @@ export const Itinerary = () => {
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link>
-            <p className="page-heading-bold m-0">Hey Josh,</p>
+            <p className="page-heading-bold m-0">Hey {auth.currentUser.username ? auth.currentUser.username : "Josh"},</p>
             <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary</p>
             <div className="itinerary-flow mt-4">
 
