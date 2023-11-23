@@ -29,7 +29,11 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-color: white;
 }
+/* div{
+  color: #242424;
+} */
 
 h1 {
   font-size: 3.2em;
@@ -133,6 +137,9 @@ button:focus-visible {
 }
 .just-en {
   justify-content: end;
+}
+.dark-text{
+  color: #242424;
 }
 .black-text {
   color: black;

@@ -307,12 +307,12 @@ export const Dashboard = () => {
                     <div className="box-items flx-3 flx-r mb-4">
                         <div className="item-location flx-3 flx-c just-en">
                             <div className="mr-2">
-                                <div className="box-heading">Where are you headed?</div>
+                                <div className="box-heading dark-text">Where are you headed?</div>
                                 <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' />
                             </div>
                         </div>
                         <div className="item-dates flx-2 flx-c just-en">
-                            <div className="box-heading">When will you be there?</div>
+                            <div className="box-heading dark-text">When will you be there?</div>
                             <div className="calendarWrap mr-2">
                                 <span className="material-symbols-outlined position-absolute inputIcon-right xx-large o-50">
                                     date_range
