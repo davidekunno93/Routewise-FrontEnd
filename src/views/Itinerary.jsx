@@ -285,7 +285,7 @@ export const Itinerary = () => {
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link>
-            <p className="page-heading-bold m-0">Hey {auth.currentUser.username ? auth.currentUser.username : "Josh"},</p>
+            <p className="page-heading-bold m-0">Hey {auth.currentUser ? auth.currentUser.displayName : "Josh"},</p>
             <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary</p>
             <div className="itinerary-flow mt-4">
 

@@ -30,7 +30,7 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
     //     }).then((response => console.log(response)))
     //     .catch((error) => console.log(error))
     // }
-    // sendDataTest()
+    
     const sendData = async () => {
         let authUser = auth.currentUser
         let data = {

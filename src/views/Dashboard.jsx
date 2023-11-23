@@ -302,7 +302,7 @@ export const Dashboard = () => {
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} openNameTripModal={openNameTripModal} setTripData={setTripData} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
-                <h1 onClick={() => changeCC()} className="page-title inline-block">Hi {auth.currentUser.username ? auth.currentUser.username : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="med-pic ml-2" />
+                <h1 onClick={() => changeCC()} className="page-title inline-block">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="med-pic ml-2" />
                 <div className="selection-box flx-c">
                     <div className="box-title flx-2 flx-c just-ce"><p className='m-0'>Start planning your next adventure</p></div>
                     <div className="box-items flx-3 flx-r mb-4">

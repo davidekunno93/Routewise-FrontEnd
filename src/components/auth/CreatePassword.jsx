@@ -19,15 +19,24 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
                     console.log(userCredentials)
                 }).catch ((error) => {
                     console.log(error.code)
-                    console.log(error.message)
+                    handleError(error.code)
+                    // console.log(error.message)
                 })
-                handleSignIn()
+                // handleSignIn()
             }
         } else {
             nameEntry.classList.add('entry-error')
         }
     }
 
+    const handleError = (errorCode) => {
+        if (errorCode === 'auth/email-already-in-use') {
+            alert("There is an account already created with this email")
+        }
+    }
+
+    // PASSWORD CHECK
+    // does password match confirmed password
     const passwordMatch = () => {
         const confirmPassword = document.getElementById('createConfirmPassword');
         if (createPassword === confirmPassword.value) {
@@ -39,7 +48,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
         }
         // console.log(createPassword, confirmPassword.value)
     }
-
+    // is password valid? has both letters and numbers and is at least 8 chars long
     const validatePassword = () => {
         let hasChars = false;
         let hasNumbers = false;
@@ -78,6 +87,9 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
 
 
     }
+
+    // ERRORS
+    // show password requirements (8 chars, must have number and letter)
     const passwordInvalidOpen = () => {
         const passwordInvalid = document.getElementById('passwordInvalid');
         passwordInvalid.classList.remove('d-none');
@@ -86,6 +98,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
         const passwordInvalid = document.getElementById('passwordInvalid');
         passwordInvalid.classList.add('d-none');
     }
+    // show passwords don't match error
     const passwordMatchInvalidOpen = () => {
         const matchInvalid = document.getElementById('passwordMatchInvalid')
         matchInvalid.classList.remove('d-none')
@@ -95,6 +108,8 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
         matchInvalid.classList.add('d-none')
     }
 
+
+    // UPDATE STATES
     const updateCreatePassword = (e) => {
         setCreatePassword(e.target.value);
     }
@@ -102,6 +117,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
         setDisplayName(e.target.value);
     }
 
+    // open is loading component for more operational work
     const handleSignIn = () => {
         setIsLoading(true);
     }
@@ -111,6 +127,8 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
         onClose()
     }
 
+
+    // stop loading screen and close this modal (if account creation is successful or if email already in use?)
     const closeAll2 = () => {
         stopLoading()
         closeAll()
