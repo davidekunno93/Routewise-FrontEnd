@@ -8,12 +8,12 @@ export const Survey = () => {
     const { user, setUser } = useContext(DataContext);
     const [categories, setCategories] = useState(
         {
-            shopping: false,
-            nature: false,
             landmarks: false,
-            entertainment: false,
-            relaxation: false,
+            nature: false,
+            shopping: false,
             food: false,
+            relaxation: false,
+            entertainment: false,
             arts: false
         }
     );
@@ -30,12 +30,12 @@ export const Survey = () => {
         let data = {
             uid: '1234567',
             categories: {
-                shopping: true,
-                nature: true,
                 landmarks: false,
-                entertainment: false,
-                relaxation: false,
+                nature: true,
+                shopping: true,
                 food: true,
+                relaxation: false,
+                entertainment: false,
                 arts: false
             }
         }
@@ -166,7 +166,7 @@ export const Survey = () => {
         let category_booleans = Object.values(categories);
         const card = document.getElementById(`${id}-card2`)
         const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        // console.log(category_list[id])
+        console.log(category_list[id])
         let true_count = category_booleans.filter(val => val === true).length;
         let maxCategoryError = document.getElementById('maxCategoryError')
         if (true_count > 2) {

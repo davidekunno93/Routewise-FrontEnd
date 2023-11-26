@@ -2,14 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { OpenMap } from '../components/OpenMap'
 import axios from 'axios'
+import Scrollbars from 'react-custom-scrollbars-2'
 
-export const AddPlaces = () => {
 
+
+export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
+    // Send Kate Data
     const navigate = useNavigate()
     const [places, setPlaces] = useState([]);
     const [searchText, setSearchText] = useState('');
-    const [bias, setBias] = useState([51.50735, -0.12776])
-    const [country, setCountry] = useState('gb')
+    const [bias, setBias] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
+    const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb')
     const [auto, setAuto] = useState([]);
     // const [places, setPlaces] = useState([
     //     {
@@ -18,7 +21,11 @@ export const AddPlaces = () => {
     //         address: "Trafalgar Sq, London WC2N 5DS, UK",
     //         imgURL: 'https://i.imgur.com/xwY6Bdd.jpg',
     //         category: "my creation",
-    //         geocode: [51.50806, -0.12806]
+    //         favorite: false,
+    //         lat: 51.50806,
+    //         long: -0.12806,
+    //         geocode: [51.50806, -0.12806],
+    //         placeId: "1",
     //     },
     //     {
     //         placeName: "Tate Modern",
@@ -26,7 +33,11 @@ export const AddPlaces = () => {
     //         address: "Bankside, London SE1 9TG, UK",
     //         imgURL: "https://i.imgur.com/FYc6OB3.jpg",
     //         category: "my creation",
-    //         geocode: [51.507748, -0.099469]
+    //         favorite: false,
+    //         lat: 51.507748,
+    //         long: -0.099469,
+    //         geocode: [51.507748, -0.099469],
+    //         placeId: "2",
     //     },
     //     {
     //         placeName: "Hyde Park",
@@ -34,7 +45,11 @@ export const AddPlaces = () => {
     //         address: "Hyde Park, London W2 2UH, UK",
     //         imgURL: "https://i.imgur.com/tZBnXz4.jpg",
     //         category: "my creation",
-    //         geocode: [51.502777, -0.151250]
+    //         favorite: false,
+    //         lat: 51.502777, 
+    //         long: -0.151250,
+    //         geocode: [51.502777, -0.151250],
+    //         placeId: "3",
     //     },
     //     {
     //         placeName: "Buckingham Palace",
@@ -42,7 +57,11 @@ export const AddPlaces = () => {
     //         address: "Buckingham Palace, London SW1A 1AA, UK",
     //         imgURL: "https://i.imgur.com/lw40mp9.jpg",
     //         category: "my creation",
-    //         geocode: [51.501476, -0.140634]
+    //         favorite: false,
+    //         lat: 51.501476, 
+    //         long: -0.140634,
+    //         geocode: [51.501476, -0.140634],
+    //         placeId: "4",
     //     },
     //     {
     //         placeName: "Borough Market",
@@ -50,14 +69,22 @@ export const AddPlaces = () => {
     //         address: "Borough Market, London SE1 9AL, UK",
     //         imgURL: "https://i.imgur.com/9KiBKqI.jpg",
     //         category: "my creation",
-    //         geocode: [51.50544, -0.091249]
+    //         favorite: false,
+    //         lat: 51.50544, 
+    //         long: -0.091249,
+    //         geocode: [51.50544, -0.091249],
+    //         placeId: "5",
     //     }
     // ])
-    // useEffect(() => {
-    //     getSearchData()
-    // }, [searchText])
+    useEffect(() => {
+        getSearchData()
+    }, [searchText])
 
-    // const [markers, setMarkers] = useState(places)
+    useEffect(() => {
+        console.log(currentTrip)
+    }, [])
+
+    const [markers, setMarkers] = useState(places)
 
     const goToDashboard = () => {
         navigate('/dashboard')
@@ -68,13 +95,22 @@ export const AddPlaces = () => {
         const starEmpty = document.getElementById(`star-empty-${index}`)
         starFull.classList.remove('d-none')
         starEmpty.classList.add('d-none')
+        let placesCopy = [...places]
+        placesCopy[index].favorite = true
+        setPlaces(placesCopy)
     }
     const removeStar = (index) => {
         const starFull = document.getElementById(`star-full-${index}`)
         const starEmpty = document.getElementById(`star-empty-${index}`)
         starFull.classList.add('d-none')
         starEmpty.classList.remove('d-none')
+        let placesCopy = [...places]
+        placesCopy[index].favorite = false
+        setPlaces(placesCopy)
     }
+    useEffect(() => {
+        console.log(places)
+    }, [places])
 
     const getCityImg = async (imgQuery) => {
         const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
@@ -91,17 +127,39 @@ export const AddPlaces = () => {
         return data.results[0].urls.regular
     }
 
+    const getPlaceDetails = async (placeDetailsQuery) => {
+        const response  = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
+        return response.status === 200 ? response.data : "error"
+    }
+
+    const loadPlaceDetails = async (placeDetailsQuery) => {
+        // let q = "5165cdd94c746eb9bf591e447c71f3c04940f00102f9010904780100000000c0020192030b54617465204d6f6465726e"
+        const data = await getPlaceDetails(placeDetailsQuery)
+        if (data === "error") {
+            console.log("error")
+        } else {
+            // console.log(data)
+            console.log(data.features[0].properties.opening_hours)
+            return data.features[0].properties.opening_hours ? data.features[0].properties.opening_hours : "No hours information"
+        }
+    }
+
     const addPlace = async (place) => {
         let imgQuery = place.name.replace(/ /g, '-')
+        let placeInfo = await loadPlaceDetails(place.place_id)
         let imgUrl = await loadCityImg(imgQuery)
         let placeCopy = [...places]
         let newPlace = {
             placeName: place.name,
-            info: '...',
+            info: placeInfo,
             address: place.formatted,
             imgURL: imgUrl,
             category: place.category,
-            geocode: [place.lat, place.lon]
+            favorite: false,
+            lat: place.lat,
+            long: place.lon,
+            geocode: [place.lat, place.lon],
+            placeId: place.place_id
         }
         placeCopy.push(newPlace)
         console.log(placeCopy)
@@ -116,9 +174,9 @@ export const AddPlaces = () => {
     }
 
 
-    const updateLazy = () => {
-        console.log("I'm lazy")
-    }
+    // const updateLazy = () => {
+    //     console.log("I'm lazy")
+    // }
     const [currentTimeout, setCurrentTimeout] = useState(null);
     useEffect(() => {
         if (currentTimeout) {
@@ -132,11 +190,16 @@ export const AddPlaces = () => {
     }, [searchText])
 
     const getSearchData = async () => {
+        if (searchText.length < 2) {
 
-        const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-        let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=proximity:${bias[0]},${bias[1]}&limit=5&format=json&filter=countrycode:${country}&apiKey=${apiKey}`
-        const response = await axios.get(url)
-        return response.status === 200 ? response.data : null
+        } else {
+            const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
+            let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
+            console.log(url)
+            const response = await axios.get(url)
+            return response.status === 200 ? response.data : null
+            // proximity:
+        }
 
     }
     const loadSearchData = async () => {
@@ -164,6 +227,26 @@ export const AddPlaces = () => {
         setPlaces([]);
     }
 
+    const sendPlaces = async () => {
+        let data = {
+            tripID: 11,
+            places: places
+        }
+        const response  = axios.post("https://routewise-backend.onrender.com/places/place", JSON.stringify(data), {
+            headers: { "Content-Type" : "application/json" }
+        }).then((response) =>console.log(response))
+        .catch((error) => console.log(error))
+    }
+
+    const showCurrentTrip = () => {
+        console.log(currentTrip)
+        console.log(country, bias)
+    }
+    const togglePopUp = (index) => {
+        let popUp = document.getElementById(`popUp-${index}`)
+        popUp.classList.toggle('d-none')
+    }
+
     return (
         <>
             <div className="page-container90 mt-4">
@@ -174,9 +257,9 @@ export const AddPlaces = () => {
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link>
-                <p onClick={() => resetSearch()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">*city*</span></p>
+                <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*" }</span></p>
                 <div className="flx-r onHover-fadelite">
-                    <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
+                    <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>
@@ -216,7 +299,7 @@ export const AddPlaces = () => {
                                 </div>
                             </div>
 
-                            <OpenMap markers={places} />
+                            <OpenMap mapCenter={bias} markers={places} />
                         </div>
                     </div>
                     <div className="places-list flx-c flx-4">
@@ -226,43 +309,47 @@ export const AddPlaces = () => {
                                 <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer">Clear List</p>
                             </div>
                             <div className="placeCards">
+                                <Scrollbars style={{ color: 'red' }}>
 
 
 
-                                {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
-                                    return <div key={index} className="placeCard position-relative flx-r my-2">
+                                    {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
+                                        return <div key={index} className="placeCard w-97 position-relative flx-r my-2">
 
-                                        <div className="placeCard-img-div flx-1">
-                                            <img className="placeCard-img" src={place.imgURL} />
-                                        </div>
-                                        <div className="placeCard-body flx-2">
-                                            <p className="body-title ">{place.placeName}</p>
-                                            <p className="body-info">{place.info}</p>
-                                            <p className="body-address">{place.address}</p>
-                                        </div>
-                                        <div className="placeCard-starOrDelete flx-c just-sb align-c">
-                                            {/* <img className="empty-star m-auto pad16" src='https://i.imgur.com/70juIKm.png' /> */}
-                                            {/* <span className="material-symbols-outlined mx-3 my-2 o-50 onHover-fade pointer">
+                                            <div className="placeCard-img-div flx-1">
+                                                <img className="placeCard-img" src={place.imgURL} />
+                                            </div>
+                                            <div className="placeCard-body flx-2">
+                                                <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
+                                                <p className="body-title ">{place.placeName}</p>
+                                                <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p>
+                                                <p className="body-address">{place.address}</p>
+                                            </div>
+                                            <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                                                {/* <img className="empty-star m-auto pad16" src='https://i.imgur.com/70juIKm.png' /> */}
+                                                {/* <span className="material-symbols-outlined mx-3 my-2 o-50 onHover-fade pointer">
                                                 star
                                             </span> */}
-                                            <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
-                                            <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Bq6COcA.png" alt="" className="star-full my-2 d-none" />
-                                            <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                delete
-                                            </span>
+                                                <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
+                                                <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Bq6COcA.png" alt="" className="star-full my-2 d-none" />
+                                                <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                    delete
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                })
-                                    :
-                                    <div className="add-places-card">
-                                        <span className="material-symbols-outlined xx-large">
-                                            location_on
-                                        </span>
-                                        <p className="large bold700 my-1 o-50">Add some places</p>
-                                        <p className="m-0 w-50 center-text o-50">Use the search bar on the map to add places that you want to go</p>
-                                    </div>
+                                    })
+                                        :
+                                        <div className="add-places-card">
+                                            <span className="material-symbols-outlined xx-large">
+                                                location_on
+                                            </span>
+                                            <p className="large bold700 my-1 o-50">Add some places</p>
+                                            <p className="m-0 w-60 center-text o-50">Use the search bar on the map to add places that you want to go</p>
+                                        </div>
 
-                                }
+                                    }
+                                </Scrollbars>
+
                             </div>
                             <div className="generate-btn-space w-100">
                                 <button className="btn-primaryflex right mt-2">Generate Itinerary</button>

@@ -11,11 +11,13 @@ export const FlowBox = ({ id, addSearchOpen, addSearchClose, toggleFlow, day }) 
         <div id={`flowBox-${id}`} className="flow-box">
 
             <div className="flow-header">
+                <div className="flx-r just-sb">
                 <p className="page-subheading-bold m-0">
                     <span id={`expandArrow-${id}`} onClick={() => toggleFlow(id)} className="material-symbols-outlined xx-large v-align symbol pointer td-2">
                         expand_more
                     </span>
                     {day.day}</p>
+                    <p id={`placeCount-${id}`} className="gray-text bold500 td-2 o-none">{day.places.length} places</p></div>
                 <input type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
             </div>
             <div id={`flow-${id}`} className="flowBody-collapsible">
@@ -27,7 +29,7 @@ export const FlowBox = ({ id, addSearchOpen, addSearchClose, toggleFlow, day }) 
                     })}
 
 
-                    <div id={`addPlace-expand-${id}`} className="addPlace-expand ml- m-auto">
+                    <div id={`addPlace-expand-${id}`} className="addPlace-expand m-auto">
                         <Link onClick={() => addSearchOpen(id)} id={`addPlacesBtn-${id}`} className='onHover-fadelite'>
                             <p className="right-text m-0 purple-text"><span className="material-symbols-outlined v-bott mx-2 purple-text">
                                 add

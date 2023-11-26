@@ -17,6 +17,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
                 console.log('password validated!!!')
                 createUserWithEmailAndPassword(auth, email, createPassword).then((userCredentials) => {
                     console.log(userCredentials)
+                    handleSignIn()
                 }).catch ((error) => {
                     console.log(error.code)
                     handleError(error.code)

@@ -56,7 +56,7 @@ export const HeroCarousel = () => {
         changeTimer()
     })
 
-
+    
     useEffect(() => {
         updateIndex(activeIndex + 1)
     }, [timer])
@@ -66,7 +66,7 @@ export const HeroCarousel = () => {
         <>
             <div className="heroCarouselContainer position-relative w-100vw hideOverFlow flx-c just-ce">
                 {/* <div className="position-absolute z-1 w-100"> */}
-                <div className="indicators w-25 mt-3 flx-r just-se abs-vcenter z-1 abs-bottom-30">
+                <div className="indicators w-25 mt-3 flx-r just-se abs-vcenter z-1 abs-bottom8">
                     {images.map((image, index) => {
                         return <img key={index} src={activeIndex === index ? "https://i.imgur.com/X6zwuT5.png" : "https://i.imgur.com/flQLMEs.png"} className={`${activeIndex === index ? null : "onHover-fade pointer"} dot-indicator mx-3`} onClick={() => updateIndex(index)} />
 

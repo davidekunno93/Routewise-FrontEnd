@@ -281,6 +281,9 @@ button:focus-visible {
 .w-96 {
   width: 96%;
 }
+.w-97 {
+  width: 97%;
+}
 .w-98 {
   width: 98%;
 }
@@ -443,6 +446,9 @@ button:focus-visible {
 .abs-bottom-30{
   bottom: 30px;
 }
+.abs-bottom8{
+  bottom: 8%;
+}
 .hero-title{
   font-size: 60px;
 }
@@ -505,6 +511,13 @@ button:focus-visible {
 .modal{
   position: fixed;
   z-index: 100000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.modalTop{
+  position: fixed;
+  z-index: 1000000;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -1153,6 +1166,7 @@ p{
 }
 .card-title{
   font-size: x-large;
+  color: #242424;
 }
 .card2{
   display: flex;
@@ -1229,8 +1243,16 @@ p{
   height: 150px;
   justify-content: center;
 }
+.placeCard97{
+  width: 97%;
+  height: 130px;
+  border: 2px solid gainsboro;
+  border-radius: 12px;
+  background-color: white;
+  overflow: hidden;
+}
 .placeCard{
-  width: 100%;
+  /* width: 100%; */
   height: 130px;
   border: 2px solid gainsboro;
   border-radius: 12px;
@@ -1252,6 +1274,16 @@ p{
 .placeCard:hover .onHover-50:hover{
   opacity: 0.35;
   transition: 0.2s;
+}
+.placeCard .popUp{
+  background-color: white;
+  /* height: 50px; */
+  /* width: 200px; */
+  border: 1px solid gainsboro;
+  border-radius: 8px;
+  transition: 0.3s;
+  position: absolute;
+  z-index: 1;
 }
 .onHover-fade{
   transition: 0.2s;
@@ -1308,7 +1340,7 @@ p{
 }
 .placeCards{
   height: 540px;
-  overflow: scroll;
+  /* overflow: scroll; */
 }
 .body-title{
   font-family: 'Plus Jakarta Sans';
@@ -1322,6 +1354,8 @@ p{
 .body-info{
   font-family: 'Plus Jakarta Sans';
   font-weight: 400;
+  height: 20px;
+  overflow: hidden;
   color: rgb(102, 37, 183);
   font-size: medium;
   margin-top: 0px;
@@ -1724,6 +1758,7 @@ p{
 
 
 
+
 .italic-placeholder::-webkit-input-placeholder {
   font-family: 'Plus Jakarta Sans';
   font-style: italic;
@@ -2075,16 +2110,68 @@ p{
 
 
 
+.mt15{
+  margin-top: 15%;
+}
+
+.hero-text{
+  font-size: x-large;
+}
+
+@media only screen and (max-width:1024px) {
+  .hero-title{
+    font-size: 42px;
+  }
+}
+
+@media only screen and (max-width: 975px) {
+  .hero-title{
+    font-size: 32px;
+  }
+  .hero-text{
+    font-size: large;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .hero-title{
+    font-size: x-large;
+  }
+  .hero-text{
+    font-size: small;
+  }
+  .btn-primary, 
+  .btn-primaryflex, 
+  .btn-primaryflex2, 
+  .btn-outline, 
+  .btn-outlineflex,
+  .btn-secondaryflex {
+    padding: 8px 10px;
+    font-size: small;
+  }
+  .page-title{
+    font-size: x-large;
+  }
 
 
-
-
-
+  /* footer classes */
+  .bird-logo{
+    width: 50px;
+  }
+  .word-logo{
+    width: 180px;
+  }
+  .slogan{
+    font-size: small;
+  }
+}
 
 
 
 
 @media only screen and (max-width: 600px) {
+  .routewise-logo{
+    height: 30px;
+  }
   .carousel-window{
     width: 400px;
   }
@@ -2115,6 +2202,35 @@ p{
   }
   .hr-block{
     width: 65%;
+  }
+  .hero-title{
+    font-size: medium;
+  }
+  .hero-text{
+    font-size: x-small;
+  }
+  .btn-primary, 
+  .btn-primaryflex, 
+  .btn-primaryflex2, 
+  .btn-outline, 
+  .btn-outlineflex,
+  .btn-secondaryflex {
+    padding: 5px 8px;
+    font-size: x-small;
+  }
+  .dot-indicator{
+    width: 10px;
+  }
+
+  /* footer classes */
+  .bird-logo{
+    width: 50px;
+  }
+  .word-logo{
+    width: 180px;
+  }
+  .slogan{
+    font-size: small;
   }
 }
 
@@ -2151,5 +2267,27 @@ p{
   }
   .hr-block{
     width: 80%;
+  }
+  .disappear425{
+    display: none;
+  }
+  
+  /* footer classes */
+  .bird-logo{
+    width: 50px;
+  }
+  .word-logo{
+    width: 180px;
+  }
+  .slogan{
+    font-size: small;
+  }
+}
+
+
+
+@media only screen and (min-width: 425px) {
+  .appear425{
+    display: none;
   }
 }

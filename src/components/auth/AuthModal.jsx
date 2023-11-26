@@ -4,6 +4,8 @@ import { CreatePassword } from './CreatePassword';
 import auth from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { DataContext } from '../../Context/DataProvider';
+import { getAuth, getRedirectResult, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import provider from '../../firebaseGoogle';
 
 export const AuthModal = ({ open, authIndex, onClose }) => {
     if (!open) return null
@@ -15,6 +17,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
     const [loginEmail, setLoginEmail] = useState(null);
     const [createPassword, setCreatePassword] = useState(null);
     const [loginPassword, setLoginPassword] = useState(null);
+    
 
     function wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -116,6 +119,19 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
         setLoginPassword(e.target.value)
     }
 
+    const googleSignIn = () => {
+        signInWithPopup(auth, provider).then((data) => {
+            console.log(data)
+            let authData = {
+                // displayName, photoURL, email
+            }
+            // localStorage.setItem('email', data.user.email)
+        })
+        localStorage
+    }
+
+    // getRedirectResult(auth).then
+
 
     return (
         <>
@@ -152,8 +168,8 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                         </div>
                         <div className="sign-in-box">
                             <h1 className='mt-4'>Sign In</h1>
-                            <button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button>
-                            <button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>
+                            <Link onClick={() => googleSignIn()}><button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
+                            <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>
                             <div className="hr-block w-75 flx-r">
                                 <div className="flx-1 flx-c just-ce">
                                     <hr className='w-100 border-gains' />

@@ -17,12 +17,12 @@ BackEnd (Kate) checkpoints
 *put char count limit on subheading day names in itinerary page
 *busy vs relaxed can change the max # activities in a day (8 vs 5?)
 *make mobile responsive
-*show number of items in that day when you collapse itinerary day
+<!-- DONE*show number of items in that day when you collapse itinerary day -->
 *make sticky map + suggestions 100vh in itinerary page
 *different api for loading city names?
-*loading screen while city options load
+<!-- DONE*loading screen while name trip load -->
 *on dashboard, if no city entered and user tries to add trip, code error feedback
-*make more aesthetic scrollbars
+<!-- DONE*make more aesthetic scrollbars -->
 *if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
 *add extra destinations to a trip
 
@@ -36,6 +36,9 @@ trips recorded on dashboard
 APIs 
 - api ninjas geocoding API for city names
 - unsplash api for city images
+*GEOAPIFY - 3000 req/day*
+- address autocomplete api for adding places
+- place details api to populate place info when adding place
 
 
 

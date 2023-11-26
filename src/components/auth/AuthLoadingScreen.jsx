@@ -49,7 +49,9 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
     }
 
     const handleError = (response) => {
+        alert('Account creation not completed')
         console.log(response)
+        onClose()
         // modal saying error creating your account - please try again
         // delete firebase authenticated user
     }

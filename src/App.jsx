@@ -16,7 +16,16 @@ import { OpenMap } from './components/OpenMap'
 import { HeroCarousel } from './components/HeroCarousel'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentTrip, setCurrentTrip] = useState({
+    tripID: null,
+    tripName: "",
+    city: null,
+    country: "",
+    country_2letter: null,
+    geocode: null,
+    imgUrl: null
+  });
+  // const [tripID, setTripID] = useState(null);
 
   return (
     <>
@@ -25,9 +34,9 @@ function App() {
       <Route children path='/register' element={<SignUp />} />
       <Route children path='/' element={<Landing />} />
       <Route children path='/survey' element={<Survey />} />
-      <Route children path='/dashboard' element={<Dashboard />} />
-      <Route children path='/add-places' element={<AddPlaces />} />
-      <Route children path='/itinerary' element={<Itinerary />} />
+      <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
+      <Route children path='/add-places' element={<AddPlaces currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
+      <Route children path='/itinerary' element={<Itinerary currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
       <Route children path='/test' element={<Test />} />
       <Route children path='/map' element={<OpenMap />} />
       <Route children path='/hero' element={<HeroCarousel />} />

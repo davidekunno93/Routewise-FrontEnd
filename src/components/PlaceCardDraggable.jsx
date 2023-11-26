@@ -10,7 +10,7 @@ export const PlaceCardDraggable = ({ i, place }) => {
             </div>
 
 
-            <div className="placeCard position-relative flx-r my-2">
+            <div className="placeCard w-100 position-relative flx-r my-2">
 
                 <div className="placeCard-img-div flx-1">
                     <img className="placeCard-img" src={place.imgURL} />
