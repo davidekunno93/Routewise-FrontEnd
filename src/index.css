@@ -424,7 +424,7 @@ button:focus-visible {
 }
 .inner2{
   white-space: nowrap;
-  transition: 3.0s ease;
+  transition: 4.0s ease;
   /* transform: translateX(-100%); */
 }
 .abs-center{
@@ -534,7 +534,7 @@ button:focus-visible {
 
 .routewise-logo{
   height: 45px; 
-  margin-left: 5%;
+  /* margin-left: 5%; */
 }
 .vertical-logo{
   width: 100px;
@@ -683,6 +683,7 @@ button:focus-visible {
   border-radius: 12px;
   border: 1px solid gainsboro;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .btn-model2 {
   width: 380px;
@@ -703,6 +704,7 @@ button:focus-visible {
   border-radius: 8px;
   border: 2px solid #6663FC;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .btn-outlineflex:hover {
   /* filter: brightness(95%); */
@@ -723,6 +725,7 @@ button:focus-visible {
   /* border: 2px solid #6663FC; */
   background-color: #6663FC;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .btn-secondaryflex:hover {
   /* filter: brightness(95%); */
@@ -742,6 +745,7 @@ button:focus-visible {
   /* border: 2px solid #6663FC; */
   background-color: #6663FC;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .gray-text{
   color: gray;
@@ -765,6 +769,7 @@ button:focus-visible {
   background-color: #DBDBDB;
   transition: 0.3s;
   cursor: default;
+  white-space: nowrap;
 }
 
 .btn-primaryflex {
@@ -774,6 +779,7 @@ button:focus-visible {
   /* border: 2px solid #6663FC; */
   background-color: #6663FC;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .btn-primaryflex:hover {
   /* filter: brightness(95%); */
@@ -797,6 +803,7 @@ button:focus-visible {
   z-index: 1;
   top: 16px;
   right: 0;
+  white-space: nowrap;
 }
 .btn-primaryflex-overlay:hover {
   /* filter: brightness(95%); */
@@ -816,6 +823,7 @@ button:focus-visible {
   border-radius: 12px;
   border: 2px solid #6663FC;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .btn-outline:hover {
   /* filter: brightness(95%); */
@@ -836,6 +844,7 @@ button:focus-visible {
   /* border: 2px solid #6663FC; */
   background-color: #6663FC;
   transition: 0.3s;
+  white-space: nowrap;
 }
 .btn-primary:hover {
   /* filter: brightness(95%); */
@@ -1227,6 +1236,15 @@ p{
 .card2-title{
   font-size: x-large;
 }
+.card4-img{
+  width: 100%;
+  height: 30vw;
+  object-fit: contain;
+}
+.imgBorder{
+  border: 3px solid gainsboro;
+  border-radius: 12px;
+}
 .tripModal-img{
   width: 376px;
   height: 200px;
@@ -1470,7 +1488,7 @@ p{
   background-color: #F0EFFF;
   width: 96%;
   padding: 2%;
-  height: 200px;
+  /* height: 200px; */
   border-radius: 12px;
   margin: auto;
 }
@@ -1701,7 +1719,7 @@ p{
   width: 100vw;
 }
 .imgFrame-12-5{
-  width: 100vw;
+  width: 100%;
   height: calc(100vw / 12 * 5);
   /* background-color: gray; */
   overflow: hidden;
@@ -1754,6 +1772,9 @@ p{
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
+}
+.boxsize-border{
+  box-sizing: border-box;
 }
 
 
@@ -1983,6 +2004,21 @@ p{
 .ml-8 {
   margin-left: 80px;
 }
+.ml5{
+  margin-left: 5%;
+}
+.ml10{
+  margin-left: 10%;
+}
+.ml15{
+  margin-left: 15%;
+}
+.ml20{
+  margin-left: 20%;
+}
+.ml25{
+  margin-left: 25%;
+}
 .mr-1 {
   margin-right: 5px;
 }
@@ -2108,8 +2144,25 @@ p{
 
 
 
-
-
+.mr5{
+  margin-right: 5%;
+}
+.mx2{
+  margin-left: 2%;
+  margin-right: 2%;
+}
+.mx3{
+  margin-left: 3%;
+  margin-right: 3%;
+}
+.mx5{
+  margin-left: 5%;
+  margin-right: 5%;
+}
+.mx10{
+  margin-left: 10%;
+  margin-right: 10%;
+}
 .mt15{
   margin-top: 15%;
 }
@@ -2117,6 +2170,13 @@ p{
 .hero-text{
   font-size: x-large;
 }
+
+.flxstyle-respond{
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
 
 @media only screen and (max-width:1024px) {
   .hero-title{
@@ -2130,6 +2190,20 @@ p{
   }
   .hero-text{
     font-size: large;
+  }
+
+  /* box */
+  .box-title{
+    font-size: 28px;
+  }
+  .item-location{
+    flex: none;
+    width: 100%;
+    margin-bottom: 4%;
+  }
+  .item-dates{
+    flex: none;
+    width: 100%;
   }
 }
 @media only screen and (max-width: 768px) {
@@ -2145,12 +2219,43 @@ p{
   .btn-outline, 
   .btn-outlineflex,
   .btn-secondaryflex {
-    padding: 8px 10px;
-    font-size: small;
+    padding: 12px 16px;
+    font-size: medium;
   }
+  /* page text sizes */
   .page-title{
-    font-size: x-large;
+    font-size: xx-large;
   }
+  .page-heading{
+    font-size: 30px;
+  }
+  .page-heading-bold{
+    font-size: 30px;
+  }
+  .page-subheading{
+    font-size: 24px;
+  }
+  .page-subheading-bold{
+    font-size: 24px;
+  }
+  .page-subsubheading{
+    font-size: 18px;
+  }
+  .page-subsubheading-bold{
+    font-size: 18px;
+  }
+  .page-text{
+    font-size: medium;
+  }
+
+  .flxstyle-respond{
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  /* box */
+  
 
 
   /* footer classes */
@@ -2215,21 +2320,64 @@ p{
   .btn-outline, 
   .btn-outlineflex,
   .btn-secondaryflex {
-    padding: 5px 8px;
+    padding: 8px 8px;
     font-size: x-small;
   }
   .dot-indicator{
     width: 10px;
   }
 
+  /* cards */
+  .card2{
+    width: 140px;
+    height: 175px;
+  }
+  .card2-title{
+    font-size: medium;
+  }
+
+  /* page text sizes */
+  .page-title{
+    font-size: x-large;
+  }
+  .page-heading{
+    font-size: 24px;
+  }
+  .page-heading-bold{
+    font-size: 24px;
+  }
+  .page-subheading{
+    font-size: 20px;
+  }
+  .page-subheading-bold{
+    font-size: 20px;
+  }
+  .page-subsubheading{
+    font-size: 18px;
+  }
+  .page-subsubheading-bold{
+    font-size: 18px;
+  }
+  .page-text{
+    font-size: small;
+  }
+
+  /* box */
+  .box-title{
+    font-size: 22px;
+  }
+
   /* footer classes */
   .bird-logo{
-    width: 50px;
+    width: 40px;
   }
   .word-logo{
-    width: 180px;
+    width: 144px;
   }
   .slogan{
+    font-size: x-small;
+  }
+  .username-text{
     font-size: small;
   }
 }
@@ -2240,7 +2388,7 @@ p{
     width: 300px;
   }
   h1{
-    font-size: xxx-large;
+    font-size: xx-large;
   }
   .btn-icon-left{
     width: 18px;
@@ -2271,16 +2419,64 @@ p{
   .disappear425{
     display: none;
   }
+  /* cards */
+  .card2{
+    width: 100px;
+    height: 125px;
+  }
+  .card2-title{
+    font-size: 12px;
+  }
+
+  /* page text sizes */
+  .page-title{
+    font-size: large;
+  }
+  .page-heading{
+    font-size: 24px;
+  }
+  .page-heading-bold{
+    font-size: 24px;
+  }
+  .page-subheading{
+    font-size: 20px;
+  }
+  .page-subheading-bold{
+    font-size: 20px;
+  }
+  .page-subsubheading{
+    font-size: 18px;
+  }
+  .page-subsubheading-bold{
+    font-size: 18px;
+  }
+  .page-text{
+    font-size: x-small;
+  }
+
+  /* box */
+  .box-title{
+    font-size: 22px;
+  }
+
   
   /* footer classes */
   .bird-logo{
-    width: 50px;
+    width: 30px;
   }
   .word-logo{
-    width: 180px;
+    width: 108px;
   }
   .slogan{
-    font-size: small;
+    font-size: 8px;
+  }
+  .username-text{
+    font-size: x-small;
+  }
+
+  /* google icons */
+  .arrow{
+    font-size: x-small;
   }
 }
 

@@ -227,7 +227,7 @@ export const Survey = () => {
                 </span></span></p>
                 <div className="cards flx-r flx-wrap just-ce">
                     {cards2.map((card2, index) => {
-                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className="card2 mx-4 my-3 position-relative">
+                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className="card2 mx2 my-3 position-relative">
                             <div id={`${index}-green-checkbox`} className="green-checkbox d-none">
                                 <span className="material-symbols-outlined white-text m-auto">
                                     check
@@ -243,7 +243,7 @@ export const Survey = () => {
                 </div>
                 <button onClick={() => sendData()} className="btn-primaryflex2 right mt-3">
                     <p className='inline'>Continue</p>
-                    <span className="material-symbols-outlined v-bott ml-2">
+                    <span className="material-symbols-outlined arrow v-bott ml-2">
                         arrow_forward
                     </span>
                 </button>

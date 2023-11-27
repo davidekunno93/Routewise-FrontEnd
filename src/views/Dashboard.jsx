@@ -313,16 +313,16 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
             <div className="page-container90 mt-4">
                 <h1 className="page-title inline-block">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="med-pic ml-2" />
                 <div className="selection-box flx-c">
-                    <div className="box-title flx-2 flx-c just-ce"><p className='m-0'>Start planning your next adventure</p></div>
-                    <div className="box-items flx-3 flx-r mb-4">
+                    <div className="box-title flx-2 flx-c just-ce"><p className='my-3'>Start planning your next adventure</p></div>
+                    <div className="box-items flx-3 flx-r mb-4 flx-wrap">
                         <div className="item-location flx-3 flx-c just-en">
                             <div className="mr-2">
-                                <div className="box-heading dark-text">Where are you headed?</div>
+                                <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
                                 <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' />
                             </div>
                         </div>
                         <div className="item-dates flx-2 flx-c just-en">
-                            <div className="box-heading dark-text">When will you be there?</div>
+                            <div className="box-heading dark-text page-subsubheading">When will you be there?</div>
                             <div className="calendarWrap mr-2">
                                 <span onClick={() => setCalendarOpen(true)} className="material-symbols-outlined position-absolute inputIcon-right xx-large o-50 pointer">
                                     date_range
@@ -350,8 +350,8 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                             </div>
                             {/* <input type='text' placeholder='Start Date | End Date' className='input-normal2' /> */}
                         </div>
-                        <div className="item-addtrip flx-c just-en">
-                            <button onClick={() => getCity()} className="btn-primaryflex2">Add Trip</button>
+                        <div className="item-addtrip flxstyle-respond">
+                            <button onClick={() => getCity()} className="btn-primaryflex2 mt-3">Add Trip</button>
                         </div>
                     </div>
                 </div>
@@ -375,7 +375,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                                         </span>
                                         <p className="m-0 inline"> 86 Likes</p>
                                     </div>
-                                    <div className="card3-title my-2">{city.name}</div>
+                                    <div className="page-subheading-bold my-2">{city.name}</div>
                                 </div>
                             })}
 

@@ -121,13 +121,15 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
 
     const googleSignIn = () => {
         signInWithPopup(auth, provider).then((data) => {
-            console.log(data)
-            let authData = {
-                // displayName, photoURL, email
-            }
+            // console.log(data.user)
+            // console.log(auth.currentUser)
+            setUser(data.user)
+            onClose()
+            
             // localStorage.setItem('email', data.user.email)
+            
         })
-        localStorage
+        
     }
 
     // getRedirectResult(auth).then
@@ -139,7 +141,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
             <div className="modal">
                 <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />
                 <div className="carousel-window m-auto mt-4 flx-r position-relative">
-                    <span onClick={onClose} class="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
+                    <span onClick={onClose} className="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
                         close
                     </span>
                     <div id='inner' className="inner" style={{ transform: `translateX(-${activeIndex * 50}%)` }}>

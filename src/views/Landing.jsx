@@ -43,7 +43,7 @@ export const Landing = () => {
                             <img src={card.imgUrl} alt="" className="card-img" />
 
                             <div className="card-text">
-                                <div className="card-title center-text"><strong>{card.title}</strong></div>
+                                <div className="card-title page-subheading center-text"><strong>{card.title}</strong></div>
                                 <div className="card-desc center-text">{card.desc}</div>
                             </div>
                         </div>
@@ -51,6 +51,50 @@ export const Landing = () => {
 
                 </div>
             </div>
+
+
+            <div className="how-it-works">
+                <h1 className="page-title center-text my-8">How it Works</h1>
+                
+                <div className="cards w-90 m-auto">
+
+                    <div className="card4-l flx-r my-10">
+                        <div className="flx-1">
+                        <img src="https://i.imgur.com/LtwTsr7.png" alt="" className="card4-img" />
+                        </div>
+                        <div className="flx-1 pad28"><p className="page-heading-bold"> 1. Set your travel preferences</p> </div>
+                    </div>
+
+
+                    <div className="card4-r flx-r my-10">
+                        <div className="flx-1 pad28"><p className="page-heading-bold"> 2. Start your trip</p> </div>
+                        <div className="flx-1">
+                        <img src="https://i.imgur.com/51ZmBFY.png" alt="" className="card4-img" />
+                        </div>
+                    </div>
+
+
+                    <div className="card4-l flx-r my-10">
+                        <div className="flx-1">
+                        <img src="https://i.imgur.com/pvdhYw0.png" alt="" className="card4-img" />
+                        </div>
+                        <div className="flx-1 pad28"><p className="page-heading-bold"> 3. Add locations</p> </div>
+                    </div>
+
+                    <div className="card4-r flx-r my-10">
+                        <div className="flx-1 pad28"><p className="page-heading-bold"> 4. Generate itinerary</p> </div>
+                        <div className="flx-1">
+                        <img src="https://i.imgur.com/WHVlrc4.png" alt="" className="card4-img" />
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
         </>
     )
 }
