@@ -5,7 +5,7 @@ export const HeroCarousel = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const images = [
         {
-            imgUrl: "https://i.imgur.com/6E1qXMc.jpg"
+            imgUrl: "https://i.imgur.com/I6nDUO6.jpg"
         },
         {
             imgUrl: "https://i.imgur.com/EJm6Wx7.jpgg"
@@ -35,7 +35,7 @@ export const HeroCarousel = () => {
             newIndex = images.length - 1
         }
         setActiveIndex(newIndex)
-        console.log(activeIndex)
+        // console.log(activeIndex)
     }
 
     const incrementIndex = () => {

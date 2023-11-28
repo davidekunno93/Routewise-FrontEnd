@@ -154,6 +154,21 @@ button:focus-visible {
 }
 
 
+.pr-1{
+  padding-right: 5px;
+}
+.pr-2{
+  padding-right: 10px;
+}
+.pr-3{
+  padding-right: 15px;
+}
+.pr-4{
+  padding-right: 20px;
+}
+.pr-5{
+  padding-right: 25px;
+}
 .pl-1{
   padding-left: 5px;
 }
@@ -1261,13 +1276,16 @@ p{
   height: 150px;
   justify-content: center;
 }
-.placeCard97{
-  width: 97%;
-  height: 130px;
+.placeCard-PTC{
+  /* width: 97%; */
+  height: 150px;
   border: 2px solid gainsboro;
   border-radius: 12px;
   background-color: white;
   overflow: hidden;
+}
+.placeCard-PTC:hover .showOnHover{
+  opacity: 1;
 }
 .placeCard{
   /* width: 100%; */
@@ -1285,6 +1303,11 @@ p{
 .placeCard-body{
   padding-left: 16px;
 }
+.showOnHover{
+  opacity: 0;
+  transition: 0.3s;
+}
+
 .onHover-50{
   opacity: 0;
   transition: 0.2s;
@@ -1297,6 +1320,17 @@ p{
   background-color: white;
   /* height: 50px; */
   /* width: 200px; */
+  border: 1px solid gainsboro;
+  border-radius: 8px;
+  transition: 0.3s;
+  position: absolute;
+  z-index: 1;
+}
+.placeCard-PTC .popUp{
+  background-color: white;
+  /* height: 50px; */
+  /* width: 200px; */
+  color: red;
   border: 1px solid gainsboro;
   border-radius: 8px;
   transition: 0.3s;
@@ -1382,7 +1416,16 @@ p{
   font-family: 'Plus Jakarta Sans';
   font-weight: 400;
   font-size: medium;
-  color: rgb(150, 150, 150);
+  color: gray;
+}
+.body-address-PTC{
+  height: 48px;
+  /* border: 1px solid red; */
+  overflow: hidden;
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 400;
+  font-size: medium;
+  color: gray;
 }
 .empty-star{
   filter: invert() brightness(70%);
@@ -1695,6 +1738,15 @@ p{
   bottom: 34px;
   background-color: white;
 }
+.addIcon-small{
+  border: 2px solid #6663FC;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  /* right: 10px; */
+  /* bottom: 34px; */
+  background-color: transparent;
+}
 .suggestion-row{
   white-space: nowrap;
   /* overflow: scroll; */
@@ -1721,6 +1773,7 @@ p{
 .imgFrame-12-5{
   width: 100%;
   height: calc(100vw / 12 * 5);
+  /* height: 50vw; */
   /* background-color: gray; */
   overflow: hidden;
   display: inline-flex;
@@ -1757,7 +1810,7 @@ p{
   display: inline-block;
   position: relative;
 }
-.calendarElement{
+.calendarElement
   position: absolute;
   left: 0%;
   /* transform: translateX(-50%); */
@@ -1777,6 +1830,12 @@ p{
   box-sizing: border-box;
 }
 
+.placeToConfirmCard {
+  z-index: 401;
+  bottom: 16px;
+  left: 6%;
+  right: 4%;
+}
 
 
 
@@ -2207,6 +2266,9 @@ p{
   }
 }
 @media only screen and (max-width: 768px) {
+  .imgFrame-12-5{
+    height: 50vw;
+  }
   .hero-title{
     font-size: x-large;
   }

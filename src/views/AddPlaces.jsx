@@ -10,6 +10,20 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     // Send Kate Data
     const navigate = useNavigate()
     const [places, setPlaces] = useState([]);
+    const [placeToConfirm, setPlaceToConfirm] = useState(null);
+    // const [placeToConfirm, setPlaceToConfirm] = useState({
+    //     placeName: "Tate Modern",
+    //     info: "Mon-Sun 10 AM-6 PM",
+    //     address: "Bankside, London SE1 9TG, UK",
+    //     imgURL: "https://i.imgur.com/FYc6OB3.jpg",
+    //     category: "my creation",
+    //     favorite: false,
+    //     lat: 51.507748,
+    //     long: -0.099469,
+    //     geocode: [51.507748, -0.099469],
+    //     placeId: "2",
+    // });
+    const [markers, setMarkers] = useState([])
     const [searchText, setSearchText] = useState('');
     const [bias, setBias] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
     const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb')
@@ -84,7 +98,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         console.log(currentTrip)
     }, [])
 
-    const [markers, setMarkers] = useState(places)
+    useEffect(() => {
+        let placeCopy = [...places];
+        if (placeToConfirm) {
+            placeCopy.push(placeToConfirm)
+        }
+        setMarkers(placeCopy)
+    }, [placeToConfirm], [places])
+
+    
 
     const goToDashboard = () => {
         navigate('/dashboard')
@@ -128,7 +150,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     }
 
     const getPlaceDetails = async (placeDetailsQuery) => {
-        const response  = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
+        const response = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
         return response.status === 200 ? response.data : "error"
     }
 
@@ -144,11 +166,14 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         }
     }
 
-    const addPlace = async (place) => {
+    const clearPlaceToConfirm = () => {
+        setPlaceToConfirm(null)
+    }
+
+    const addPlaceToConfirm = async (place) => {
         let imgQuery = place.name.replace(/ /g, '-')
         let placeInfo = await loadPlaceDetails(place.place_id)
         let imgUrl = await loadCityImg(imgQuery)
-        let placeCopy = [...places]
         let newPlace = {
             placeName: place.name,
             info: placeInfo,
@@ -161,10 +186,20 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             geocode: [place.lat, place.lon],
             placeId: place.place_id
         }
+        setPlaceToConfirm(newPlace)
+        resetSearch()
+    }
+
+    const addPlace = () => {
+        // let imgQuery = place.name.replace(/ /g, '-')
+        // let placeInfo = await loadPlaceDetails(place.place_id)
+        // let imgUrl = await loadCityImg(imgQuery)
+        let placeCopy = [...places]
+        let newPlace = placeToConfirm
         placeCopy.push(newPlace)
         console.log(placeCopy)
         setPlaces(placeCopy)
-        resetSearch()
+        clearPlaceToConfirm()
     }
 
     const removePlace = (index) => {
@@ -191,7 +226,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
     const getSearchData = async () => {
         if (searchText.length < 2) {
-
+            // console.log('')
         } else {
             const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
             let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
@@ -232,10 +267,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             tripID: 11,
             places: places
         }
-        const response  = axios.post("https://routewise-backend.onrender.com/places/place", JSON.stringify(data), {
-            headers: { "Content-Type" : "application/json" }
-        }).then((response) =>console.log(response))
-        .catch((error) => console.log(error))
+        const response = axios.post("https://routewise-backend.onrender.com/places/place", JSON.stringify(data), {
+            headers: { "Content-Type": "application/json" }
+        }).then((response) => console.log(response))
+            .catch((error) => console.log(error))
     }
 
     const showCurrentTrip = () => {
@@ -257,7 +292,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link>
-                <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*" }</span></p>
+                <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                 <div className="flx-r onHover-fadelite">
                     <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
                         add
@@ -272,7 +307,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                     <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
                                         {/* <div className="inner-box w-96 m-auto h-100 pt-1 flx-c hideOverflow"> */}
                                         {auto ? auto.map((result, i) => {
-                                            return <div key={i} onClick={() => addPlace(result)} className="result ws-nowrap onHover-option">
+                                            return <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
                                                 <div className="inner-contain flx-r w-96 hideOverflow m-auto">
                                                     <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="small-pic mr-1" />
                                                     <p className="m-0 my-2 large">{result.formatted}</p>
@@ -299,7 +334,34 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                 </div>
                             </div>
 
-                            <OpenMap mapCenter={bias} markers={places} />
+                            {placeToConfirm &&
+                                <div className="placeToConfirmCard position-absolute">
+                                    <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+                                        <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                                            close
+                                        </span>
+
+                                        <div className="placeCard-img-div flx-1">
+                                            <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                                        </div>
+                                        <div className="placeCard-body flx-2">
+                                            <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                                            <p className="body-title">{placeToConfirm.placeName}</p>
+                                            <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                                            <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+                                            <div onClick={() => addPlace()} className="flx right pr-4 onHover-fadelite">
+                                                <div className="addIcon-small flx pointer mx-2">
+                                                    <span className="material-symbols-outlined m-auto medium purple-text">
+                                                        add
+                                                    </span>
+                                                </div>
+                                                <p className="m-0 purple-text">Add to places</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <OpenMap mapCenter={bias} markers={markers} />
                         </div>
                     </div>
                     <div className="places-list flx-c flx-4">
