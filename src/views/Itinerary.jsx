@@ -509,7 +509,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
               </div>
 
 
-              <div id='daySelection' className="daySelection position-absolute">
+              <div id='daySelection' className="daySelection position-absolute d-none">
                 <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
                   close
                 </span>
