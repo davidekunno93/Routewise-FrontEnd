@@ -6,6 +6,7 @@ import { FlowBox } from '../components/FlowBox'
 import { useRef } from 'react'
 import { OpenMap } from '../components/OpenMap'
 import auth from '../firebase'
+import { DragDropContext } from 'react-beautiful-dnd'
 
 export const Itinerary = ({ tripId, setTripID }) => {
   const [markers, setMarkers] = useState(null);
@@ -247,6 +248,39 @@ export const Itinerary = ({ tripId, setTripID }) => {
     })
   }
 
+  const onDragEnd = (result) => {
+    const { destination, source } = result
+  }
+  const [state, setState] = useState(initialData)
+
+  const initialData = {
+    places: {
+      1: { id: 1, placeName: "", info: "", address: "", imgUrl: "" },
+      2: { id: 2, placeName: "", info: "", address: "", imgUrl: "" },
+      3: { id: 3, placeName: "", info: "", address: "", imgUrl: "" },
+      4: { id: 4, placeName: "", info: "", address: "", imgUrl: "" },
+      5: { id: 5, placeName: "", info: "", address: "", imgUrl: "" },
+      6: { id: 6, placeName: "", info: "", address: "", imgUrl: "" }
+    },
+    days: {
+      "day-1": {
+        day: "Monday",
+        date: "11/27",
+        places: []
+      },
+      "day-2": {
+        day: "Tuesday",
+        date: "11/28",
+        places: []
+      },
+      "day-3": {
+        day: "Wednesday",
+        date: "11/29",
+        places: []
+      },
+    }
+
+  }
 
 
   return (
@@ -292,30 +326,34 @@ export const Itinerary = ({ tripId, setTripID }) => {
         <div className="itinerary-c2 flx-1">
           <div className="page-container96">
             <Link to='/add-places' className=''>
-                    <span className="material-symbols-outlined v-tbott mr-2">
-                        arrow_back
-                    </span>
-                    <p className="inline large purple-text">Back</p>
-                </Link>
+              <span className="material-symbols-outlined v-tbott mr-2">
+                arrow_back
+              </span>
+              <p className="inline large purple-text">Back</p>
+            </Link>
             <p className="page-heading-bold m-0">Hey {auth.currentUser ? auth.currentUser.displayName : "Josh"},</p>
             <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary</p>
             <div className="flx-r onHover-fadelite">
-                    <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
-                        add
-                    </span>Add hotel or other accommodation***</p>
-                </div>
+              <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
+                add
+              </span>Add hotel or other accommodation***</p>
+            </div>
             <div className="itinerary-flow mt-3">
 
-              {Array.isArray(tripDays.days) ? tripDays.days.map((day, i) => {
-                return <div ref={el => refs.current[i] = el} key={i}>
-                  <FlowBox id={i} toggleFlow={toggleFlow} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} day={day} />
-                </div>
-              }) : null
-              }
+              <DragDropContext onDragEnd={onDragEnd}>
+
+                {Array.isArray(tripDays.days) ? tripDays.days.map((day, i) => {
+                  return <div ref={el => refs.current[i] = el} key={i}>
+                    <FlowBox id={i} toggleFlow={toggleFlow} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} day={day} />
+                  </div>
+                }) : null
+                }
+
+              </DragDropContext>
 
 
             </div>
-            
+
 
           </div>
         </div>
@@ -375,7 +413,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
           </div>
 
-          
+
 
           <div className="empty-6"></div>
 
@@ -383,10 +421,10 @@ export const Itinerary = ({ tripId, setTripID }) => {
         </div>
 
       </div>
-        <div className="save-btn-row flx-r just-ce mt-5">
-            <button className="btn-outlineflex w-1h large center-text mx-2">Save</button>
-            <button className="btn-primaryflex w-2h large center-text mx-2">Complete Itinerary</button>
-          </div>
+      <div className="save-btn-row flx-r just-ce mt-5">
+        <button className="btn-outlineflex w-1h large center-text mx-2">Save</button>
+        <button className="btn-primaryflex w-2h large center-text mx-2">Complete Itinerary</button>
+      </div>
     </>
   )
 }

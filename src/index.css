@@ -1384,8 +1384,12 @@ p{
   transition: 0.2s;
 }
 .star-full{
+  filter: brightness(115%);
   width: 20px;
   cursor: pointer;
+}
+#test-color{
+  color: #FFC107;
 }
 .body-section{
   height: 650px;
@@ -1810,7 +1814,7 @@ p{
   display: inline-block;
   position: relative;
 }
-.calendarElement
+.calendarElement{
   position: absolute;
   left: 0%;
   /* transform: translateX(-50%); */

@@ -20,9 +20,9 @@ export const PlaceCardDraggable = ({ i, place }) => {
                     <p className="body-info">{place.info}</p>
                     <p className="body-address">{place.address}</p>
                 </div>
-                <div className="placeCard-starOrDelete flx-c just-sb align-c">
-                    <img src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
-                    <img src="https://i.imgur.com/Bq6COcA.png" alt="" className="star-full my-2 d-none" />
+                <div className="placeCard-starOrDelete flx-c just-en align-c">
+                    {/* <img src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
+                    <img src="https://i.imgur.com/Bq6COcA.png" alt="" className="star-full my-2 d-none" /> */}
                     <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                         delete
                     </span>

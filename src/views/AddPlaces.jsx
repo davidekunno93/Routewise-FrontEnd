@@ -393,7 +393,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                                 star
                                             </span> */}
                                                 <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
-                                                <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Bq6COcA.png" alt="" className="star-full my-2 d-none" />
+                                                <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Tw0AsU7.png" alt="" className="star-full my-2 d-none" />
                                                 <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                                     delete
                                                 </span>
