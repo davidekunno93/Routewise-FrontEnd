@@ -7,9 +7,15 @@ import { useRef } from 'react'
 import { OpenMap } from '../components/OpenMap'
 import auth from '../firebase'
 import { DragDropContext } from 'react-beautiful-dnd'
+import Scrollbars from 'react-custom-scrollbars-2'
+import axios from 'axios'
 
 export const Itinerary = ({ tripId, setTripID }) => {
+  const [placeToConfirm, setPlaceToConfirm] = useState(null);
   const [markers, setMarkers] = useState(null);
+  const [country, setCountry] = useState('gb');
+  const [searchText, setSearchText] = useState('');
+  const [auto, setAuto] = useState([]);
   const tripDays =
   {
     tripID: "",
@@ -283,6 +289,114 @@ export const Itinerary = ({ tripId, setTripID }) => {
   // }
 
 
+
+  const getCityImg = async (imgQuery) => {
+    const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
+    return response.status === 200 ? response.data : "error"
+
+  }
+  const loadCityImg = async (imgQuery) => {
+    const data = await getCityImg(imgQuery)
+    // console.log(data)
+    console.log(data.results[0].urls.regular)
+    return data.results[0].urls.regular
+  }
+  const getPlaceDetails = async (placeDetailsQuery) => {
+    const response = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
+    return response.status === 200 ? response.data : "error"
+  }
+  const loadPlaceDetails = async (placeDetailsQuery) => {
+    // let q = "5165cdd94c746eb9bf591e447c71f3c04940f00102f9010904780100000000c0020192030b54617465204d6f6465726e"
+    const data = await getPlaceDetails(placeDetailsQuery)
+    if (data === "error") {
+      console.log("error")
+    } else {
+      // console.log(data)
+      console.log(data.features[0].properties.opening_hours)
+      return data.features[0].properties.opening_hours ? data.features[0].properties.opening_hours : "No hours information"
+    }
+  }
+  const clearPlaceToConfirm = () => {
+    setPlaceToConfirm(null)
+  }
+  const addPlaceToConfirm = async (place) => {
+    let imgQuery = place.name.replace(/ /g, '-')
+    let placeInfo = await loadPlaceDetails(place.place_id)
+    let imgUrl = await loadCityImg(imgQuery)
+    let newPlace = {
+      placeName: place.name,
+      info: placeInfo,
+      address: place.formatted,
+      imgURL: imgUrl,
+      category: place.category,
+      favorite: false,
+      lat: place.lat,
+      long: place.lon,
+      geocode: [place.lat, place.lon],
+      placeId: place.place_id
+    }
+    setPlaceToConfirm(newPlace)
+    resetSearch()
+  }
+  const [currentTimeout, setCurrentTimeout] = useState(null);
+  useEffect(() => {
+    if (currentTimeout) {
+      clearTimeout(currentTimeout)
+    }
+    if (searchText) {
+      if (searchText.length > 2) {
+        setCurrentTimeout(setTimeout(loadSearchData, 1000))
+      }
+    }
+  }, [searchText])
+
+  const getSearchData = async () => {
+    if (searchText.length < 2) {
+      // console.log('')
+    } else {
+      const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
+      let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
+      console.log(url)
+      const response = await axios.get(url)
+      return response.status === 200 ? response.data : null
+      // proximity:
+    }
+
+  }
+  const loadSearchData = async () => {
+    let data = await getSearchData()
+    console.log(data)
+    setAuto(data.results)
+    // open search box
+    let autoComplete = document.getElementById('autocomplete-container')
+    autoComplete.classList.remove('d-none')
+  }
+
+  const updateSearchText = (e) => {
+    setSearchText(e.target.value)
+  }
+  const resetSearch = () => {
+    let searchInput = document.getElementById('searchInput')
+    let autoComplete = document.getElementById('autocomplete-container')
+    searchInput.value = ""
+    setSearchText('');
+    autoComplete.classList.add('d-none')
+  }
+  const togglePopUp = (index) => {
+    let popUp = document.getElementById(`popUp-${index}`)
+    popUp.classList.toggle('d-none')
+  }
+
+  const openDaySelection = () => {
+    let daySelection = document.getElementById('daySelection')
+    daySelection.classList.remove('d-none')
+  }
+
+  const closeDaySelection = () => {
+    let daySelection = document.getElementById('daySelection')
+    daySelection.classList.add('d-none')
+  }
+
   return (
     <>
       <div className="itinerary-page flx-r">
@@ -303,7 +417,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
               </div>
 
               <button className="btn-secondaryflex">
-                <span className="material-symbols-outlined btn-symbol v-align x-large">
+                <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
                   expand_more
                 </span>
                 <p className="inline v-align white-text">Location #1</p>
@@ -326,15 +440,15 @@ export const Itinerary = ({ tripId, setTripID }) => {
         <div className="itinerary-c2 flx-1">
           <div className="page-container96">
             <Link to='/add-places' className=''>
-              <span className="material-symbols-outlined v-tbott mr-2">
+              <span className="material-symbols-outlined v-tbott mr-2 purple-text">
                 arrow_back
               </span>
               <p className="inline large purple-text">Back</p>
             </Link>
             <p className="page-heading-bold m-0">Hey {auth.currentUser ? auth.currentUser.displayName : "Josh"},</p>
-            <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary</p>
+            <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary!</p>
             <div className="flx-r onHover-fadelite">
-              <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
+              <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                 add
               </span>Add hotel or other accommodation***</p>
             </div>
@@ -360,15 +474,95 @@ export const Itinerary = ({ tripId, setTripID }) => {
         <div className="itinerary-c3 flx-1">
           <div className="sticky">
 
-            <div className="it-map">
+            <div className="it-map position-relative">
+
+
+
+              <div className="searchBar position-absolute w-100 z-10000">
+                <div className="position-relative w-100 h-100">
+                  <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
+                    {auto ? auto.map((result, i) => {
+                      return <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
+                        <div className="inner-contain flx-r w-96 hideOverflow m-auto">
+                          <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="small-pic mr-1" />
+                          <p className="m-0 my-2 large">{result.formatted}</p>
+                        </div>
+                      </div>
+                    }) : null}
+
+                  </div>
+                  <span className="material-symbols-outlined position-absolute location-icon-placeholder">
+                    location_on
+                  </span>
+
+                  {searchText.length > 0 ?
+                    <span onClick={() => resetSearch()} className="material-symbols-outlined position-absolute search-icon-overlay pointer onHover-black">
+                      close
+                    </span>
+                    :
+                    <span className="material-symbols-outlined position-absolute search-icon-overlay">
+                      search
+                    </span>
+                  }
+                  <input onChange={(e) => updateSearchText(e)} id='searchInput' type='text' className="input-search-map-overlay position-absolute" placeholder='Search places...' />
+                </div>
+              </div>
+
+
+              <div id='daySelection' className="daySelection position-absolute">
+                <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
+                  close
+                </span>
+                <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
+                {tripDays.days.map((day, i) => (
+                  <button className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                ))}
+                <div className="mb-3"></div>
+              </div>
+
+
+              {placeToConfirm &&
+                <div className="placeToConfirmCard position-absolute">
+                  <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+
+                    <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                      close
+                    </span>
+
+                    <div className="placeCard-img-div flx-1">
+                      <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                    </div>
+                    <div className="placeCard-body flx-2">
+                      <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                      <p className="body-title">{placeToConfirm.placeName}</p>
+                      <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                      <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+                      <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
+                        <div className="addIcon-small flx pointer mx-2">
+                          <span className="material-symbols-outlined m-auto medium purple-text">
+                            add
+                          </span>
+                        </div>
+                        <p className="m-0 purple-text">Add to places</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
               <OpenMap markers={markers} />
             </div>
 
-            <div className="page-subheading-bold my-3">Suggested places</div>
+
+
+            {/* <div className="page-subheading-bold my-3 dark-text">Suggested places</div>
 
             <div className="hideOverFlow flx-c">
+
               <div className="suggestion-row flx-">
 
+
+
                 <div className="card-model inflex position-relative flx-c mr-3">
                   <div className="addIcon position-absolute flx onHover-fade pointer">
                     <span className="material-symbols-outlined m-auto">
@@ -377,7 +571,20 @@ export const Itinerary = ({ tripId, setTripID }) => {
                   </div>
                   <img src="https://i.imgur.com/lw40mp9.jpg" alt="" className="cardModel-img" />
                   <div className="cardModel-text">
-                    <div className="page-subsubheading">Title of place</div>
+                    <p className="m-0 page-subsubheading">Title of place</p>
+                    <p className="m-0">Info</p>
+                  </div>
+                </div>
+
+                <div className="card-model inflex position-relative flx-c mr-3">
+                  <div className="addIcon position-absolute flx onHover-fade pointer">
+                    <span className="material-symbols-outlined m-auto">
+                      add
+                    </span>
+                  </div>
+                  <img src="https://i.imgur.com/lw40mp9.jpg" alt="" className="cardModel-img" />
+                  <div className="cardModel-text">
+                    <p className="m-0 page-subsubheading">Title of place</p>
                     <p className="m-0">Info</p>
                   </div>
                 </div>
@@ -393,23 +600,13 @@ export const Itinerary = ({ tripId, setTripID }) => {
                     <div className="page-subsubheading">Title of place</div>
                     <p className="m-0">Info</p>
                   </div>
+
                 </div>
 
-                {/* <div className="card-model inflex position-relative flx-c mr-3">
-                <div className="addIcon position-absolute flx onHover-fade pointer">
-                  <span className="material-symbols-outlined m-auto">
-                    add
-                  </span>
-                </div>
-                <img src="https://i.imgur.com/lw40mp9.jpg" alt="" className="cardModel-img" />
-                <div className="cardModel-text">
-                  <div className="page-subsubheading">Title of place</div>
-                  <p className="m-0">Info</p>
-                </div>
-              </div> */}
+              </div>
+            </div> */}
 
 
-              </div></div>
 
           </div>
 

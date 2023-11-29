@@ -287,14 +287,14 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             <div className="page-container90 mt-4">
 
                 <Link to='/dashboard' className=''>
-                    <span className="material-symbols-outlined v-tbott mr-2">
+                    <span className="material-symbols-outlined v-tbott mr-2 purple-text">
                         arrow_back
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link>
                 <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                 <div className="flx-r onHover-fadelite">
-                    <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2">
+                    <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>

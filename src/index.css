@@ -138,6 +138,9 @@ button:focus-visible {
 .just-en {
   justify-content: end;
 }
+.material-symbols-outlined{
+  color: #242424;
+}
 .dark-text{
   color: #242424;
 }
@@ -616,7 +619,7 @@ button:focus-visible {
 }
 .input-search-map-overlay {
   height: 44px;
-  width: calc(90% - 64px);
+  /* width: calc(90% - 64px); */
   box-sizing: border-box;
   border-radius: 8px;
   border: 2px solid gray;
@@ -627,6 +630,7 @@ button:focus-visible {
   transition-duration: 0.3s;
   top: 16px;
   left: 64px;
+  right: 64px;
 }
 
 .input-search-map-overlay2 {
@@ -715,6 +719,7 @@ button:focus-visible {
 }
 .btn-outlineflex {
   padding: 11px 20px;
+  background-color: white;
   color: #6663FC;
   border-radius: 8px;
   border: 2px solid #6663FC;
@@ -786,6 +791,9 @@ button:focus-visible {
   cursor: default;
   white-space: nowrap;
 }
+.btn-primaryflex-disabled span{
+  color: gray;
+}
 
 .btn-primaryflex {
   padding: 12px 20px;
@@ -833,6 +841,7 @@ button:focus-visible {
 }
 .btn-outline {
   width: 380px;
+  background-color: white;
   height: 55px;
   color: #6663FC;
   border-radius: 12px;
@@ -933,6 +942,7 @@ button:focus-visible {
   transform: translateY(-20px);
   font-size: small;
   font-weight: 600;
+  height: 12.5px;
   background-color: white;
   margin-left: 4px;
   padding: 0 8px;
@@ -968,6 +978,7 @@ button:focus-visible {
 }
 input{
   color: black;
+  background-color: red;
 }
 
 .icon-right{
@@ -1033,10 +1044,15 @@ border-right: 1px black solid;
   transition: 0.2s;
 }
 .closeBtn2 {
-  text-align: center;
-  width: 100%;
-  /* bottom: 0px; */
-  /* right: 40%; */
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+}
+.closeBtn2:hover{
+  /* opacity: 0.75; */
+  filter: brightness(85%);
+  transition: 0.2s;
 }
 .remove-btn{
   width: 30px;
@@ -1709,7 +1725,7 @@ p{
 }
 .it-map{
   width: 96%;
-  height: 60vh;
+  height: 100vh;
   background-color: gainsboro;
   border-radius: 12px;
 }
@@ -1839,6 +1855,34 @@ p{
   bottom: 16px;
   left: 6%;
   right: 4%;
+}
+.daySelection{
+  /* height: 200px; */
+  width: 200px;
+  background-color: white;
+  border-radius: 12px;
+  z-index: 5000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  bottom: 70px;
+  right: 64px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+.dayOption{
+  border: 3px solid rgb(190, 190, 190);
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 8px;
+  width: 80%;
+  color: gray;
+  transition: 0.2s;
+}
+.dayOption:hover{
+  background-color: #F0EFFF;
+  border-color: #3F3899;
+  color: #3F3899;
+  transition: 0.3s;
 }
 
 
@@ -1971,6 +2015,10 @@ p{
 .my-0 {
   margin-top: 0px;
   margin-bottom: 0px;
+}
+.my-h{
+  margin-top: 2.5px;
+  margin-bottom: 2.5px;
 }
 .my-1 {
   margin-top: 5px;

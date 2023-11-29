@@ -235,7 +235,7 @@ export const Survey = () => {
                             </div>
                             <img src={card2.imgUrl} alt="" className="card2-img mt-2" />
                             <div className="card2-text flx-1">
-                                <div className="card2-title center-text w-80 m-auto">{card2.title}</div>
+                                <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
                             </div>
                         </div>
                     })}

@@ -383,12 +383,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                     </div>
                     <div className="btns mb-2">
                         <button onClick={() => slideCarouselLeft()} className={translationIndex === 0 ? 'btn-primaryflex-disabled' : 'btn-primaryflex hover-left'}>
-                            <span className="material-symbols-outlined mt-1">
+                            <span className="material-symbols-outlined mt-1 white-text">
                                 arrow_back
                             </span>
                         </button>
                         <button onClick={() => slideCarouselRight()} className={fullTranslated === true ? "btn-primaryflex-disabled right" : "btn-primaryflex right hover-right"}>
-                            <span className="material-symbols-outlined mt-1">
+                            <span className="material-symbols-outlined mt-1 white-text">
                                 arrow_forward
                             </span>
                         </button>

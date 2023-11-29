@@ -25,6 +25,7 @@ BackEnd (Kate) checkpoints
 <!-- DONE*make more aesthetic scrollbars -->
 *if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
 *add extra destinations to a trip
+*daySelection scrollable
 
 geoapify api place objects
 calendar selection

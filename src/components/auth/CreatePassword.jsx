@@ -145,7 +145,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
                 <p className="mb-1 mt-4 center-text xx-large bold700">Welcome to Routewise!</p>
                 <p className="m-auto center-text w-90">Enter your name and password to create your account with email <span className="purple-text"><strong>{email}</strong></span></p>
                 <div className="input-model-title">
-                    <p className="m-0 mt-4 mb-2">What should we call you'?</p>
+                    <p className="m-0 mt-4 mb-2">What should we call you?</p>
                 </div>
                 <div className="inputBox mb-4">
                     <input id='displayName' onChange={(e) => updateDisplayName(e)} type="text" className="input-model large" placeholder='' required />
