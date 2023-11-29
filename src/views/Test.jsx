@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Loading } from '../components/Loading'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
@@ -6,6 +6,8 @@ import { Draggable, Icon } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { Column } from '../components/Column';
+
+// const Column = dynamic(() => import('../components/Column'), { ssr: false });
 
 export const Test = () => {
 
@@ -41,36 +43,39 @@ export const Test = () => {
     // drag n drop
     const initialData = {
         places: {
-          1: { id: 1, placeName: "", info: "", address: "", imgUrl: "" },
-          2: { id: 2, placeName: "", info: "", address: "", imgUrl: "" },
-          3: { id: 3, placeName: "", info: "", address: "", imgUrl: "" },
-          4: { id: 4, placeName: "", info: "", address: "", imgUrl: "" },
-          5: { id: 5, placeName: "", info: "", address: "", imgUrl: "" },
-          6: { id: 6, placeName: "", info: "", address: "", imgUrl: "" }
+          1: { id: 1, placeName: "London", info: "Cold and rainy", address: "In the UK", imgUrl: "https://i.imgur.com/mGTF2GC.jpg" },
+          2: { id: 2, placeName: "Paris", info: "Rude ppl", address: "In France", imgUrl: "https://i.imgur.com/JnLJKbE.jpg" },
+          3: { id: 3, placeName: "Houston", info: "Sun is never off", address: "In USA", imgUrl: "https://i.imgur.com/RxO0dfy.jpg" },
+          4: { id: 4, placeName: "Tokyo", info: "Historical grounds", address: "In Japan", imgUrl: "https://i.imgur.com/5r2n8f4.jpg" },
+          5: { id: 5, placeName: "Rome", info: "Good food", address: "In Italy", imgUrl: "https://i.imgur.com/HJJEInt.jpg" },
+          6: { id: 6, placeName: "Los Angeles", info: "Best Surgeons live here", address: "In USA", imgUrl: "https://i.imgur.com/F6fkD7O.jpg" }
         },
         days: {
           "day-1": {
+            id: "day-1",
             day: "Monday",
             date: "11/27",
-            places: []
+            placeIds: [1, 2, 3, 4, 5, 6]
           },
           "day-2": {
+            id: "day-2",
             day: "Tuesday",
             date: "11/28",
-            places: []
+            placeIds: []
           },
           "day-3": {
+            id: "day-3",
             day: "Wednesday",
             date: "11/29",
-            places: []
+            placeIds: []
           },
           // for reordering of days
-          dayOrder: ["day-1", "day-2", "day-3"]
-        }
+        },
+        dayOrder: ["day-1", "day-2", "day-3"]
       }
     
     
-    
+    const [state, setState] = useState(initialData);
     
     const onDragEnd = (result) => {
         const { destination, source } = result
@@ -80,10 +85,17 @@ export const Test = () => {
         <>
             <p className="">Test Page</p>
 
-            <DragDropContext>
+            <DragDropContext onDragEnd={onDragEnd}>
+
+                {state.dayOrder.map((dayNum) => {
+                    const day = state.days[dayNum]
+                    const places = day.placeIds.map(placeId => state.places[placeId]);
+
+                    return <Column key={day.id} day={day} places={places} />
+                })}
 
                 <div className="page-container90 flx-r">
-                    <Column />
+                    
                     <div className="flx-c flx-1 mx-5 seven">
 
                     </div>

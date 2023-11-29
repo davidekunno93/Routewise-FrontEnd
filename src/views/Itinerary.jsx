@@ -251,36 +251,36 @@ export const Itinerary = ({ tripId, setTripID }) => {
   const onDragEnd = (result) => {
     const { destination, source } = result
   }
-  const [state, setState] = useState(initialData)
+  // const [state, setState] = useState(initialData)
 
-  const initialData = {
-    places: {
-      1: { id: 1, placeName: "", info: "", address: "", imgUrl: "" },
-      2: { id: 2, placeName: "", info: "", address: "", imgUrl: "" },
-      3: { id: 3, placeName: "", info: "", address: "", imgUrl: "" },
-      4: { id: 4, placeName: "", info: "", address: "", imgUrl: "" },
-      5: { id: 5, placeName: "", info: "", address: "", imgUrl: "" },
-      6: { id: 6, placeName: "", info: "", address: "", imgUrl: "" }
-    },
-    days: {
-      "day-1": {
-        day: "Monday",
-        date: "11/27",
-        places: []
-      },
-      "day-2": {
-        day: "Tuesday",
-        date: "11/28",
-        places: []
-      },
-      "day-3": {
-        day: "Wednesday",
-        date: "11/29",
-        places: []
-      },
-    }
+  // const initialData = {
+  //   places: {
+  //     1: { id: 1, placeName: "", info: "", address: "", imgUrl: "" },
+  //     2: { id: 2, placeName: "", info: "", address: "", imgUrl: "" },
+  //     3: { id: 3, placeName: "", info: "", address: "", imgUrl: "" },
+  //     4: { id: 4, placeName: "", info: "", address: "", imgUrl: "" },
+  //     5: { id: 5, placeName: "", info: "", address: "", imgUrl: "" },
+  //     6: { id: 6, placeName: "", info: "", address: "", imgUrl: "" }
+  //   },
+  //   days: {
+  //     "day-1": {
+  //       day: "Monday",
+  //       date: "11/27",
+  //       places: []
+  //     },
+  //     "day-2": {
+  //       day: "Tuesday",
+  //       date: "11/28",
+  //       places: []
+  //     },
+  //     "day-3": {
+  //       day: "Wednesday",
+  //       date: "11/29",
+  //       places: []
+  //     },
+  //   }
 
-  }
+  // }
 
 
   return (
