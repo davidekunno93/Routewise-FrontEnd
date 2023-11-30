@@ -1,14 +1,18 @@
-import React, { createRef, useEffect, useState } from 'react'
+import React, { Suspense, createRef, useEffect, useState } from 'react'
 import { PlaceCard } from '../components/PlaceCard'
 import { Link } from 'react-router-dom'
 import { SearchPlace } from '../components/SearchPlace'
 import { FlowBox } from '../components/FlowBox'
-import { useRef } from 'react'
+import { useRef, lazy } from 'react'
 import { OpenMap } from '../components/OpenMap'
 import auth from '../firebase'
 import { DragDropContext } from 'react-beautiful-dnd'
 import Scrollbars from 'react-custom-scrollbars-2'
 import axios from 'axios'
+import LoadBox from '../components/LoadBox'
+// import FlowBoxDraggable from '../components/FlowBoxDraggable'
+
+const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 
 export const Itinerary = ({ tripId, setTripID }) => {
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
@@ -83,6 +87,8 @@ export const Itinerary = ({ tripId, setTripID }) => {
             info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
             address: "Borough Market, London SE1 9AL, UK",
             imgURL: "https://i.imgur.com/9KiBKqI.jpg",
+            lat: 51.50544,
+            long: -0.091249,
             geocode: [51.50544, -0.091249]
           },
           {
@@ -90,6 +96,8 @@ export const Itinerary = ({ tripId, setTripID }) => {
             info: "Open 24 hours",
             address: "Trafalgar Sq, London WC2N 5DS, UK",
             imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+            lat: 51.50806,
+            long: -0.12806,
             geocode: [51.50806, -0.12806]
           }
         ]
@@ -105,6 +113,8 @@ export const Itinerary = ({ tripId, setTripID }) => {
             info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
             address: "Borough Market, London SE1 9AL, UK",
             imgURL: "https://i.imgur.com/9KiBKqI.jpg",
+            lat: 51.50544,
+            long: -0.091249,
             geocode: [51.50544, -0.091249]
           },
           {
@@ -112,29 +122,32 @@ export const Itinerary = ({ tripId, setTripID }) => {
             info: "Open 24 hours",
             address: "Trafalgar Sq, London WC2N 5DS, UK",
             imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+            lat: 51.50806,
+            long: -0.12806,
             geocode: [51.50806, -0.12806]
           }
         ]
       }
     ]
   }
-  useEffect(() => {
-    // for loop thru each day index
-    // merge each day.places to larger list called allDays.places
-    // [ {gc: } {gc: } {gc: } {gc: } ]
-    tripDays['allDays'] = {
-      places: []
-    }
-    for (let i = 0; i < tripDays.days.length; i++) {
-      // console.log(tripDays.days[i])
-      for (let j = 0; j < tripDays.days[i].places.length; j++) {
-        tripDays.allDays.places.push(tripDays.days[i].places[j])
-        // console.log(tripDays.days[i].places[j])
-      }
-    }
-    setMarkers(tripDays.allDays.places)
-    console.log(tripDays)
-  }, [])
+  // useEffect(() => {
+  //   // for loop thru each day index
+  //   // merge each day.places to larger list called allDays.places
+  //   // [ {gc: } {gc: } {gc: } {gc: } ]
+  //   tripDays['allDays'] = {
+  //     places: []
+  //   }
+  //   for (let i = 0; i < tripDays.days.length; i++) {
+  //     // console.log(tripDays.days[i])
+  //     for (let j = 0; j < tripDays.days[i].places.length; j++) {
+  //       tripDays.allDays.places.push(tripDays.days[i].places[j])
+  //       // console.log(tripDays.days[i].places[j])
+  //     }
+  //   }
+  //   setMarkers(Object.values(tripState.places))
+  //   // console.log(tripDays)
+  // }, [])
+
 
 
 
@@ -254,42 +267,6 @@ export const Itinerary = ({ tripId, setTripID }) => {
     })
   }
 
-  const onDragEnd = (result) => {
-    const { destination, source } = result
-  }
-  // const [state, setState] = useState(initialData)
-
-  // const initialData = {
-  //   places: {
-  //     1: { id: 1, placeName: "", info: "", address: "", imgUrl: "" },
-  //     2: { id: 2, placeName: "", info: "", address: "", imgUrl: "" },
-  //     3: { id: 3, placeName: "", info: "", address: "", imgUrl: "" },
-  //     4: { id: 4, placeName: "", info: "", address: "", imgUrl: "" },
-  //     5: { id: 5, placeName: "", info: "", address: "", imgUrl: "" },
-  //     6: { id: 6, placeName: "", info: "", address: "", imgUrl: "" }
-  //   },
-  //   days: {
-  //     "day-1": {
-  //       day: "Monday",
-  //       date: "11/27",
-  //       places: []
-  //     },
-  //     "day-2": {
-  //       day: "Tuesday",
-  //       date: "11/28",
-  //       places: []
-  //     },
-  //     "day-3": {
-  //       day: "Wednesday",
-  //       date: "11/29",
-  //       places: []
-  //     },
-  //   }
-
-  // }
-
-
-
   const getCityImg = async (imgQuery) => {
     const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
     return response.status === 200 ? response.data : "error"
@@ -397,6 +374,237 @@ export const Itinerary = ({ tripId, setTripID }) => {
     daySelection.classList.add('d-none')
   }
 
+  const addPlace = (dayNum) => {
+    // let place = placeToConfirm
+    let tripStateCopy = { ...tripState }
+    // create a new place id for the place
+    tripStateCopy.places[parseInt(tripStateCopy.placeLast) + 1] = placeToConfirm
+    // tripStateCopy.places[tripStateCopy.placeLast + 1][id] = tripStateCopy.placeLast + 1
+    tripStateCopy.places[parseInt(tripStateCopy.placeLast) + 1] = {
+      id: parseInt(tripStateCopy.placeLast) + 1,
+      ...placeToConfirm,
+    }
+    tripStateCopy.placeLast = parseInt(tripStateCopy.placeLast) + 1
+    tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.placeLast)
+    setTripState(tripStateCopy)
+    closeDaySelection()
+    clearPlaceToConfirm()
+    console.log(tripStateCopy)
+  }
+
+  const removePlace = (dayNum, placeId) => {
+    // tripState > days[dayNum] > remove placeIds[placeId]
+    const tripStateCopy = { ...tripState }
+    let index = tripStateCopy.days[dayNum].placeIds.indexOf(placeId)
+    tripStateCopy.days[dayNum].placeIds.splice(index, 1)
+    delete tripStateCopy.places[placeId]
+    setTripState(tripStateCopy)
+    console.log(tripStateCopy)
+  }
+
+
+
+  // drag n drop code
+  const tripData = {
+    tripID: "",
+    placeLast: 8,
+    places: {
+      1: {
+        id: 1,
+        placeName: "Traflagar Square",
+        info: "Open 24 hours",
+        address: "Trafalgar Sq, London WC2N 5DS, UK",
+        imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+        lat: 51.50806,
+        long: -0.12806,
+        geocode: [51.50806, -0.12806]
+      },
+      2: {
+        id: 2,
+        placeName: "Tate Modern",
+        info: "Mon-Sun 10 AM-6 PM",
+        address: "Bankside, London SE1 9TG, UK",
+        imgURL: "https://i.imgur.com/FYc6OB3.jpg",
+        lat: 51.507748,
+        long: -0.099469,
+        geocode: [51.507748, -0.099469]
+      },
+      3: {
+        id: 3,
+        placeName: "Hyde Park",
+        info: "Mon-Sun 5 AM-12 AM",
+        address: "Hyde Park, London W2 2UH, UK",
+        imgURL: "https://i.imgur.com/tZBnXz4.jpg",
+        lat: 51.502777,
+        long: -0.151250,
+        geocode: [51.502777, -0.151250]
+      },
+      4: {
+        id: 4,
+        placeName: "Buckingham Palace",
+        info: "Tours Start at 9am",
+        address: "Buckingham Palace, London SW1A 1AA, UK",
+        imgURL: "https://i.imgur.com/lw40mp9.jpg",
+        lat: 51.501476,
+        long: -0.140634,
+        geocode: [51.501476, -0.140634]
+      },
+      5: {
+        id: 5,
+        placeName: "Borough Market",
+        info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
+        address: "Borough Market, London SE1 9AL, UK",
+        imgURL: "https://i.imgur.com/9KiBKqI.jpg",
+        lat: 51.50544,
+        long: -0.091249,
+        geocode: [51.50544, -0.091249]
+      },
+      6: {
+        id: 6,
+        placeName: "Traflagar Square",
+        info: "Open 24 hours",
+        address: "Trafalgar Sq, London WC2N 5DS, UK",
+        imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+        lat: 51.50806,
+        long: -0.12806,
+        geocode: [51.50806, -0.12806]
+      },
+      7: {
+        id: 7,
+        placeName: "Borough Market",
+        info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
+        address: "Borough Market, London SE1 9AL, UK",
+        imgURL: "https://i.imgur.com/9KiBKqI.jpg",
+        lat: 51.50544,
+        long: -0.091249,
+        geocode: [51.50544, -0.091249]
+      },
+      8: {
+        id: 8,
+        placeName: "Traflagar Square",
+        info: "Open 24 hours",
+        address: "Trafalgar Sq, London WC2N 5DS, UK",
+        imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+        lat: 51.50806,
+        long: -0.12806,
+        geocode: [51.50806, -0.12806]
+      }
+    },
+    days: {
+      "day-1": {
+        id: "day-1",
+        day: "Wednesday, November 8",
+        dayShort: "Wed",
+        dateShort: "11/8",
+        dayName: "",
+        placeIds: [1, 2]
+      },
+      "day-2": {
+        id: "day-2",
+        day: "Thursday, November 9",
+        dayShort: "Thurs",
+        dateShort: "11/9",
+        dayName: "",
+        placeIds: [3, 4]
+      },
+      "day-3": {
+        id: "day-3",
+        day: "Friday, November 10",
+        dayName: "",
+        dayShort: "Fri",
+        dateShort: "11/10",
+        placeIds: [5, 6]
+      },
+      "day-4": {
+        id: "day-4",
+        day: "Saturday, November 11",
+        dayName: "",
+        dayShort: "Sat",
+        dateShort: "11/11",
+        placeIds: [7, 8]
+      }
+
+    },
+    "dayOrder": ["day-1", "day-2", "day-3", "day-4"]
+  }
+
+  const [tripState, setTripState] = useState(tripData);
+
+  const reorderDayList = (sourceDay, startIndex, endIndex) => {
+    const newPlaceIds = Array.from(sourceDay.placeIds);
+    const [removed] = newPlaceIds.splice(startIndex, 1)
+    newPlaceIds.splice(endIndex, 0, removed)
+
+    const newDay = {
+      ...sourceDay,
+      placeIds: newPlaceIds
+    }
+
+    return newDay;
+  }
+  const onDragEndItinerary = (result) => {
+    const { destination, source } = result
+    // if user tries to drop outside scope
+    if (!destination) return;
+
+    // if user drops in same position
+    if (destination.droppableId === source.droppableId && destination.index === source.index) { return; }
+
+    // if user drops in same container but different position
+    const sourceDay = tripState.days[source.droppableId];
+    const destinationDay = tripState.days[destination.droppableId];
+
+    if (sourceDay.id === destinationDay.id) {
+      const newDay = reorderDayList(
+        sourceDay,
+        source.index,
+        destination.index
+      );
+
+      const newTripState = {
+        ...tripState,
+        days: {
+          ...tripState.days,
+          [newDay.id]: newDay,
+        }
+      };
+      setTripState(newTripState);
+      return;
+    }
+
+    // if user drops in different container
+    const startPlaceIds = Array.from(sourceDay.placeIds);
+    const [removed] = startPlaceIds.splice(source.index, 1);
+    const newStartDay = {
+      ...sourceDay,
+      placeIds: startPlaceIds,
+    }
+
+    const endPlaceIds = Array.from(destinationDay.placeIds)
+    endPlaceIds.splice(destination.index, 0, removed);
+    const newEndDay = {
+      ...destinationDay,
+      placeIds: endPlaceIds,
+    }
+
+    const newState = {
+      ...tripState,
+      days: {
+        ...tripState.days,
+        [newStartDay.id]: newStartDay,
+        [newEndDay.id]: newEndDay,
+      }
+    }
+    setTripState(newState);
+  }
+
+  useEffect(() => {
+    setMarkers(Object.values(tripState.places))
+  }, [tripState])
+
+
+
+
   return (
     <>
       <div className="itinerary-page flx-r">
@@ -454,15 +662,23 @@ export const Itinerary = ({ tripId, setTripID }) => {
             </div>
             <div className="itinerary-flow mt-3">
 
-              <DragDropContext onDragEnd={onDragEnd}>
+              {/* {Array.isArray(tripDays.days) ? tripDays.days.map((day, i) => {
+                return <div ref={el => refs.current[i] = el} key={i}>
+                  <FlowBox id={i} toggleFlow={toggleFlow} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} day={day} />
+                </div>
+              }) : null
+              } */}
 
-                {Array.isArray(tripDays.days) ? tripDays.days.map((day, i) => {
-                  return <div ref={el => refs.current[i] = el} key={i}>
-                    <FlowBox id={i} toggleFlow={toggleFlow} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} day={day} />
-                  </div>
-                }) : null
-                }
 
+              <DragDropContext onDragEnd={onDragEndItinerary}>
+                {tripState.dayOrder.map((dayNum, id) => {
+                  const day = tripState.days[dayNum]
+                  const places = day.placeIds.map((placeId) => tripState.places[placeId])
+
+                  return <Suspense fallback={<LoadBox />}>
+                    <FlowBoxDraggable key={day.id} id={id} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} />
+                  </Suspense>
+                })}
               </DragDropContext>
 
 
@@ -515,7 +731,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
                 </span>
                 <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
                 {tripDays.days.map((day, i) => (
-                  <button className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                  <button onClick={() => addPlace(`day-${i + 1}`)} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
                 ))}
                 <div className="mb-3"></div>
               </div>

@@ -372,7 +372,9 @@ button:focus-visible {
 }
 
 
-
+.grabber{
+  cursor: grab;
+}
 .pointer{
   cursor: pointer;
 }
@@ -676,7 +678,7 @@ button:focus-visible {
 .search-icon-overlay{
   opacity: 0.5;
   top: 22px;
-  right: calc(10% + 8px);
+  right: calc(2% + 64px);
   font-size: xx-large;
   z-index: 1;
 }
@@ -1310,7 +1312,9 @@ p{
   border-radius: 12px;
   background-color: white;
   overflow: hidden;
+  transition: 0.3s;
 }
+
 .placeCard-img{
   width: 100%;
   height: 100%;
@@ -1426,7 +1430,7 @@ p{
 .body-info{
   font-family: 'Plus Jakarta Sans';
   font-weight: 400;
-  height: 20px;
+  height: 24px;
   overflow: hidden;
   color: rgb(102, 37, 183);
   font-size: medium;
@@ -1884,7 +1888,22 @@ p{
   color: #3F3899;
   transition: 0.3s;
 }
+.load-titleBar{
+  background-color: rgb(235, 235, 235);
+  height: 80px;
+  width: 100%;
+}
+.load-img{
+  height: 100%;
+  width: 90%;
+  background-color: rgb(235, 235, 235);
+}
+.load-text{
+  background-color: rgb(235, 235, 235);
+  height: 25px;
+  width: 100%;
 
+}
 
 
 .italic-placeholder::-webkit-input-placeholder {
