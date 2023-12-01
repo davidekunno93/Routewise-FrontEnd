@@ -83,7 +83,11 @@ export const Survey = () => {
     const progressAnimation = () => {
         const progressBar = document.getElementById('progress-bar-full')
         const nodeFlex = document.getElementById('node-flex')
-        progressBar.style.width = '45%'
+        const progressBarContainer = document.getElementById('progressBarContainer')
+        let halfBarWidth = progressBarContainer.offsetWidth / 2 - 30
+        // progressBar.style.width = '47%'
+        progressBar.style.right = halfBarWidth+"px"
+        console.log(halfBarWidth)
         wait(900).then(() => {
             nodeFlex.style.width = '30px'
             nodeFlex.style.height = '30px'
@@ -95,7 +99,8 @@ export const Survey = () => {
         progressBar.style.transition = '10s ease'
         progressCheckmark2.classList.remove('o-none')
         wait(200).then(() => {
-            progressBar.style.width = '93%'
+            // progressBar.style.width = '93%'
+            progressBar.style.right = '44px'
         })
     }
     const progressLoadingAnimation = () => {
@@ -188,7 +193,7 @@ export const Survey = () => {
 
     return (
         <>
-            <div className="progress-bar-container">
+            <div id='progressBarContainer' className="progress-bar-container">
                 <div className="progress-bar w-95 m-auto flx-r just-sb my-5">
                     <div className="point">
                         <div className="progress-bar-node center">
@@ -196,11 +201,11 @@ export const Survey = () => {
                                 check
                             </span>
                         </div>
-                        <p className="sign-up m-0 mt-1">Sign Up</p>
+                        <p className="sign-up m-0 mt-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign Up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                     </div>
                     <div className="point">
                         <div className="progress-bar-node-empty node-frame center position-relative">
-                            {/* <div className="node-frame five"></div> */}
+                            
                             <div id='node-flex' className="progress-bar-node-flex">
                                 <span id='progress-checkmark2' className="material-symbols-outlined white-text m-auto o-none">
                                     check

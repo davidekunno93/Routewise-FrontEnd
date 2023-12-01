@@ -10,6 +10,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 import Scrollbars from 'react-custom-scrollbars-2'
 import axios from 'axios'
 import LoadBox from '../components/LoadBox'
+import DaySelected from '../components/DaySelected'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -387,9 +388,10 @@ export const Itinerary = ({ tripId, setTripID }) => {
     tripStateCopy.placeLast = parseInt(tripStateCopy.placeLast) + 1
     tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.placeLast)
     setTripState(tripStateCopy)
-    closeDaySelection()
-    clearPlaceToConfirm()
+    // closeDaySelection()
+    // clearPlaceToConfirm()
     console.log(tripStateCopy)
+    confirmPlaceAdded()
   }
 
   const removePlace = (dayNum, placeId) => {
@@ -400,6 +402,31 @@ export const Itinerary = ({ tripId, setTripID }) => {
     delete tripStateCopy.places[placeId]
     setTripState(tripStateCopy)
     console.log(tripStateCopy)
+  }
+
+  const [openDaySelected, setOpenDaySelected] = useState(false);
+
+  const confirmPlaceAdded = () => {
+    let daySelection = document.getElementById('daySelection')
+    let placeToConfirmCard = document.getElementById('placeToConfirmCard')
+    daySelection.style.height = '280px';
+    setOpenDaySelected(true)
+
+    wait(2000).then(() => {
+      placeToConfirmCard.classList.add('o-none')
+      daySelection.classList.add('o-none')
+    })
+    wait(5000).then(() => {
+      setOpenDaySelected(false)
+      closeDaySelection()
+      clearPlaceToConfirm()
+      daySelection.style.removeProperty('height')
+    })
+    wait(5500).then(() => {
+      placeToConfirmCard.classList.remove('o-none')
+      daySelection.classList.remove('o-none')
+    })
+
   }
 
 
@@ -603,7 +630,15 @@ export const Itinerary = ({ tripId, setTripID }) => {
   }, [tripState])
 
 
+  const [dateToConfirm, setDateToConfirm] = useState(null);
 
+
+  const updateDateToConfirm = (day, date) => {
+    setDateToConfirm(day + ", " + date)
+    // console.log(day+", "+date)
+  }
+
+  const [opacity, setOpacity] = useState(1)
 
   return (
     <>
@@ -660,6 +695,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
                 add
               </span>Add hotel or other accommodation***</p>
             </div>
+            
             <div className="itinerary-flow mt-3">
 
               {/* {Array.isArray(tripDays.days) ? tripDays.days.map((day, i) => {
@@ -725,46 +761,60 @@ export const Itinerary = ({ tripId, setTripID }) => {
               </div>
 
 
-              <div id='daySelection' className="daySelection position-absolute d-none">
-                <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
-                  close
-                </span>
-                <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                {tripDays.days.map((day, i) => (
-                  <button onClick={() => addPlace(`day-${i + 1}`)} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
-                ))}
-                <div className="mb-3"></div>
-              </div>
+              <div id='placeAddTra' className="placeAddTray">
 
-
-              {placeToConfirm &&
-                <div className="placeToConfirmCard position-absolute">
-                  <div className="placeCard-PTC w-97 position-relative flx-r my-2">
-
-                    <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                <div id='daySelection' className="daySelection position-absolute d-none">
+                  <div className="position-relative flx-c align-c w-100">
+                    <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
+                    {/* <div className="daySelected position-absolute white-bg">
+                    <p className="m-0 mt-3 mb-2 bold700">Added!</p>
+                    <img className="daySelected-img" src={placeToConfirm.imgURL} />
+                    <div className="daySelected-text"><span className="purple-text bold700">{placeToConfirm.placeName}</span> was added to <span className="purple-text bold700">DAY NAME</span> in your itinerary!</div>
+                  </div> */}
+                    <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
                       close
                     </span>
+                    <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
+                    {tripDays.days.map((day, i) => (
+                      <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                    ))}
+                    <div className="mb-3"></div>
+                  </div>
+                </div>
+              </div>
 
-                    <div className="placeCard-img-div flx-1">
-                      <img className="placeCard-img" src={placeToConfirm.imgURL} />
-                    </div>
-                    <div className="placeCard-body flx-2">
-                      <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                      <p className="body-title">{placeToConfirm.placeName}</p>
-                      <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
-                      <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-                      <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
-                        <div className="addIcon-small flx pointer mx-2">
-                          <span className="material-symbols-outlined m-auto medium purple-text">
-                            add
-                          </span>
+              <div id='placeAddTray' className="placeAddTray">
+
+                {placeToConfirm &&
+                  <div id='placeToConfirmCard' className="placeToConfirmCard position-absolute">
+                    <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+
+                      <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                        close
+                      </span>
+
+                      <div className="placeCard-img-div flx-1">
+                        <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                      </div>
+                      <div className="placeCard-body flx-2">
+                        <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                        <p className="body-title">{placeToConfirm.placeName}</p>
+                        <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                        <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+                        <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
+                          <div className="addIcon-small flx pointer mx-2">
+                            <span className="material-symbols-outlined m-auto medium purple-text">
+                              add
+                            </span>
+                          </div>
+                          <p className="m-0 purple-text">Add to places</p>
                         </div>
-                        <p className="m-0 purple-text">Add to places</p>
                       </div>
                     </div>
                   </div>
-                </div>
-              }
+                }
+
+              </div>
 
               <OpenMap markers={markers} />
             </div>
