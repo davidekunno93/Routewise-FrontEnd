@@ -1886,6 +1886,7 @@ p{
   border: 3px solid rgb(190, 190, 190);
   box-sizing: border-box;
   border-radius: 8px;
+  background-color: white;
   padding: 8px;
   width: 80%;
   color: gray;
@@ -1914,6 +1915,7 @@ p{
 .daySelected-text{
   padding: 8px 16px;
   font-family: 'Plus Jakarta Sans';
+  color: #242424;
 }
 .load-titleBar{
   background-color: rgb(235, 235, 235);
