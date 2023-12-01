@@ -30,6 +30,11 @@ BackEnd (Kate) checkpoints
 *suggested places > load from places api > filter categories from categories state, make horizontally scrollable
 
 
+REMEMBER TO...
+Take out unnecessary routes
+Remove unnecessary console.logs
+login lock certain routes
+
 geoapify api place objects
 calendar selection
 draggable place objects

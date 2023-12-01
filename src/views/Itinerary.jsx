@@ -254,7 +254,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
   let refs = useRef([])
   useEffect(() => {
-    refs.current = refs.current.slice(0, tripDays.days.length)
+    refs.current = refs.current.slice(0, tripData.dayOrder.length)
   }, [])
 
   // const myRef  = useRef(null);
@@ -638,7 +638,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
     // console.log(day+", "+date)
   }
 
-  const [opacity, setOpacity] = useState(1)
+
 
   return (
     <>
@@ -651,7 +651,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
           </div>
           <div className="dayPanelContainer">
             <div id='dayPanelBody' className="it-column1 position-fixed ml-3 flx-c align-c o-none d-none">
-              <img onClick={() => scrollToEl(el)} src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
+              <img src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
 
               <div onClick={() => hideDayPanel()} className="arrowToClose my-2">
                 <span className="material-symbols-outlined o-50 xx-large right onHover-fade">
@@ -695,7 +695,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
                 add
               </span>Add hotel or other accommodation***</p>
             </div>
-            
+
             <div className="itinerary-flow mt-3">
 
               {/* {Array.isArray(tripDays.days) ? tripDays.days.map((day, i) => {
@@ -711,8 +711,10 @@ export const Itinerary = ({ tripId, setTripID }) => {
                   const day = tripState.days[dayNum]
                   const places = day.placeIds.map((placeId) => tripState.places[placeId])
 
-                  return <Suspense fallback={<LoadBox />}>
-                    <FlowBoxDraggable key={day.id} id={id} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} />
+                  return <Suspense fallback={<LoadBox />} >
+                    <div ref={el => refs.current[id] = el} key={id} className="">
+                      <FlowBoxDraggable key={day.id} id={id} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} />
+                    </div>
                   </Suspense>
                 })}
               </DragDropContext>
@@ -761,60 +763,60 @@ export const Itinerary = ({ tripId, setTripID }) => {
               </div>
 
 
-              <div id='placeAddTra' className="placeAddTray">
 
-                <div id='daySelection' className="daySelection position-absolute d-none">
-                  <div className="position-relative flx-c align-c w-100">
-                    <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
-                    {/* <div className="daySelected position-absolute white-bg">
+
+              <div id='daySelection' className="daySelection position-absolute d-none">
+                <div className="position-relative flx-c align-c w-100">
+                  <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
+                  {/* <div className="daySelected position-absolute white-bg">
                     <p className="m-0 mt-3 mb-2 bold700">Added!</p>
                     <img className="daySelected-img" src={placeToConfirm.imgURL} />
                     <div className="daySelected-text"><span className="purple-text bold700">{placeToConfirm.placeName}</span> was added to <span className="purple-text bold700">DAY NAME</span> in your itinerary!</div>
                   </div> */}
-                    <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
-                      close
-                    </span>
-                    <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                    {tripDays.days.map((day, i) => (
-                      <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
-                    ))}
-                    <div className="mb-3"></div>
-                  </div>
+                  <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
+                    close
+                  </span>
+                  <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
+                  {tripDays.days.map((day, i) => (
+                    <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                  ))}
+                  <div className="mb-3"></div>
                 </div>
               </div>
 
-              <div id='placeAddTray' className="placeAddTray">
 
-                {placeToConfirm &&
-                  <div id='placeToConfirmCard' className="placeToConfirmCard position-absolute">
-                    <div className="placeCard-PTC w-97 position-relative flx-r my-2">
 
-                      <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
-                        close
-                      </span>
 
-                      <div className="placeCard-img-div flx-1">
-                        <img className="placeCard-img" src={placeToConfirm.imgURL} />
-                      </div>
-                      <div className="placeCard-body flx-2">
-                        <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                        <p className="body-title">{placeToConfirm.placeName}</p>
-                        <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
-                        <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-                        <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
-                          <div className="addIcon-small flx pointer mx-2">
-                            <span className="material-symbols-outlined m-auto medium purple-text">
-                              add
-                            </span>
-                          </div>
-                          <p className="m-0 purple-text">Add to places</p>
+              {placeToConfirm &&
+                <div id='placeToConfirmCard' className="placeToConfirmCard position-absolute">
+                  <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+
+                    <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                      close
+                    </span>
+
+                    <div className="placeCard-img-div flx-1">
+                      <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                    </div>
+                    <div className="placeCard-body flx-2">
+                      <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                      <p className="body-title">{placeToConfirm.placeName}</p>
+                      <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                      <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+                      <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
+                        <div className="addIcon-small flx pointer mx-2">
+                          <span className="material-symbols-outlined m-auto medium purple-text">
+                            add
+                          </span>
                         </div>
+                        <p className="m-0 purple-text">Add to places</p>
                       </div>
                     </div>
                   </div>
-                }
+                </div>
+              }
 
-              </div>
+
 
               <OpenMap markers={markers} />
             </div>
