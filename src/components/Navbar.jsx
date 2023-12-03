@@ -125,7 +125,7 @@ export const Navbar = () => {
           <Link onClick={() => togglePrototypeMenu()} className='ml15'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
-        <div ref={refMenu} id='prototype-menu' className="prototype-menu">
+        <div ref={refMenu} id='prototype-menu' className="prototype-menu d-none">
           <Link to='/survey'><div className="option">Survey</div></Link>
           <Link to='/dashboard'><div className="option">Dashboard</div></Link>
           <Link to='/add-places'><div className="option">Add Places</div></Link>
