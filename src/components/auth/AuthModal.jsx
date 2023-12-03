@@ -168,7 +168,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             <button id='continueEmail' onClick={() => continueWithEmail()} className='btn-primary bg-white font-jakarta bg-lightpurple white-text'>Continue with email</button>
                             <div className='m-0 small mt-3 font-jakarta'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
                         </div>
-                        <div className="sign-in-box">
+                        <div className="sign-in-box m-auto">
                             <h1 className='mt-4'>Sign In</h1>
                             <Link onClick={() => googleSignIn()}><button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
                             <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>

@@ -106,7 +106,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         setMarkers(placeCopy)
     }, [placeToConfirm], [places])
 
-    
+
 
     const goToDashboard = () => {
         navigate('/dashboard')
@@ -197,7 +197,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         let placeCopy = [...places]
         let newPlace = placeToConfirm
         placeCopy.push(newPlace)
-        console.log(placeCopy)
+        // console.log(placeCopy)
         setPlaces(placeCopy)
         clearPlaceToConfirm()
     }
@@ -263,14 +263,22 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     }
 
     const sendPlaces = async () => {
-        let data = {
-            tripID: 11,
-            places: places
+        let places_serial = {}
+        let placeLast = places.length
+        for (let i = 0; i < places.length; i++) {
+            places_serial[i + 1] = { id: i + 1, ...places[i] }
         }
-        const response = axios.post("https://routewise-backend.onrender.com/places/place", JSON.stringify(data), {
-            headers: { "Content-Type": "application/json" }
-        }).then((response) => console.log(response))
-            .catch((error) => console.log(error))
+        console.log(places_serial)
+        // let data = {
+        //     tripID: 11,
+        //     placesLast: placesLast,
+        //     places_serial: places_serial,
+        //     places: places
+        // }
+        // const response = axios.post("https://routewise-backend.onrender.com/places/place", JSON.stringify(data), {
+        //     headers: { "Content-Type": "application/json" }
+        // }).then((response) => console.log(response))
+        //     .catch((error) => console.log(error))
     }
 
     const showCurrentTrip = () => {
@@ -298,7 +306,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>
-                <div className="body-section flx-r">
+                <div className="body-section flx-r-respond">
                     <div className="map-section flx-5">
                         <div className="gray-box position-relative flx">
 
@@ -349,13 +357,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                             <p className="body-title">{placeToConfirm.placeName}</p>
                                             <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
                                             <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-                                            <div onClick={() => addPlace()} className="flx right pr-4 onHover-fadelite">
+                                            <div onClick={() => addPlace()} className="flx-r right pr-4 onHover-fadelite ">
                                                 <div className="addIcon-small flx pointer mx-2">
                                                     <span className="material-symbols-outlined m-auto medium purple-text">
                                                         add
                                                     </span>
                                                 </div>
-                                                <p className="m-0 purple-text">Add to places</p>
+                                                <div className="flx">
+                                                    <p className="purple-text page-text m-auto">Add to places</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -364,8 +374,11 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                             <OpenMap mapCenter={bias} markers={markers} />
                         </div>
                     </div>
+
+
+
                     <div className="places-list flx-c flx-4">
-                        <div className="">
+                        <div className="my">
                             <div className="flx-r flx-end just-sb">
                                 <p className="page-subheading-bold m-0 my-1">Added places</p>
                                 <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer">Clear List</p>
@@ -421,6 +434,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
                 </div>
             </div>
+            <div className="empty-6"></div>
+
         </>
     )
 }

@@ -160,6 +160,10 @@ export const Itinerary = ({ tripId, setTripID }) => {
     const dayPanel = document.getElementById('dayPanel')
     const dayPanelBody = document.getElementById('dayPanelBody')
     const showDayPanelBtn = document.getElementById('showDayPanelBtn')
+    const leftPanelOpen = document.getElementById('leftPanelOpen')
+    const leftPanelClose = document.getElementById('leftPanelClose')
+    leftPanelOpen.classList.add('d-none')
+    leftPanelClose.classList.remove('d-none')
     dayPanel.style.width = '200px'
     dayPanel.style.borderRight = '2px solid gainsboro'
     showDayPanelBtn.classList.add('o-none')
@@ -172,14 +176,23 @@ export const Itinerary = ({ tripId, setTripID }) => {
     const dayPanel = document.getElementById('dayPanel')
     const dayPanelBody = document.getElementById('dayPanelBody')
     const showDayPanelBtn = document.getElementById('showDayPanelBtn')
+    const leftPanelOpen = document.getElementById('leftPanelOpen')
+    const leftPanelClose = document.getElementById('leftPanelClose')
+    leftPanelOpen.classList.remove('d-none')
+    leftPanelClose.classList.add('d-none')
     dayPanelBody.classList.add('o-none')
     wait(200).then(() => {
-      dayPanel.style.width = '30px'
+      if (window.innerWidth <= 768) {
+        dayPanel.style.width = '0px'
+      } else {
+        dayPanel.style.width = '30px'
+      }
       dayPanel.style.borderRight = 'none'
       dayPanelBody.classList.add('d-none')
       showDayPanelBtn.classList.remove('o-none')
     })
   }
+
 
   const rotateSymbol = (id, deg) => {
     const symbol = document.getElementById(`expandArrow-${id}`)
@@ -318,19 +331,24 @@ export const Itinerary = ({ tripId, setTripID }) => {
   }
   const [currentTimeout, setCurrentTimeout] = useState(null);
   useEffect(() => {
+
     if (currentTimeout) {
       clearTimeout(currentTimeout)
     }
     if (searchText) {
       if (searchText.length > 2) {
-        setCurrentTimeout(setTimeout(loadSearchData, 1000))
+        setCurrentTimeout(setTimeout(loadSearchData, 500))
       }
+    } else if (searchText === '') {
+      let autoComplete = document.getElementById('autocomplete-container')
+      autoComplete.classList.add('d-none')
     }
   }, [searchText])
 
   const getSearchData = async () => {
     if (searchText.length < 2) {
       // console.log('')
+      resetSearch()
     } else {
       const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
       let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
@@ -638,48 +656,94 @@ export const Itinerary = ({ tripId, setTripID }) => {
     // console.log(day+", "+date)
   }
 
+  const updateDayName = (e, dayNum) => {
+    tripStateCopy = { ...tripState }
+    tripStateCopy.days[dayNum].dayName = e.target.value
+  }
+
+
+  // map panel
+  const showMapPanel = () => {
+    let mapPanel = document.getElementById('map-panel')
+    let panelBtns = document.getElementById('panelBtns')
+    let placeToConfirmCard = document.getElementById('placeToConfirmCard')
+    if (placeToConfirmCard) {
+      placeToConfirmCard.classList.remove('o-none')
+    }
+    panelBtns.style.transform = "translateY(60px)"
+    mapPanel.style.height = "80vh"
+  }
+  const hideMapPanel = () => {
+    let mapPanel = document.getElementById('map-panel')
+    let panelBtns = document.getElementById('panelBtns')
+    let placeToConfirmCard = document.getElementById('placeToConfirmCard')
+    if (placeToConfirmCard) {
+      placeToConfirmCard.classList.add('o-none')
+    }
+    mapPanel.style.height = "0vh"
+    panelBtns.style.transform = "translateY(0px)"
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeDayPanel, false)
+  }, [])
+
+  const resizeDayPanel = () => {
+    // let dayPanel = document.getElementById('dayPanel')
+    if (window.innerWidth <= 768) {
+      hideDayPanel()
+    } else {
+      hideDayPanel()
+    }
+  }
+
 
 
   return (
     <>
       <div className="itinerary-page flx-r">
         <div id='dayPanel' className="itinerary-c1">
-          <div onClick={() => showDayPanel()} id='showDayPanelBtn' className="arrowToOpen">
-            <span className="material-symbols-outlined o-50 xx-large onHover-fade position-fixed z-1 top-128">
-              keyboard_double_arrow_right
-            </span>
-          </div>
-          <div className="dayPanelContainer">
-            <div id='dayPanelBody' className="it-column1 position-fixed ml-3 flx-c align-c o-none d-none">
-              <img src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
+          
 
-              <div onClick={() => hideDayPanel()} className="arrowToClose my-2">
-                <span className="material-symbols-outlined o-50 xx-large right onHover-fade">
-                  keyboard_double_arrow_left
-                </span>
-              </div>
 
-              <button className="btn-secondaryflex">
-                <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
-                  expand_more
-                </span>
-                <p className="inline v-align white-text">Location #1</p>
-              </button>
+            <div onClick={() => showDayPanel()} id='showDayPanelBtn' className="arrowToOpen">
+              <span className="material-symbols-outlined o-50 xx-large onHover-fade position-fixed z-1 top-128">
+                keyboard_double_arrow_right
+              </span>
+            </div>
 
-              <div className="it-datesPanel w-100 flx-c mt-3">
-                {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
-                  return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
-                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.dayShort}</p>
-                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.dateShort}</p>
-                  </div>
-                }) : null
-                }
+            <div className="dayPanelContainer">
+              <div id='dayPanelBody' className="it-column1 white-bg position-fixed ml-3 flx-c align-c o-none d-none">
+                <img src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
 
+                <div onClick={() => hideDayPanel()} className="arrowToClose my-2">
+                  <span className="material-symbols-outlined o-50 xx-large right onHover-fade">
+                    keyboard_double_arrow_left
+                  </span>
+                </div>
+
+                <button className="btn-secondaryflex">
+                  <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
+                    expand_more
+                  </span>
+                  <p className="inline v-align white-text">Location #1</p>
+                </button>
+
+                <div className="it-datesPanel w-100 flx-c mt-3">
+                  {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
+                    return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
+                      <p className="it-dateBlock my-1 flx-1 gray-text">{day.dayShort}</p>
+                      <p className="it-dayBlock my-1 flx-1 gray-text">{day.dateShort}</p>
+                    </div>
+                  }) : null
+                  }
+
+                </div>
               </div>
             </div>
-          </div>
 
-        </div>
+          </div>
+        
         <div className="itinerary-c2 flx-1">
           <div className="page-container96">
             <Link to='/add-places' className=''>
@@ -713,7 +777,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
                   return <Suspense fallback={<LoadBox />} >
                     <div ref={el => refs.current[id] = el} key={id} className="">
-                      <FlowBoxDraggable key={day.id} id={id} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} />
+                      <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} />
                     </div>
                   </Suspense>
                 })}
@@ -725,14 +789,122 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
           </div>
         </div>
-        <div className="itinerary-c3 flx-1">
+
+        {/* Map Panel */}
+        <div id='panelBtns' className="position-absolute panel-btns">
+          <span id='leftPanelOpen' onClick={() => showDayPanel()} className="material-symbols-outlined mx-3 o-50">
+            left_panel_open
+          </span>
+          <span id='leftPanelClose' onClick={() => hideDayPanel()} className="material-symbols-outlined mx-3 o-50 d-none">
+            left_panel_close
+          </span>
+          <span onClick={() => showMapPanel()} className="material-symbols-outlined mx-3 o-50">
+            map
+          </span>
+        </div>
+        <div id='map-panel' className="map-panel flx-c">
+          <div className="closeMap flx-r just-en">
+            <div className="closeMap-btn">
+              <span onClick={() => hideMapPanel()} className="material-symbols-outlined mx-2">close</span>
+            </div>
+          </div>
+          <div className="map-panelContent flx">
+            <div className="it-panelMap position-relative">
+              <div className="searchBar position-absolute w-100 z-1000">
+                <div className="position-relative w-100 h-100">
+                  <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
+                    {auto ? auto.map((result, i) => {
+                      return <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
+                        <div className="inner-contain flx-r w-96 hideOverflow m-auto">
+                          <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="small-pic mr-1" />
+                          <p className="m-0 my-2 large">{result.formatted}</p>
+                        </div>
+                      </div>
+                    }) : null}
+
+                  </div>
+                  <span className="material-symbols-outlined position-absolute location-icon-placeholder">
+                    location_on
+                  </span>
+
+                  {searchText.length > 0 ?
+                    <span onClick={() => resetSearch()} className="material-symbols-outlined position-absolute search-icon-overlay pointer onHover-black">
+                      close
+                    </span>
+                    :
+                    <span className="material-symbols-outlined position-absolute search-icon-overlay">
+                      search
+                    </span>
+                  }
+                  <input onChange={(e) => updateSearchText(e)} id='searchInput' type='text' className="input-search-map-overlay position-absolute" placeholder='Search places...' />
+                </div>
+              </div>
+
+              <div id='daySelection' className="daySelection position-absolute d-none">
+                <div className="position-relative flx-c align-c w-100">
+                  <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
+                  <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
+                    close
+                  </span>
+                  <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
+                  {tripData.dayOrder.map((dayNum, i) => {
+                    const day = tripData.days[dayNum]
+                    return <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                  })}
+                  <div className="mb-3"></div>
+                </div>
+              </div>
+
+              {placeToConfirm &&
+                <div id='placeToConfirmCard' className="placeToConfirmCard position-absolute">
+                  <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+
+                    <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                      close
+                    </span>
+
+                    <div className="placeCard-img-div flx-1">
+                      <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                    </div>
+                    <div className="placeCard-body flx-2">
+                      <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                      <p className="body-title">{placeToConfirm.placeName}</p>
+                      <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                      <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+                      <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
+                        <div className="addIcon-small flx pointer mx-2">
+                          <span className="material-symbols-outlined m-auto medium purple-text">
+                            add
+                          </span>
+                        </div>
+                        <p className="m-0 purple-text">Add to places</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+
+
+              <OpenMap markers={markers} />
+            </div>
+          </div>
+
+        </div>
+        {/* End Map Panel */}
+
+
+
+        <div className="itinerary-c3">
+
+
           <div className="sticky">
+
 
             <div className="it-map position-relative">
 
 
 
-              <div className="searchBar position-absolute w-100 z-10000">
+              <div className="searchBar position-absolute w-100 z-1000">
                 <div className="position-relative w-100 h-100">
                   <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
                     {auto ? auto.map((result, i) => {
@@ -777,9 +949,13 @@ export const Itinerary = ({ tripId, setTripID }) => {
                     close
                   </span>
                   <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                  {tripDays.days.map((day, i) => (
+                  {tripData.dayOrder.map((dayNum, i) => {
+                    const day = tripData.days[dayNum]
+                    return <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                  })}
+                  {/* {tripDays.days.map((day, i) => (
                     <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
-                  ))}
+                  ))} */}
                   <div className="mb-3"></div>
                 </div>
               </div>
@@ -822,7 +998,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
             </div>
 
 
-
+            {/* Suggested places */}
             {/* <div className="page-subheading-bold my-3 dark-text">Suggested places</div>
 
             <div className="hideOverFlow flx-c">
@@ -885,7 +1061,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
         </div>
 
-      </div>
+      </div >
       <div className="save-btn-row flx-r just-ce mt-5">
         <button className="btn-outlineflex w-1h large center-text mx-2">Save</button>
         <button className="btn-primaryflex w-2h large center-text mx-2">Complete Itinerary</button>

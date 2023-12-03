@@ -8,7 +8,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import format from 'date-fns/format';
-import { addDays } from 'date-fns'
+import { addDays, isWithinInterval } from 'date-fns'
 import { SpecifyCity } from './SpecifyCity';
 import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
@@ -60,7 +60,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     }
     const changeCC = () => {
         setMapCenter([23.5, 28.3])
-        
+
     }
 
     // carousel
@@ -165,6 +165,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
             // if there is no city entered --> please enter city name
             let cityInput = document.getElementById('cityInput')
             cityInput.classList.add('entry-error')
+            console.log("no city")
         } else {
             // if there is a city entered
             startLoading()
@@ -190,6 +191,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                     .catch((error) => {
                         console.log(error)
                         stopLoading()
+                        alert("City was not found")
                     })
             }
         }
@@ -244,43 +246,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     }
 
 
-    const handleCityResponse = (response) => {
-        let data = response.data
-        console.log(data)
 
-        if (data.length > 1) {
-            // go to Select which City you want
-            let dataNew = []
-            let states = []
-            for (let i = 0; i < data.length; i++) {
-                if (!states.includes(data[i].state)) {
-                    dataNew.push(data[i])
-                }
-                states.push(data[i].state)
-            }
-            setCityOptions(dataNew)
-            setSpecifyCityOpen(true)
-        } else {
-            // go to trip name modal
-
-        }
-        if (typeof data === 'undefined') {
-            console.log('new plan')
-        }
-    }
-
-
-
-    const handleCityStateResponse = (response) => {
-        let data = response.data[0]
-        console.log(data)
-        // setCity(data.name)
-        // setState(data.state)
-        // setGeocode([data.latitude, data.longitude])
-        if (typeof data === 'undefined') {
-            console.log('new plan')
-        }
-    }
 
     const updateCity = (e) => {
         setCity(e.target.value)
@@ -291,6 +257,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
 
     useEffect(() => {
         console.log(city)
+        if (city) {
+            if (city.length > 0) {
+                let cityInput = document.getElementById('cityInput')
+                cityInput.classList.remove('entry-error')
+            }
+        }
     }, [city])
 
     const startLoading = () => {
@@ -300,13 +272,35 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
         setLoading(false);
     }
 
+    const [modalWidth, setModalWidth] = useState(450);
+
+    
+
+    useEffect(() => {
+        window.addEventListener("resize", resizeModal, false)
+    }, [])
+
+    const resizeModal = () => {
+        if (window.innerWidth < 425) {
+            setModalWidth(240)
+        } else if (window.innerWidth > 425 && window.innerWidth < 600) {
+            setModalWidth(300)
+        } else if (window.innerWidth >= 600) {
+            setModalWidth(450)
+        }
+    }
+
+    const testmw = () => {
+        console.log(modalWidth)
+        console.log(window.innerWidth)
+    }
     return (
         <>
             {/* <div className=''>
                 <DatePicker selected={departDate} onChange={(departDate) => setDepartDate(departDate)} />
             </div>
              */}
-            <LoadingModal open={loading} width={450} height={500} onClose={() => stopLoading()} />
+            <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
 
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} openNameTripModal={openNameTripModal} setTripData={setTripData} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} onClose={() => closeNameTripModal()} />
@@ -318,7 +312,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                         <div className="item-location flx-3 flx-c just-en">
                             <div className="mr-2">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
-                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' />
+                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' required />
                             </div>
                         </div>
                         <div className="item-dates flx-2 flx-c just-en">
@@ -370,10 +364,10 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                                 return <div key={index} className="card3 position-relative">
                                     <img src={city.imgUrl} alt="" className="card3-img" />
                                     <div className="model-overlay position-absolute white-text">
-                                        <span className="material-symbols-outlined v-bott">
+                                        <span className="material-symbols-outlined v-bott white-text">
                                             favorite
                                         </span>
-                                        <p className="m-0 inline"> 86 Likes</p>
+                                        <p className="m-0 inline white-text"> 86 Likes</p>
                                     </div>
                                     <div className="page-subheading-bold my-2">{city.name}</div>
                                 </div>
@@ -382,12 +376,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                         </div>
                     </div>
                     <div className="btns mb-2">
-                        <button onClick={() => slideCarouselLeft()} className={translationIndex === 0 ? 'btn-primaryflex-disabled' : 'btn-primaryflex hover-left'}>
+                        <button onClick={() => slideCarouselLeft()} className={translationIndex === 0 ? 'btn-primaryflex-disabled' : 'btn-carousel-special hover-left'}>
                             <span className="material-symbols-outlined mt-1 white-text">
                                 arrow_back
                             </span>
                         </button>
-                        <button onClick={() => slideCarouselRight()} className={fullTranslated === true ? "btn-primaryflex-disabled right" : "btn-primaryflex right hover-right"}>
+                        <button onClick={() => slideCarouselRight()} className={fullTranslated === true ? "btn-primaryflex-disabled right" : "btn-carousel-special right hover-right"}>
                             <span className="material-symbols-outlined mt-1 white-text">
                                 arrow_forward
                             </span>

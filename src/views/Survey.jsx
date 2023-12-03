@@ -225,8 +225,10 @@ export const Survey = () => {
                 </div>
             </div>
             <div className="page-container90">
-                <h1 className="page-title">Personalize your recommendations</h1>
-                <p className="page-text">Routewise suggests places and activities based on your interests and preferences.</p>
+                {/* <h1 className="page-title">Personalize your recommendations</h1> */}
+                {/* <p className="page-text">Routewise suggests places and activities based on your interests and preferences.</p> */}
+                <h1 className="page-title">Set up your traveler profile</h1>
+                <p className="page-text">Adventure awaits! How do you prefer to explore the world?</p>
                 <p className="page-text">Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
                     error
                 </span></span></p>

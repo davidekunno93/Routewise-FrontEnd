@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 
+
 export const OpenMap = ({ mapCenter, markers, zoom }) => {
     const [mapGeo, setMapGeo] = useState(mapCenter ? mapCenter : [51.5072, -0.1276])
     // const [markers, setMarkers] = useState(locations ? locations : [])

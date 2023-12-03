@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { PlaceCardDraggable } from './PlaceCardDraggable';
 import { Link } from 'react-router-dom';
 import { SearchPlace } from './SearchPlace';
@@ -6,6 +6,27 @@ import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 
 const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace }) => {
+
+    const [dayTitle, setDayTitle] = useState('')
+
+
+    const updateDayTitle = (e) => {
+        setDayTitle(e.target.value)
+    }
+
+    useEffect(() => {
+        let editOverlay = document.getElementById(`editOverlay-${id}`)
+        let dayTitleInput = document.getElementById(`dayTitleInput-${id}`)
+        if (dayTitle.length > 0) {
+            editOverlay.classList.add('d-none')
+        } else if (dayTitle.length === 0) {
+            editOverlay.classList.remove('d-none')
+        }
+        if (dayTitle.length >= 32) {
+            dayTitleInput.value = dayTitle.slice(0, 32)
+            // console.log(">31")
+        }
+    }, [dayTitle])
 
     return (
         <div id={`flowBox-${id}`} className="flow-box">
@@ -17,8 +38,13 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                             expand_more
                         </span>
                         {day.day}</p>
-                    <p id={`placeCount-${id}`} className="gray-text bold500 td-2 o-none">{day.placeIds.length} {day.placeIds.length === 1 ? "place" : "places"}</p></div>
-                <input type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
+                    <p id={`placeCount-${id}`} className="gray-text bold500 placeCount ws-nowrap td-2 o-none">{day.placeIds.length} {day.placeIds.length === 1 ? "place" : "places"}</p></div>
+                <div className="addTitle-input position-relative">
+                    <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
+                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-50 edit-overlay">
+                        edit
+                    </span></label>
+                </div>
             </div>
             <div id={`flow-${id}`} className="flowBody-collapsible">
                 <div id={`flowBody-${id}`} className="flowBody ml-5 w-90">
@@ -29,11 +55,11 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                                 {places.map((place, i) => (
                                     <Draggable key={place.id} draggableId={`${place.id}`} index={i} >
                                         {(draggableProvided, draggableSnapshot) => (
-                                        <div ref={draggableProvided.innerRef} {...draggableProvided.draggableProps} {...draggableProvided.dragHandleProps} key={i}>
-                                            <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} />
-                                        </div>
-                                    )}
-                                    
+                                            <div ref={draggableProvided.innerRef} {...draggableProvided.draggableProps} {...draggableProvided.dragHandleProps} key={i}>
+                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} />
+                                            </div>
+                                        )}
+
                                     </Draggable>
                                 ))}
                                 {droppableProvided.placeholder}

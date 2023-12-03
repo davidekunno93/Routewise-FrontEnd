@@ -1,4 +1,4 @@
-import React, { useContext, useDebugValue, useEffect, useState } from 'react'
+import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
 import { AuthModal } from './auth/AuthModal';
 import { Link } from 'react-router-dom';
 import auth from '../firebase';
@@ -62,6 +62,18 @@ export const Navbar = () => {
     }
   }
 
+  useEffect(() => {
+    document.addEventListener('click', hideOnClickOutside, true)
+  })
+
+  const hideOnClickOutside = (e) => {
+    if (refUserDropdown.current && !refUserDropdown.current.contains(e.target)) {
+      const userOptions = document.getElementById('userOptions')
+      userOptions.classList.add('d-none')
+    }
+  }
+  const refUserDropdown = useRef(null);
+
 
   const sendDataTest = async () => {
     let data = {
@@ -78,38 +90,69 @@ export const Navbar = () => {
       .catch((error) => console.log(error))
   }
 
+
+  // Prototype Menu
+  const openPrototypeMenu = () => {
+    let prototypeMenu = document.getElementById('prototype-menu')
+    prototypeMenu.classList.remove('d-none')
+  }
+  const closePrototypeMenu = () => {
+    let prototypeMenu = document.getElementById('prototype-menu')
+    prototypeMenu.classList.add('d-none')
+  }
+  const togglePrototypeMenu = () => {
+    let prototypeMenu = document.getElementById('prototype-menu')
+    prototypeMenu.classList.toggle('d-none')
+  }
+
+  const refMenu = useRef(null)
+
+  useEffect(() => {
+    document.addEventListener('click', hideOnClickOutsideMenu, true)
+  }, [])
+
+  const hideOnClickOutsideMenu = (e) => {
+    if (refMenu.current && !refMenu.current.contains(e.target)) {
+      closePrototypeMenu()
+    }
+  }
+
   return (
     <>
       <div className='navbar bg-white w-100 flx-r just-sb'>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         <div className="flx-c just-ce">
-        <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link>
+          <Link onClick={() => togglePrototypeMenu()} className='ml15'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link>
+          {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
-        <Link className="model-link mt-4" to='/survey'><div>Survey</div></Link>
-        <Link className="model-link mt-4" to='/dashboard'><div>Dashboard</div></Link>
-        <Link className="model-link mt-4" to='/add-places'><div>Add Places</div></Link>
-        <Link className="model-link mt-4" to='/itinerary'><div>Itinerary</div></Link>
-        {/* <button onClick={() => sendDataTest()} className='btn-primaryflex model-btn'>Communicate w/ Kate</button> */}
+        <div ref={refMenu} id='prototype-menu' className="prototype-menu">
+          <Link to='/survey'><div className="option">Survey</div></Link>
+          <Link to='/dashboard'><div className="option">Dashboard</div></Link>
+          <Link to='/add-places'><div className="option">Add Places</div></Link>
+          <Link to='/itinerary'><div className="option">Itinerary</div></Link>
+
+        </div>
+
         {user ?
           <div className="right-btns flx-c just-ce position-relative">
             <div className="flx-r">
               <div className="flx-c just-ce">
-              <p className='username-text m-0 mt- inline mx-2'>{user.displayName}</p>
+                <p className='username-text m-0 mt- inline mx-2'>{user.displayName}</p>
               </div>
               <div className="profile-icon">
                 <img onClick={() => toggleUserOptions()} src={user.photoURL} alt="" className="profile-img pointer" />
               </div>
 
             </div>
-            <div id='userOptions' className="user-options-popup flx-c position-absolute d-none">
+            <div ref={refUserDropdown} id='userOptions' className="user-options-popup flx-c position-absolute d-none">
               <Link onClick={() => logOut()}>Sign Out</Link>
             </div>
           </div>
           :
           <div className="right-btns flx-c just-ce">
             <div className="flx-r just-se">
-            <button onClick={() => openSignUp()} className="signUp btn-outlineflex small mx10">Sign Up</button>
-            <button onClick={() => openSignIn()} className="signIn btn-primaryflex small">Log in</button>
+              <button onClick={() => openSignUp()} className="signUp btn-outlineflex small mx10">Sign Up</button>
+              <button onClick={() => openSignIn()} className="signIn btn-primaryflex small">Log in</button>
             </div>
           </div>
         }

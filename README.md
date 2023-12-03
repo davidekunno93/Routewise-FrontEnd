@@ -13,13 +13,13 @@ BackEnd (Kate) checkpoints
 - (send/return) User trip creation views > NameTripModal.jsx {uid, destinationCity, destinationState, destinationGeocode, tripName, startDate, endDate}. RETURN tripID
 - (send) Destination add places views > addPlaces.jsx 
 
-*msg saying this may take up to a minute on auth loading page 
-*put char count limit on subheading day names in itinerary page
+<!-- *msg saying this may take up to a minute on auth loading page  -->
+<!-- *put char count limit on subheading day names in itinerary page, limit is 32 chars -->
 *busy vs relaxed can change the max # activities in a day (8 vs 5?)
-*make mobile responsive
+**make mobile responsive
 <!-- DONE*show number of items in that day when you collapse itinerary day -->
-*make sticky map + suggestions 100vh in itinerary page
-*different api for loading city names?
+<!-- *make sticky map + suggestions 100vh in itinerary page -->
+<!-- *different api for loading city names? -->
 <!-- DONE*loading screen while name trip load -->
 *on dashboard, if no city entered and user tries to add trip, code error feedback
 <!-- DONE*make more aesthetic scrollbars -->
@@ -28,7 +28,10 @@ BackEnd (Kate) checkpoints
 *daySelection scrollable
 *My Trips, My Interests, My Account
 *suggested places > load from places api > filter categories from categories state, make horizontally scrollable
-
+*figure out pseudo-class that causes input fields to change color when dropdown suggestion list of old items pop up
+**show route button on each day
+*light bulb on the day that the added location is closest to
+*add place via itinerary add place btn inside flowbox
 
 REMEMBER TO...
 Take out unnecessary routes
