@@ -1991,6 +1991,7 @@ p {
   transform: translateY(0px);
 }
 
+
 .z-1 {
   z-index: 1;
 }
@@ -3325,6 +3326,9 @@ p {
   }
 
   .page-text {
+    font-size: small;
+  }
+  .addPlace-text{
     font-size: small;
   }
 

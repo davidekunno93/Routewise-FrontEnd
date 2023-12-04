@@ -378,10 +378,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
 
                     <div className="places-list flx-c flx-4">
-                        <div className="my">
+                        <div className="">
                             <div className="flx-r flx-end just-sb">
                                 <p className="page-subheading-bold m-0 my-1">Added places</p>
-                                <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer">Clear List</p>
+                                <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer z-1">Clear List</p>
                             </div>
                             <div className="placeCards">
                                 <Scrollbars style={{ color: 'red' }}>
@@ -419,7 +419,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                                 location_on
                                             </span>
                                             <p className="large bold700 my-1 o-50">Add some places</p>
-                                            <p className="m-0 w-60 center-text o-50">Use the search bar on the map to add places that you want to go</p>
+                                            <p className="m-0 w-60 center-text o-50 addPlace-text">Use the search bar on the map to add places that you want to go</p>
                                         </div>
 
                                     }
@@ -434,6 +434,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
                 </div>
             </div>
+            <div className="empty-6"></div>
+            <div className="empty-6"></div>
+            <div className="empty-6"></div>
             <div className="empty-6"></div>
 
         </>
