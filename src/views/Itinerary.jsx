@@ -20,6 +20,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
   const [markers, setMarkers] = useState(null);
   const [country, setCountry] = useState('gb');
   const [searchText, setSearchText] = useState('');
+  const [panelSearchText, setPanelSearchText] = useState('');
   const [auto, setAuto] = useState([]);
   const tripDays =
   {
@@ -328,6 +329,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
     }
     setPlaceToConfirm(newPlace)
     resetSearch()
+    resetPanelSearch()
   }
   const [currentTimeout, setCurrentTimeout] = useState(null);
   useEffect(() => {
@@ -344,6 +346,20 @@ export const Itinerary = ({ tripId, setTripID }) => {
       autoComplete.classList.add('d-none')
     }
   }, [searchText])
+  useEffect(() => {
+
+    if (currentTimeout) {
+      clearTimeout(currentTimeout)
+    }
+    if (panelSearchText) {
+      if (panelSearchText.length > 2) {
+        setCurrentTimeout(setTimeout(loadSearchDataForPanel, 500))
+      }
+    } else if (panelSearchText === '') {
+      let autoComplete = document.getElementById('autocomplete-container-map-panel')
+      autoComplete.classList.add('d-none')
+    }
+  }, [panelSearchText])
 
   const getSearchData = async () => {
     if (searchText.length < 2) {
@@ -357,7 +373,19 @@ export const Itinerary = ({ tripId, setTripID }) => {
       return response.status === 200 ? response.data : null
       // proximity:
     }
-
+  }
+  const getPanelSearchData = async () => {
+    if (panelSearchText.length < 2) {
+      // console.log('')
+      resetPanelSearch()
+    } else {
+      const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
+      let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${panelSearchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
+      console.log(url)
+      const response = await axios.get(url)
+      return response.status === 200 ? response.data : null
+      // proximity:
+    }
   }
   const loadSearchData = async () => {
     let data = await getSearchData()
@@ -367,33 +395,67 @@ export const Itinerary = ({ tripId, setTripID }) => {
     let autoComplete = document.getElementById('autocomplete-container')
     autoComplete.classList.remove('d-none')
   }
+  const loadSearchDataForPanel = async () => {
+    let data = await getPanelSearchData()
+    console.log(data)
+    setAuto(data.results)
+    // open search box
+    let autoComplete = document.getElementById('autocomplete-container-map-panel')
+    autoComplete.classList.remove('d-none')
+  }
 
   const updateSearchText = (e) => {
     setSearchText(e.target.value)
   }
-  const resetSearch = () => {
+  const updatePanelSearchText = (e) => {
+    setPanelSearchText(e.target.value)
+  }
+  const resetSearch = (modifier) => {
     let searchInput = document.getElementById('searchInput')
     let autoComplete = document.getElementById('autocomplete-container')
+    if (modifier) {
+      searchInput = document.getElementById(`searchInput-${modifier}`)
+      autoComplete = document.getElementById(`autocomplete-container-${modifier}`)
+    }
     searchInput.value = ""
     setSearchText('');
     autoComplete.classList.add('d-none')
   }
+  
+  const resetPanelSearch = () => {
+    let searchInput = document.getElementById('searchInput-map-panel')
+    let autoComplete = document.getElementById('autocomplete-container-map-panel')
+    searchInput.value = ""
+    setPanelSearchText('');
+    autoComplete.classList.add('d-none')
+  }
+
+
+
   const togglePopUp = (index) => {
     let popUp = document.getElementById(`popUp-${index}`)
     popUp.classList.toggle('d-none')
   }
 
-  const openDaySelection = () => {
+  const openDaySelection = (modifier) => {
     let daySelection = document.getElementById('daySelection')
+    if (modifier) {
+      daySelection = document.getElementById(`daySelection-${modifier}`)
+      console.log('bye')
+    }
+    console.log("hi")
     daySelection.classList.remove('d-none')
   }
 
-  const closeDaySelection = () => {
-    let daySelection = document.getElementById('daySelection')
+  const closeDaySelection = (modifier) => {
+    let daySelection = document.getElementById(`daySelection`)
+    if (modifier) {
+      daySelection = document.getElementById(`daySelection-${modifier}`)
+    }
     daySelection.classList.add('d-none')
   }
 
-  const addPlace = (dayNum) => {
+  const addPlace = (dayNum, modifier) => {
     // let place = placeToConfirm
     let tripStateCopy = { ...tripState }
     // create a new place id for the place
@@ -409,7 +471,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
     // closeDaySelection()
     // clearPlaceToConfirm()
     console.log(tripStateCopy)
-    confirmPlaceAdded()
+    confirmPlaceAdded(modifier)
   }
 
   const removePlace = (dayNum, placeId) => {
@@ -424,9 +486,13 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
   const [openDaySelected, setOpenDaySelected] = useState(false);
 
-  const confirmPlaceAdded = () => {
-    let daySelection = document.getElementById('daySelection')
-    let placeToConfirmCard = document.getElementById('placeToConfirmCard')
+  const confirmPlaceAdded = (modifier) => {
+    let daySelection = document.getElementById(`daySelection`)
+    let placeToConfirmCard = document.getElementById(`placeToConfirmCard`)
+    if (modifier) {
+      daySelection = document.getElementById(`daySelection-${modifier}`)
+      placeToConfirmCard = document.getElementById(`placeToConfirmCard-${modifier}`)
+    }
     daySelection.style.height = '280px';
     setOpenDaySelected(true)
 
@@ -436,7 +502,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
     })
     wait(5000).then(() => {
       setOpenDaySelected(false)
-      closeDaySelection()
+      closeDaySelection(modifier)
       clearPlaceToConfirm()
       daySelection.style.removeProperty('height')
     })
@@ -666,7 +732,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
   const showMapPanel = () => {
     let mapPanel = document.getElementById('map-panel')
     let panelBtns = document.getElementById('panelBtns')
-    let placeToConfirmCard = document.getElementById('placeToConfirmCard')
+    let placeToConfirmCard = document.getElementById('placeToConfirmCard-map-panel')
     if (placeToConfirmCard) {
       placeToConfirmCard.classList.remove('o-none')
     }
@@ -676,7 +742,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
   const hideMapPanel = () => {
     let mapPanel = document.getElementById('map-panel')
     let panelBtns = document.getElementById('panelBtns')
-    let placeToConfirmCard = document.getElementById('placeToConfirmCard')
+    let placeToConfirmCard = document.getElementById('placeToConfirmCard-map-panel')
     if (placeToConfirmCard) {
       placeToConfirmCard.classList.add('o-none')
     }
@@ -704,47 +770,47 @@ export const Itinerary = ({ tripId, setTripID }) => {
     <>
       <div className="itinerary-page flx-r">
         <div id='dayPanel' className="itinerary-c1">
-          
 
 
-            <div onClick={() => showDayPanel()} id='showDayPanelBtn' className="arrowToOpen">
-              <span className="material-symbols-outlined o-50 xx-large onHover-fade position-fixed z-1 top-128">
-                keyboard_double_arrow_right
-              </span>
-            </div>
 
-            <div className="dayPanelContainer">
-              <div id='dayPanelBody' className="it-column1 white-bg position-fixed ml-3 flx-c align-c o-none d-none">
-                <img src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
+          <div onClick={() => showDayPanel()} id='showDayPanelBtn' className="arrowToOpen">
+            <span className="material-symbols-outlined o-50 xx-large onHover-fade position-fixed z-1 top-128">
+              keyboard_double_arrow_right
+            </span>
+          </div>
 
-                <div onClick={() => hideDayPanel()} className="arrowToClose my-2">
-                  <span className="material-symbols-outlined o-50 xx-large right onHover-fade">
-                    keyboard_double_arrow_left
-                  </span>
-                </div>
+          <div className="dayPanelContainer">
+            <div id='dayPanelBody' className="it-column1 white-bg position-fixed ml-3 flx-c align-c o-none d-none">
+              <img src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
 
-                <button className="btn-secondaryflex">
-                  <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
-                    expand_more
-                  </span>
-                  <p className="inline v-align white-text">Location #1</p>
-                </button>
+              <div onClick={() => hideDayPanel()} className="arrowToClose my-2">
+                <span className="material-symbols-outlined o-50 xx-large right onHover-fade">
+                  keyboard_double_arrow_left
+                </span>
+              </div>
 
-                <div className="it-datesPanel w-100 flx-c mt-3">
-                  {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
-                    return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
-                      <p className="it-dateBlock my-1 flx-1 gray-text">{day.dayShort}</p>
-                      <p className="it-dayBlock my-1 flx-1 gray-text">{day.dateShort}</p>
-                    </div>
-                  }) : null
-                  }
+              <button className="btn-secondaryflex">
+                <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
+                  expand_more
+                </span>
+                <p className="inline v-align white-text">Location #1</p>
+              </button>
 
-                </div>
+              <div className="it-datesPanel w-100 flx-c mt-3">
+                {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
+                  return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
+                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.dayShort}</p>
+                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.dateShort}</p>
+                  </div>
+                }) : null
+                }
+
               </div>
             </div>
-
           </div>
-        
+
+        </div>
+
         <div className="itinerary-c2 flx-1">
           <div className="page-container96">
             <Link to='/add-places' className=''>
@@ -813,7 +879,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
             <div className="it-panelMap position-relative">
               <div className="searchBar position-absolute w-100 z-1000">
                 <div className="position-relative w-100 h-100">
-                  <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
+                  <div id='autocomplete-container-map-panel' className="mapSearch-dropdown flx-c">
                     {auto ? auto.map((result, i) => {
                       return <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
                         <div className="inner-contain flx-r w-96 hideOverflow m-auto">
@@ -828,8 +894,8 @@ export const Itinerary = ({ tripId, setTripID }) => {
                     location_on
                   </span>
 
-                  {searchText.length > 0 ?
-                    <span onClick={() => resetSearch()} className="material-symbols-outlined position-absolute search-icon-overlay pointer onHover-black">
+                  {panelSearchText.length > 0 ?
+                    <span onClick={() => resetPanelSearch()} className="material-symbols-outlined position-absolute search-icon-overlay pointer onHover-black">
                       close
                     </span>
                     :
@@ -837,27 +903,27 @@ export const Itinerary = ({ tripId, setTripID }) => {
                       search
                     </span>
                   }
-                  <input onChange={(e) => updateSearchText(e)} id='searchInput' type='text' className="input-search-map-overlay position-absolute" placeholder='Search places...' />
+                  <input onChange={(e) => updatePanelSearchText(e)} id='searchInput-map-panel' type='text' className="input-search-map-overlay position-absolute" placeholder='Search places...' />
                 </div>
               </div>
 
-              <div id='daySelection' className="daySelection position-absolute d-none">
+              <div id='daySelection-map-panel' className="daySelection position-absolute d-none">
                 <div className="position-relative flx-c align-c w-100">
                   <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
-                  <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
+                  <span onClick={() => closeDaySelection('map-panel')} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
                     close
                   </span>
                   <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
                   {tripData.dayOrder.map((dayNum, i) => {
                     const day = tripData.days[dayNum]
-                    return <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                    return <button onClick={() => { addPlace(`day-${i + 1}`, "map-panel"), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
                   })}
                   <div className="mb-3"></div>
                 </div>
               </div>
 
               {placeToConfirm &&
-                <div id='placeToConfirmCard' className="placeToConfirmCard position-absolute">
+                <div id='placeToConfirmCard-map-panel' className="placeToConfirmCard position-absolute">
                   <div className="placeCard-PTC w-97 position-relative flx-r my-2">
 
                     <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
@@ -868,11 +934,11 @@ export const Itinerary = ({ tripId, setTripID }) => {
                       <img className="placeCard-img" src={placeToConfirm.imgURL} />
                     </div>
                     <div className="placeCard-body flx-2">
-                      <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                      <div onClick={() => togglePopUp('PTC-map-panel')} id='popUp-PTC-map-panel' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
                       <p className="body-title">{placeToConfirm.placeName}</p>
-                      <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                      <p onClick={() => togglePopUp('PTC-map-panel')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
                       <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-                      <div onClick={() => openDaySelection()} className="flx right pr-4 onHover-fadelite">
+                      <div onClick={() => openDaySelection('map-panel')} className="flx right pr-4 onHover-fadelite">
                         <div className="addIcon-small flx pointer mx-2">
                           <span className="material-symbols-outlined m-auto medium purple-text">
                             add

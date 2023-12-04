@@ -2283,9 +2283,11 @@ p {
 }
 
 #placeToConfirmCard,
-#daySelection {
+#placeToConfirmCard-map-panel,
+#daySelection, 
+#daySelection-map-panel {
   /* transform: translateY(50px); */
-  transition: 0.3s;
+  transition: 0.5s;
 }
 
 .daySelection {
