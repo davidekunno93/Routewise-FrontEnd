@@ -686,6 +686,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
   useEffect(() => {
     window.addEventListener("resize", resizeDayPanel, false)
+    hideDayPanel()
   }, [])
 
   const resizeDayPanel = () => {
