@@ -88,7 +88,9 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
 }
-
+.border-box{
+  box-sizing: border-box;
+}
 .flx {
   display: flex;
 }
@@ -342,6 +344,9 @@ button:focus-visible {
 
 .w-60 {
   width: 60%;
+}
+.w-65 {
+  width: 65%;
 }
 
 .w-70 {
@@ -1089,6 +1094,12 @@ button:focus-visible {
 .red-text {
   color: red;
 }
+.red-bg{
+  background-color: red;
+}
+.blend-bg{
+  background-color: rgb(245, 245, 245);
+}
 
 .bold500 {
   font-weight: 500;
@@ -1394,6 +1405,13 @@ p {
   background-color: gainsboro;
   border-radius: 12px;
 }
+.gray-box-respond {
+  width: 96%;
+  height: 650px;
+  background-color: gainsboro;
+  border-radius: 12px;
+}
+
 
 .page-text {
   font-size: large;
@@ -1862,7 +1880,8 @@ p {
 
 .selection-box {
   background-color: #F0EFFF;
-  width: 96%;
+  width: 100%;
+  box-sizing: border-box;
   padding: 2%;
   /* height: 200px; */
   border-radius: 12px;
@@ -1952,7 +1971,7 @@ p {
 
 .map-panel {
   position: fixed;
-  height: 0vh;
+  height: 80vh;
   width: 100%;
   bottom: 0;
   transition: 0.4s;
@@ -1981,12 +2000,11 @@ p {
   position: fixed;
   padding: 8px 12px;
   border-radius: 8px 8px 0 0;
-  ;
   bottom: 0;
   right: 0%;
   z-index: 2;
-  background-color: #F0EFFF;
-  box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1);
+  background-color: #646CFF;
+  /* box-shadow: 0 0px 20px rgba(0, 0, 0, 0.1); */
   transition: 0.3s;
   transform: translateY(0px);
 }
@@ -2221,6 +2239,7 @@ p {
   align-items: center;
 }
 
+
 .dot-indicator {
   width: 20px;
 }
@@ -2262,6 +2281,9 @@ p {
   /* border: 1px solid blue; */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.07);
   z-index: 2000;
+}
+.item-dates{
+  width: 360px;
 }
 
 .inputIcon-right {
@@ -2594,6 +2616,14 @@ p {
   margin-top: 100px;
   margin-bottom: 100px;
 }
+.my-11 {
+  margin-top: 120px;
+  margin-bottom: 120px;
+}
+.my-12 {
+  margin-top: 140px;
+  margin-bottom: 140px;
+}
 
 .mx-1 {
   margin-right: 5px;
@@ -2648,7 +2678,9 @@ p {
 .ml-5 {
   margin-left: 50px;
 }
-
+.ml-5-respond{
+  margin-left: 50px;
+}
 .ml-6 {
   margin-left: 60px;
 }
@@ -2686,6 +2718,9 @@ p {
 }
 
 .mr-2 {
+  margin-right: 10px;
+}
+.mr-2-disappear768{
   margin-right: 10px;
 }
 
@@ -2774,6 +2809,15 @@ p {
 
 .pad28 {
   padding: 28px;
+}
+.pad28-respond {
+  padding: 28px;
+}
+.pad10p{
+  padding: 10%;
+}
+.pad20p{
+  padding: 20%;
 }
 
 .pb-2 {
@@ -2912,6 +2956,27 @@ p {
   background-color: rgb(240, 240, 240);
   transition: 0.2s;
 }
+.smalltext-respond{
+  font-size: large;
+  color: #0F0680;
+}
+.planning-section{
+  background-color: rgb(245, 245, 245);
+}
+.planning-section .text {
+  font-size: 30px;
+}
+.page-card{
+  width: 90%;
+  margin: auto;
+  background-color: #F0EFFF;
+}
+
+@media only screen and (max-width: 1200px) {
+  .planning-section .text {
+    font-size: 24px;
+  }
+}
 
 
 @media only screen and (max-width:1024px) {
@@ -2924,13 +2989,26 @@ p {
   }
 
   .places-list {
-    width: 96%;
+    width: 100%;
+  }
+  .gray-box-respond{
+    width: 100%;
+    height: 400px;
+  }
+  .ml-5-respond{
+    margin-left: 30px;
+  }
+  .input-special{
+    width: 250px;
   }
 }
 
 @media only screen and (max-width: 975px) {
   .hero-title {
     font-size: 32px;
+  }
+  .planning-section .text {
+    font-size: 18px;
   }
 
   .hero-text {
@@ -2952,12 +3030,22 @@ p {
     flex: none;
     width: 100%;
   }
+  .smalltext-respond{
+    font-size: small;
+  }
+  .smallertext975-respond {
+    font-size: x-large;
+  }
+  .placeCount{
+    font-size: small;
+  }
 }
 
 @media only screen and (max-width: 768px) {
   .onHover-50 {
     opacity: 0.5;
   }
+  
 
   .hover-left:hover {
     transform: none;
@@ -2987,6 +3075,9 @@ p {
   .btn-secondaryflex {
     padding: 12px 16px;
     font-size: medium;
+  }
+  .mr-2-disappear768 {
+    margin-right: 0;
   }
 
   /* page text sizes */
@@ -3022,6 +3113,13 @@ p {
     font-size: medium;
   }
 
+  .planning-section .text {
+    font-size: 15px;
+  }
+  .pad28-respond {
+    padding: 16px;
+  }
+
   .flxstyle-respond {
     width: 100%;
     flex-direction: row;
@@ -3029,6 +3127,11 @@ p {
   }
 
   /* box */
+  .selection-box {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4%;
+  }
 
 
   /* itinerary */
@@ -3072,26 +3175,23 @@ p {
   }
 
   .carousel-window {
-    width: 400px;
+    width: 90vw;
+    height: 95vh;
   }
+  /* sign-up-loading height must change to match carousel window? */
+  
 
-  .sign-up-box {
-    width: 400px;
+  .sign-up-box, .sign-in-box, .sign-up-loading, .sign-up-part2 {
+    width: 90vw;
     padding: 12px 4px;
   }
-
-  .sign-in-box {
-    width: 400px;
-    padding: 12px 4px;
+  .input-model-title {
+    text-align: center;
+  }
+  .ml-5-respond{
+    margin-left: 40px;
   }
 
-  .btn-primary {
-    width: 270px;
-  }
-
-  .btn-outline {
-    width: 270px;
-  }
 
   .btn-primary {
     width: 270px;
@@ -3181,6 +3281,15 @@ p {
   .page-text {
     font-size: small;
   }
+  .sign-up{
+    font-size: small;
+  }
+  .planning-section .text {
+    font-size: 11px;
+  }
+  .pad28-respond {
+    padding: 10px;
+  }
 
   /* box */
   .box-title {
@@ -3231,6 +3340,13 @@ p {
   .calendarInput {
     font-size: 14px;
   }
+  .ml-5-respond{
+    margin-left: 20px;
+  }
+  .smalltext-respond{ 
+    font-size: small;
+    color: #3F3899;
+  }
 
   h1 {
     font-size: xx-large;
@@ -3240,15 +3356,14 @@ p {
     width: 18px;
   }
 
-  .sign-up-box {
+  .sign-up-box, .sign-in-box, .sign-up-loading, .sign-up-part2 {
     width: 300px;
     padding: 12px 4px;
+  }
+  #welcomeToRoutewise{
+    font-size: x-large;
   }
 
-  .sign-in-box {
-    width: 300px;
-    padding: 12px 4px;
-  }
 
   .btn-primary {
     width: 250px;
@@ -3333,11 +3448,24 @@ p {
   .addPlace-text{
     font-size: small;
   }
+  .sign-up{
+    font-size: x-small;
+  }
+  .tripFlow{
+    font-size: small;
+  }
+  .planning-section .text {
+    font-size: xx-small;
+  }
+  .pad28-respond{
+    padding: 4px;
+  }
 
   /* box */
   .box-title {
     font-size: 22px;
   }
+  
 
   /* modals */
   .nameTrip-box,
@@ -3347,6 +3475,10 @@ p {
 
   .tripModal-img {
     width: 100%;
+  }
+  .carousel-window {
+    height: 560px;
+    padding-top: 10px;
   }
 
   /* pic sizes */
@@ -3412,5 +3544,11 @@ p {
   }
   .placeCount{
     font-size: small;
+  }
+}
+
+@media only screen and (max-width: 360px) {
+  .calendarInput {
+    font-size: 12px;
   }
 }

@@ -32,12 +32,12 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
         <div id={`flowBox-${id}`} className="flow-box">
 
             <div className="flow-header">
-                <div className="flx-r just-sb">
-                    <p className="page-subheading-bold m-0">
-                        <span id={`expandArrow-${id}`} onClick={() => toggleFlow(id)} className="material-symbols-outlined xx-large v-align symbol pointer td-2">
+                <div onClick={() => toggleFlow(id)} className="flx-r just-sb pointer">
+                    <p className="page-subheading-bold smallertext975-respond m-0">
+                        <span id={`expandArrow-${id}`} className="material-symbols-outlined xx-large v-align symbol td-2">
                             expand_more
                         </span>
-                        {day.day}</p>
+                        {day.day.split(' ')[0]} <span className="smalltext-respond"> {day.day.split(' ')[1]} {day.day.split(' ')[2]}</span></p>
                     <p id={`placeCount-${id}`} className="gray-text bold500 placeCount ws-nowrap td-2 o-none">{day.placeIds.length} {day.placeIds.length === 1 ? "place" : "places"}</p></div>
                 <div className="addTitle-input position-relative">
                     <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
@@ -47,7 +47,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                 </div>
             </div>
             <div id={`flow-${id}`} className="flowBody-collapsible">
-                <div id={`flowBody-${id}`} className="flowBody ml-5 w-90">
+                <div id={`flowBody-${id}`} className="flowBody ml-5-respond w-90">
                     <Droppable droppableId={day.id}>
                         {(droppableProvided, droppableSnaphot) => (
 

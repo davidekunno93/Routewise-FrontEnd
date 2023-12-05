@@ -293,13 +293,20 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     return (
         <>
             <div className="page-container90 mt-4">
-
-                <Link to='/dashboard' className=''>
+                <div className="tripFlow flx-r">
+                    <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
+                    <span className="material-symbols-outlined">
+                        arrow_right
+                    </span>
+                    <p className="m-0 purple-text bold700">Add Places</p>
+                    
+                </div>
+                {/* <Link to='/dashboard' className=''>
                     <span className="material-symbols-outlined v-tbott mr-2 purple-text">
                         arrow_back
                     </span>
                     <p className="inline large purple-text">Back</p>
-                </Link>
+                </Link> */}
                 <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                 <div className="flx-r onHover-fadelite">
                     <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
@@ -308,7 +315,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                 </div>
                 <div className="body-section flx-r-respond">
                     <div className="map-section flx-5">
-                        <div className="gray-box position-relative flx">
+                        <div className="gray-box-respond position-relative flx">
 
                             <div className="searchBar position-absolute w-100 z-10000">
                                 <div className="position-relative w-100 h-100">
@@ -371,7 +378,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                     </div>
                                 </div>
                             }
+
                             <OpenMap mapCenter={bias} markers={markers} />
+
                         </div>
                     </div>
 
@@ -436,8 +445,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             </div>
             <div className="empty-6"></div>
             <div className="empty-6"></div>
-            <div className="empty-6"></div>
-            <div className="empty-6"></div>
+            <div className="empty-3"></div>
 
         </>
     )

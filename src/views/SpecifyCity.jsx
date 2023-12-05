@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export const SpecifyCity = ({ open, cities, tripData, setTripData, openNameTripModal, onClose }) => {
+export const SpecifyCity = ({ open, cities, tripData, setTripData, getCountryName, openNameTripModal, onClose }) => {
     if (!open) return null
 
 
@@ -19,7 +19,8 @@ export const SpecifyCity = ({ open, cities, tripData, setTripData, openNameTripM
         let tripInfo = {...tripData}
         tripInfo.cityName = cityName
         tripInfo.state = state
-        tripInfo.country = country
+        tripInfo.country = getCountryName(country)
+        tripInfo.country_2letter = country
         tripInfo.geocode = [lat, lon]
         setTripData(tripInfo)
         updateFinished()

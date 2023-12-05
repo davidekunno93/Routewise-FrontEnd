@@ -421,7 +421,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
     setSearchText('');
     autoComplete.classList.add('d-none')
   }
-  
+
   const resetPanelSearch = () => {
     let searchInput = document.getElementById('searchInput-map-panel')
     let autoComplete = document.getElementById('autocomplete-container-map-panel')
@@ -753,6 +753,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
   useEffect(() => {
     window.addEventListener("resize", resizeDayPanel, false)
     hideDayPanel()
+    hideMapPanel()
   }, [])
 
   const resizeDayPanel = () => {
@@ -813,12 +814,23 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
         <div className="itinerary-c2 flx-1">
           <div className="page-container96">
-            <Link to='/add-places' className=''>
+            <div className="tripFlow flx-r">
+              <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
+              <span className="material-symbols-outlined">
+                arrow_right
+              </span>
+              <Link to='/add-places'><p className="m-0 purple-text">Add Places</p></Link>
+              <span className="material-symbols-outlined">
+                arrow_right
+              </span>
+              <p className="m-0 purple-text bold700">Itinerary</p>
+            </div>
+            {/* <Link to='/add-places' className=''>
               <span className="material-symbols-outlined v-tbott mr-2 purple-text">
                 arrow_back
               </span>
               <p className="inline large purple-text">Back</p>
-            </Link>
+            </Link> */}
             <p className="page-heading-bold m-0">Hey {auth.currentUser ? auth.currentUser.displayName : "Josh"},</p>
             <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary!</p>
             <div className="flx-r onHover-fadelite">
@@ -859,13 +871,13 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
         {/* Map Panel */}
         <div id='panelBtns' className="position-absolute panel-btns">
-          <span id='leftPanelOpen' onClick={() => showDayPanel()} className="material-symbols-outlined mx-3 o-50">
+          <span id='leftPanelOpen' onClick={() => showDayPanel()} className="material-symbols-outlined mx-3 mt-1 white-text">
             left_panel_open
           </span>
-          <span id='leftPanelClose' onClick={() => hideDayPanel()} className="material-symbols-outlined mx-3 o-50 d-none">
+          <span id='leftPanelClose' onClick={() => hideDayPanel()} className="material-symbols-outlined mx-3 mt-1 white-text d-none">
             left_panel_close
           </span>
-          <span onClick={() => showMapPanel()} className="material-symbols-outlined mx-3 o-50">
+          <span onClick={() => showMapPanel()} className="material-symbols-outlined mt-1 white-text mx-3">
             map
           </span>
         </div>

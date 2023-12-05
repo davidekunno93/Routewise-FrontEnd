@@ -80,12 +80,16 @@ export const Survey = () => {
         return new Promise((resolve) => setTimeout(resolve, ms))
     }
 
+    const [progressBarSpace, setProgressBarSpace] = useState(window.innerWidth < 600 ? 10 : 0);
+ 
+
     const progressAnimation = () => {
         const progressBar = document.getElementById('progress-bar-full')
         const nodeFlex = document.getElementById('node-flex')
         const progressBarContainer = document.getElementById('progressBarContainer')
         let halfBarWidth = progressBarContainer.offsetWidth / 2 - 30
         // progressBar.style.width = '47%'
+        halfBarWidth = halfBarWidth + progressBarSpace
         progressBar.style.right = halfBarWidth+"px"
         console.log(halfBarWidth)
         wait(900).then(() => {

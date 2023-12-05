@@ -15,7 +15,7 @@ export const Loading = () => {
     
     return (
         <>
-            <div id='loading' className='position-absolute abs-center purple-text mt-7'>Loading...</div>
+            <div id='loading' className='position-absolute abs-center purple-text mt-8 center-text'>Loading...</div>
             
             <img src='https://i.imgur.com/DQ1Otmw.png' className="bird-load-logo m-auto position-absolute abs-center" />
             

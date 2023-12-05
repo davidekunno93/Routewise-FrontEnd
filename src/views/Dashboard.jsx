@@ -67,31 +67,31 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     const cities = [
         {
             name: 'Paris',
-            imgUrl: 'https://i.imgur.com/JnLJKbE.jpg'
+            imgUrl: 'https://i.imgur.com/JnLJKbEl.jpg'
         },
         {
             name: 'Rome',
-            imgUrl: 'https://i.imgur.com/HJJEInt.jpg'
+            imgUrl: 'https://i.imgur.com/HJJEIntl.jpg'
         },
         {
             name: 'London',
-            imgUrl: 'https://i.imgur.com/sCT1BpF.jpg'
+            imgUrl: 'https://i.imgur.com/sCT1BpFl.jpg'
         },
         {
             name: 'New York City',
-            imgUrl: 'https://i.imgur.com/RxO0dfy.jpg'
+            imgUrl: 'https://i.imgur.com/RxO0dfyl.jpg'
         },
         {
             name: 'Tokyo',
-            imgUrl: 'https://i.imgur.com/JMgMvzP.png'
+            imgUrl: 'https://i.imgur.com/JMgMvzPl.png'
         },
         {
             name: 'Miami',
-            imgUrl: 'https://i.imgur.com/F6fkD7O.jpg'
+            imgUrl: 'https://i.imgur.com/F6fkD7Ol.jpg'
         },
         {
             name: 'Dubai',
-            imgUrl: 'https://i.imgur.com/OWmQg9L.jpgg'
+            imgUrl: 'https://i.imgur.com/OWmQg9Ll.jpgg'
         }
     ]
     const slideCarouselRight = () => {
@@ -273,7 +273,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     }
 
     const [modalWidth, setModalWidth] = useState(450);
-
+    
     
 
     useEffect(() => {
@@ -287,6 +287,9 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
             setModalWidth(300)
         } else if (window.innerWidth >= 600) {
             setModalWidth(450)
+        }
+        if (window.innerWidth < 600) {
+
         }
     }
 
@@ -302,7 +305,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
              */}
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
 
-            <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} openNameTripModal={openNameTripModal} setTripData={setTripData} onClose={() => closeSpecifyCity()} />
+            <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
                 <h1 className="page-title inline-block">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="med-pic ml-2" />
@@ -310,21 +313,21 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
                     <div className="box-title flx-2 flx-c just-ce"><p className='my-3'>Start planning your next adventure</p></div>
                     <div className="box-items flx-3 flx-r mb-4 flx-wrap">
                         <div className="item-location flx-3 flx-c just-en">
-                            <div className="mr-2">
+                            <div className="mr-2-disappear768">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
                                 <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' required />
                             </div>
                         </div>
-                        <div className="item-dates flx-2 flx-c just-en">
+                        <div className="item-dates flx- flx-c just-en">
                             <div className="box-heading dark-text page-subsubheading">When will you be there?</div>
-                            <div className="calendarWrap mr-2">
+                            <div className="calendarWrap mr-2-disappear768">
                                 <span onClick={() => setCalendarOpen(true)} className="material-symbols-outlined position-absolute inputIcon-right xx-large o-50 pointer">
                                     date_range
                                 </span>
                                 <input
                                     onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)}
                                     // value={`${range[0].startDate && range[0].endDate ? format(range[0].startDate, "MM/dd/yyyy")+"      |      "+format(range[0].endDate, "MM/dd/yyyy") : "Start Date   End Date" } `} 
-                                    value={`${format(range[0].startDate, "MM/dd/yyyy")}     to     ${format(range[0].endDate, "MM/dd/yyyy")} `}
+                                    value={` ${format(range[0].startDate, "MM/dd/yyyy")}            -to-           ${format(range[0].endDate, "MM/dd/yyyy")} `}
                                     className="calendarInput pointer"
                                     readOnly
                                 />

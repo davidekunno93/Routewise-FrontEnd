@@ -64,7 +64,7 @@ export const HeroCarousel = () => {
 
     return (
         <>
-            <div className="heroCarouselContainer position-relative w-100 hideOverFlow flx-c just-ce">
+            <div className="heroCarouselContainer blend-bg position-relative w-100 hideOverFlow flx-c just-ce">
                 {/* <div className="position-absolute z-1 w-100"> */}
                 <div className="indicators w-25 mt-3 flx-r just-se abs-vcenter z-1 abs-bottom8">
                     {images.map((image, index) => {
