@@ -33,7 +33,9 @@ export const Landing = () => {
                 {/* <img src="https://i.imgur.com/6E1qXMc.jpg" alt="" className="hero-img" /> */}
                 <HeroCarousel />
             </div>
-            <button className="btn-primaryflex mt-3 w-50 m-auto appear425"><p className="my-1 mx-2 white-text">Start planning now</p></button>
+            <div className="flx align-c w-100 blend-bg">
+                <button className="btn-primaryflex mt-3 w-50 m-auto appear425"><p className="my-1 mx-2 white-text">Start planning now</p></button>
+            </div>
 
             <div className="planning-section">
                 <h1 className="page-title w-65 center-text m-auto my-8">Planning your day-to-day travel itinerary just got a whole lot easier</h1>
