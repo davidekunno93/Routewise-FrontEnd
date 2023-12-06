@@ -82,8 +82,8 @@ export const Landing = () => {
 
 
             <div className="how-it-works">
-                <Fade delay={300}>
-                    <Slide direction='up'>
+                <Fade delay={300} triggerOnce>
+                    <Slide direction='up' triggerOnce>
                         <h1 className="page-title center-text my-8">How it Works</h1>
                     </Slide>
                 </Fade>
