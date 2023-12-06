@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { OpenMap } from '../components/OpenMap'
 import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
+import { Itinerary } from './Itinerary'
+import { LoadingScreen } from '../components/LoadingScreen'
 
 
 
@@ -264,21 +266,42 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
     const sendPlaces = async () => {
         let places_serial = {}
-        let placeLast = places.length
+        let placesLast = places.length
         for (let i = 0; i < places.length; i++) {
             places_serial[i + 1] = { id: i + 1, ...places[i] }
         }
-        console.log(places_serial)
-        // let data = {
-        //     tripID: 11,
-        //     placesLast: placesLast,
-        //     places_serial: places_serial,
-        //     places: places
-        // }
-        // const response = axios.post("https://routewise-backend.onrender.com/places/place", JSON.stringify(data), {
-        //     headers: { "Content-Type": "application/json" }
-        // }).then((response) => console.log(response))
-        //     .catch((error) => console.log(error))
+        let data = {
+            tripId: currentTrip.tripID,
+            placesLast: placesLast,
+            places_serial: places_serial,
+        }
+        console.log(data)
+        const response = axios.post("https://routewise-backend.onrender.com/itinerary/createdays/41", JSON.stringify(data), {
+            headers: { "Content-Type": "application/json" }
+        }).then((response) => createItinerary(response))
+            .catch((error) => console.log(error))
+    }
+
+
+    // const [cont, setCont] = useState(false)
+    // const updateCont = () => {
+    //     setCont(true)
+    // }
+
+    // useEffect(() => {
+    //     if (cont === true && currentTrip.Itinerary) {
+    //         navigate('/itinerary')
+    //     }
+    // }, [cont])
+
+    const createItinerary = (response) => {
+        let currentTripCopy = {...currentTrip}
+        currentTripCopy["itinerary"] = response.data
+        console.log(response.data)
+        console.log(currentTripCopy)
+        setCurrentTrip(currentTripCopy)
+        // updateCont()
+        setIsLoading(true)
     }
 
     const showCurrentTrip = () => {
@@ -290,8 +313,14 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         popUp.classList.toggle('d-none')
     }
 
+    const [isLoading, setIsLoading] = useState(false);
+    const stopLoading = () => {
+        setIsLoading(false)
+    }
+
     return (
         <>
+        <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
             <div className="page-container90 mt-4">
                 <div className="tripFlow flx-r">
                     <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
@@ -299,7 +328,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                         arrow_right
                     </span>
                     <p className="m-0 purple-text bold700">Add Places</p>
-                    
+
                 </div>
                 {/* <Link to='/dashboard' className=''>
                     <span className="material-symbols-outlined v-tbott mr-2 purple-text">
@@ -436,7 +465,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
                             </div>
                             <div className="generate-btn-space w-100">
-                                <button className="btn-primaryflex right mt-2">Generate Itinerary</button>
+                                <button onClick={() => sendPlaces()} className="btn-primaryflex right mt-2">Generate Itinerary</button>
                             </div>
                         </div>
                     </div>

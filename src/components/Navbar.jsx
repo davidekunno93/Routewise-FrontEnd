@@ -8,9 +8,12 @@ import axios from 'axios';
 
 export const Navbar = () => {
   const { user, setUser } = useContext(DataContext);
+  const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
   // auth modal open and close states
   const [isOpen, setIsOpen] = useState(false);
   const [authIndex, setAuthIndex] = useState(null);
+
+  
 
   useEffect(() => {
     auth.currentUser ? setUser(auth.currentUser) : null
@@ -18,12 +21,17 @@ export const Navbar = () => {
 
   const openSignUp = () => {
     setAuthIndex(0);
-    setIsOpen(true);
+    setSignUpIsOpen(true);
   }
   const openSignIn = () => {
     setAuthIndex(1);
-    setIsOpen(true);
+    setSignUpIsOpen(true);
   }
+  // if (signUpIsOpen) {
+  //   openSignUp()
+  //   setSignUpIsOpen(false)
+  //   // console.log('open!!')
+  // }
 
   const toggleUserOptions = () => {
     const userOptions = document.getElementById('userOptions')
@@ -160,7 +168,7 @@ export const Navbar = () => {
           </div>
         }
       </div>
-      <AuthModal open={isOpen} authIndex={authIndex} onClose={() => setIsOpen(false)} />
+      <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
     </>
   )
 }

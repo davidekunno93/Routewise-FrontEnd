@@ -15,7 +15,8 @@ import DaySelected from '../components/DaySelected'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 
-export const Itinerary = ({ tripId, setTripID }) => {
+export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) => {
+  // if (!currentTrip) return null
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [country, setCountry] = useState('gb');
@@ -27,9 +28,9 @@ export const Itinerary = ({ tripId, setTripID }) => {
     tripID: "",
     days: [
       {
-        day: "Wednesday, November 8",
-        dayShort: "Wed",
-        dateShort: "11/8",
+        date_converted: "Wednesday, November 8",
+        day_short: "Wed",
+        date_short: "11/8",
         dayName: "",
         places: [
           {
@@ -53,9 +54,9 @@ export const Itinerary = ({ tripId, setTripID }) => {
         ]
       },
       {
-        day: "Thursday, November 9",
-        dayShort: "Thurs",
-        dateShort: "11/9",
+        date_converted: "Thursday, November 9",
+        day_short: "Thurs",
+        date_short: "11/9",
         dayName: "",
         places: [
           {
@@ -79,10 +80,10 @@ export const Itinerary = ({ tripId, setTripID }) => {
         ]
       },
       {
-        day: "Friday, November 10",
+        date_converted: "Friday, November 10",
         dayName: "",
-        dayShort: "Fri",
-        dateShort: "11/10",
+        day_short: "Fri",
+        date_short: "11/10",
         places: [
           {
             placeName: "Borough Market",
@@ -105,10 +106,10 @@ export const Itinerary = ({ tripId, setTripID }) => {
         ]
       },
       {
-        day: "Saturday, November 11",
+        date_converted: "Saturday, November 11",
         dayName: "",
-        dayShort: "Sat",
-        dateShort: "11/11",
+        day_short: "Sat",
+        date_short: "11/11",
         places: [
           {
             placeName: "Borough Market",
@@ -204,6 +205,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
     const flowZero = document.getElementById(`flow-${id}`)
     const flowBodyZero = document.getElementById(`flowBody-${id}`)
     const placeCount = document.getElementById(`placeCount-${id}`)
+    flowBodyZero.classList.remove('d-none')
     flowZero.style.height = `${flowBodyZero.offsetHeight}px`
     rotateSymbol(id, '0')
     wait(100).then(() => {
@@ -224,6 +226,9 @@ export const Itinerary = ({ tripId, setTripID }) => {
       flowZero.style.height = '0px'
       placeCount.classList.remove('o-none')
       rotateSymbol(id, '-90')
+      wait(500).then(() => {
+        flowBodyZero.classList.add('d-none')
+      })
     })
   }
 
@@ -268,7 +273,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
   let refs = useRef([])
   useEffect(() => {
-    refs.current = refs.current.slice(0, tripData.dayOrder.length)
+    refs.current = refs.current.slice(0, tripData.day_order.length)
   }, [])
 
   // const myRef  = useRef(null);
@@ -459,14 +464,14 @@ export const Itinerary = ({ tripId, setTripID }) => {
     // let place = placeToConfirm
     let tripStateCopy = { ...tripState }
     // create a new place id for the place
-    tripStateCopy.places[parseInt(tripStateCopy.placeLast) + 1] = placeToConfirm
-    // tripStateCopy.places[tripStateCopy.placeLast + 1][id] = tripStateCopy.placeLast + 1
-    tripStateCopy.places[parseInt(tripStateCopy.placeLast) + 1] = {
-      id: parseInt(tripStateCopy.placeLast) + 1,
+    tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = placeToConfirm
+    // tripStateCopy.places[tripStateCopy.places_last + 1][id] = tripStateCopy.places_last + 1
+    tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
+      id: parseInt(tripStateCopy.places_last) + 1,
       ...placeToConfirm,
     }
-    tripStateCopy.placeLast = parseInt(tripStateCopy.placeLast) + 1
-    tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.placeLast)
+    tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
+    tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
     setTripState(tripStateCopy)
     // closeDaySelection()
     // clearPlaceToConfirm()
@@ -516,9 +521,9 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
 
   // drag n drop code
-  const tripData = {
+  const tripTestData = {
     tripID: "",
-    placeLast: 8,
+    places_last: 8,
     places: {
       1: {
         id: 1,
@@ -604,42 +609,49 @@ export const Itinerary = ({ tripId, setTripID }) => {
     days: {
       "day-1": {
         id: "day-1",
-        day: "Wednesday, November 8",
-        dayShort: "Wed",
-        dateShort: "11/8",
+        date_converted: "Wednesday, November 8",
+        day_short: "Wed",
+        date_short: "11/8",
         dayName: "",
         placeIds: [1, 2]
       },
       "day-2": {
         id: "day-2",
-        day: "Thursday, November 9",
-        dayShort: "Thurs",
-        dateShort: "11/9",
+        date_converted: "Thursday, November 9",
+        day_short: "Thurs",
+        date_short: "11/9",
         dayName: "",
         placeIds: [3, 4]
       },
       "day-3": {
         id: "day-3",
-        day: "Friday, November 10",
+        date_converted: "Friday, November 10",
         dayName: "",
-        dayShort: "Fri",
-        dateShort: "11/10",
+        day_short: "Fri",
+        date_short: "11/10",
         placeIds: [5, 6]
       },
       "day-4": {
         id: "day-4",
-        day: "Saturday, November 11",
+        date_converted: "Saturday, November 11",
         dayName: "",
-        dayShort: "Sat",
-        dateShort: "11/11",
+        day_short: "Sat",
+        date_short: "11/11",
         placeIds: [7, 8]
       }
 
     },
-    "dayOrder": ["day-1", "day-2", "day-3", "day-4"]
+    "day_order": ["day-1", "day-2", "day-3", "day-4"]
   }
 
-  const [tripState, setTripState] = useState(tripData);
+  const tripData = currentTrip.itinerary ? currentTrip.itinerary : tripTestData
+
+  useEffect(() => {
+    console.log(currentTrip.itinerary)
+  }, [])
+
+
+  const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
 
   const reorderDayList = (sourceDay, startIndex, endIndex) => {
     const newPlaceIds = Array.from(sourceDay.placeIds);
@@ -798,14 +810,22 @@ export const Itinerary = ({ tripId, setTripID }) => {
               </button>
 
               <div className="it-datesPanel w-100 flx-c mt-3">
-                {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
+                {/* {Array.isArray(tripDays.days) ? tripDays.days.map((day, id) => {
                   return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
-                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.dayShort}</p>
-                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.dateShort}</p>
+                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.day_short}</p>
+                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.date_short}</p>
                   </div>
                 }) : null
-                }
+                } */}
 
+                {tripState.day_order.map((dayNum, id) => {
+                  const day = tripState.days[dayNum]
+
+                  return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
+                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.day_short}</p>
+                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.date_short}</p>
+                  </div>
+                })}
               </div>
             </div>
           </div>
@@ -850,7 +870,7 @@ export const Itinerary = ({ tripId, setTripID }) => {
 
 
               <DragDropContext onDragEnd={onDragEndItinerary}>
-                {tripState.dayOrder.map((dayNum, id) => {
+                {tripState.day_order.map((dayNum, id) => {
                   const day = tripState.days[dayNum]
                   const places = day.placeIds.map((placeId) => tripState.places[placeId])
 
@@ -926,9 +946,9 @@ export const Itinerary = ({ tripId, setTripID }) => {
                     close
                   </span>
                   <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                  {tripData.dayOrder.map((dayNum, i) => {
+                  {tripData.day_order.map((dayNum, i) => {
                     const day = tripData.days[dayNum]
-                    return <button onClick={() => { addPlace(`day-${i + 1}`, "map-panel"), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                    return <button onClick={() => { addPlace(`day-${i + 1}`, "map-panel"), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
                   })}
                   <div className="mb-3"></div>
                 </div>
@@ -1028,12 +1048,12 @@ export const Itinerary = ({ tripId, setTripID }) => {
                     close
                   </span>
                   <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                  {tripData.dayOrder.map((dayNum, i) => {
+                  {tripData.day_order.map((dayNum, i) => {
                     const day = tripData.days[dayNum]
-                    return <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                    return <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
                   })}
                   {/* {tripDays.days.map((day, i) => (
-                    <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.dayShort, day.dateShort) }} className="dayOption my-h">{day.dayShort}, {day.dateShort}</button>
+                    <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
                   ))} */}
                   <div className="mb-3"></div>
                 </div>

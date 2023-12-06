@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from 'react'
+import React, { useContext, useEffect, useReducer, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'
 import { NameTripModal } from './NameTripModal';
@@ -13,11 +13,14 @@ import { SpecifyCity } from './SpecifyCity';
 import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
 import auth from '../firebase';
+import { DataContext } from '../Context/DataProvider';
 
 
 
 export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     // login require
+    const { user, setUser } = useContext(DataContext);
+    const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
@@ -158,41 +161,47 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     const refOne = useRef(null);
 
 
-
+    const openSignUp = () => {
+        setSignUpIsOpen(true);
+    }
 
     const getCity = async () => {
-        if (!city) {
-            // if there is no city entered --> please enter city name
-            let cityInput = document.getElementById('cityInput')
-            cityInput.classList.add('entry-error')
-            console.log("no city")
+        if (!user) {
+            openSignUp()
         } else {
-            // if there is a city entered
-            startLoading()
-            const index = city.indexOf(',')
-            // if the user input includes a "," -- it contains city and state/country
-            if (index > -1) {
-                let cityNoSpaces = city.replace(/ /g, '')
-                const cityArr = cityNoSpaces.split(',')
-                // console.log(cityArr)
-                const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`, {
-                    headers: { 'X-Api-Key': apiKey }
-                }).then((response => openNewTrip(response)))
-                    .catch((error) => {
-                        console.log(error)
-                        stopLoading()
-                    })
-                // go to TripName Modal automatically
+            if (!city) {
+                // if there is no city entered --> please enter city name
+                let cityInput = document.getElementById('cityInput')
+                cityInput.classList.add('entry-error')
+                console.log("no city")
             } else {
-                // if user enters just a city name with no ","
-                const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${city}`, {
-                    headers: { 'X-Api-Key': apiKey }
-                }).then((response => openNewTrip(response)))
-                    .catch((error) => {
-                        console.log(error)
-                        stopLoading()
-                        alert("City was not found")
-                    })
+                // if there is a city entered
+                startLoading()
+                const index = city.indexOf(',')
+                // if the user input includes a "," -- it contains city and state/country
+                if (index > -1) {
+                    let cityNoSpaces = city.replace(/ /g, '')
+                    const cityArr = cityNoSpaces.split(',')
+                    // console.log(cityArr)
+                    const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`, {
+                        headers: { 'X-Api-Key': apiKey }
+                    }).then((response => openNewTrip(response)))
+                        .catch((error) => {
+                            console.log(error)
+                            stopLoading()
+                        })
+                    // go to TripName Modal automatically
+                } else {
+                    // if user enters just a city name with no ","
+                    const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${city}`, {
+                        headers: { 'X-Api-Key': apiKey }
+                    }).then((response => openNewTrip(response)))
+                        .catch((error) => {
+                            console.log(error)
+                            stopLoading()
+                            alert("City was not found")
+                        })
+                }
             }
         }
     }
@@ -273,8 +282,8 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
     }
 
     const [modalWidth, setModalWidth] = useState(450);
-    
-    
+
+
 
     useEffect(() => {
         window.addEventListener("resize", resizeModal, false)

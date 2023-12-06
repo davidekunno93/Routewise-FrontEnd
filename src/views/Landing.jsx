@@ -44,24 +44,24 @@ export const Landing = () => {
             <div className="planning-section">
                 <Fade delay={300} triggerOnce>
                     <Slide direction='up' triggerOnce>
-                    <h1 className="page-title w-65 center-text m-auto my-12">Planning your day-to-day travel itinerary just got a whole lot easier</h1>
+                        <h1 className="page-title w-65 center-text m-auto my-12">Planning your day-to-day travel itinerary just got a whole lot easier</h1>
 
 
-                    <div className="page-container90 flx-r">
-                        <div className="img flx-4">
-                            <img src="https://i.imgur.com/jlXivfT.png" alt="" className='w-100' />
+                        <div className="page-container90 flx-r">
+                            <div className="img flx-4">
+                                <img src="https://i.imgur.com/jlXivfT.png" alt="" className='w-100' />
+                            </div>
+                            <div className="text flx flx-3">
+                                <p className="m-auto bold500 pad28-respond">
+                                    RouteWise groups nearby locations for a hassle-free day of exploration. <br /><br />
+                                    Maximize your time and make every moment count with simplified travel planning at your fingertips!
+                                </p>
+                            </div>
+
                         </div>
-                        <div className="text flx flx-3">
-                            <p className="m-auto bold500 pad28-respond">
-                                RouteWise groups nearby locations for a hassle-free day of exploration. <br /><br />
-                                Maximize your time and make every moment count with simplified travel planning at your fingertips!
-                            </p>
-                        </div>
-
-                    </div>
 
 
-                    {/* <div className="cards flx-r flx-wrap just-se">
+                        {/* <div className="cards flx-r flx-wrap just-se">
                     {cards.map((card, index) => {
                         return <div key={index} className="card mx-5 my-4">
                             <img src={card.imgUrl} alt="" className="card-img" />
@@ -74,7 +74,7 @@ export const Landing = () => {
                     })}
 
                 </div> */}
-                    <div className="empty-3"></div>
+                        <div className="empty-3"></div>
                     </Slide>
                 </Fade>
             </div>
@@ -89,38 +89,46 @@ export const Landing = () => {
                 </Fade>
                 <div className="cards w-90 m-auto">
                     <Fade delay={500} fraction={0.6} triggerOnce>
-                    <Slide fraction={0.6} direction='left' triggerOnce>
-                        <div className="card4-l flx-r my-10">
-                            <div className="flx-1">
-                                <img src="https://i.imgur.com/LtwTsr7.png" alt="" className="card4-img" />
+                        <Slide fraction={0.6} direction='left' triggerOnce>
+                            <div className="card4-l flx-r my-10">
+                                <div className="flx-2">
+                                    <img src="https://i.imgur.com/wx4upLO.png" alt="" className="card4-img" />
+                                </div>
+                                <div className="flx-1 pad28">
+                                    <div className="page-heading-bold flx-r">
+                                        <p className="">1.&nbsp;&nbsp;</p>
+                                        <div className="flx-c">
+                                            <p className="">Add places to your trip list</p>
+                                            <p className="m-0 page-text">Look up the places you want to go on the map and add it to your trip list with a click of a button!</p>
+
+                                        </div></div>
+                                </div>
                             </div>
-                            <div className="flx-1 pad28"><p className="page-heading-bold"> 1. Set your travel preferences</p> </div>
-                        </div>
                         </Slide>
                         <Slide fraction={0.6} direction='right' triggerOnce>
-                        <div className="card4-r flx-r my-10">
-                            <div className="flx-1 pad28"><p className="page-heading-bold"> 2. Start your trip</p> </div>
-                            <div className="flx-1">
-                                <img src="https://i.imgur.com/51ZmBFY.png" alt="" className="card4-img" />
+                            <div className="card4-r flx-r my-10">
+                                <div className="flx-1 pad28"><p className="page-heading-bold"> 2. Generate a proximity-bsaed itinerary</p> </div>
+                                <div className="flx-1">
+                                    <img src="https://i.imgur.com/02aZHAR.png" alt="" className="card4-img" />
+                                </div>
                             </div>
-                        </div>
                         </Slide>
                         <Slide fraction={0.6} direction='left' triggerOnce>
-                        <div className="card4-l flx-r my-10">
-                            <div className="flx-1">
-                                <img src="https://i.imgur.com/pvdhYw0.png" alt="" className="card4-img" />
+                            <div className="card4-l flx-r my-10">
+                                <div className="flx-1">
+                                    <img src="https://i.imgur.com/oe52kHu.png" alt="" className="card4-img" />
+                                </div>
+                                <div className="flx-1 pad28"><p className="page-heading-bold"> 3. Customize your itinerary and explore!</p> </div>
                             </div>
-                            <div className="flx-1 pad28"><p className="page-heading-bold"> 3. Add locations</p> </div>
-                        </div>
                         </Slide>
-                        <Slide fraction={0.6} direction='right' triggerOnce>
+                        {/* <Slide fraction={0.6} direction='right' triggerOnce>
                         <div className="card4-r flx-r my-10">
                             <div className="flx-1 pad28"><p className="page-heading-bold"> 4. Generate itinerary</p> </div>
                             <div className="flx-1">
                                 <img src="https://i.imgur.com/WHVlrc4.png" alt="" className="card4-img" />
                             </div>
                         </div>
-                        </Slide>
+                        </Slide> */}
                     </Fade>
 
                 </div>
