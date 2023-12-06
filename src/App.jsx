@@ -14,6 +14,7 @@ import { Itinerary } from './views/Itinerary'
 import { Test } from './views/Test'
 import { OpenMap } from './components/OpenMap'
 import { HeroCarousel } from './components/HeroCarousel'
+import { HeroFade } from './components/HeroFade'
 
 function App() {
   const [currentTrip, setCurrentTrip] = useState({
@@ -39,7 +40,7 @@ function App() {
       <Route children path='/itinerary' element={<Itinerary currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
       <Route children path='/test' element={<Test />} />
       <Route children path='/map' element={<OpenMap />} />
-      <Route children path='/hero' element={<HeroCarousel />} />
+      <Route children path='/hero' element={<HeroFade />} />
     </Routes>
       <h1 className='empty-3'></h1>
       {/* <h1 className='empty-6'></h1> */}

@@ -99,6 +99,10 @@ button:focus-visible {
   display: flex;
   flex-direction: row;
 }
+.flx-r-respond768{
+  display: flex;
+  flex-direction: row;
+}
 
 .flx-c {
   display: flex;
@@ -595,6 +599,21 @@ button:focus-visible {
   font-size: 60px;
 }
 
+.heroFade-img{
+  width: 100%;
+  height: calc(100vh - 85px);
+  /* height: 610px; */
+  object-fit: cover;
+  transition: 1.0s;
+}
+.heroFadeContainer .placeholder {
+  width: 100%;
+  height: calc(100vh - 85px);
+  /* height: 610px; */
+}
+#fade{
+  transition: 2s;
+}
 .sign-in-box {
   width: 500px;
   height: 550px;
@@ -2013,6 +2032,9 @@ p {
 .z-1 {
   z-index: 1;
 }
+.z-10 {
+  z-index: 10;
+}
 
 .z-100 {
   z-index: 100;
@@ -2624,6 +2646,10 @@ p {
   margin-top: 140px;
   margin-bottom: 140px;
 }
+.my-12-respond768{
+  margin-top: 140px;
+  margin-bottom: 140px;
+}
 
 .mx-1 {
   margin-right: 5px;
@@ -2836,6 +2862,14 @@ p {
   padding-bottom: 25px;
 }
 
+.hidden{
+  opacity: 0;
+  transition: 0.5s
+}
+.show {
+  opacity: 1;
+}
+
 .d-none {
   display: none;
 }
@@ -2913,6 +2947,8 @@ p {
   margin-top: 15%;
 }
 
+
+
 .hero-text {
   font-size: x-large;
 }
@@ -2971,6 +3007,10 @@ p {
   margin: auto;
   background-color: #F0EFFF;
 }
+.page-card-img{
+  width: 60%;
+  object-fit: contain;
+}
 
 @media only screen and (max-width: 1200px) {
   .planning-section .text {
@@ -3019,6 +3059,12 @@ p {
   .box-title {
     font-size: 28px;
   }
+  .page-card-title{
+    font-size: 32px;
+  }
+  .page-card-text{
+    font-size: 13px;
+  }
 
   .item-location {
     flex: none;
@@ -3044,6 +3090,18 @@ p {
 @media only screen and (max-width: 768px) {
   .onHover-50 {
     opacity: 0.5;
+  }
+  .heroFade-img{
+    width: 100%;
+    height: calc(80vh - 85px);
+    /* height: 610px; */
+    object-fit: cover;
+    transition: 1.0s;
+  }
+  .heroFadeContainer .placeholder {
+    width: 100%;
+    height: calc(80vh - 85px);
+    /* height: 610px; */
   }
   
 
@@ -3132,6 +3190,16 @@ p {
     box-sizing: border-box;
     padding: 4%;
   }
+  .flx-r-respond768{
+    flex-direction: column;
+  }
+  .page-card-img{
+    width: 50%;
+  }
+  .my-12-respond768{
+    margin-top: 80px;
+    margin-bottom: 0px;
+  }
 
 
   /* itinerary */
@@ -3172,6 +3240,20 @@ p {
 @media only screen and (max-width: 600px) {
   .routewise-logo {
     height: 30px;
+  }
+
+  /* hero section */
+  .heroFade-img{
+    width: 100%;
+    height: calc(70vh - 85px);
+    /* height: 610px; */
+    object-fit: cover;
+    transition: 1.0s;
+  }
+  .heroFadeContainer .placeholder {
+    width: 100%;
+    height: calc(70vh - 85px);
+    /* height: 610px; */
   }
 
   .carousel-window {
@@ -3241,6 +3323,10 @@ p {
 
   /* cards */
   .card2 {
+    width: 140px;
+    height: 175px;
+  }
+  .card2-selected{
     width: 140px;
     height: 175px;
   }
@@ -3333,6 +3419,19 @@ p {
 }
 
 @media only screen and (max-width: 425px) {
+  /* hero section */
+  .heroFade-img{
+    width: 100%;
+    height: calc(60vh - 85px);
+    /* height: 610px; */
+    object-fit: cover;
+    transition: 1.0s;
+  }
+  .heroFadeContainer .placeholder {
+    width: 100%;
+    height: calc(60vh - 85px);
+    /* height: 610px; */
+  }
   .carousel-window {
     width: 300px;
   }
@@ -3396,6 +3495,10 @@ p {
 
   /* cards */
   .card2 {
+    width: 100px;
+    height: 125px;
+  }
+  .card2-selected{
     width: 100px;
     height: 125px;
   }
@@ -3465,6 +3568,9 @@ p {
   .box-title {
     font-size: 22px;
   }
+  .page-card-text{
+    font-size: 10px;
+  }
   
 
   /* modals */
@@ -3514,7 +3620,7 @@ p {
 
   /* google icons */
   .arrow {
-    font-size: x-small;
+    font-size: small;
   }
 }
 

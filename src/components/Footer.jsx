@@ -13,7 +13,7 @@ export const Footer = () => {
               <p className="slogan m-0 mt-1 ws-nowrap">Plan your trips more efficiently</p>
             </div>
           </div>
-          <div className="large font-jakarta mt-4">2023</div>
+          <div className="large font-jakarta mt-4 dark-text">2023</div>
         </div>
     </div>
   )

@@ -17,7 +17,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
     const [loginEmail, setLoginEmail] = useState(null);
     const [createPassword, setCreatePassword] = useState(null);
     const [loginPassword, setLoginPassword] = useState(null);
-    
+
 
     function wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms))
@@ -56,11 +56,11 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
     }
     const validateEmail = (emailEntry) => {
         return String(emailEntry)
-          .toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          );
-      };
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
 
     const continueWithEmail = () => {
         const emailInput = document.getElementById('registerEmail')
@@ -68,9 +68,14 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
         if (registerEmail) {
             if (validateEmail(registerEmail)) {
                 openCreatePassword()
+            } else {
+                emailInput.classList.add('entry-error');
+                invalidEmail.innerText = "Please enter a valid email"
+                invalidEmail.classList.remove('o-none');
             }
         } else {
             emailInput.classList.add('entry-error');
+            invalidEmail.innerText = "Please enter a valid email"
             invalidEmail.classList.remove('o-none');
         }
     }
@@ -125,11 +130,11 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
             // console.log(auth.currentUser)
             setUser(data.user)
             onClose()
-            
+
             // localStorage.setItem('email', data.user.email)
-            
+
         })
-        
+
     }
 
     // getRedirectResult(auth).then
@@ -159,14 +164,14 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                     <hr className='w-100 border-gains' />
                                 </div>
                             </div>
-                            <p id='invalidEmail' className="m-0 red-text o-none">Please enter a valid email</p>
+                            <p id='invalidEmail' className="m-0 red-text o-none">&nbsp;</p>
                             <div className="inputBox my-2">
                                 <input id='registerEmail' onChange={(e) => updateRegisterEmail(e)} type='text' className='input-model' required />
                                 <span className='title font-jakarta'>Email</span>
                             </div>
-                            
+
                             <button id='continueEmail' onClick={() => continueWithEmail()} className='btn-primary bg-white font-jakarta bg-lightpurple white-text'>Continue with email</button>
-                            <div className='m-0 small mt-3 font-jakarta'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
+                            <div className='m-0 small mt-3 font-jakarta dark-text'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
                         </div>
                         <div className="sign-in-box m-auto">
                             <h1 className='mt-4'>Sign In</h1>
@@ -181,7 +186,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                     <hr className='w-100 border-gains' />
                                 </div>
                             </div>
-        
+
                             <div className="inputBox my-2">
                                 <input id='loginEmail' onChange={(e) => updateLoginEmail(e)} type='text' className='input-model' required />
                                 <span className='title font-jakarta'>Email</span>
@@ -195,7 +200,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             </div>
 
                             <button onClick={() => signInWithEmail()} id='loginWithEmail' className='btn-primary bg-lightpurple white-text font-jakarta'>Sign in with email</button>
-                            <div className='m-0 small mt-3 font-jakarta'>Create an account? <Link onClick={() => updateIndex(0)} className='link-text'><strong>Sign Up</strong></Link></div>
+                            <div className='m-0 small mt-3 font-jakarta dark-text'>Create an account? <Link onClick={() => updateIndex(0)} className='link-text'><strong>Sign Up</strong></Link></div>
 
                         </div>
                     </div>

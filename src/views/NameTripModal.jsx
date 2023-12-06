@@ -122,7 +122,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cha
                     <span onClick={onClose} class="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
                         close
                     </span>
-                    <div className="page-subheading-bold font-jakarta my-3">
+                    <div className="page-subheading-bold font-jakarta my-3 dark-text">
                         Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span>
                         <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link onClick={changeCity}>here</Link> to find the right one</p>
                     </div>

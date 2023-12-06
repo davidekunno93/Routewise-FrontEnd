@@ -42,7 +42,7 @@ export const SpecifyCity = ({ open, cities, tripData, setTripData, getCountryNam
                         <span onClick={onClose} className="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
                             close
                         </span>
-                        <div className="page-subheading-bold bold700 font-jakarta w-80 my-3">
+                        <div className="page-subheading-bold bold700 font-jakarta w-80 my-3 dark-text">
                             Select your destination
                         </div>
                         
