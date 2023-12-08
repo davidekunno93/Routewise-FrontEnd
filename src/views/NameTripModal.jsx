@@ -52,9 +52,8 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cha
     const startPlanningWithName = async () => {
         let tripNameInput = document.getElementById('tripNameInput')
         if (tripName.length > 0) {
-            console.log("lets go")
             // updateCurrentTrip()
-            processData()
+            sendData()
             // navigate('/add-places')
         } else {
             tripNameInput.classList.add('entry-error')
@@ -63,11 +62,12 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cha
 
     const startPlanningWithoutName = async () => {
         // updateCurrentTrip()
-        processData()
+        sendData()
         // navigate('/add-places')
     }
 
     const sendData = async () => {
+        setLoading(true)
         let tripDataCopy = { ...tripData }
         tripDataCopy['tripName'] = tripName,
             tripDataCopy['destinationImg'] = cityImg
@@ -79,31 +79,37 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cha
         const response = await axios.post("https://routewise-backend.onrender.com/places/trip", JSON.stringify(data), {
             headers: { "Content-Type": "application/json" }
         })
-        return response.status === 200 ? response.data : "error"
-        // .then((response) => handleData(response))
-        // .catch((error) => console.log(error))
+        // return response.status === 200 ? response.data : "error"
+        .then((response) => processData(response))
+        .catch((error) => {
+            console.log(error)
+            setLoading(false);
+            alert("Something went wrong. Please try again")
+        })
     }
 
-    const processData = async () => {
-        setLoading(true)
-        let data = await sendData()
-        if (data === 'error') {
-            setLoading(false)
-            alert('Something went wrong. Please try again later')
-        } else {
-            let currentTripCopy = { ...currentTrip }
-            currentTripCopy.tripID = data
-            currentTripCopy.tripName = tripName
-            currentTripCopy.city = tripData.cityName
-            currentTripCopy.country = tripData.country
-            currentTripCopy.country_2letter = tripData.country_2letter
-            currentTripCopy.geocode = tripData.geocode
-            currentTripCopy.imgUrl = cityImg
-            setCurrentTrip(currentTripCopy)
-            setLoading(false)
-            navigate('/add-places')
+    const processData = async (response) => {
+        // **old code - we went thru processData first to await the sent data before continuing but errors were not handled as desired
+        // setLoading(true)
+        // let data = await sendData()
+        let data = response.data
+        // if (data === 'error') {
+        //     setLoading(false)
+        //     alert('Something went wrong. Please try again later')
+        // } else {
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.tripID = data
+        currentTripCopy.tripName = tripName
+        currentTripCopy.city = tripData.cityName
+        currentTripCopy.country = tripData.country
+        currentTripCopy.country_2letter = tripData.country_2letter
+        currentTripCopy.geocode = tripData.geocode
+        currentTripCopy.imgUrl = cityImg
+        setCurrentTrip(currentTripCopy)
+        setLoading(false)
+        navigate('/add-places')
 
-        }
+        // }
     }
 
 

@@ -102,11 +102,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
     useEffect(() => {
         let placeCopy = [...places];
+        console.log(places)
+        console.log(placeToConfirm)
         if (placeToConfirm) {
             placeCopy.push(placeToConfirm)
         }
         setMarkers(placeCopy)
-    }, [placeToConfirm], [places])
+    }, [placeToConfirm, places])
 
 
 
@@ -181,7 +183,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             info: placeInfo,
             address: place.formatted,
             imgURL: imgUrl,
-            category: place.category,
+            category: place.category ? place.category : "none",
             favorite: false,
             lat: place.lat,
             long: place.lon,
@@ -199,7 +201,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         let placeCopy = [...places]
         let newPlace = placeToConfirm
         placeCopy.push(newPlace)
-        // console.log(placeCopy)
+        console.log(placeCopy)
         setPlaces(placeCopy)
         clearPlaceToConfirm()
     }
@@ -232,7 +234,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         } else {
             const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
             let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
-            console.log(url)
+            // console.log(url)
             const response = await axios.get(url)
             return response.status === 200 ? response.data : null
             // proximity:
@@ -265,6 +267,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     }
 
     const sendPlaces = async () => {
+        setIsLoading(true)
         let places_serial = {}
         let placesLast = places.length
         for (let i = 0; i < places.length; i++) {
@@ -279,7 +282,12 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         const response = axios.post("https://routewise-backend.onrender.com/itinerary/createdays/41", JSON.stringify(data), {
             headers: { "Content-Type": "application/json" }
         }).then((response) => createItinerary(response))
-            .catch((error) => console.log(error))
+            .catch((error) => {
+                console.log(error)
+                setIsLoading(false)
+                alert('Something went wrong. Please try again')
+            })
+
     }
 
 
@@ -301,7 +309,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         console.log(currentTripCopy)
         setCurrentTrip(currentTripCopy)
         // updateCont()
-        setIsLoading(true)
+        // setIsLoading(false)
     }
 
     const showCurrentTrip = () => {
@@ -316,6 +324,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     const [isLoading, setIsLoading] = useState(false);
     const stopLoading = () => {
         setIsLoading(false)
+    }
+
+    const checkPTC = () => {
+        console.log(placeToConfirm)
     }
 
     return (
@@ -336,7 +348,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link> */}
-                <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                <p onClick={() => checkPTC()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                 <div className="flx-r onHover-fadelite">
                     <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                         add

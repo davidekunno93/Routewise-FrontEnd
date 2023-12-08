@@ -19,7 +19,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) =>
   // if (!currentTrip) return null
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
   const [markers, setMarkers] = useState(null);
-  const [country, setCountry] = useState('gb');
+  const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
   const [searchText, setSearchText] = useState('');
   const [panelSearchText, setPanelSearchText] = useState('');
   const [auto, setAuto] = useState([]);
@@ -460,11 +460,50 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) =>
     daySelection.classList.add('d-none')
   }
 
+  const addPlaceFromFlowBox = async (dayNum, place) => {
+    // {run imgquery on place.name + country}
+    let imgQuery = place.name.replace(/ /g, '-')
+    // {run place details query with place_id}
+    let placeInfo = await loadPlaceDetails(place.place_id)
+    let imgUrl = await loadCityImg(imgQuery)
+
+    let newPlace = {
+      placeName: place.name,
+      info: placeInfo,
+      address: place.formatted,
+      imgURL: imgUrl,
+      category: place.category,
+      favorite: false,
+      lat: place.lat,
+      long: place.lon,
+      geocode: [place.lat, place.lon],
+      placeId: place.place_id
+    }
+
+
+    let tripStateCopy = { ...tripState }
+    // create a new place id for the place by incrementing places_last, and add the id key to the place object
+    tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
+      id: parseInt(tripStateCopy.places_last) + 1,
+      ...newPlace,
+    }
+    // increment places_last
+    tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
+    // add place to the desired day
+    tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
+    setTripState(tripStateCopy)
+
+    // {update place object w/ info and imgUrl}
+    // {add place to tripState}
+    // {use placesLast + 1 as id of place and add to day[dayNum]}
+    // {increment placesLast}
+  }
+
   const addPlace = (dayNum, modifier) => {
     // let place = placeToConfirm
     let tripStateCopy = { ...tripState }
     // create a new place id for the place
-    tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = placeToConfirm
+    // tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = placeToConfirm
     // tripStateCopy.places[tripStateCopy.places_last + 1][id] = tripStateCopy.places_last + 1
     tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
       id: parseInt(tripStateCopy.places_last) + 1,
@@ -648,6 +687,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) =>
 
   useEffect(() => {
     console.log(currentTrip.itinerary)
+    console.log(currentTrip)
   }, [])
 
 
@@ -876,7 +916,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) =>
 
                   return <Suspense fallback={<LoadBox />} >
                     <div ref={el => refs.current[id] = el} key={id} className="">
-                      <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} />
+                      <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} addPlaceFromFlowBox={addPlaceFromFlowBox} country={country} />
                     </div>
                   </Suspense>
                 })}
@@ -984,7 +1024,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) =>
               }
 
 
-              <OpenMap markers={markers} />
+              <OpenMap markers={markers} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} />
             </div>
           </div>
 
@@ -1093,7 +1133,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) =>
 
 
 
-              <OpenMap markers={markers} />
+              <OpenMap markers={markers} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} />
             </div>
 
 

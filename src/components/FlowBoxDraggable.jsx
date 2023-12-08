@@ -5,7 +5,7 @@ import { SearchPlace } from './SearchPlace';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 
 
-const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace }) => {
+const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country }) => {
 
     const [dayTitle, setDayTitle] = useState('')
 
@@ -82,7 +82,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                                     close
                                 </span>
                             </div>
-                            <SearchPlace />
+                            <SearchPlace id={id} country={country} addPlaceFromFlowBox={addPlaceFromFlowBox} dayNum={day.id} />
                         </div>
                     </div>
 
