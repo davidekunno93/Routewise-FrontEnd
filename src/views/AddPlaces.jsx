@@ -430,7 +430,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                     <div className="places-list flx-c flx-4">
                         <div className="">
                             <div className="flx-r flx-end just-sb">
-                                <p className="page-subheading-bold m-0 my-1">Added places</p>
+                                <p className="page-subheading-bold m-0 my-1">Added places ({places.length})</p>
                                 <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer z-1">Clear List</p>
                             </div>
                             <div className="placeCards">
