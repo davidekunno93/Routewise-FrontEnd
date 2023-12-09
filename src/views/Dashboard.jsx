@@ -17,7 +17,7 @@ import { DataContext } from '../Context/DataProvider';
 
 
 
-export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
+export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     // login require
     const { user, setUser } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
@@ -315,7 +315,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip }) => {
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
 
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
-            <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} onClose={() => closeNameTripModal()} />
+            <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
                 <h1 className="page-title inline-block">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="med-pic ml-2" />
                 <div className="selection-box flx-c">

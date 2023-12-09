@@ -8,7 +8,7 @@ import { LoadingScreen } from '../components/LoadingScreen'
 
 
 
-export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
+export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     // Send Kate Data
     const navigate = useNavigate()
     const [places, setPlaces] = useState([]);
@@ -150,7 +150,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     const loadCityImg = async (imgQuery) => {
         const data = await getCityImg(imgQuery)
         // console.log(data)
-        console.log(data.results[0].urls.regular)
+        // console.log(data.results[0].urls.regular)
         return data.results[0].urls.regular
     }
 
@@ -234,12 +234,23 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         let url = `https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
         const response = await axios.get(url)
             // return response.status === 200 ? response.data : null
-            .then((response) => {
+            .then(async (response) => {
                 let data = response.data.features
-                for (let i=0;i<data.length;i++) {
-                    data[i].properties.categoryName = categoryName
+                for (let i = 0; i < data.length; i++) {
+                    let place = data[i].properties
+                    place.categoryName = categoryName
+                    if (place.name) {
+                        // console.log(place.name)
+                        let addressLine2Short = place.address_line2.split(',')[0].replace(/ /g, "-")
+                        // console.log(addressLine2Short)
+                        let imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + addressLine2Short
+                        // console.log(imgQuery)
+                        let imgUrl = await loadCityImg(imgQuery)
+                        place.imgUrl = imgUrl
+                    }
+
                 }
-                console.log(response)
+                // console.log(response)
                 setSuggestedPlaces(data)
             })
             .catch((error) => {
@@ -247,8 +258,41 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             })
     }
 
+    const [userPreferences, setUserPreferences] = useState(
+        {
+            landmarks: true,
+            nature: false,
+            shopping: false,
+            food: true,
+            relaxation: true,
+            entertainment: false,
+            arts: false
+        });
+        const [userInterests, setUserInterests] = useState(null)
+
     useEffect(() => {
-        getSuggestedPlaces('tourism.attraction', 'Landmarks & Attractions', 3)
+        // no user ? render a few landmarks
+        getSuggestedPlaces('tourism.attraction', 'Landmarks & Attractions', 12)
+        let userPreferencesArr = Object.entries(userPreferences)
+        console.log(userPreferences)
+        console.log(userPreferencesArr)
+        let userInterestsList = []
+        for (let [key, value] of userPreferencesArr) {
+            if (value === true) {
+                if (userInterests) {
+                    userInterests.push(key)
+                    console.log(key)
+                }
+            }
+        }
+        console.log(userInterestsList)
+        setUserInterests(userInterestsList)
+        // user ? continue
+        // 0 preferences ? *RENDERED* render button that asks you to update preferences that links to survey page
+        // 1 preference ? load 12 suggestions for that one preference
+        
+        // 2 preferences ? load 6 suggestions per preference
+        // 3 preferences ? load 4 suggestions per preference
     }, [])
 
     const getSearchData = async () => {
@@ -289,6 +333,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     }
 
     const sendPlaces = async () => {
+        let currentTripCopy = {...currentTrip}
+        currentTripCopy.itinerary = null
+        setCurrentTrip(currentTripCopy)
+
         setIsLoading(true)
         let places_serial = {}
         let placesLast = places.length
@@ -313,16 +361,6 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     }
 
 
-    // const [cont, setCont] = useState(false)
-    // const updateCont = () => {
-    //     setCont(true)
-    // }
-
-    // useEffect(() => {
-    //     if (cont === true && currentTrip.Itinerary) {
-    //         navigate('/itinerary')
-    //     }
-    // }, [cont])
 
     const createItinerary = (response) => {
         let currentTripCopy = { ...currentTrip }
@@ -354,6 +392,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
     const showResult = (result) => {
         console.log(result)
+    }
+
+    const toggleSuggestedPlacesInfo = () => {
+        let suggestPlacesInfo = document.getElementById('suggestedPlacesInfo')
+        if (suggestPlacesInfo.classList.contains('d-none')) {
+            suggestPlacesInfo.classList.remove('d-none')
+        } else {
+            suggestPlacesInfo.classList.add('d-none')
+        }
     }
 
     return (
@@ -517,32 +564,55 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                 </div>
             </div>
 
-            <div className="empty-6"></div>
+            <div className="empty-2"></div>
 
             <div className="page-container90">
 
-                {suggestedPlaces.length > 100 &&
-                    suggestedPlaces.map((place, i) => {
+                <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
+                    info
+                </span>
+                    <div id='suggestedPlacesInfo' className="info position-absolute page-text d-none">The places suggested below are based on your travel preferences selected in the user survey when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to change them.</div>
+                </div>
+
+                <div id='noSuggestions' className="noSuggestions page-subsubheading">
+                    <span className="purple-text">0</span> suggested places. Your personalized suggestions are a click away!<br />
+                    <p className="page-text mt-0">Update <Link to='/survey-update'>travel preferences</Link> to show place suggestions</p>
+                </div>
 
 
-                        return <div key={i} className="card5 inflex position-relative flx-c mr-3">
-                            <div className="addIcon2 position-absolute flx onHover-fade pointer">
-                                <span className="material-symbols-outlined m-auto">
-                                    add
-                                </span>
-                            </div>
-                            <img src="https://i.imgur.com/lw40mp9.jpg" alt="" className="cardModel-img" />
-                            <div className="cardModel-text">
-                                <p className="m-0 page-subsubheading">{place.properties.name}</p>
-                                <p className="m-0 purple-text">{place.properties.categoryName}</p>
-                                <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
-                                <p className="my-1 small gray-text"><strong>A2:</strong> {place.properties.address_line2}</p>
-                                <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km?</p>
-                            </div>
-                        </div>
-                    })
-                }
+                <Scrollbars style={{ width: '100%', height: 300 }} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal"/>}
+                    renderTrackHorizontal={({ style, ...props }) =>
+                        <div {...props} style={{
+                            ...style,
+                            left: '50%',
+                            width: '100px',
+                            top: 0,
+                            transform: 'translateX(-50%)',
+                        }} /> 
+                        }>
 
+                            {suggestedPlaces.length > 0 &&
+                                suggestedPlaces.map((place, i) => {
+
+
+                                    return place.properties.name ? <div key={i} className="card5 inflex position-relative flx-c mr-3">
+                                        <div className="addIcon2 position-absolute flx onHover-fade pointer">
+                                            <span className="material-symbols-outlined m-auto">
+                                                add
+                                            </span>
+                                        </div>
+                                        <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
+                                        <div className="cardModel-text">
+                                            <p className="m-0 page-subsubheading h60">{place.properties.name}</p>
+                                            <p className="m-0 purple-text">{place.properties.categoryName}</p>
+                                            <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
+                                            <p className="my-1 small gray-text"><strong>A2:</strong> {place.properties.address_line2}</p>
+                                            <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km?</p>
+                                        </div>
+                                    </div> : null
+                                })
+                            }
+                        </Scrollbars>
             </div>
 
             <div className="empty-6"></div>

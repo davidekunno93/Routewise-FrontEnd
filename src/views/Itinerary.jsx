@@ -15,7 +15,7 @@ import DaySelected from '../components/DaySelected'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 
-export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip }) => {
+export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
   // if (!currentTrip) return null
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
   const [markers, setMarkers] = useState(null);

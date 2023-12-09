@@ -7,7 +7,7 @@ import { LoadingModal } from '../components/LoadingModal'
 import { LoadingBox } from '../components/LoadingBox'
 import { set } from 'date-fns'
 
-export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, changeCity, onClose }) => {
+export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, clearCurrentTrip, changeCity, onClose }) => {
     // send Kate Data
     if (!open) return null
     const [cityImg, setCityImg] = useState(null)
@@ -109,6 +109,8 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cha
         currentTripCopy.tripDuration = data.duration
         currentTripCopy.geocode = tripData.geocode
         currentTripCopy.imgUrl = cityImg
+        // reset itinerary in case it has already been generated from previous trip by user
+        currentTripCopy.itinerary = null
         setCurrentTrip(currentTripCopy)
         setLoading(false)
         navigate('/add-places')
