@@ -93,16 +93,20 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cha
         // setLoading(true)
         // let data = await sendData()
         let data = response.data
+        // console.log(data)
         // if (data === 'error') {
         //     setLoading(false)
         //     alert('Something went wrong. Please try again later')
         // } else {
         let currentTripCopy = { ...currentTrip }
-        currentTripCopy.tripID = data
+        currentTripCopy.tripID = data.trip_id
         currentTripCopy.tripName = tripName
         currentTripCopy.city = tripData.cityName
         currentTripCopy.country = tripData.country
         currentTripCopy.country_2letter = tripData.country_2letter
+        currentTripCopy.startDate = data.start_date.split(' ').slice(1, 4).join(' ')
+        currentTripCopy.endDate = data.end_date.split(' ').slice(1, 4).join(' ')
+        currentTripCopy.tripDuration = data.duration
         currentTripCopy.geocode = tripData.geocode
         currentTripCopy.imgUrl = cityImg
         setCurrentTrip(currentTripCopy)

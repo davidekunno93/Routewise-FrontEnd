@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { HeroCarousel } from '../components/HeroCarousel'
 import { HeroFade } from '../components/HeroFade'
 import { Fade, Slide } from 'react-awesome-reveal'
+import { DataContext } from '../Context/DataProvider'
+import { useNavigate } from 'react-router-dom'
 
 export const Landing = () => {
-
+    const { user, setUser } = useContext(DataContext);
+    const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const cards = [
         {
             imgUrl: 'https://i.imgur.com/S1hglkm.jpg',
@@ -23,15 +26,28 @@ export const Landing = () => {
         }
     ]
 
+    const navigate = useNavigate()
+
+    const openSignUp = () => {
+        setSignUpIsOpen(true)
+    }
+
+    const goToDashboard = () => {
+        if (!user) {
+            openSignUp()
+        } else {
+            navigate('/dashboard')
+        }
+    }
 
 
     return (
         <>
             <div className="hero-section w-100 position-relative">
                 <div className="abs-vcenter center-text z-100 w-60">
-                    <h1 className="hero-title mt15">Explore with ease.</h1>
+                    <h1 className="hero-title mt15-respond">Explore with ease.</h1>
                     <p className="hero-text bold700">Effortlessly craft the perfect itinerary based on your interests and travel needs</p>
-                    <button className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button>
+                    <button onClick={() => goToDashboard()} className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button>
                 </div>
                 {/* <img src="https://i.imgur.com/6E1qXMc.jpg" alt="" className="hero-img" /> */}
                 <HeroFade />
@@ -91,24 +107,37 @@ export const Landing = () => {
                     <Fade delay={500} fraction={0.6} triggerOnce>
                         <Slide fraction={0.6} direction='left' triggerOnce>
                             <div className="card4-l flx-r my-10">
-                                <div className="flx-2">
+                                <div className="flx-3">
                                     <img src="https://i.imgur.com/wx4upLO.png" alt="" className="card4-img" />
                                 </div>
-                                <div className="flx-1 pad28">
-                                    <div className="page-heading-bold flx-r">
-                                        <p className="">1.&nbsp;&nbsp;</p>
-                                        <div className="flx-c">
-                                            <p className="">Add places to your trip list</p>
-                                            <p className="m-0 page-text">Look up the places you want to go on the map and add it to your trip list with a click of a button!</p>
+                                <div className="flx-2 flx pad2p">
+                                    <div className="m-auto">
+                                        <div className="landing-title flx-r">
+                                            <p className="ws-nowrap">1.&nbsp;&nbsp;</p>
+                                            <div className="flx-c">
+                                                <p className="">Add places to your trip list</p>
+                                                <p className="m-0 landing-text">Look up the places you want to go on the map and add it to your trip list with a click of a button!</p>
 
-                                        </div></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </Slide>
                         <Slide fraction={0.6} direction='right' triggerOnce>
                             <div className="card4-r flx-r my-10">
-                                <div className="flx-1 pad28"><p className="page-heading-bold"> 2. Generate a proximity-bsaed itinerary</p> </div>
-                                <div className="flx-1">
+                                <div className="flx-2 flx pad2p">
+                                    <div className="m-auto">
+                                        <div className="landing-title flx-r">
+                                            <p className="ws-nowrap">2.&nbsp;&nbsp;</p>
+                                            <div className="flx-c">
+                                                <p className="">Generate a proximity-based itinerary</p>
+                                                <p className="m-0 landing-text">Decide the places you want to see and we'll fit it into an itinerary that groups nearby places together to maximize your time and minimize the stress of figuring out what to do next.</p>
+
+                                            </div></div>
+                                    </div>
+                                </div>
+                                <div className="flx-3">
                                     <img src="https://i.imgur.com/02aZHAR.png" alt="" className="card4-img" />
                                 </div>
                             </div>
@@ -116,9 +145,19 @@ export const Landing = () => {
                         <Slide fraction={0.6} direction='left' triggerOnce>
                             <div className="card4-l flx-r my-10">
                                 <div className="flx-1">
-                                    <img src="https://i.imgur.com/oe52kHu.png" alt="" className="card4-img" />
+                                    <img src="https://i.imgur.com/cCoCoMv.png" alt="" className="card4-img" />
                                 </div>
-                                <div className="flx-1 pad28"><p className="page-heading-bold"> 3. Customize your itinerary and explore!</p> </div>
+                                <div className="flx-1 flx pad2p">
+                                    <div className="m-auto">
+                                        <div className="landing-title flx-r">
+                                            <p className="ws-nowrap mt-0">3.&nbsp;&nbsp;</p>
+                                            <div className="flx-c">
+                                                <p className="mt-0">Customize your itinerary and explore!</p>
+                                                <p className="m-0 landing-text">We know that plans change. After your itinerary is generated, easily add more places to your itinerary and move activities around to create the perfect trip that meets your needs.</p>
+
+                                            </div></div>
+                                    </div>
+                                </div>
                             </div>
                         </Slide>
                         {/* <Slide fraction={0.6} direction='right' triggerOnce>

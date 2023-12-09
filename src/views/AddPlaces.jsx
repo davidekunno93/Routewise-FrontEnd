@@ -29,6 +29,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     const [searchText, setSearchText] = useState('');
     const [bias, setBias] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
     const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb')
+    const [suggestedPlaces, setSuggestedPlaces] = useState([]);
     const [auto, setAuto] = useState([]);
     // const [places, setPlaces] = useState([
     //     {
@@ -228,6 +229,28 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         }
     }, [searchText])
 
+    const getSuggestedPlaces = async (category, categoryName, limit) => {
+        const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
+        let url = `https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
+        const response = await axios.get(url)
+            // return response.status === 200 ? response.data : null
+            .then((response) => {
+                let data = response.data.features
+                for (let i=0;i<data.length;i++) {
+                    data[i].properties.categoryName = categoryName
+                }
+                console.log(response)
+                setSuggestedPlaces(data)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    useEffect(() => {
+        getSuggestedPlaces('tourism.attraction', 'Landmarks & Attractions', 3)
+    }, [])
+
     const getSearchData = async () => {
         if (searchText.length < 2) {
             // console.log('')
@@ -239,7 +262,6 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
             return response.status === 200 ? response.data : null
             // proximity:
         }
-
     }
     const loadSearchData = async () => {
         let data = await getSearchData()
@@ -303,7 +325,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
     // }, [cont])
 
     const createItinerary = (response) => {
-        let currentTripCopy = {...currentTrip}
+        let currentTripCopy = { ...currentTrip }
         currentTripCopy["itinerary"] = response.data
         console.log(response.data)
         console.log(currentTripCopy)
@@ -330,9 +352,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
         console.log(placeToConfirm)
     }
 
+    const showResult = (result) => {
+        console.log(result)
+    }
+
     return (
         <>
-        <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
+            <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
             <div className="page-container90 mt-4">
                 <div className="tripFlow flx-r">
                     <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
@@ -349,8 +375,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                     <p className="inline large purple-text">Back</p>
                 </Link> */}
                 <p onClick={() => checkPTC()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
-                <div className="flx-r onHover-fadelite">
-                    <p onClick={() => sendPlaces()} className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
+                <div className="flx-r mb-2">
+                    <div className="my-1 mr-2 font-jakarta purple-text">Trip information: </div>
+                    <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : "12/07/23 - 12/11/23"}</div>
+                    <div className="dateBox my-1 font-jakarta px-2 mx-2"><span className="purple-text">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span> days</div>
+                </div>
+                <div className="flx-r onHover-fadelite d-none">
+                    <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>
@@ -363,12 +394,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
                                     <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
                                         {/* <div className="inner-box w-96 m-auto h-100 pt-1 flx-c hideOverflow"> */}
                                         {auto ? auto.map((result, i) => {
-                                            return <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
+
+                                            return result.name ? <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
                                                 <div className="inner-contain flx-r w-96 hideOverflow m-auto">
                                                     <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="small-pic mr-1" />
                                                     <p className="m-0 my-2 large">{result.formatted}</p>
                                                 </div>
-                                            </div>
+                                            </div> : null
                                         }) : null}
                                         {/* </div> */}
 
@@ -484,7 +516,35 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip }) => {
 
                 </div>
             </div>
+
             <div className="empty-6"></div>
+
+            <div className="page-container90">
+
+                {suggestedPlaces.length > 100 &&
+                    suggestedPlaces.map((place, i) => {
+
+
+                        return <div key={i} className="card5 inflex position-relative flx-c mr-3">
+                            <div className="addIcon2 position-absolute flx onHover-fade pointer">
+                                <span className="material-symbols-outlined m-auto">
+                                    add
+                                </span>
+                            </div>
+                            <img src="https://i.imgur.com/lw40mp9.jpg" alt="" className="cardModel-img" />
+                            <div className="cardModel-text">
+                                <p className="m-0 page-subsubheading">{place.properties.name}</p>
+                                <p className="m-0 purple-text">{place.properties.categoryName}</p>
+                                <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
+                                <p className="my-1 small gray-text"><strong>A2:</strong> {place.properties.address_line2}</p>
+                                <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km?</p>
+                            </div>
+                        </div>
+                    })
+                }
+
+            </div>
+
             <div className="empty-6"></div>
             <div className="empty-3"></div>
 

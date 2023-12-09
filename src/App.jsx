@@ -23,6 +23,9 @@ function App() {
     city: null,
     country: "",
     country_2letter: null,
+    startDate: "",
+    endDate: "",
+    tripDuration: "",
     geocode: null,
     imgUrl: null
   });

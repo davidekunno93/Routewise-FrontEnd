@@ -59,10 +59,7 @@ export const SearchPlace = ({ id, country, addPlaceFromFlowBox, dayNum }) => {
     // useEffect to call autocomplete api if search text >= 3 chars
     // autocomplete results mapped w/ limit of 5 to populate in ac box
 
-    const test = (dayNum, place) => {
-        console.log(dayNum)
-        console.log(place)
-    }
+
 
     return (
         <>
