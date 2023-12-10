@@ -5,6 +5,7 @@ import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
 import { Itinerary } from './Itinerary'
 import { LoadingScreen } from '../components/LoadingScreen'
+import { Loading } from '../components/Loading'
 
 
 
@@ -103,8 +104,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     useEffect(() => {
         let placeCopy = [...places];
-        console.log(places)
-        console.log(placeToConfirm)
+        // console.log(places)
+        // console.log(placeToConfirm)
         if (placeToConfirm) {
             placeCopy.push(placeToConfirm)
         }
@@ -135,9 +136,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         placesCopy[index].favorite = false
         setPlaces(placesCopy)
     }
-    useEffect(() => {
-        console.log(places)
-    }, [places])
+    // useEffect(() => {
+    //     console.log(places)
+    // }, [places])
 
     const getCityImg = async (imgQuery) => {
         const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
@@ -176,9 +177,18 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const addPlaceToConfirm = async (place) => {
-        let imgQuery = place.name.replace(/ /g, '-')
+
+        // only load image for place if there isn't already an imgUrl defined in the place object
+        let imgUrl = ""
+        if (!place.imgUrl) {
+            let imgQuery = place.name.replace(/ /g, '-')
+            imgUrl = await loadCityImg(imgQuery)
+        } else {
+            imgUrl = place.imgUrl
+        }
+
         let placeInfo = await loadPlaceDetails(place.place_id)
-        let imgUrl = await loadCityImg(imgQuery)
+
         let newPlace = {
             placeName: place.name,
             info: placeInfo,
@@ -229,71 +239,157 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         }
     }, [searchText])
 
-    const getSuggestedPlaces = async (category, categoryName, limit) => {
+    const quickGetSuggestedPlaces = async (category, categoryTitle, limit) => {
         const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-        let url = `https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
-        const response = await axios.get(url)
-            // return response.status === 200 ? response.data : null
-            .then(async (response) => {
-                let data = response.data.features
-                for (let i = 0; i < data.length; i++) {
-                    let place = data[i].properties
-                    place.categoryName = categoryName
-                    if (place.name) {
-                        // console.log(place.name)
-                        let addressLine2Short = place.address_line2.split(',')[0].replace(/ /g, "-")
-                        // console.log(addressLine2Short)
-                        let imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + addressLine2Short
-                        // console.log(imgQuery)
-                        let imgUrl = await loadCityImg(imgQuery)
-                        place.imgUrl = imgUrl
-                    }
+        let response = await axios.get(`https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`)
+        return response.status === 200 ? response.data.features : null
 
+    }
+
+    const getSuggestedPlaces = async (category, categoryTitle, limit) => {
+        const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
+        // if category contains % sign this means I want to search the category terms separately on the api - like 
+        // Food & NightClub because the merged results don't have many nightclubs in them
+        if (category.includes('%')) {
+            category = category.split('%')
+            limit = Math.ceil(limit / category.length)
+            let data = ""
+            let dataLoads = []
+            for (let i = 0; i < category.length; i++) {
+                data = await quickGetSuggestedPlaces(category[i], categoryTitle, limit)
+                // category tag so I can add the specific category type to the search query
+                if (i === 0) {
+                    // for (let j = 0; j < data.length; j++) {
+                    //     data[j].properties["categoryTag"] = 'dining'
+                    // }
+                } else if (i === 1) {
+                    for (let j = 0; j < data.length; j++) {
+                        data[j].properties["categoryTag"] = 'Nightclub'
+                    }
                 }
-                // console.log(response)
-                setSuggestedPlaces(data)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+                // add data to data load
+                dataLoads.push(data)
+            }
+            // console.log(dataLoads)
+            for (let i = 0; i < category.length - 1; i++) {
+                dataLoads[0] = dataLoads[0].concat(dataLoads[1])
+            }
+            dataLoads = dataLoads[0]
+            console.log(dataLoads)
+            updateSuggestedPlaces(dataLoads, categoryTitle)
+        } else {
+            let url = `https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
+            const response = await axios.get(url)
+                // return response.status === 200 ? response.data : null
+                .then(async (response) => {
+                    let data = response.data.features
+                    updateSuggestedPlaces(data, categoryTitle)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+    }
+
+    const updateSuggestedPlaces = async (data, categoryTitle) => {
+        for (let i = 0; i < data.length; i++) {
+            let place = data[i].properties
+            place.categoryTitle = categoryTitle
+            if (place.name) {
+                // console.log(place.name)
+                let addressLine2Short = place.address_line2.split(',')[0].replace(/ /g, "-")
+                // console.log(addressLine2Short)
+                let imgQuery = ""
+                if (place.categoryTag) {
+                    imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + place.categoryTag
+                } else if (categoryTitle === "Shopping" || categoryTitle === "Nature") {
+                    imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + categoryTitle
+                    // console.log('if')
+                    // console.log(categoryTitle)
+                } else if (place.name.split(' ').length === 1) {
+                    imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + addressLine2Short
+                    // console.log('else if')
+                } else {
+                    imgQuery = place.name.replace(/ /g, "-").split(',').join('')
+                    // console.log('else')
+                }
+                // console.log(imgQuery)
+                let imgUrl = await loadCityImg(imgQuery)
+                place.imgUrl = imgUrl
+            }
+
+        }
+        // console.log(response)
+        let suggestedPlacesCopy = [...suggestedPlaces]
+        suggestedPlacesCopy = suggestedPlacesCopy.concat(data)
+        console.log(data)
+        // console.log(suggestedPlacesCopy)
+        setSuggestedPlaces(suggestedPlacesCopy)
+    }
+
+    const clearSuggestedPlaces = () => {
+        setSuggestedPlaces([]);
     }
 
     const [userPreferences, setUserPreferences] = useState(
         {
-            landmarks: true,
+            landmarks: false,
             nature: false,
             shopping: false,
-            food: true,
-            relaxation: true,
+            food: false,
+            relaxation: false,
             entertainment: false,
             arts: false
         });
-        const [userInterests, setUserInterests] = useState(null)
+    const [userInterests, setUserInterests] = useState([])
 
     useEffect(() => {
+        clearSuggestedPlaces()
+        // key for converting travel preference to place category
+        const categoryKey = {
+            landmarks: { category: "tourism.attraction,tourism.sights", categoryTitle: "Landmarks & Attractions" },
+            nature: { category: "natural,entertainment.zoo,entertainment.aquarium", categoryTitle: "Nature" },
+            shopping: { category: "commercial.shopping_mall,commercial.clothing,commercial.gift_and_souvenir", categoryTitle: "Shopping" },
+            food: { category: "catering%adult.nightclub", categoryTitle: "Food & Nightlife" },
+            relaxation: { category: "service.beauty.spa,service.beauty.massage", categoryTitle: "Spa & Relaxation" },
+            entertainment: { category: "entertainment", categoryTitle: "Music & Entertainment" },
+            arts: { category: "entertainment.culture,entertainment.museum", categoryTitle: "Arts & Culture" }
+        }
         // no user ? render a few landmarks
-        getSuggestedPlaces('tourism.attraction', 'Landmarks & Attractions', 12)
+        // getSuggestedPlaces('tourism.attraction', "Landmarks & Attractions", 12)
+        // getSuggestedPlaces('catering%adult.nightclub', "Food & Nightlife", 12)
         let userPreferencesArr = Object.entries(userPreferences)
-        console.log(userPreferences)
-        console.log(userPreferencesArr)
+        // console.log(userPreferences)
+        // console.log(userPreferencesArr)
         let userInterestsList = []
         for (let [key, value] of userPreferencesArr) {
             if (value === true) {
-                if (userInterests) {
-                    userInterests.push(key)
-                    console.log(key)
-                }
+                userInterestsList.push(categoryKey[key])
+                // console.log(key)
             }
         }
-        console.log(userInterestsList)
+        // console.log(userInterestsList)
         setUserInterests(userInterestsList)
         // user ? continue
         // 0 preferences ? *RENDERED* render button that asks you to update preferences that links to survey page
         // 1 preference ? load 12 suggestions for that one preference
-        
+        if (userInterestsList.length === 1) {
+            getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12)
+        }
         // 2 preferences ? load 6 suggestions per preference
+        else if (userInterestsList.length === 2) {
+            getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
+            getSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
+        }
         // 3 preferences ? load 4 suggestions per preference
+        else if (userInterestsList.length === 3) {
+            getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 4)
+            getSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 4)
+            getSuggestedPlaces(userInterestsList[2].category, userInterestsList[2].categoryTitle, 4)
+        }
     }, [])
+
+
 
     const getSearchData = async () => {
         if (searchText.length < 2) {
@@ -333,7 +429,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const sendPlaces = async () => {
-        let currentTripCopy = {...currentTrip}
+        let currentTripCopy = { ...currentTrip }
         currentTripCopy.itinerary = null
         setCurrentTrip(currentTripCopy)
 
@@ -566,21 +662,26 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
             <div className="empty-2"></div>
 
+            <div className="empty-6 appear-1024"></div>
+            <div className="empty-6 appear-1024"></div>
+            <div className="empty-3 appear-1024"></div>
+
             <div className="page-container90">
 
-                <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
+                <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
                     info
                 </span>
-                    <div id='suggestedPlacesInfo' className="info position-absolute page-text d-none">The places suggested below are based on your travel preferences selected in the user survey when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to change them.</div>
+                    <div id='suggestedPlacesInfo' className="info position-absolute page-text bold500 d-none">The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.</div>
                 </div>
 
-                <div id='noSuggestions' className="noSuggestions page-subsubheading">
-                    <span className="purple-text">0</span> suggested places. Your personalized suggestions are a click away!<br />
-                    <p className="page-text mt-0">Update <Link to='/survey-update'>travel preferences</Link> to show place suggestions</p>
-                </div>
+                {userInterests.length === 0 ?
+                    <div id='noSuggestions' className="noSuggestions page-subsubheading dark-text">
+                        <span className="purple-text">0</span> suggested places. Your personalized suggestions are a click away!<br />
+                        <p className="page-text mt-0">Update your <Link to='/survey-update'>travel preferences</Link> to get place suggestions</p>
+                    </div>
+                    : null}
 
-
-                <Scrollbars style={{ width: '100%', height: 300 }} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal"/>}
+                <Scrollbars style={{ width: '100%', height: 620 }} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" />}
                     renderTrackHorizontal={({ style, ...props }) =>
                         <div {...props} style={{
                             ...style,
@@ -588,34 +689,37 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                             width: '100px',
                             top: 0,
                             transform: 'translateX(-50%)',
-                        }} /> 
-                        }>
+                        }} />
+                    }>
 
-                            {suggestedPlaces.length > 100 &&
-                                suggestedPlaces.map((place, i) => {
+                    {suggestedPlaces.length > 100 &&
+                        suggestedPlaces.map((place, id) => {
 
 
-                                    return place.properties.name ? <div key={i} className="card5 inflex position-relative flx-c mr-3">
-                                        <div className="addIcon2 position-absolute flx onHover-fade pointer">
-                                            <span className="material-symbols-outlined m-auto">
-                                                add
-                                            </span>
-                                        </div>
-                                        <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
-                                        <div className="cardModel-text">
-                                            <p className="m-0 page-subsubheading h60">{place.properties.name}</p>
-                                            <p className="m-0 purple-text">{place.properties.categoryName}</p>
-                                            <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
-                                            <p className="my-1 small gray-text"><strong>A2:</strong> {place.properties.address_line2}</p>
-                                            <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km?</p>
-                                        </div>
-                                    </div> : null
-                                })
-                            }
-                        </Scrollbars>
+                            return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
+                                <div onClick={() => addPlaceToConfirm(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
+                                    <span className="material-symbols-outlined m-auto">
+                                        add
+                                    </span>
+                                </div>
+                                <div className="cardImg-overlay flx position-absolute">
+                                    <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
+                                </div>
+                                <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
+
+                                <div className="cardModel-text">
+                                    <p className="m-0 page-subsubheading h60">{place.properties.name}</p>
+                                    <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
+                                    <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
+                                    <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
+                                    <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
+                                </div>
+                            </div> : "Loading"
+                        })
+                    }
+                </Scrollbars>
             </div>
 
-            <div className="empty-6"></div>
             <div className="empty-3"></div>
 
         </>

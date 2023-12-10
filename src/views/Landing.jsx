@@ -113,9 +113,12 @@ export const Landing = () => {
                                 <div className="flx-2 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
-                                            <p className="ws-nowrap">1.&nbsp;&nbsp;</p>
+                                            {/* <p className="ws-nowrap">1.&nbsp;&nbsp;</p> */}
+                                            <div className="">
+                                                <img src="https://i.imgur.com/B1KMmUe.png" alt="" className="pin-bullet mr-3" />
+                                            </div>
                                             <div className="flx-c">
-                                                <p className="">Add places to your trip list</p>
+                                                <p className="mt-0">Add places to your trip list</p>
                                                 <p className="m-0 landing-text">Look up the places you want to go on the map and add it to your trip list with a click of a button!</p>
 
                                             </div>
@@ -129,9 +132,12 @@ export const Landing = () => {
                                 <div className="flx-2 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
-                                            <p className="ws-nowrap">2.&nbsp;&nbsp;</p>
+                                            {/* <p className="ws-nowrap">2.&nbsp;&nbsp;</p> */}
+                                            <div className="">
+                                                <img src="https://i.imgur.com/X80Z1AG.png" alt="" className="pin-bullet mr-3" />
+                                            </div>
                                             <div className="flx-c">
-                                                <p className="">Generate a proximity-based itinerary</p>
+                                                <p className="mt-0">Generate a proximity-based itinerary</p>
                                                 <p className="m-0 landing-text">Decide the places you want to see and we'll fit it into an itinerary that groups nearby places together to maximize your time and minimize the stress of figuring out what to do next.</p>
 
                                             </div></div>
@@ -150,7 +156,10 @@ export const Landing = () => {
                                 <div className="flx-1 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
-                                            <p className="ws-nowrap mt-0">3.&nbsp;&nbsp;</p>
+                                            {/* <p className="ws-nowrap mt-0">3.&nbsp;&nbsp;</p> */}
+                                            <div className="">
+                                                <img src="https://i.imgur.com/ARSN66k.png" alt="" className="pin-bullet mr-3" />
+                                            </div>
                                             <div className="flx-c">
                                                 <p className="mt-0">Customize your itinerary and explore!</p>
                                                 <p className="m-0 landing-text">We know that plans change. After your itinerary is generated, easily add more places to your itinerary and move activities around to create the perfect trip that meets your needs.</p>
@@ -190,7 +199,7 @@ export const Landing = () => {
                                 That's why we've enlisted the pigeon as our little mascot, to help travelers pick up the breadcrumbs and plan the most efficient itinerary that utilizes the proximity of locations for a stress-free trip.<br /><br />
                                 Ready to get started?
                             </p>
-                            <button className="btn-primaryflex2 mt-4">Start planning now</button>
+                            <button onClick={() => goToDashboard()} className="btn-primaryflex2 mt-4">Start planning now</button>
                         </div>
                     </div>
                 </div>
