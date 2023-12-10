@@ -189,7 +189,7 @@ export const Landing = () => {
             <div className="page-card">
                 <div className="flx-r-respond768">
                     <div className="img flx-1 flx">
-                        <img src="https://i.imgur.com/DQ1Otmw.png" alt="" className="page-card-img m-auto my-12-respond768" />
+                        <img src="https://i.imgur.com/FxsCfD2.png" alt="" className="page-card-img m-auto my-12-respond768" />
                     </div>
                     <div className="body flx-1">
                         <div className="pad28 w-80">
