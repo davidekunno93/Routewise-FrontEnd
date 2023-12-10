@@ -591,7 +591,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                         }} /> 
                         }>
 
-                            {suggestedPlaces.length > 0 &&
+                            {suggestedPlaces.length > 100 &&
                                 suggestedPlaces.map((place, i) => {
 
 
