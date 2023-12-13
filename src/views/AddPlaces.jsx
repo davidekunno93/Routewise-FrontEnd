@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { OpenMap } from '../components/OpenMap'
 import axios from 'axios'
@@ -6,6 +6,7 @@ import Scrollbars from 'react-custom-scrollbars-2'
 import { Itinerary } from './Itinerary'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { Loading } from '../components/Loading'
+import { DataContext } from '../Context/DataProvider'
 
 
 
@@ -239,14 +240,48 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         }
     }, [searchText])
 
-    const quickGetSuggestedPlaces = async (category, categoryTitle, limit) => {
+    const quickGetSuggestedPlaces = async (category, categoryTitle, limit, mergeData) => {
         const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-        let response = await axios.get(`https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`)
-        return response.status === 200 ? response.data.features : null
+        let response = ""
+        // if category includes % there are two competing types in the same category and I want them to be searched separately
+        if (category.includes("%")) {
+            let data = null
+            // split category into individual search queries
+            category = category.split("%")
+            // limit of results divided by the amount of diff search queries so overall total is the same
+            limit = Math.ceil(limit / category.length)
+            // search query terms one by one
+            for (let i=0;i<category.length;i++) {
+                // mergeData is data that needs to be stored locally and merged with new data to be returned
+                if (!mergeData) {
+                    mergeData = []
+                    // console.log('no merge data')
+                }
+                // console.log(mergeData)
+                // returned data is the list of places
+                data = await quickGetSuggestedPlaces(category[i], categoryTitle, limit, mergeData)
+                for (let j=0;j<data.length;j++) {
+                    data[j].properties['categoryTitle'] = categoryTitle
+                    if (category[i].includes('nightclub')) {
+                        data[j].properties['categoryTag'] = "Nightclub"
+                    }
+                }
+                mergeData = mergeData.concat(data)
+            }
+            console.log(mergeData)
+            return mergeData
+        } else {
+            response = await axios.get(`https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`)
+            let data = response.data.features
+            for (let j=0;j<data.length;j++) {
+                data[j].properties['categoryTitle'] = categoryTitle
+            }
+            return response.status === 200 ? response.data.features : null
+        }
 
     }
 
-    const getSuggestedPlaces = async (category, categoryTitle, limit) => {
+    const getSuggestedPlaces = async (category, categoryTitle, limit, delay) => {
         const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
         // if category contains % sign this means I want to search the category terms separately on the api - like 
         // Food & NightClub because the merged results don't have many nightclubs in them
@@ -277,6 +312,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             dataLoads = dataLoads[0]
             console.log(dataLoads)
             updateSuggestedPlaces(dataLoads, categoryTitle)
+            // if (delay) {
+            //     return "done"
+            // }
         } else {
             let url = `https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
             const response = await axios.get(url)
@@ -284,9 +322,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                 .then(async (response) => {
                     let data = response.data.features
                     updateSuggestedPlaces(data, categoryTitle)
+                    // if (delay) {
+                    //     return "done"
+                    // }
                 })
                 .catch((error) => {
                     console.log(error)
+                    alert("Something went wrong with suggested places")
                 })
         }
     }
@@ -294,12 +336,17 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     const updateSuggestedPlaces = async (data, categoryTitle) => {
         for (let i = 0; i < data.length; i++) {
             let place = data[i].properties
-            place.categoryTitle = categoryTitle
+            if (!place.categoryTitle) {
+                place.categoryTitle = categoryTitle
+            } else {
+                categoryTitle = place.categoryTitle
+            }
             if (place.name) {
                 // console.log(place.name)
                 let addressLine2Short = place.address_line2.split(',')[0].replace(/ /g, "-")
                 // console.log(addressLine2Short)
                 let imgQuery = ""
+                // categoryTag is only for nightlife so far - to help the img query be more specific
                 if (place.categoryTag) {
                     imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + place.categoryTag
                 } else if (categoryTitle === "Shopping" || categoryTitle === "Nature") {
@@ -322,29 +369,29 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         // console.log(response)
         let suggestedPlacesCopy = [...suggestedPlaces]
         suggestedPlacesCopy = suggestedPlacesCopy.concat(data)
-        console.log(data)
-        // console.log(suggestedPlacesCopy)
+        // console.log(data)
+        // data.sort((a, b) => a.properties.distance - b.properties.distance)
+        console.log(suggestedPlacesCopy)
         setSuggestedPlaces(suggestedPlacesCopy)
     }
 
     const clearSuggestedPlaces = () => {
         setSuggestedPlaces([]);
     }
-
-    const [userPreferences, setUserPreferences] = useState(
-        {
-            landmarks: false,
-            nature: false,
-            shopping: false,
-            food: false,
-            relaxation: false,
-            entertainment: false,
-            arts: false
-        });
+    const { userPreferences, setUserPreferences } = useContext(DataContext);
+    // const [userPreferences, setUserPreferences] = useState(
+    //     {
+    //         landmarks: false,
+    //         nature: false,
+    //         shopping: false,
+    //         food: false,
+    //         relaxation: false,
+    //         entertainment: false,
+    //         arts: false
+    //     });
     const [userInterests, setUserInterests] = useState([])
 
     useEffect(() => {
-        clearSuggestedPlaces()
         // key for converting travel preference to place category
         const categoryKey = {
             landmarks: { category: "tourism.attraction,tourism.sights", categoryTitle: "Landmarks & Attractions" },
@@ -352,7 +399,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             shopping: { category: "commercial.shopping_mall,commercial.clothing,commercial.gift_and_souvenir", categoryTitle: "Shopping" },
             food: { category: "catering%adult.nightclub", categoryTitle: "Food & Nightlife" },
             relaxation: { category: "service.beauty.spa,service.beauty.massage", categoryTitle: "Spa & Relaxation" },
-            entertainment: { category: "entertainment", categoryTitle: "Music & Entertainment" },
+            entertainment: { category: "entertainment.cinema,entertainment.amusement_arcade,entertainment.escape_game,entertainment.miniature_golf,entertainment.bowling_alley,entertainment.theme_park,entertainment.activity_park", categoryTitle: "Music & Entertainment" },
             arts: { category: "entertainment.culture,entertainment.museum", categoryTitle: "Arts & Culture" }
         }
         // no user ? render a few landmarks
@@ -370,24 +417,90 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         }
         // console.log(userInterestsList)
         setUserInterests(userInterestsList)
+
+        let conclusion = delayGetSuggestedPlaces(userInterestsList)
+        console.log(conclusion)
+
         // user ? continue
         // 0 preferences ? *RENDERED* render button that asks you to update preferences that links to survey page
         // 1 preference ? load 12 suggestions for that one preference
-        if (userInterestsList.length === 1) {
-            getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12)
-        }
-        // 2 preferences ? load 6 suggestions per preference
-        else if (userInterestsList.length === 2) {
-            getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
-            getSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
-        }
-        // 3 preferences ? load 4 suggestions per preference
-        else if (userInterestsList.length === 3) {
-            getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 4)
-            getSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 4)
-            getSuggestedPlaces(userInterestsList[2].category, userInterestsList[2].categoryTitle, 4)
-        }
+        // if (userInterestsList.length === 1) {
+        //     getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12)
+        // }
+        // // 2 preferences ? load 6 suggestions per preference
+        // else if (userInterestsList.length === 2) {
+        //     delayGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
+        //     delayGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
+        // }
+        // // 3 preferences ? load 4 suggestions per preference
+        // else if (userInterestsList.length === 3) {
+        //     getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 4)
+        //     getSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 4)
+        //     getSuggestedPlaces(userInterestsList[2].category, userInterestsList[2].categoryTitle, 4)
+        // }
+
     }, [])
+
+    const delayGetSuggestedPlaces = async (userInterestsList) => {
+        // bool true selected for delay parameter
+        let data = []
+        let first = ""
+        let second = ""
+        let third = ""
+        if (userInterestsList.length === 1) {
+            // 1 preference ? load 12 suggestions for that one preference
+            data = await getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12, true)
+        } else if (userInterestsList.length === 2) { 
+            // 2 preferences ? load 6 suggestions per preference
+            first = await quickGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
+            second = await quickGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
+            // data = first.concat(second)
+
+            // getting rid of repeated place objects from different categories
+            let lists = [first, second]
+            let placeAddresses = []
+            data = []
+            for (let i=0;i<lists.length;i++) {
+                for (let j=0;j<lists[i].length;j++) {
+                    if (!placeAddresses.includes(lists[i][j].properties.formatted)) {
+                        data.push(lists[i][j])
+                    }
+                    placeAddresses.push(lists[i][j].properties.formatted)
+                }
+            }
+
+        } else if (userInterestsList.length === 3) {
+            // 3 preferences ? load 4 suggestions per preference
+            first = await quickGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 4)
+            second = await quickGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 4)
+            third = await quickGetSuggestedPlaces(userInterestsList[2].category, userInterestsList[2].categoryTitle, 4)
+            // console.log(first)
+            // data = first.concat(second)
+            // data = data.concat(third)
+
+
+            // getting rid of repeated place objects from different categories
+            let lists = [first, second, third]
+            let placeAddresses = []
+            data = []
+            for (let i=0;i<lists.length;i++) {
+                for (let j=0;j<lists[i].length;j++) {
+                    if (!placeAddresses.includes(lists[i][j].properties.formatted)) {
+                        data.push(lists[i][j])
+                    }
+                    placeAddresses.push(lists[i][j].properties.formatted)
+                }
+            }
+
+
+        }
+        // data is list of all compiled places
+        console.log(data)
+        // console.log(userInterests)
+        data.sort((a, b) => a.properties.distance - b.properties.distance)
+        updateSuggestedPlaces(data)
+        return "done"
+    }
 
 
 
@@ -681,19 +794,12 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     </div>
                     : null}
 
-                <Scrollbars style={{ width: '100%', height: 620 }} renderThumbHorizontal={props => <div {...props} className="thumb-horizontal" />}
-                    renderTrackHorizontal={({ style, ...props }) =>
-                        <div {...props} style={{
-                            ...style,
-                            left: '50%',
-                            width: '100px',
-                            top: 0,
-                            transform: 'translateX(-50%)',
-                        }} />
-                    }>
+                <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 620 : 0 }} >
+                    
 
-                    {suggestedPlaces.length > 100 &&
+                    {suggestedPlaces.length > 0 &&
                         suggestedPlaces.map((place, id) => {
+
 
 
                             return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
@@ -708,19 +814,22 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                 <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
 
                                 <div className="cardModel-text">
-                                    <p className="m-0 page-subsubheading h60">{place.properties.name}</p>
+                                    <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
                                     <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
                                     <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
                                     <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
                                     <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
                                 </div>
-                            </div> : "Loading"
+                            </div> : null
+
+
+
                         })
                     }
                 </Scrollbars>
             </div>
 
-            <div className="empty-3"></div>
+            <div className="empty-2"></div>
 
         </>
     )

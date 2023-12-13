@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { auth, firestore } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export const Survey = () => {
     // login require
     const { user, setUser } = useContext(DataContext);
+    const { userPreferences, setUserPreferences } = useContext(DataContext);
     const [categories, setCategories] = useState(
         {
             landmarks: false,
@@ -48,6 +51,11 @@ export const Survey = () => {
     }
 
     const sendData = async () => {
+        if (!user) {
+
+        } else {
+            
+        }
         let data = {
             uid: user.uid,
             categories: categories
@@ -100,7 +108,7 @@ export const Survey = () => {
     const progressLoadingAnimationStall = () => {
         const progressBar = document.getElementById('progress-bar-full')
         const progressCheckmark2 = document.getElementById('progress-checkmark2')
-        progressBar.style.transition = '10s ease'
+        progressBar.style.transition = '6s ease'
         progressCheckmark2.classList.remove('o-none')
         wait(200).then(() => {
             // progressBar.style.width = '93%'
@@ -116,9 +124,11 @@ export const Survey = () => {
         // wait(200).then(() => {
         //     progressBar.style.width = '93%'
         // })
+        wait(500).then(() => {
+            progressBar.style.transition = '0.2s ease'
+            progressBar.style.right = '44px'
+        })
         wait(1500).then(() => {
-            progressBar.style.transition = '1.0s ease'
-            progressBar.style.width = '93%'
             node2Flex.style.width = '30px'
             node2Flex.style.height = '30px'
         })
@@ -195,6 +205,21 @@ export const Survey = () => {
         setCategories(categoriesCopy);
     }
 
+    const updateFirestore = () => {
+        // userId should be auth.currentUser.uid
+        let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2" 
+        let userPreferences = { ...categories, uid: userId }
+        setDoc(doc(firestore, `userPreferences/${userId}`), userPreferences)
+        console.log("firestore updated!")
+        progressLoadingAnimationStall()
+        completeSurvey()
+        
+    }
+
+    const updateUserPreferences = () => {
+        setUserPreferences(categories)
+    }
+
     return (
         <>
             <div id='progressBarContainer' className="progress-bar-container">
@@ -252,7 +277,7 @@ export const Survey = () => {
                     })}
 
                 </div>
-                <button onClick={() => sendData()} className="btn-primaryflex2 right mt-3">
+                <button onClick={() => {updateFirestore(), updateUserPreferences()}} className="btn-primaryflex2 right mt-3">
                     <p className='inline'>Continue</p>
                     <span className="material-symbols-outlined arrow v-bott ml-2">
                         arrow_forward

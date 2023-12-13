@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { Loading } from '../Loading'
 import { updateProfile } from 'firebase/auth'
-import auth from '../../firebase'
+import { auth } from '../../firebase'
 import { useNavigate } from 'react-router-dom'
 import { DataContext } from '../../Context/DataProvider'
 import axios from 'axios'

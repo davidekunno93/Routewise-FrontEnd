@@ -32,6 +32,7 @@ BackEnd (Kate) checkpoints
 **show route button on each day
 *light bulb on the day that the added location is closest to
 *add place via itinerary add place btn inside flowbox
+*make suggested places a bottom up panel that swipes horizontally on phone/tablet device widths
 
 REMEMBER TO...
 Take out unnecessary routes

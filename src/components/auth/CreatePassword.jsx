@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import auth from '../../firebase'
+import { auth } from '../../firebase'
 import { AuthLoadingScreen } from './AuthLoadingScreen'
 
 export const CreatePassword = ({ open, showPassword, hidePassword, email, onClose, closeAll }) => {

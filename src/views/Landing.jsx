@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { HeroCarousel } from '../components/HeroCarousel'
 import { HeroFade } from '../components/HeroFade'
 import { Fade, Slide } from 'react-awesome-reveal'
@@ -40,6 +40,9 @@ export const Landing = () => {
         }
     }
 
+    useEffect(() => {
+        // window.scrollTo(0, 0)
+    }, [])
 
     return (
         <>
@@ -106,7 +109,7 @@ export const Landing = () => {
                 <div className="cards w-90 m-auto">
                     <Fade delay={500} fraction={0.6} triggerOnce>
                         <Slide fraction={0.6} direction='left' triggerOnce>
-                            <div className="card4-l flx-r my-10">
+                            <div className="card4-l flx-r-respond600-reverse my-10">
                                 <div className="flx-3">
                                     <img src="https://i.imgur.com/wx4upLO.png" alt="" className="card4-img" />
                                 </div>
@@ -128,7 +131,7 @@ export const Landing = () => {
                             </div>
                         </Slide>
                         <Slide fraction={0.6} direction='right' triggerOnce>
-                            <div className="card4-r flx-r my-10">
+                            <div className="card4-r flx-r-respond600 my-10">
                                 <div className="flx-2 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
@@ -149,7 +152,7 @@ export const Landing = () => {
                             </div>
                         </Slide>
                         <Slide fraction={0.6} direction='left' triggerOnce>
-                            <div className="card4-l flx-r my-10">
+                            <div className="card4-l flx-r-respond600-reverse my-10">
                                 <div className="flx-1">
                                     <img src="https://i.imgur.com/cCoCoMv.png" alt="" className="card4-img" />
                                 </div>

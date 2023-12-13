@@ -1,7 +1,7 @@
 import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
 import { AuthModal } from './auth/AuthModal';
 import { Link } from 'react-router-dom';
-import auth from '../firebase';
+import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { signOut } from 'firebase/auth';
 import axios from 'axios';

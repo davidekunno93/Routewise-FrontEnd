@@ -12,7 +12,7 @@ import { addDays, isWithinInterval } from 'date-fns'
 import { SpecifyCity } from './SpecifyCity';
 import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
-import auth from '../firebase';
+import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 
 

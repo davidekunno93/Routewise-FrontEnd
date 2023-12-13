@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import auth from '../firebase'
+import { auth } from '../firebase'
 import { Loading } from '../components/Loading'
 import { LoadingModal } from '../components/LoadingModal'
 import { LoadingBox } from '../components/LoadingBox'
