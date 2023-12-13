@@ -231,8 +231,8 @@ export const SurveyUpdate = () => {
                     })}
 
                 </div>
-                <button className="btn-primaryflex2 center mt-5">
-                    <p onClick={() => { updateFirestore(); updateUserPreferences(); openUpdatedOverlay()}} className='inline'>Update Preferences</p>
+                <button onClick={() => { updateFirestore(); updateUserPreferences(); openUpdatedOverlay()}} className="btn-primaryflex2 center mt-5">
+                    <p className='inline'>Update Preferences</p>
                 </button>
             </div>
         </>

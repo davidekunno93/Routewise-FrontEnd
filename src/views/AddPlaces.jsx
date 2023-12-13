@@ -251,7 +251,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             // limit of results divided by the amount of diff search queries so overall total is the same
             limit = Math.ceil(limit / category.length)
             // search query terms one by one
-            for (let i=0;i<category.length;i++) {
+            for (let i = 0; i < category.length; i++) {
                 // mergeData is data that needs to be stored locally and merged with new data to be returned
                 if (!mergeData) {
                     mergeData = []
@@ -260,7 +260,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                 // console.log(mergeData)
                 // returned data is the list of places
                 data = await quickGetSuggestedPlaces(category[i], categoryTitle, limit, mergeData)
-                for (let j=0;j<data.length;j++) {
+                for (let j = 0; j < data.length; j++) {
                     data[j].properties['categoryTitle'] = categoryTitle
                     if (category[i].includes('nightclub')) {
                         data[j].properties['categoryTag'] = "Nightclub"
@@ -273,7 +273,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         } else {
             response = await axios.get(`https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`)
             let data = response.data.features
-            for (let j=0;j<data.length;j++) {
+            for (let j = 0; j < data.length; j++) {
                 data[j].properties['categoryTitle'] = categoryTitle
             }
             return response.status === 200 ? response.data.features : null
@@ -450,7 +450,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         if (userInterestsList.length === 1) {
             // 1 preference ? load 12 suggestions for that one preference
             data = await getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12, true)
-        } else if (userInterestsList.length === 2) { 
+        } else if (userInterestsList.length === 2) {
             // 2 preferences ? load 6 suggestions per preference
             first = await quickGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
             second = await quickGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
@@ -460,8 +460,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             let lists = [first, second]
             let placeAddresses = []
             data = []
-            for (let i=0;i<lists.length;i++) {
-                for (let j=0;j<lists[i].length;j++) {
+            for (let i = 0; i < lists.length; i++) {
+                for (let j = 0; j < lists[i].length; j++) {
                     if (!placeAddresses.includes(lists[i][j].properties.formatted)) {
                         data.push(lists[i][j])
                     }
@@ -483,8 +483,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             let lists = [first, second, third]
             let placeAddresses = []
             data = []
-            for (let i=0;i<lists.length;i++) {
-                for (let j=0;j<lists[i].length;j++) {
+            for (let i = 0; i < lists.length; i++) {
+                for (let j = 0; j < lists[i].length; j++) {
                     if (!placeAddresses.includes(lists[i][j].properties.formatted)) {
                         data.push(lists[i][j])
                     }
@@ -494,11 +494,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
 
         }
+
         // data is list of all compiled places
         console.log(data)
         // console.log(userInterests)
         data.sort((a, b) => a.properties.distance - b.properties.distance)
         updateSuggestedPlaces(data)
+
         return "done"
     }
 
@@ -795,7 +797,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     : null}
 
                 <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 620 : 0 }} >
-                    
+
 
                     {suggestedPlaces.length > 0 &&
                         suggestedPlaces.map((place, id) => {

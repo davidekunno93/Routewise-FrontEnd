@@ -1,15 +1,17 @@
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { CreatePassword } from './CreatePassword';
-import { auth } from '../../firebase';
+import { auth, firestore } from '../../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { DataContext } from '../../Context/DataProvider';
 import { getAuth, getRedirectResult, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import provider from '../../firebaseGoogle';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const AuthModal = ({ open, authIndex, onClose }) => {
     if (!open) return null
     const { user, setUser } = useContext(DataContext);
+    const { userPreferences, setUserPreferences } = useContext(DataContext);
     const [createPasswordOpen, setCreatePasswordOpen] = useState(false);
     const [activeIndex, setActiveIndex] = useState(authIndex)
     // const [emailExpand, setEmailExpand] = useState(false);
@@ -103,11 +105,32 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
         }
         if (loginEmail && loginPassword) {
             signInWithEmailAndPassword(auth, loginEmail, loginPassword).then((userCredentials) => {
-                setUser(userCredentials.user)
-                navigate('/dashboard')
-                onClose()
+                handleLogin(userCredentials)
+                // let userPref = getDoc(doc(firestore, `userPreferences/${userCredentials.user.uid}`))
+                // setUser(userCredentials.user)
+                // navigate('/dashboard')
+                // onClose()
             }).catch((error) => handleLoginError(error.code))
         }
+    }
+    const handleLogin = async (cred) => {
+        let prefs = await getDoc(doc(firestore, `userPreferences/${cred.user.uid}`))
+        // console.log(prefs.data())
+        prefs = prefs.data()
+        let userPref = {
+            landmarks: prefs ? prefs.landmarks : false,
+            nature: prefs ? prefs.nature : false,
+            shopping: prefs ? prefs.shopping : false,
+            food: prefs ? prefs.food : false,
+            relaxation: prefs ? prefs.relaxation : false,
+            entertainment: prefs ? prefs.entertainment : false,
+            arts: prefs ? prefs.arts : false
+        }
+        console.log(userPref)
+        setUserPreferences(userPref)
+        setUser(cred.user)
+        navigate('/dashboard')
+        onClose()
     }
     const handleLoginError = (error_code) => {
         console.log(error_code)
@@ -175,7 +198,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                         </div>
                         <div className="sign-in-box m-auto">
                             <h1 className='mt-4'>Sign In</h1>
-                            <Link onClick={() => googleSignIn()}><button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
+                            <Link><button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
                             <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>
                             <div className="hr-block w-75 flx-r">
                                 <div className="flx-1 flx-c just-ce">
