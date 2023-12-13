@@ -8,7 +8,7 @@ const DataProvider = (props) => {
     const [userPreferences, setUserPreferences] = useState({
         landmarks: false,
         nature: false,
-        shopping: true,
+        shopping: false,
         food: false,
         relaxation: false,
         entertainment: false,
