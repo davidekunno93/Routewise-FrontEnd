@@ -482,7 +482,7 @@ button:focus-visible {
 .navbar {
   height: 85px;
   /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
-  z-index: 200;
+  z-index: 20000;
 }
 
 .nav-link {
@@ -3109,6 +3109,13 @@ p {
   z-index: 100;
   font-family: 'Plus Jakarta Sans';
   transition: 0.1s;
+}
+.prototype-menu .option-head{
+  padding: 12px;
+  width: 100%;
+  color: red;
+  box-sizing: border-box;
+  transition: 0.2s;
 }
 .prototype-menu .option{
   padding: 12px;
