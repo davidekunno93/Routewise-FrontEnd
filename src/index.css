@@ -268,6 +268,9 @@ button:focus-visible {
 .right {
   float: right;
 }
+.right-respond1024{
+  float: right;
+}
 
 .center-text {
   text-align: center;
@@ -715,6 +718,16 @@ button:focus-visible {
   bottom: 0;
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 99999;
+}
+.overlay-white90 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 9;
+  padding-top: 10%;
 }
 
 .routewise-logo {
@@ -3166,7 +3179,29 @@ p {
   .landing-title{
     font-size: 28px;
   }
-  
+
+  .body-section {
+    height: auto;
+  }
+  .placeCards {
+    height: 200px;
+    /* overflow: scroll; */
+  }
+  .h540{
+    height: 540px;
+  }
+
+  .right-respond1024{
+    float: none;
+    display: block;
+    margin: auto;
+  }
+  .showOnHover {
+    opacity: 1;
+  }
+  .onHover-50{
+    opacity: 0.5;
+  }
 
   .flx-r-respond {
     flex-direction: column;

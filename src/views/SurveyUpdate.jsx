@@ -191,7 +191,7 @@ export const SurveyUpdate = () => {
                     <Slide duration={400} className='m-auto' direction='up' triggerOnce>
                         <Fade triggerOnce>
                             <p className="purple-text center-text page-heading-bold m-auto">Travel Preferences Updated!</p>
-                            <div className="flx-r just-ce">
+                            <div className="flx-r mt-3 just-ce">
                                 <button onClick={() => closeUpdatedOverlay()} className="btn-outlineflex mx-2">Keep Editing</button>
                                 <button onClick={() => goBack()} className="btn-primaryflex mx-2">Go Back</button>
                             </div>

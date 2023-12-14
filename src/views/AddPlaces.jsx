@@ -614,6 +614,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         }
     }
 
+    const placeCardsSizeUp = () => {
+        let placeCards = document.getElementById('placeCards')
+        placeCards.classList.add('h540')
+    }
+    const placeCardSizeDown = () => {
+        let placeCards = document.getElementById('placeCards')
+        placeCards.classList.add('h540')
+    }
+
     return (
         <>
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
@@ -723,7 +732,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                 <p className="page-subheading-bold m-0 my-1">Added places ({places.length})</p>
                                 <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer z-1">Clear List</p>
                             </div>
-                            <div className="placeCards">
+                            <div className={`placeCards ${places.length > 0 ? "h540" : null}`}>
                                 <Scrollbars style={{ color: 'red' }}>
 
 
@@ -767,7 +776,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
                             </div>
                             <div className="generate-btn-space w-100">
-                                <button onClick={() => sendPlaces()} className="btn-primaryflex right mt-2">Generate Itinerary</button>
+                                <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024 mt-2`}>Generate Itinerary</button>
                             </div>
                         </div>
                     </div>
@@ -776,10 +785,6 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             </div>
 
             <div className="empty-2"></div>
-
-            <div className="empty-6 appear-1024"></div>
-            <div className="empty-6 appear-1024"></div>
-            <div className="empty-3 appear-1024"></div>
 
             <div className="page-container90">
 

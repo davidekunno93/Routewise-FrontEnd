@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { auth, firestore } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { Fade, Slide } from 'react-awesome-reveal';
 
 export const Survey = () => {
     // login require
@@ -23,7 +24,7 @@ export const Survey = () => {
 
     const navigate = useNavigate()
 
-    const completeSurvey = () => {
+    const completeSurvey = async () => {
         progressLoadingAnimation()
         wait(2000).then(() => {
             navigate('/dashboard')
@@ -54,7 +55,7 @@ export const Survey = () => {
         if (!user) {
 
         } else {
-            
+
         }
         let data = {
             uid: user.uid,
@@ -89,7 +90,7 @@ export const Survey = () => {
     }
 
     const [progressBarSpace, setProgressBarSpace] = useState(window.innerWidth < 600 ? 10 : 0);
- 
+
 
     const progressAnimation = () => {
         const progressBar = document.getElementById('progress-bar-full')
@@ -98,7 +99,7 @@ export const Survey = () => {
         let halfBarWidth = progressBarContainer.offsetWidth / 2 - 30
         // progressBar.style.width = '47%'
         halfBarWidth = halfBarWidth + progressBarSpace
-        progressBar.style.right = halfBarWidth+"px"
+        progressBar.style.right = halfBarWidth + "px"
         console.log(halfBarWidth)
         wait(900).then(() => {
             nodeFlex.style.width = '30px'
@@ -108,7 +109,7 @@ export const Survey = () => {
     const progressLoadingAnimationStall = () => {
         const progressBar = document.getElementById('progress-bar-full')
         const progressCheckmark2 = document.getElementById('progress-checkmark2')
-        progressBar.style.transition = '6s ease'
+        progressBar.style.transition = '3s ease'
         progressCheckmark2.classList.remove('o-none')
         wait(200).then(() => {
             // progressBar.style.width = '93%'
@@ -128,10 +129,11 @@ export const Survey = () => {
             progressBar.style.transition = '0.2s ease'
             progressBar.style.right = '44px'
         })
-        wait(1500).then(() => {
+        wait(2500).then(() => {
             node2Flex.style.width = '30px'
             node2Flex.style.height = '30px'
         })
+        return 'done'
     }
 
     const cards2 = [
@@ -207,21 +209,43 @@ export const Survey = () => {
 
     const updateFirestore = () => {
         // userId should be auth.currentUser.uid
-        let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2" 
+        let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2"
         let userPreferences = { ...categories, uid: userId }
         setDoc(doc(firestore, `userPreferences/${userId}`), userPreferences)
         console.log("firestore updated!")
         progressLoadingAnimationStall()
         completeSurvey()
-        
+
     }
 
     const updateUserPreferences = () => {
         setUserPreferences(categories)
     }
 
+    const openContinueOverlay = () => {
+        let continueOverlay = document.getElementById('continueOverlay')
+        continueOverlay.classList.remove('d-none')
+    }
+    const closeContinueOverlay = () => {
+        let continueOverlay = document.getElementById('continueOverlay')
+        continueOverlay.classList.add('d-none')
+    }
+
     return (
         <>
+
+            <div id='continueOverlay' className="overlay-white90 flx td-3 d-none">
+                <Slide duration={400} className='m-auto' direction='up' triggerOnce>
+                    <Fade triggerOnce>
+                        <img src="https://i.imgur.com/FxsCfD2.png" alt="" className="page-card-img center" />
+                        <div className="flx-r mt-3 just-ce">
+                            <p className="w-80 center-text x-large bold500"> Just a moment while we save your travel preferences...</p>
+                        </div>
+                    </Fade>
+                </Slide>
+            </div>
+            
+
             <div id='progressBarContainer' className="progress-bar-container">
                 <div className="progress-bar w-95 m-auto flx-r just-sb my-5">
                     <div className="point">
@@ -234,7 +258,7 @@ export const Survey = () => {
                     </div>
                     <div className="point">
                         <div className="progress-bar-node-empty node-frame center position-relative">
-                            
+
                             <div id='node-flex' className="progress-bar-node-flex">
                                 <span id='progress-checkmark2' className="material-symbols-outlined white-text m-auto o-none">
                                     check
@@ -277,7 +301,7 @@ export const Survey = () => {
                     })}
 
                 </div>
-                <button onClick={() => {updateFirestore(), updateUserPreferences()}} className="btn-primaryflex2 right mt-3">
+                <button onClick={() => { updateFirestore(), updateUserPreferences(), openContinueOverlay() }} className="btn-primaryflex2 right mt-3">
                     <p className='inline'>Continue</p>
                     <span className="material-symbols-outlined arrow v-bott ml-2">
                         arrow_forward
