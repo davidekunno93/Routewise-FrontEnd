@@ -521,7 +521,7 @@ button:focus-visible {
 
 .footer {
   width: 100%;
-  height: 200px;
+  height: 160px;
   background-color: #F0EFFF;
 }
 
@@ -744,6 +744,10 @@ button:focus-visible {
 
 .word-logo {
   width: 240px;
+}
+
+.slogan {
+  font-size: large;
 }
 
 .input-model-title {
@@ -2823,6 +2827,15 @@ p {
 .ml5 {
   margin-left: 5%;
 }
+.ml6 {
+  margin-left: 6%;
+}
+.ml7 {
+  margin-left: 7%;
+}
+.ml8 {
+  margin-left: 8%;
+}
 
 .ml10 {
   margin-left: 10%;
@@ -2941,6 +2954,9 @@ p {
   padding: 28px;
 }
 .pad28-respond {
+  padding: 28px;
+}
+.pad28-footer{
   padding: 28px;
 }
 .pad10p{
@@ -3125,6 +3141,10 @@ p {
   object-fit: contain;
 }
 
+.appear768{
+  display: none;
+}
+
 @media only screen and (max-width: 1200px) {
   .planning-section .text {
     font-size: 24px;
@@ -3211,6 +3231,12 @@ p {
 }
 
 @media only screen and (max-width: 768px) {
+  .appear768{
+    display: block;
+  }
+  .disappear768{
+    display: none;
+  }
   .onHover-50 {
     opacity: 0.5;
   }
@@ -3327,7 +3353,7 @@ p {
     width: 50%;
   }
   .my-12-respond768{
-    margin-top: 80px;
+    margin-top: 10px;
     margin-bottom: 0px;
   }
 
@@ -3351,16 +3377,25 @@ p {
 
 
   /* footer classes */
+  .footer{
+    height: 20vh;
+  }
   .bird-logo {
     width: 45px;
   }
 
   .word-logo {
-    width: 144px;
+    width: 180px;
   }
 
   .slogan {
-    font-size: x-small;
+    font-size: 14px;
+  }
+  .pad28-footer{
+    /* padding-top: 6%; */
+    padding-left: 2%;
+    padding-right: 2%;
+    /* padding-bottom: 6%; */
   }
 }
 
@@ -3547,7 +3582,7 @@ p {
   }
 
   .slogan {
-    font-size: x-small;
+    font-size: 12px;
   }
 
   .username-text {
@@ -3756,16 +3791,23 @@ p {
 
 
   /* footer classes */
+  .footer{
+    height: auto;
+  }
+  .pad28-footer{
+    padding-top: 3%;
+    padding-bottom: 3%;
+  }
   .bird-logo {
     width: 30px;
   }
 
   .word-logo {
-    width: 84px;
+    width: 100px;
   }
 
   .slogan {
-    font-size: 6px;
+    font-size: 8px;
   }
 
   .username-text {

@@ -109,7 +109,7 @@ export const Landing = () => {
                 <div className="cards w-90 m-auto">
                     <Fade delay={500} fraction={0.6} triggerOnce>
                         <Slide fraction={0.6} direction='left' triggerOnce>
-                            <div className="card4-l flx-r-respond600-reverse my-10">
+                            <div className="card4-l flx-r-respond600 my-10">
                                 <div className="flx-3">
                                     <img src="https://i.imgur.com/wx4upLO.png" alt="" className="card4-img" />
                                 </div>
@@ -131,7 +131,7 @@ export const Landing = () => {
                             </div>
                         </Slide>
                         <Slide fraction={0.6} direction='right' triggerOnce>
-                            <div className="card4-r flx-r-respond600 my-10">
+                            <div className="card4-r flx-r-respond600-reverse my-10">
                                 <div className="flx-2 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
@@ -152,7 +152,7 @@ export const Landing = () => {
                             </div>
                         </Slide>
                         <Slide fraction={0.6} direction='left' triggerOnce>
-                            <div className="card4-l flx-r-respond600-reverse my-10">
+                            <div className="card4-l flx-r-respond600 my-10">
                                 <div className="flx-1">
                                     <img src="https://i.imgur.com/cCoCoMv.png" alt="" className="card4-img" />
                                 </div>
@@ -191,12 +191,13 @@ export const Landing = () => {
 
             <div className="page-card">
                 <div className="flx-r-respond768">
+                    <p className="page-heading-bold page-card-title center-text appear768">Did you know?</p>
                     <div className="img flx-1 flx">
                         <img src="https://i.imgur.com/FxsCfD2.png" alt="" className="page-card-img m-auto my-12-respond768" />
                     </div>
                     <div className="body flx-1">
                         <div className="pad28 w-80">
-                            <p className="page-heading-bold page-card-title">Did you know?</p>
+                            <p className="page-heading-bold page-card-title disappear768">Did you know?</p>
                             <p className="page-card-text">
                                 Pigeons have a small spot on their beak that is believed to contain a magnetic mineral called magnetite. This acts as a natural compass and allows them to sense the Earth's magnetic field, helping them determine their position and navigating in the right direction. <br /><br />
                                 That's why we've enlisted the pigeon as our little mascot, to help travelers pick up the breadcrumbs and plan the most efficient itinerary that utilizes the proximity of locations for a stress-free trip.<br /><br />
