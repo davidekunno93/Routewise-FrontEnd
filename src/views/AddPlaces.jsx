@@ -151,9 +151,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
     const loadCityImg = async (imgQuery) => {
         const data = await getCityImg(imgQuery)
-        // console.log(data)
-        // console.log(data.results[0].urls.regular)
-        return data.results[0].urls.regular
+        // console.log(data, imgQuery)
+        if (data.total === 0) {
+            return "none"
+        } else {
+            // console.log(data.results[0].urls.regular)
+            return data.results[0].urls.regular
+        }
     }
 
     const getPlaceDetails = async (placeDetailsQuery) => {
@@ -363,14 +367,20 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     // console.log('else')
                 }
                 // console.log(imgQuery)
-                if (imgQuery.includes('.') || imgQuery.includes(',')){
+                if (imgQuery.includes('.') || imgQuery.includes(',')) {
                     imgQuery = place.categoryTitle.split(' ')[0]
                     let imgUrl = await loadCityImg(imgQuery)
                     place.imgUrl = imgUrl
                     console.log(categoryTitle)
                 } else {
                     let imgUrl = await loadCityImg(imgQuery)
-                    place.imgUrl = imgUrl
+                    if (imgUrl === "none") {
+                        imgQuery = place.categoryTitle.split(' ')[0]
+                        let imgUrl = await loadCityImg(imgQuery)
+                        place.imgUrl = imgUrl
+                    } else {
+                        place.imgUrl = imgUrl
+                    }
                 }
             }
 
