@@ -295,6 +295,9 @@ button:focus-visible {
 .large {
   font-size: large;
 }
+.large-respond{
+  font-size: large;
+}
 
 .x-large {
   font-size: x-large;
@@ -1345,6 +1348,20 @@ input {
 }
 
 .closeBtn:hover {
+  /* opacity: 0.75; */
+  filter: brightness(85%);
+  transition: 0.2s;
+}
+.closeBtn-PTC {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 100000;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.closeBtn-PTC:hover {
   /* opacity: 0.75; */
   filter: brightness(85%);
   transition: 0.2s;
@@ -3641,6 +3658,11 @@ p {
   .username-text {
     font-size: small;
   }
+
+  .closeBtn-PTC{
+    top: 8px;
+    right: 8px;
+  }
 }
 
 .entry-error {
@@ -3883,6 +3905,11 @@ p {
     font-size: x-small;
   }
 
+  .closeBtn-PTC{
+    top: 8px;
+    right: 8px;
+  }
+
   /* google icons */
   .arrow {
     font-size: small;
@@ -3890,6 +3917,14 @@ p {
 }
 
 @media only screen and (max-width: 375px) {
+  .placeCard-PTC{
+    height: 110px;
+    margin-bottom: 20px;
+  }
+  .closeBtn-PTC{
+    top: 8px;
+    right: 8px;
+  }
   .placeCard{
     height: 80px;
   }
@@ -3906,6 +3941,15 @@ p {
     font-size: x-small;
     margin-top: 5px;
     margin-bottom: 3px;
+  }
+  .body-address-PTC{
+    font-size: x-small;
+    height: 30px;
+    margin-top: 5px;
+    margin-bottom: 3px;
+  }
+  .large-respond{
+    font-size: 14px;
   }
 }
 

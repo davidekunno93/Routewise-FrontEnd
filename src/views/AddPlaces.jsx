@@ -684,7 +684,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                             return result.name ? <div key={i} onClick={() => addPlaceToConfirm(result)} className="result ws-nowrap onHover-option">
                                                 <div className="inner-contain flx-r w-96 hideOverflow m-auto">
                                                     <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="small-pic mr-1" />
-                                                    <p className="m-0 my-2 large">{result.formatted}</p>
+                                                    <p className="m-0 my-2 large-respond">{result.formatted}</p>
                                                 </div>
                                             </div> : null
                                         }) : null}
@@ -711,7 +711,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                             {placeToConfirm &&
                                 <div className="placeToConfirmCard position-absolute">
                                     <div className="placeCard-PTC w-97 position-relative flx-r my-2">
-                                        <span onClick={() => clearPlaceToConfirm()} className="closeBtn material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                                        <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
                                             close
                                         </span>
 
