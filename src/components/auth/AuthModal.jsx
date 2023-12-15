@@ -134,7 +134,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
     }
     const handleLoginError = (error_code) => {
         console.log(error_code)
-        if (error_code === "auth/invalid-login-credentials") {
+        if (error_code === "auth/invalid-login-credentials" || error_code === "auth/invalid-credential") {
             alert("Invalid Email/Password combination")
             console.log("Invalid Email/Password combination")
         }

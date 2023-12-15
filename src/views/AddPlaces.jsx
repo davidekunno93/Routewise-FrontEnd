@@ -276,6 +276,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             for (let j = 0; j < data.length; j++) {
                 data[j].properties['categoryTitle'] = categoryTitle
             }
+            console.log(response.data.features)
             return response.status === 200 ? response.data.features : null
         }
 
@@ -321,6 +322,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                 // return response.status === 200 ? response.data : null
                 .then(async (response) => {
                     let data = response.data.features
+                    console.log(data)
                     updateSuggestedPlaces(data, categoryTitle)
                     // if (delay) {
                     //     return "done"
@@ -361,8 +363,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     // console.log('else')
                 }
                 // console.log(imgQuery)
-                let imgUrl = await loadCityImg(imgQuery)
-                place.imgUrl = imgUrl
+                if (imgQuery.includes('.') || imgQuery.includes(',')){
+                    imgQuery = place.categoryTitle.split(' ')[0]
+                    let imgUrl = await loadCityImg(imgQuery)
+                    place.imgUrl = imgUrl
+                    console.log(categoryTitle)
+                } else {
+                    let imgUrl = await loadCityImg(imgQuery)
+                    place.imgUrl = imgUrl
+                }
             }
 
         }
@@ -641,7 +650,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     </span>
                     <p className="inline large purple-text">Back</p>
                 </Link> */}
-                <p onClick={() => checkPTC()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                 <div className="flx-r mb-2">
                     <div className="my-1 mr-2 font-jakarta purple-text">Trip information: </div>
                     <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : "12/07/23 - 12/11/23"}</div>
@@ -800,6 +809,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                         <p className="page-text mt-0">Update your <Link to='/survey-update'>travel preferences</Link> to get place suggestions</p>
                     </div>
                     : null}
+
+                <div id='panelBtns' className="position-absolute panel-btns white-text">
+                    Suggested activites!
+                </div>
+                <div className="suggestions-panel">
+
+                </div>
 
                 <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 620 : 0 }} >
 

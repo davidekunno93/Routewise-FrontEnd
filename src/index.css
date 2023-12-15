@@ -3878,6 +3878,10 @@ p {
   .map-panel {
     display: none;
   }
+
+  .suggestions-panel{
+    display: none;
+  }
   
 
 }
