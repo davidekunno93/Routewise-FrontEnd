@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -16,6 +16,7 @@ import { OpenMap } from './components/OpenMap'
 import { HeroCarousel } from './components/HeroCarousel'
 import { HeroFade } from './components/HeroFade'
 import { SurveyUpdate } from './views/SurveyUpdate'
+import axios from 'axios'
 
 function App() {
   const [currentTrip, setCurrentTrip] = useState({
@@ -47,6 +48,20 @@ function App() {
     })
   }
   // const [tripID, setTripID] = useState(null);
+  useEffect(() => {
+    wakeUpBackEnd()
+  }, [])
+
+  const wakeUpBackEnd = async () => {
+    let url = "https://routewise-backend.onrender.com/profile/test"
+    let data = "wakeUp"
+    console.log("waking up...")
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {"Content-Type": "application/json"}
+    })
+    console.log('woken up')
+    return response.status === 200 ? response.data : null
+  }
 
   return (
     <>

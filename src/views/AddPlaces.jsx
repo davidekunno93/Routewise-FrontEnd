@@ -820,49 +820,50 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     </div>
                     : null}
 
-                <div id='panelBtns' className="position-absolute panel-btns white-text">
+                {/* <div id='panelBtns' className="position-absolute panel-btns white-text">
                     Suggested activites!
                 </div>
                 <div className="suggestions-panel">
 
-                </div>
+                </div> */}
 
-                <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 620 : 0 }} >
+                <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 320 : 0 }} >
 
-
-                    {suggestedPlaces.length > 0 &&
-                        suggestedPlaces.map((place, id) => {
-
-
-
-                            return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
-                                <div onClick={() => addPlaceToConfirm(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
-                                    <span className="material-symbols-outlined m-auto">
-                                        add
-                                    </span>
-                                </div>
-                                <div className="cardImg-overlay flx position-absolute">
-                                    <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
-                                </div>
-                                <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
-
-                                <div className="cardModel-text">
-                                    <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
-                                    <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
-                                    <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
-                                    <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
-                                    <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
-                                </div>
-                            </div> : null
+                    {/* <div className="inner-no-flex"> */}
+                        {suggestedPlaces.length > 0 &&
+                            suggestedPlaces.map((place, id) => {
 
 
 
-                        })
-                    }
+                                return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
+                                    <div onClick={() => addPlaceToConfirm(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
+                                        <span className="material-symbols-outlined m-auto">
+                                            add
+                                        </span>
+                                    </div>
+                                    <div className="cardImg-overlay flx position-absolute">
+                                        <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
+                                    </div>
+                                    <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
+
+                                    <div className="cardModel-text">
+                                        <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
+                                        <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
+                                        <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
+                                        <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
+                                        <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
+                                    </div>
+                                </div> : null
+
+
+
+                            })
+                        }
+                    {/* </div> */}
                 </Scrollbars>
             </div>
 
-            <div className="empty-2"></div>
+            <div className="empty-1"></div>
 
         </>
     )
