@@ -2857,6 +2857,9 @@ p {
 .ml15 {
   margin-left: 15%;
 }
+.ml15-disappear768 {
+  margin-left: 15%;
+}
 
 .ml20 {
   margin-left: 20%;
@@ -3272,9 +3275,17 @@ p {
   }
 }
 
+
+
 @media only screen and (max-width: 768px) {
   .appear768{
     display: block;
+  }
+  .ml15-disappear768{
+    margin-left: 0px;
+  }
+  .right-btns{
+    margin-right: 2%;
   }
   .disappear768{
     display: none;
@@ -3731,6 +3742,22 @@ p {
   .card2-title {
     font-size: 12px;
   }
+  .placeCard{
+    height: 100px;
+  }
+  .body-title{
+    font-size: medium;
+    height: 24px;
+  } 
+  .body-info{
+    font-size: small;
+    margin-bottom: 5px;
+  }
+  .body-address{
+    font-size: small;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 
   /* inputs and overlays */
   .input-search-map-overlay {
@@ -3859,6 +3886,26 @@ p {
   /* google icons */
   .arrow {
     font-size: small;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  .placeCard{
+    height: 80px;
+  }
+  .body-title{
+    font-size: medium;
+    height: 24px;
+  } 
+  .body-info{
+    font-size: x-small;
+    height: 14px;
+    margin-bottom: 5px;
+  }
+  .body-address{
+    font-size: x-small;
+    margin-top: 5px;
+    margin-bottom: 3px;
   }
 }
 

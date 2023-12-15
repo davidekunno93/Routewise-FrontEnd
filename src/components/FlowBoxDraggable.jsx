@@ -38,7 +38,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                             expand_more
                         </span>
                         {day.date_converted.split(' ')[0]} <span className="smalltext-respond"> {day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span></p>
-                    <p id={`placeCount-${id}`} className="gray-text bold500 placeCount ws-nowrap td-2 o-none">{day.placeIds.length} {day.placeIds.length === 1 ? "place" : "places"}</p></div>
+                    <p id={`placeCount-${id}`} className="gray-text m-0 mt-2 bold500 placeCount ws-nowrap td-2 o-none">({day.placeIds.length})</p></div>
                 <div className="addTitle-input position-relative">
                     <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
                     <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-50 edit-overlay">

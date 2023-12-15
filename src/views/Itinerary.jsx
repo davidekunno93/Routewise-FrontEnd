@@ -184,6 +184,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     leftPanelClose.classList.add('d-none')
     dayPanelBody.classList.add('o-none')
     wait(200).then(() => {
+      // for some reason you have to set the parameter to <= 770 for this to work at 768 width 
       if (window.innerWidth <= 768) {
         dayPanel.style.width = '0px'
       } else {
@@ -893,11 +894,11 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
             </Link> */}
             <p className="page-heading-bold m-0">Hey {auth.currentUser ? auth.currentUser.displayName : "Josh"},</p>
             <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary!</p>
-            <div className="flx-r onHover-fadelite">
+            {/* <div className="flx-r onHover-fadelite">
               <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                 add
               </span>Add hotel or other accommodation***</p>
-            </div>
+            </div> */}
 
             <div className="itinerary-flow mt-3">
 

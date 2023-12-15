@@ -132,7 +132,7 @@ export const Navbar = () => {
       <div className='navbar bg-white w-100 flx-r just-sb'>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         <div className="flx-c just-ce">
-          <Link onClick={() => togglePrototypeMenu()} className='ml15'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link>
+          <Link onClick={() => togglePrototypeMenu()} className='ml15-disappear768'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
         <div ref={refMenu} id='prototype-menu' className="prototype-menu d-none">
