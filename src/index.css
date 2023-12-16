@@ -3302,7 +3302,7 @@ p {
     margin-left: 0px;
   }
   .right-btns{
-    margin-right: 2%;
+    /* margin-right: 2%; */
   }
   .disappear768{
     display: none;
