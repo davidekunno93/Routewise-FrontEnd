@@ -222,6 +222,27 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         clearPlaceToConfirm()
     }
 
+    const addPlaceToList = async (place) => {
+        let placeInfo = await loadPlaceDetails(place.place_id)
+
+        let newPlace = {
+            placeName: place.name,
+            info: placeInfo,
+            address: place.formatted,
+            imgURL: place.imgUrl,
+            category: place.category ? place.category : "none",
+            favorite: false,
+            lat: place.lat,
+            long: place.lon,
+            geocode: [place.lat, place.lon],
+            placeId: place.place_id
+        }
+        let placeCopy = [...places]
+        placeCopy.push(newPlace)
+        console.log(placeCopy)
+        setPlaces(placeCopy)
+    }
+
     const removePlace = (index) => {
         let placeCopy = [...places]
         placeCopy.splice(index, 1)
@@ -642,9 +663,77 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         placeCards.classList.add('h540')
     }
 
+    const openSuggestedPlacesPanel = () => {
+        if (suggestedPlaces.length === 0) {
+            let suggestedPanel = document.getElementById('suggestedPanel')
+            suggestedPanel.style.transform = 'translateY(200px)'
+        } else {
+            let suggestedPanel = document.getElementById('suggestedPanel')
+            suggestedPanel.style.transform = 'translateY(0px)'
+        }
+    }
+    const closeSuggestedPlacesPanel = () => {
+        let suggestedPanel = document.getElementById('suggestedPanel')
+        suggestedPanel.style.transform = 'translateY(400px)'
+    }
+
     return (
         <>
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
+
+            <div onClick={() => openSuggestedPlacesPanel()} id='panelBtns' className="panel-btns white-text">
+                Suggested activites!
+            </div>
+            <div id='suggestedPanel' className="suggestions-panel">
+                <span onClick={() => closeSuggestedPlacesPanel()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover xx-large color-gains pointer">
+                    expand_more
+                </span>
+                <div className="suggestedPlacesHeading page-heading-bold mt-1 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
+                    info
+                </span>
+                    <div id='suggestedPlacesInfo' className="info position-absolute page-text bold500 d-none">The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.</div>
+                </div>
+                <Scrollbars>
+                    <div className={`${suggestedPlaces.length > 0 ? "inner-no-flex" : null}`}>
+                        {suggestedPlaces.length > 0 ?
+                            suggestedPlaces.map((place, id) => {
+
+
+
+                                return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
+                                    <div onClick={() => addPlaceToConfirm(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
+                                        <span className="material-symbols-outlined m-auto">
+                                            add
+                                        </span>
+                                    </div>
+                                    <div className="cardImg-overlay flx position-absolute">
+                                        <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
+                                    </div>
+                                    <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
+
+                                    <div className="cardModel-text">
+                                        <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
+                                        <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
+                                        <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
+                                        <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
+                                        <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
+                                    </div>
+                                </div> : null
+
+
+
+                            })
+                            :
+                            <div id='noSuggestions' className="noSuggestions page-subsubheading dark-text">
+                                <span className="purple-text">0</span> suggested places. Your personalized suggestions are a click away!<br />
+                                <p className="page-text mt-0">Update your <Link to='/survey-update'>travel preferences</Link> to get place suggestions</p>
+                            </div>
+                        }
+                    </div>
+                </Scrollbars>
+            </div>
+
+
             <div className="page-container90 mt-4">
                 <div className="tripFlow flx-r">
                     <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
@@ -805,7 +894,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
             <div className="empty-2"></div>
 
-            <div className="page-container90">
+            <div className="page-container90 disappear768">
 
                 <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
                     info
@@ -820,45 +909,40 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     </div>
                     : null}
 
-                {/* <div id='panelBtns' className="position-absolute panel-btns white-text">
-                    Suggested activites!
-                </div>
-                <div className="suggestions-panel">
 
-                </div> */}
 
                 <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 320 : 0 }} >
 
                     {/* <div className="inner-no-flex"> */}
-                        {suggestedPlaces.length > 0 &&
-                            suggestedPlaces.map((place, id) => {
+                    {suggestedPlaces.length > 0 &&
+                        suggestedPlaces.map((place, id) => {
 
 
 
-                                return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
-                                    <div onClick={() => addPlaceToConfirm(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
-                                        <span className="material-symbols-outlined m-auto">
-                                            add
-                                        </span>
-                                    </div>
-                                    <div className="cardImg-overlay flx position-absolute">
-                                        <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
-                                    </div>
-                                    <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
+                            return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
+                                <div onClick={() => addPlaceToList(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
+                                    <span className="material-symbols-outlined m-auto">
+                                        add
+                                    </span>
+                                </div>
+                                <div className="cardImg-overlay flx position-absolute">
+                                    <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
+                                </div>
+                                <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
 
-                                    <div className="cardModel-text">
-                                        <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
-                                        <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
-                                        <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
-                                        <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
-                                        <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
-                                    </div>
-                                </div> : null
+                                <div className="cardModel-text">
+                                    <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
+                                    <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
+                                    <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
+                                    <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
+                                    <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
+                                </div>
+                            </div> : null
 
 
 
-                            })
-                        }
+                        })
+                    }
                     {/* </div> */}
                 </Scrollbars>
             </div>
