@@ -111,6 +111,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         currentTripCopy.imgUrl = cityImg
         // reset itinerary in case it has already been generated from previous trip by user
         currentTripCopy.itinerary = null
+        currentTripCopy.places = []
         setCurrentTrip(currentTripCopy)
         setLoading(false)
         navigate('/add-places')

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -17,8 +17,14 @@ import { HeroCarousel } from './components/HeroCarousel'
 import { HeroFade } from './components/HeroFade'
 import { SurveyUpdate } from './views/SurveyUpdate'
 import axios from 'axios'
+import { DataContext } from './Context/DataProvider'
 
 function App() {
+  const loggedIn = window.localStorage.getItem("isLoggedIn");
+  const userData = window.localStorage.getItem("userData")
+  const userPref = window.localStorage.getItem("userPref")
+  const { user, setUser } = useContext(DataContext);
+  const { userPreferences, setUserPreferences } = useContext(DataContext);
   const [currentTrip, setCurrentTrip] = useState({
     tripID: null,
     tripName: "",
@@ -30,6 +36,7 @@ function App() {
     tripDuration: "",
     geocode: null,
     imgUrl: null,
+    places: [],
     itinerary: null
   });
   const clearCurrentTrip = () => {
@@ -68,7 +75,8 @@ function App() {
     <Navbar />
     <Routes>
       <Route children path='/register' element={<SignUp />} />
-      <Route children path='/' element={<Landing />} />
+      <Route children path='/' element={loggedIn ? <Dashboard /> : <Landing />} />
+      <Route children path='/landing' element={<Landing />} />
       <Route children path='/survey' element={<Survey />} />
       <Route children path='/survey-update' element={<SurveyUpdate />} />
       <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />

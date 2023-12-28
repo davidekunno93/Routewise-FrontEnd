@@ -21,18 +21,18 @@ BackEnd (Kate) checkpoints
 <!-- *make sticky map + suggestions 100vh in itinerary page -->
 <!-- *different api for loading city names? -->
 <!-- DONE*loading screen while name trip load -->
-*on dashboard, if no city entered and user tries to add trip, code error feedback
+<!-- *on dashboard, if no city entered and user tries to add trip, code error feedback -->
 <!-- DONE*make more aesthetic scrollbars -->
 *if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
 *add extra destinations to a trip
 *daySelection scrollable
 *My Trips, My Interests, My Account
-*suggested places > load from places api > filter categories from categories state, make horizontally scrollable
-*figure out pseudo-class that causes input fields to change color when dropdown suggestion list of old items pop up
+<!-- *suggested places > load from places api > filter categories from categories state, make horizontally scrollable -->
+*figure out pseudo-class that causes input fields to change color when dropdown suggestion list of old items pop up - img on phone
 **show route button on each day
-*light bulb on the day that the added location is closest to
-*add place via itinerary add place btn inside flowbox
-*make suggested places a bottom up panel that swipes horizontally on phone/tablet device widths
+<!-- *light bulb on the day that the added location is closest to -->
+<!-- *add place via itinerary add place btn inside flowbox -->
+<!-- *make suggested places a bottom up panel that swipes horizontally on phone/tablet device widths -->
 
 REMEMBER TO...
 Take out unnecessary routes

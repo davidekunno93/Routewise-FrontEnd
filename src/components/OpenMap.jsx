@@ -15,6 +15,19 @@ export const OpenMap = ({ mapCenter, markers, zoom }) => {
         iconSize: [46, 41]
     })
 
+    const setViewOnClick = ({ animateRef }) => {
+        const mapObject = useMapEvent('click', (e) => {
+            mapObject.setView(e.latlng, mapObject.getMaxZoom(), {
+                animate:animateRef.current || false,
+            })
+        })
+        return null
+    }
+
+    const animateExample = () => {
+        const animateRef = useRef(false)
+    }
+
     // useEffect(() => {
     //     if (mapCenter) {
     //         ChangeView(mapCenter[0], mapCenter[1])

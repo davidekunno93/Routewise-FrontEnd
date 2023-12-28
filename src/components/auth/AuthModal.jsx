@@ -7,6 +7,8 @@ import { DataContext } from '../../Context/DataProvider';
 import { getAuth, getRedirectResult, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import provider from '../../firebaseGoogle';
 import { doc, getDoc } from 'firebase/firestore';
+import facebookProvider from '../../firebaseFacebook';
+import axios from 'axios';
 
 export const AuthModal = ({ open, authIndex, onClose }) => {
     if (!open) return null
@@ -128,6 +130,9 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
         }
         console.log(userPref)
         setUserPreferences(userPref)
+        // window.localStorage.setItem("userData", [cred.user]);
+        // window.localStorage.setItem("userPref", [userPref]);
+        // window.localStorage.setItem("isLoggedIn", true);
         setUser(cred.user)
         navigate('/dashboard')
         onClose()
@@ -147,12 +152,41 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
         setLoginPassword(e.target.value)
     }
 
-    const googleSignIn = () => {
-        signInWithPopup(auth, provider).then((data) => {
-            // console.log(data.user)
-            // console.log(auth.currentUser)
+    const facebookSignIn = () => {
+        signInWithPopup(auth, facebookProvider)
+        .then((response) => {
+            console.log(response)
+        })
+        .catch((error) => {
+            console.log(error.message)
+        })
+    }
+
+    const googleSignIn = async () => {
+        signInWithPopup(auth, provider).then( async (data) => {
+            console.log(data.user)
+            console.log(auth.currentUser)
             setUser(data.user)
-            onClose()
+            let userData = {
+                uid: data.user.uid,
+                displayName: data.user.displayName,
+                email: data.user.email
+            }
+            const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(userData), {
+                headers: {"Content-Type" : "application/json"}
+            })
+            
+            // send Kate user uid, email, name : she checks if user in database, if not create user
+            // make function async function that awaits Kates back-end membership check before continue
+            console.log(response)
+            if (response.data === "User has already been added to the database.") {
+                onClose()
+                navigate('dashboard')
+            } else {
+                onClose()
+                navigate('/survey')
+            }
+            
 
             // localStorage.setItem('email', data.user.email)
 
@@ -176,8 +210,8 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                         <div className='sign-up-box flx-c m-auto position-relative'>
 
                             <h1 className='mt-4'>Sign Up</h1>
-                            <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
-                            <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
+                            <button onClick={() => googleSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
+                            <button onClick={() => facebookSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
                             <div className="hr-block w-75 flx-r">
                                 <div className="flx-1 flx-c just-ce">
                                     <hr className='w-100 border-gains' />
@@ -198,7 +232,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                         </div>
                         <div className="sign-in-box m-auto">
                             <h1 className='mt-4'>Sign In</h1>
-                            <Link><button className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
+                            <Link><button onClick={() => googleSignIn()} className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
                             <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>
                             <div className="hr-block w-75 flx-r">
                                 <div className="flx-1 flx-c just-ce">

@@ -13,7 +13,7 @@ import { DataContext } from '../Context/DataProvider'
 export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     // Send Kate Data
     const navigate = useNavigate()
-    const [places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
     const [placeToConfirm, setPlaceToConfirm] = useState(null);
     // const [placeToConfirm, setPlaceToConfirm] = useState({
     //     placeName: "Tate Modern",
@@ -120,22 +120,28 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const addStar = (index) => {
-        const starFull = document.getElementById(`star-full-${index}`)
-        const starEmpty = document.getElementById(`star-empty-${index}`)
-        starFull.classList.remove('d-none')
-        starEmpty.classList.add('d-none')
+        // const starFull = document.getElementById(`star-full-${index}`)
+        // const starEmpty = document.getElementById(`star-empty-${index}`)
+        // starFull.classList.remove('d-none')
+        // starEmpty.classList.add('d-none')
         let placesCopy = [...places]
         placesCopy[index].favorite = true
         setPlaces(placesCopy)
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.places[index].favorite = true
+        setCurrentTrip(currentTripCopy)
     }
     const removeStar = (index) => {
-        const starFull = document.getElementById(`star-full-${index}`)
-        const starEmpty = document.getElementById(`star-empty-${index}`)
-        starFull.classList.add('d-none')
-        starEmpty.classList.remove('d-none')
+        // const starFull = document.getElementById(`star-full-${index}`)
+        // const starEmpty = document.getElementById(`star-empty-${index}`)
+        // starFull.classList.add('d-none')
+        // starEmpty.classList.remove('d-none')
         let placesCopy = [...places]
         placesCopy[index].favorite = false
         setPlaces(placesCopy)
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.places[index].favorite = false
+        setCurrentTrip(currentTripCopy)
     }
     // useEffect(() => {
     //     console.log(places)
@@ -219,6 +225,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         placeCopy.push(newPlace)
         console.log(placeCopy)
         setPlaces(placeCopy)
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.places.push(newPlace)
+        // currentTripCopy.places = places
+        setCurrentTrip(currentTripCopy)
         clearPlaceToConfirm()
     }
 
@@ -241,12 +251,19 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         placeCopy.push(newPlace)
         console.log(placeCopy)
         setPlaces(placeCopy)
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.places.push(newPlace)
+        // currentTripCopy.places = places
+        setCurrentTrip(currentTripCopy)
     }
 
     const removePlace = (index) => {
         let placeCopy = [...places]
         placeCopy.splice(index, 1)
         setPlaces(placeCopy)
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.places.splice(index, 1)
+        setCurrentTrip(currentTripCopy)
     }
 
 
@@ -581,6 +598,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     const clearAllPlaces = () => {
         setPlaces([]);
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.places = []
+        setCurrentTrip(currentTripCopy)
     }
 
     const sendPlaces = async () => {
@@ -645,12 +665,21 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         console.log(result)
     }
 
-    const toggleSuggestedPlacesInfo = () => {
-        let suggestPlacesInfo = document.getElementById('suggestedPlacesInfo')
-        if (suggestPlacesInfo.classList.contains('d-none')) {
-            suggestPlacesInfo.classList.remove('d-none')
+    const toggleSuggestedPlacesInfo = (panel) => {
+        if (panel) {
+            let suggestPlacesInfo = document.getElementById('suggestedPlacesInfo-panel')
+            if (suggestPlacesInfo.classList.contains('d-none')) {
+                suggestPlacesInfo.classList.remove('d-none')
+            } else {
+                suggestPlacesInfo.classList.add('d-none')
+            }
         } else {
-            suggestPlacesInfo.classList.add('d-none')
+            let suggestPlacesInfo = document.getElementById('suggestedPlacesInfo')
+            if (suggestPlacesInfo.classList.contains('d-none')) {
+                suggestPlacesInfo.classList.remove('d-none')
+            } else {
+                suggestPlacesInfo.classList.add('d-none')
+            }
         }
     }
 
@@ -688,10 +717,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                 <span onClick={() => closeSuggestedPlacesPanel()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover xx-large color-gains pointer">
                     expand_more
                 </span>
-                <div className="suggestedPlacesHeading page-heading-bold mt-1 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
+                <div className="suggestedPlacesHeading page-heading-bold mt-1 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo("panel")} className="material-symbols-outlined o-50 onHover-fadelite pointer">
                     info
                 </span>
-                    <div id='suggestedPlacesInfo' className="info position-absolute page-text bold500 d-none">The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.</div>
+                    <div id='suggestedPlacesInfo-panel' className="info position-absolute page-text bold500 d-none">The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.</div>
                 </div>
                 <Scrollbars>
                     <div className={`${suggestedPlaces.length > 0 ? "inner-no-flex" : null}`}>
@@ -862,8 +891,11 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                 {/* <span className="material-symbols-outlined mx-3 my-2 o-50 onHover-fade pointer">
                                                 star
                                             </span> */}
-                                                <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
-                                                <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Tw0AsU7.png" alt="" className="star-full my-2 d-none" />
+                                                {place.favorite !== true ?
+                                                    <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
+                                                    :
+                                                    <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Tw0AsU7.png" alt="" className="star-full my-2" />
+                                                }
                                                 <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                                     delete
                                                 </span>
@@ -896,10 +928,14 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
             <div className="page-container90 disappear768">
 
-                <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
-                    info
-                </span>
-                    <div id='suggestedPlacesInfo' className="info position-absolute page-text bold500 d-none">The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.</div>
+                <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative dark-text">
+                    Suggested Places
+                    <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
+                        info
+                    </span>
+                    <div id='suggestedPlacesInfo' className="info position-absolute page-text bold500 d-none">
+                        The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.
+                    </div>
                 </div>
 
                 {userInterests.length === 0 ?

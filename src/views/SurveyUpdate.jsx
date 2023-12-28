@@ -210,7 +210,7 @@ export const SurveyUpdate = () => {
                         <p className="page-text m-0 purple-text">Back</p>
                     </div>
                 </div>
-                <h1 onClick={() => openUpdatedOverlay()} className="page-title mt-2">Update your travel preference</h1>
+                <h1 onClick={() => openUpdatedOverlay()} className="page-title mt-2">Update your travel preferences</h1>
                 <p className="page-text">How do you prefer to explore?</p>
                 <p className="page-text">Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
                     error

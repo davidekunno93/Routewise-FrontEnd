@@ -13,7 +13,7 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [authIndex, setAuthIndex] = useState(null);
 
-  
+
 
   useEffect(() => {
     auth.currentUser ? setUser(auth.currentUser) : null
@@ -33,12 +33,16 @@ export const Navbar = () => {
   //   // console.log('open!!')
   // }
 
-  const toggleUserOptions = () => {
-    const userOptions = document.getElementById('userOptions')
-    userOptions.classList.toggle('d-none')
+  const toggleUserMenu = () => {
+    const userMenu = document.getElementById('userMenu')
+    userMenu.classList.toggle('d-none')
   }
 
   const logOut = () => {
+    // window.localStorage.removeItem("userData");
+    // window.localStorage.removeItem("userPref");
+    // window.localStorage.removeItem("isLoggedIn");
+    // console.log('remove loggedIn')
     signOut()
     setUser(null)
   }
@@ -76,8 +80,8 @@ export const Navbar = () => {
 
   const hideOnClickOutside = (e) => {
     if (refUserDropdown.current && !refUserDropdown.current.contains(e.target)) {
-      const userOptions = document.getElementById('userOptions')
-      userOptions.classList.add('d-none')
+      const userMenu = document.getElementById('userMenu')
+      userMenu.classList.add('d-none')
     }
   }
   const refUserDropdown = useRef(null);
@@ -111,6 +115,12 @@ export const Navbar = () => {
   const togglePrototypeMenu = () => {
     let prototypeMenu = document.getElementById('prototype-menu')
     prototypeMenu.classList.toggle('d-none')
+  }
+
+
+  const closeUserMenu = () => {
+    let userMenu = document.getElementById('userMenu')
+    userMenu.classList.add('d-none')
   }
 
   const refMenu = useRef(null)
@@ -152,12 +162,30 @@ export const Navbar = () => {
                 <p className='username-text m-0 mt- inline mx-2'>{user.displayName}</p>
               </div>
               <div className="profile-icon">
-                <img onClick={() => toggleUserOptions()} src={user.photoURL} alt="" className="profile-img pointer" />
+                <img onClick={() => toggleUserMenu()} src={user.photoURL} alt="" className="profile-img pointer" />
               </div>
 
             </div>
-            <div ref={refUserDropdown} id='userOptions' className="user-options-popup flx-c position-absolute d-none">
-              <Link onClick={() => logOut()}>Sign Out</Link>
+            <div ref={refUserDropdown} id='userMenu' className="user-menu flx-c position-absolute d-none">
+              <Link><div className="option">
+                <span className="material-symbols-outlined">
+                  flight_takeoff
+                </span>
+                <p className="m-0 ml-2">My Trips</p></div></Link>
+              <Link onClick={() => closeUserMenu()} to='/survey-update'><div className="option">
+                <span className="material-symbols-outlined">
+                  settings
+                </span><p className="m-0 ml-2">Travel Preferences</p></div></Link>
+              <Link><div className="option">
+                <span className="material-symbols-outlined">
+                  person
+                </span>
+                <p className="m-0 ml-2">My Account</p></div></Link>
+              <Link onClick={() => {logOut(); closeUserMenu()}}><div className="option">
+                <span className="material-symbols-outlined">
+                  logout
+                </span>
+                <p className="m-0 ml-2">Sign Out</p></div></Link>
             </div>
           </div>
           :

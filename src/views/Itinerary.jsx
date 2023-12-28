@@ -18,6 +18,7 @@ const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
   // if (!currentTrip) return null
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
+  const [lightbulbDays, setLightbulbDays] = useState([]);
   const [markers, setMarkers] = useState(null);
   const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
   const [searchText, setSearchText] = useState('');
@@ -333,6 +334,31 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       geocode: [place.lat, place.lon],
       placeId: place.place_id
     }
+    let days = {}
+    for (let dayNum of tripState.day_order) {
+      let day = tripState.days[dayNum]
+      let dist = Math.sqrt((place.lat - day.centroid[0]) ** 2 + (place.lon - day.centroid[1]) ** 2)
+      days[dayNum] = dist
+    }
+    let min_dist = 99999999999
+    let dist_list = Object.values(days)
+    // console.log(dist_list)
+    for (let i = 0; i < dist_list.length; i++) {
+      // console.log(parseFloat(dist_list[i]))
+      if (min_dist > parseFloat(dist_list[i])) {
+        min_dist = dist_list[i]
+      }
+    }
+    console.log("min dist =", min_dist)
+    let lightbulb_days = []
+    for (let [dayNum, dist] of Object.entries(days)) {
+      if (dist === min_dist) {
+        lightbulb_days.push(dayNum)
+      }
+    }
+    console.log("lightbulb days are = ", lightbulb_days)
+    newPlace["lightbulb_days"] = lightbulb_days
+    setLightbulbDays(lightbulb_days)
     setPlaceToConfirm(newPlace)
     resetSearch()
     resetPanelSearch()
@@ -501,14 +527,15 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }
 
   const addPlace = (dayNum, modifier) => {
-    // let place = placeToConfirm
+    let place = placeToConfirm
+    if (place.lightbulb_days) {
+      delete place.lightbulb_days
+    }
     let tripStateCopy = { ...tripState }
     // create a new place id for the place
-    // tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = placeToConfirm
-    // tripStateCopy.places[tripStateCopy.places_last + 1][id] = tripStateCopy.places_last + 1
     tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
       id: parseInt(tripStateCopy.places_last) + 1,
-      ...placeToConfirm,
+      ...place,
     }
     tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
     tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
@@ -534,6 +561,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   const confirmPlaceAdded = (modifier) => {
     let daySelection = document.getElementById(`daySelection`)
     let placeToConfirmCard = document.getElementById(`placeToConfirmCard`)
+    let day_option = document.getElementById('day-option')
+
     if (modifier) {
       daySelection = document.getElementById(`daySelection-${modifier}`)
       placeToConfirmCard = document.getElementById(`placeToConfirmCard-${modifier}`)
@@ -684,6 +713,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     "day_order": ["day-1", "day-2", "day-3", "day-4"]
   }
 
+
+
   const tripData = currentTrip.itinerary ? currentTrip.itinerary : tripTestData
 
   useEffect(() => {
@@ -693,6 +724,39 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
 
 
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
+  useEffect(() => {
+    updateCentroids()
+  }, [])
+
+  const updateCentroids = () => {
+    let tripStateCopy = { ...tripState }
+    for (let dayNum of tripStateCopy.day_order) {
+      let day = tripStateCopy.days[dayNum]
+      let place_lats = []
+      let place_lons = []
+      // console.log(day)
+      for (let placeId of tripStateCopy.days[dayNum].placeIds) {
+        let place = tripStateCopy.places[placeId]
+        place_lats.push(place.geocode[0])
+        place_lons.push(place.geocode[1])
+      }
+      let sum_lats = 0
+      let sum_lons = 0
+      for (let i = 0; i < place_lats.length; i++) {
+        sum_lats += place_lats[i]
+        sum_lons += place_lons[i]
+      }
+      // console.log(place_lats, "sum of lats =", sum_lats)
+      // console.log(place_lons, "sum of lons =", sum_lons)
+      let center_lat = sum_lats / place_lats.length
+      let center_lon = sum_lons / place_lons.length
+      // console.log(center_lat, center_lon)
+      day["centroid"] = [center_lat, center_lon]
+    }
+    console.log(tripStateCopy)
+    setTripState(tripStateCopy)
+  }
+
 
   const reorderDayList = (sourceDay, startIndex, endIndex) => {
     const newPlaceIds = Array.from(sourceDay.placeIds);
@@ -847,7 +911,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                 <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
                   expand_more
                 </span>
-                <p className="inline v-align white-text">Location #1</p>
+                <p className="inline v-align white-text">Itinerary &nbsp;&nbsp;</p>
               </button>
 
               <div className="it-datesPanel w-100 flx-c mt-3">
@@ -987,9 +1051,17 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                     close
                   </span>
                   <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                  {tripData.day_order.map((dayNum, i) => {
-                    const day = tripData.days[dayNum]
-                    return <button onClick={() => { addPlace(`day-${i + 1}`, "map-panel"), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
+                  {tripState.day_order.map((dayNum, i) => {
+                    const day = tripState.days[dayNum]
+                    return <div id='day-option' className="day-option w-100 flx-r">
+                      <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"} tooltip`}>
+                        <div className="tooltiptext">The lightbulb icon indicates the day that has the closest activities</div>
+                        <span class="material-symbols-outlined m-auto">
+                          lightbulb
+                        </span>
+                      </div>
+                      <button onClick={() => { addPlace(`day-${i + 1}`, "map-panel"), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
+                    </div>
                   })}
                   <div className="mb-3"></div>
                 </div>
@@ -1089,9 +1161,20 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                     close
                   </span>
                   <p className="m-0 mt-3 mb-2 bold700">Add to:</p>
-                  {tripData.day_order.map((dayNum, i) => {
-                    const day = tripData.days[dayNum]
-                    return <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
+                  {tripState.day_order.map((dayNum, i) => {
+                    const day = tripState.days[dayNum]
+                    // const lightbulb_days = placeToConfirm ? placeToConfirm.lightbulb_days : []
+                    // const lightbulb = lightbulb_days.includes(dayNum) ? true : false
+                    return <div id='day-option' className="day-option w-100 flx-r">
+                      {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
+                      <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"} tooltip`}>
+                        <div className="tooltiptext">The lightbulb icon indicates the day that has the closest activities</div>
+                        <span class="material-symbols-outlined m-auto">
+                          lightbulb
+                        </span>
+                      </div>
+                      <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
+                    </div>
                   })}
                   {/* {tripDays.days.map((day, i) => (
                     <button onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="dayOption my-h">{day.day_short}, {day.date_short}</button>
