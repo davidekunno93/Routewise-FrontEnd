@@ -94,7 +94,6 @@ button:focus-visible {
 .flx {
   display: flex;
 }
-
 .flx-r {
   display: flex;
   flex-direction: row;

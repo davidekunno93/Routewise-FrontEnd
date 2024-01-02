@@ -562,6 +562,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     let daySelection = document.getElementById(`daySelection`)
     let placeToConfirmCard = document.getElementById(`placeToConfirmCard`)
     let day_option = document.getElementById('day-option')
+    setPlaceConfirmationAnimation(true)
+    
 
     if (modifier) {
       daySelection = document.getElementById(`daySelection-${modifier}`)
@@ -583,6 +585,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     wait(5500).then(() => {
       placeToConfirmCard.classList.remove('o-none')
       daySelection.classList.remove('o-none')
+      setPlaceConfirmationAnimation(false)
     })
 
   }
@@ -826,9 +829,16 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     setTripState(newState);
   }
 
+  const [placeConfirmationAnimation, setPlaceConfirmationAnimation] = useState(false);
+
   useEffect(() => {
-    setMarkers(Object.values(tripState.places))
-  }, [tripState])
+    let markersArr = Object.values(tripState.places)
+    if (placeToConfirm && !placeConfirmationAnimation) {
+      markersArr.push(placeToConfirm)
+    } 
+    setMarkers(markersArr)
+  }, [tripState, placeToConfirm, placeConfirmationAnimation])
+
 
 
   const [dateToConfirm, setDateToConfirm] = useState(null);

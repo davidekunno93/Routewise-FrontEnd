@@ -211,7 +211,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
 
                             <h1 className='mt-4'>Sign Up</h1>
                             <button onClick={() => googleSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
-                            <button onClick={() => facebookSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
+                            <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
                             <div className="hr-block w-75 flx-r">
                                 <div className="flx-1 flx-c just-ce">
                                     <hr className='w-100 border-gains' />

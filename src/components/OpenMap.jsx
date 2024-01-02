@@ -48,6 +48,10 @@ export const OpenMap = ({ mapCenter, markers, zoom }) => {
     }
     // console.log(markers)
 
+    useEffect(() => {
+        test()
+    }, [])
+
     return (
         <>
             {/* <div className="mapBox"> */}
