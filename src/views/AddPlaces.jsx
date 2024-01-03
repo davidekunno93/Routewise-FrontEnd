@@ -620,7 +620,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             places_serial: places_serial,
         }
         console.log(data)
-        const response = axios.post("https://routewise-backend.onrender.com/itinerary/createdays/41", JSON.stringify(data), {
+        const response = axios.post(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`, JSON.stringify(data), {
             headers: { "Content-Type": "application/json" }
         }).then((response) => createItinerary(response))
             .catch((error) => {
