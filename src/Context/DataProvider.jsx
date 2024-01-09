@@ -14,6 +14,10 @@ const DataProvider = (props) => {
         entertainment: false,
         arts: false
     });
+    const [firstTimeUser, setFirstTimeUser] = useState({
+        firstPlaceAdded: true,
+        firstSignIn: true
+    })
     const [signUpIsOpen, setSignUpIsOpen] = useState(false)
 
     

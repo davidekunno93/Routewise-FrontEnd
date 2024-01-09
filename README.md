@@ -33,6 +33,15 @@ BackEnd (Kate) checkpoints
 <!-- *light bulb on the day that the added location is closest to -->
 <!-- *add place via itinerary add place btn inside flowbox -->
 <!-- *make suggested places a bottom up panel that swipes horizontally on phone/tablet device widths -->
+*click out of suggested places info
+*google auth users issue with creating a trip?
+*suggested places panel not coming all the way up on phone device? (Kathleen's apple phone)
+**08Jan24 meeting**
+*google sign in create trip issue?
+*Finish toolTip 
+*SAVE FEATURE - save trip, auto-save, edit trip, remove trip, trips on dashboard w/ pop-up
+*how much is google api? how long is it free for?
+*STAR FEATURE - ....
 
 REMEMBER TO...
 Take out unnecessary routes

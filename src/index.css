@@ -151,6 +151,30 @@ button:focus-visible {
 .flx-wrap {
   flex-wrap: wrap;
 }
+.gap-1 {
+  gap: 4px;
+}
+.gap-2 {
+  gap: 8px;
+}
+.gap-3 {
+  gap: 12px;
+}
+.gap-4 {
+  gap: 16px;
+}
+.gap-5 {
+  gap: 20px;
+}
+.gap-6 {
+  gap: 24px;
+}
+.gap-7 {
+  gap: 28px;
+}
+.gap-8 {
+  gap: 32px;
+}
 
 .just-se {
   justify-content: space-evenly;
@@ -253,6 +277,10 @@ button:focus-visible {
 .px-5 {
   padding-left: 25px;
   padding-right: 25px;
+}
+.px-6 {
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
 .m-auto {
@@ -723,7 +751,33 @@ button:focus-visible {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.toolTip-modal {
+  position: fixed;
+  width: 534px;
+  height: 448px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  padding: 34px 32px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
+.overlay-placeholder {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: transparent;
+  z-index: 99999;
+}
 .overlay {
   position: fixed;
   top: 0;
@@ -2171,6 +2225,9 @@ p {
 .z-10000 {
   z-index: 10000;
 }
+.z-99999 {
+  z-index: 99999;
+}
 
 .day-date {
   width: 120px;
@@ -3250,6 +3307,10 @@ p {
   display: none;
 }
 
+.checkbox-medium {
+  zoom: 1.2;
+}
+
 @media only screen and (max-width: 1200px) {
   .planning-section .text {
     font-size: 24px;
@@ -3695,6 +3756,9 @@ p {
   .page-text {
     font-size: small;
   }
+  .checkbox-medium {
+    zoom: 1;
+  }
   .sign-up{
     font-size: small;
   }
@@ -3715,10 +3779,14 @@ p {
   .specifyCity-box {
     width: 300px;
   }
-
   .tripModal-img {
     width: 90%;
   }
+  .toolTip-modal {
+    width: 400px;
+    height: 350px;
+  }
+
 
   /* footer classes */
   .bird-logo {
@@ -3771,7 +3839,6 @@ p {
   .mt15-respond {
     margin-top: 25%;
   }
-
   .calendarInput {
     font-size: 14px;
   }
@@ -3943,6 +4010,13 @@ p {
   .carousel-window {
     height: 560px;
     padding-top: 10px;
+  }
+  .toolTip-modal {
+    width: 300px;
+    height: 350px;
+  }
+  .toolTip-modal img {
+    width: 80%;
   }
 
   /* pic sizes */

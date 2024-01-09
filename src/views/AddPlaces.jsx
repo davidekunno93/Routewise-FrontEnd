@@ -7,12 +7,18 @@ import { Itinerary } from './Itinerary'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { Loading } from '../components/Loading'
 import { DataContext } from '../Context/DataProvider'
+import StarPlacesToolTip from '../components/StarPlacesToolTip'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { firestore } from '../firebase'
 
 
 
 export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     // Send Kate Data
-    const navigate = useNavigate()
+    const { user, setUser } = useContext(DataContext);
+    const { firstTimeUser, setFirstTimeUser } = useContext(DataContext);
+    const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
+    const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
     const [placeToConfirm, setPlaceToConfirm] = useState(null);
     // const [placeToConfirm, setPlaceToConfirm] = useState({
@@ -230,6 +236,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         // currentTripCopy.places = places
         setCurrentTrip(currentTripCopy)
         clearPlaceToConfirm()
+        if (firstTimeOnPage) {
+            openStarPlacesToolTip()
+        }
     }
 
     const addPlaceToList = async (place) => {
@@ -255,6 +264,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         currentTripCopy.places.push(newPlace)
         // currentTripCopy.places = places
         setCurrentTrip(currentTripCopy)
+        if (firstTimeOnPage) {
+            openStarPlacesToolTip()
+        }
     }
 
     const removePlace = (index) => {
@@ -706,8 +718,33 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         suggestedPanel.style.transform = 'translateY(400px)'
     }
 
+
+    // star places tooltip code
+    const [starPlacesToolTipOpen, setStarPlacesToolTipOpen] = useState(false);
+    const openStarPlacesToolTip = async () => {
+        let uid = user ? user.uid : "testUser"
+        let firstDoc = await getDoc(doc(firestore, `firstTimeUser/${uid}`))
+        let firstData = firstDoc.data()
+        if (firstData) {
+            // does user want tooltip on the first place added?
+            if (firstData.firstPlaceAdded) {
+                // open tooltip
+                setStarPlacesToolTipOpen(true)
+            }
+        } else {
+            setDoc(doc(firestore, `firstTimeUser/${uid}`), {
+                firstPlaceAdded: true,
+                firstSignIn: false
+            })
+            // open tooltip
+            setStarPlacesToolTipOpen(true)
+        }
+        setFirstTimeOnPage(false)
+    }
+
     return (
         <>
+        <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
             <div onClick={() => openSuggestedPlacesPanel()} id='panelBtns' className="panel-btns white-text">
