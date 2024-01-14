@@ -43,6 +43,15 @@ BackEnd (Kate) checkpoints
 *how much is google api? how long is it free for?
 *STAR FEATURE - ....
 
+**11Jan24 meeting**
+Google gives 6k requests per month for free?
+Google maps API - $200 worth of rq per month - 28,500 maploads
+Save trips
+Load saved trips
+Fix generate itinerary bug that Cheryl found
+Figma stickies from Jenny
+get my trips to be responsive
+
 REMEMBER TO...
 Take out unnecessary routes
 Remove unnecessary console.logs

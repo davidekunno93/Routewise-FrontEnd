@@ -592,7 +592,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
 
 
 
-  // drag n drop code
+  // drag n drop code test data
   const tripTestData = {
     tripID: "",
     places_last: 8,

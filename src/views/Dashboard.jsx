@@ -14,6 +14,7 @@ import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
 import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
+import { Link } from 'react-router-dom';
 
 
 
@@ -47,6 +48,27 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             country: "US"
         }
     ]);
+    const [userTrips, setUserTrips] = useState(null)
+
+    // get user trips code
+    const getTripsData = async () => {
+        const response = await axios.get(`https://routewise-backend.onrender.com/places/trips/${auth.currentUser.uid}`)
+        return response.status === 200 ? response.data : "error - it didn't work"
+    }
+
+    const loadTripsData = async () => {
+        let data = await getTripsData()
+        setUserTrips(data)
+        console.log(data)
+    }
+
+    useEffect(() => {
+        if (auth.currentUser) {
+            loadTripsData()
+            console.log(auth.currentUser.uid)
+        }
+        console.log(userTrips)
+    }, [])
 
     const apiKey = 'ka/g7nybqosAgLyFNCod1A==WBv07XT0PI2TrXTO'
     const updateMapCenter = async () => {
@@ -156,6 +178,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const hideOnClickOutside = (e) => {
         if (refOne.current && !refOne.current.contains(e.target)) {
             setCalendarOpen(false)
+            closeUserTripPopup()
         }
     }
     const refOne = useRef(null);
@@ -302,10 +325,45 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         }
     }
 
-    const testmw = () => {
-        console.log(modalWidth)
-        console.log(window.innerWidth)
+    const datishort = (date) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        const monthNum = date.slice(5, 7)
+        const month = months[monthNum - 1]
+        let day = date.slice(8)
+        if (day[0] === "0") {
+            day = day[1]
+        }
+        return month + " " + day
     }
+    const datishortRange = (startDate, endDate) => {
+        // const startYear = startDate.slice(0, 5)
+        // const endYear = endDate.slice(0, 4)
+        const start = datishort(startDate)
+        const end = datishort(endDate)
+        const startMonth = start.slice(0, 3)
+        const endMonth = end.slice(0, 3)
+
+        if (startMonth === endMonth) {
+            return start + " - " + end.slice(4)
+        } else {
+            return start + " - " + end
+        }
+
+    }
+    const toggleUserTripPopup = (index) => {
+        let popUp = document.getElementById(`userTrip-popUp-${index}`)
+        popUp.classList.toggle('d-none')
+    }
+
+    const closeUserTripPopup = () => {
+        let popUps = document.getElementsByClassName('popUp')
+        for (let i = 0; i < popUps.length; i++) {
+            popUps[i].classList.add('d-none')
+        }
+    }
+
+
+
     return (
         <>
             {/* <div className=''>
@@ -362,13 +420,68 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                     </div>
                 </div>
 
+                {userTrips ?
+                    <>
+                        <div className="flx-r align-r just-sb mt-5">
+                            <p className="m-0 page-heading-bold">My Trips</p>
+                            {userTrips.length > 4 ?
+                                <Link>
+                                    <div className="flx-r align-c">
+                                        <p className="m-0 purple-text page-text">See all trips</p>
+                                        <span className="material-symbols-outlined ml-1 purple-text">
+                                            arrow_forward
+                                        </span>
+                                    </div>
+                                </Link>
+                                : null}
+                        </div>
+
+                        <div className="userTrips flx-r just-sb">
+                            {userTrips.map((trip, index) => {
+
+                                if (index < 4) {
+
+
+                                    return <div key={index} className="userTrip-box">
+                                        <div ref={refOne} id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                            <div className="option">
+                                                <span className="material-symbols-outlined large mx-1">
+                                                    edit
+                                                </span>
+                                                <p className="m-0">Edit trip</p>
+                                            </div>
+                                            <div className="option">
+                                                <span className="material-symbols-outlined large mx-1">
+                                                    delete
+                                                </span>
+                                                <p className="m-0">Delete trip</p>
+                                            </div>
+                                        </div>
+                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
+                                            more_vert
+                                        </span>
+                                        <img src={trip.dest_img} alt="" className="destImg" />
+                                        <p className="m-0 box-title">{trip.trip_name}</p>
+                                        <div className="flx-r">
+                                            <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                            <p className="m-0 gray-text">&nbsp; &#9679; &nbsp;</p>
+                                            <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+                                        </div>
+                                    </div>
+                                }
+                            })}
+                        </div>
+                    </>
+                    : null}
+
+                {/* map code */}
                 <div className="map my-5 flx">
                     <OpenMap mapCenter={mapCenter} zoom={2} />
 
                 </div>
 
                 <div className="popular-destinations">
-                    <div className="page-heading my-3">Popular destinations</div>
+                    <div className="page-heading-bold my-3">Popular destinations</div>
 
                     <div className="carousel2-window">
                         <div id='cityCarouselInner' className="inner-no-flex" style={{ transform: `translateX(-${translationIndex * 350}px)` }}>

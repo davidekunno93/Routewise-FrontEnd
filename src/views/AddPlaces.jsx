@@ -10,6 +10,7 @@ import { DataContext } from '../Context/DataProvider'
 import StarPlacesToolTip from '../components/StarPlacesToolTip'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { firestore } from '../firebase'
+import { LoadingBox } from '../components/LoadingBox'
 
 
 
@@ -484,7 +485,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                 // console.log(key)
             }
         }
-        // console.log(userInterestsList)
+        console.log(userInterestsList)
         setUserInterests(userInterestsList)
 
         let conclusion = delayGetSuggestedPlaces(userInterestsList)
@@ -742,63 +743,41 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         setFirstTimeOnPage(false)
     }
 
+    const [selectedPlaceList, setSelectedPlaceList] = useState("Suggested")
+    const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null)
+    const updateSuggestedPlacesFilter = (num, categoryTitle) => {
+        // let category = document.getElementById(`suggestedCategory-${num}`)
+        if (categoryTitle === "All") {
+            setSuggestedPlacesFilter(null)
+        } else {
+            setSuggestedPlacesFilter(categoryTitle)
+        }
+        for (let i = 0; i < userInterests.length + 1; i++) {
+            let category = document.getElementById(`suggestedCategory-${i + 1}`)
+            if (i + 1 === num) {
+                category.classList.add('selected')
+            } else {
+                category.classList.remove('selected')
+            }
+        }
+    }
+    const [blacklist, setBlacklist] = useState([])
+    const addToBlacklist = (categoryName) => {
+        let blacklistCopy = [...blacklist]
+        blacklistCopy.push(categoryName)
+        setBlacklist(blacklistCopy)
+        // console.log(blacklist)
+    }
+    const undoHidePlace = () => {
+        let blacklistCopy = [...blacklist]
+        blacklistCopy.pop()
+        setBlacklist(blacklistCopy)
+    }
+
     return (
         <>
-        <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
+            <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
-
-            <div onClick={() => openSuggestedPlacesPanel()} id='panelBtns' className="panel-btns white-text">
-                Suggested activites!
-            </div>
-            <div id='suggestedPanel' className="suggestions-panel">
-                <span onClick={() => closeSuggestedPlacesPanel()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover xx-large color-gains pointer">
-                    expand_more
-                </span>
-                <div className="suggestedPlacesHeading page-heading-bold mt-1 position-relative dark-text">Suggested Places <span onClick={() => toggleSuggestedPlacesInfo("panel")} className="material-symbols-outlined o-50 onHover-fadelite pointer">
-                    info
-                </span>
-                    <div id='suggestedPlacesInfo-panel' className="info position-absolute page-text bold500 d-none">The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.</div>
-                </div>
-                <Scrollbars>
-                    <div className={`${suggestedPlaces.length > 0 ? "inner-no-flex" : null}`}>
-                        {suggestedPlaces.length > 0 ?
-                            suggestedPlaces.map((place, id) => {
-
-
-
-                                return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
-                                    <div onClick={() => addPlaceToConfirm(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
-                                        <span className="material-symbols-outlined m-auto">
-                                            add
-                                        </span>
-                                    </div>
-                                    <div className="cardImg-overlay flx position-absolute">
-                                        <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
-                                    </div>
-                                    <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
-
-                                    <div className="cardModel-text">
-                                        <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
-                                        <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
-                                        <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
-                                        <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
-                                        <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
-                                    </div>
-                                </div> : null
-
-
-
-                            })
-                            :
-                            <div id='noSuggestions' className="noSuggestions page-subsubheading dark-text">
-                                <span className="purple-text">0</span> suggested places. Your personalized suggestions are a click away!<br />
-                                <p className="page-text mt-0">Update your <Link to='/survey-update'>travel preferences</Link> to get place suggestions</p>
-                            </div>
-                        }
-                    </div>
-                </Scrollbars>
-            </div>
-
 
             <div className="page-container90 mt-4">
                 <div className="tripFlow flx-r">
@@ -816,10 +795,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     <p className="inline large purple-text">Back</p>
                 </Link> */}
                 <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
-                <div className="flx-r mb-2">
-                    <div className="my-1 mr-2 font-jakarta purple-text">Trip information: </div>
-                    <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : "12/07/23 - 12/11/23"}</div>
-                    <div className="dateBox my-1 font-jakarta px-2 mx-2"><span className="purple-text">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span> days</div>
+                <div className="flx-r mb-2 align-c gap-2">
+                    <span className="material-symbols-outlined o-50">
+                        calendar_month
+                    </span>
+                    <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : <p className="m-0">Dec 7, 23 &nbsp; - &nbsp; Dec 11, 23</p>}</div>
+                    <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
+                    <p className="m-0 purple-text">Edit</p>
                 </div>
                 <div className="flx-r onHover-fadelite d-none">
                     <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
@@ -901,60 +883,173 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
 
                     <div className="places-list flx-c flx-4">
-                        <div className="">
-                            <div className="flx-r flx-end just-sb">
-                                <p className="page-subheading-bold m-0 my-1">Added places ({places.length})</p>
-                                <p onClick={() => clearAllPlaces()} className="mb-2 purple-text pointer z-1">Clear List</p>
+                        <div className="mt-4-respond1024">
+                            <div className="placesLists flx-r gap-6">
+                                <p onClick={() => setSelectedPlaceList("Added")} className={`${selectedPlaceList === "Added" ? "selectedPlaceList" : "unselectedPlaceList"} page-subsubheading-bold m-0`}>Added places ({places.length})</p>
+                                <p onClick={() => setSelectedPlaceList("Suggested")} className={`${selectedPlaceList === "Suggested" ? "selectedPlaceList" : "unselectedPlaceList"} page-subsubheading-bold m-0`}>Suggested places</p>
                             </div>
-                            <div className={`placeCards ${places.length > 0 ? "h540" : null}`}>
-                                <Scrollbars style={{ color: 'red' }}>
 
+                            {selectedPlaceList === "Added" &&
+                                <>
+                                    <p onClick={() => clearAllPlaces()} className="my-2 purple-text pointer z-1 right-text bold500">Clear list</p>
+                                    <div className={`placeCards ${places.length > 0 ? "h482" : null}`}>
+                                        <Scrollbars autoHide>
 
+                                            {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
+                                                return <div key={index} className="placeCard2 position-relative flx-r my-2">
 
-                                    {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
-                                        return <div key={index} className="placeCard w-97 position-relative flx-r my-2">
+                                                    <div className="placeCard-img-div flx-3">
+                                                        <img className="placeCard2-img" src={place.imgURL} />
+                                                    </div>
+                                                    <div className="placeCard-body flx-5">
+                                                        <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
+                                                        <p className="body-title ">{place.placeName}</p>
+                                                        <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p>
+                                                        <p className="body-address">{place.address}</p>
+                                                    </div>
+                                                    <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
-                                            <div className="placeCard-img-div flx-1">
-                                                <img className="placeCard-img" src={place.imgURL} />
-                                            </div>
-                                            <div className="placeCard-body flx-2">
-                                                <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
-                                                <p className="body-title ">{place.placeName}</p>
-                                                <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p>
-                                                <p className="body-address">{place.address}</p>
-                                            </div>
-                                            <div className="placeCard-starOrDelete flx-c just-sb align-c">
-                                                {/* <img className="empty-star m-auto pad16" src='https://i.imgur.com/70juIKm.png' /> */}
-                                                {/* <span className="material-symbols-outlined mx-3 my-2 o-50 onHover-fade pointer">
-                                                star
-                                            </span> */}
-                                                {place.favorite !== true ?
-                                                    <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
-                                                    :
-                                                    <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Tw0AsU7.png" alt="" className="star-full my-2" />
-                                                }
-                                                <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                    delete
-                                                </span>
-                                            </div>
+                                                        {place.favorite !== true ?
+                                                            <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
+                                                            :
+                                                            <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Tw0AsU7.png" alt="" className="star-full my-2" />
+                                                        }
+                                                        <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                            delete
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            })
+                                                :
+                                                <div className="add-places-card">
+                                                    <span className="material-symbols-outlined xx-large">
+                                                        location_on
+                                                    </span>
+                                                    <p className="large bold700 my-1 o-50">Add some places</p>
+                                                    <p className="m-0 w-60 center-text o-50 addPlace-text">Use the search bar on the map to add places that you want to go</p>
+                                                </div>
+                                            }
+                                        </Scrollbars>
+                                        <div className="generate-btn-space w-100">
+                                            <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button>
                                         </div>
-                                    })
-                                        :
-                                        <div className="add-places-card">
-                                            <span className="material-symbols-outlined xx-large">
-                                                location_on
-                                            </span>
-                                            <p className="large bold700 my-1 o-50">Add some places</p>
-                                            <p className="m-0 w-60 center-text o-50 addPlace-text">Use the search bar on the map to add places that you want to go</p>
-                                        </div>
+                                    </div>
+                                </>
+                            }
 
+                            {selectedPlaceList === "Suggested" &&
+                                <>
+                                    {userInterests.length > 0 &&
+                                        <div className="suggestedCategories flx-r gap-2 my-2">
+                                            <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className="dateBox px-2 pointer selected">All</div>
+                                            {userInterests ? userInterests.map((interest, index) => {
+                                                return <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, interest.categoryTitle)} className="dateBox px-2 pointer unselected">{interest.categoryTitle}</div>
+                                            }) : null}
+
+                                        </div>
                                     }
-                                </Scrollbars>
+                                    <div className="flx-r align-r">
+                                        {blacklist.length > 0 &&
+                                        <div onClick={() => undoHidePlace()} className="flx-r align-c onHover-fadelite">
+                                            <span className="material-symbols-outlined purple-text medium mr-1">
+                                                undo
+                                            </span>
+                                            <p className="my-2 purple-text pointer small">Undo Hide</p>
+                                        </div>
+                                        }
 
-                            </div>
-                            <div className="generate-btn-space w-100">
-                                <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024 mt-2`}>Generate Itinerary</button>
-                            </div>
+                                        <Link to='/survey-update' className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
+                                    </div>
+                                    <div className={`placeCards ${suggestedPlaces.length > 0 ? "h482" : null}`}>
+                                        <Scrollbars autoHide>
+                                            {userInterests.length === 0 ?
+                                                <div className="add-places-card">
+                                                    <span className="material-symbols-outlined xx-large">
+                                                        map
+                                                    </span>
+                                                    <p className="large bold700 my-1 o-50">0 suggested places</p>
+                                                    <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
+                                                </div> : null}
+                                            {userInterests.length > 0 && suggestedPlaces.length === 0 &&
+                                                <>
+                                                    <div className="loadingBox-inline">
+                                                        <Loading noMascot={true} innerText={"Loading..."} />
+                                                    </div>
+                                                </>
+                                            }
+
+
+                                            {suggestedPlaces.length > 0 &&
+                                                suggestedPlaces.map((place, index) => {
+                                                    let suggestedPlace = place.properties
+                                                    let id = 'suggested-' + index
+                                                    let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
+                                                    let blacklisted = false
+                                                    if (blacklist.includes(suggestedPlace.name)) {
+                                                        blacklisted = true
+                                                    }
+                                                    if (!suggestedPlacesFilter) {
+                                                        return suggestedPlace.name && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+
+                                                            <div className="placeCard-img-div flx-3">
+                                                                <img className="placeCard2-img" src={suggestedPlace.imgUrl} />
+                                                            </div>
+                                                            <div className="placeCard-body flx-5">
+                                                                {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
+                                                                <p className="body-title ">{suggestedPlace.name}</p>
+                                                                <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
+                                                                <p className="body-address">{suggestedPlace.address_line2}</p>
+                                                            </div>
+                                                            <div className="placeCard-starOrDelete flx-c just-sb align-c">
+
+                                                                <div onClick={() => addPlaceToList(suggestedPlace)} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
+                                                                    <span className="material-symbols-outlined m-auto medium purple-text">
+                                                                        add
+                                                                    </span>
+                                                                </div>
+
+                                                                <span onClick={() => addToBlacklist(suggestedPlace.name)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                                    visibility_off
+                                                                </span>
+                                                            </div>
+                                                        </div> : null
+                                                    } else {
+                                                        if (suggestedPlace.categoryTitle === filter) {
+
+                                                            return suggestedPlace.name && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+
+                                                                <div className="placeCard-img-div flx-3">
+                                                                    <img className="placeCard2-img" src={suggestedPlace.imgUrl} />
+                                                                </div>
+                                                                <div className="placeCard-body flx-5">
+                                                                    {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
+                                                                    <p className="body-title ">{suggestedPlace.name}</p>
+                                                                    <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
+                                                                    <p className="body-address">{suggestedPlace.address_line2}</p>
+                                                                </div>
+                                                                <div className="placeCard-starOrDelete flx-c just-sb align-c">
+
+                                                                    <div onClick={() => addPlaceToList(suggestedPlace)} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
+                                                                        <span className="material-symbols-outlined m-auto medium purple-text">
+                                                                            add
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                                        visibility_off
+                                                                    </span>
+                                                                </div>
+                                                            </div> : null
+                                                        }
+                                                    }
+
+                                                })}
+                                        </Scrollbars>
+                                    </div>
+
+                                </>
+                            }
+
                         </div>
                     </div>
 
@@ -962,64 +1057,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             </div>
 
             <div className="empty-2"></div>
-
-            <div className="page-container90 disappear768">
-
-                <div className="suggestedPlacesHeading page-heading-bold my-2 position-relative dark-text">
-                    Suggested Places
-                    <span onClick={() => toggleSuggestedPlacesInfo()} className="material-symbols-outlined o-50 onHover-fadelite pointer">
-                        info
-                    </span>
-                    <div id='suggestedPlacesInfo' className="info position-absolute page-text bold500 d-none">
-                        The places suggested below are based on the travel preferences selected when you logged in for the first time. Click <Link to='/survey-update'><strong>here</strong></Link> to update them.
-                    </div>
-                </div>
-
-                {userInterests.length === 0 ?
-                    <div id='noSuggestions' className="noSuggestions page-subsubheading dark-text">
-                        <span className="purple-text">0</span> suggested places. Your personalized suggestions are a click away!<br />
-                        <p className="page-text mt-0">Update your <Link to='/survey-update'>travel preferences</Link> to get place suggestions</p>
-                    </div>
-                    : null}
-
-
-
-                <Scrollbars style={{ width: '100%', height: suggestedPlaces.length > 0 ? 320 : 0 }} >
-
-                    {/* <div className="inner-no-flex"> */}
-                    {suggestedPlaces.length > 0 &&
-                        suggestedPlaces.map((place, id) => {
-
-
-
-                            return place.properties.name ? <div key={id} className="card5 inflex position-relative flx-c mr-3 my-2">
-                                <div onClick={() => addPlaceToList(place.properties)} className="addIcon2 position-absolute flx onHover-fade pointer">
-                                    <span className="material-symbols-outlined m-auto">
-                                        add
-                                    </span>
-                                </div>
-                                <div className="cardImg-overlay flx position-absolute">
-                                    <p className="m-auto page-text center-text white-text">{place.properties.name}</p>
-                                </div>
-                                <img src={place.properties.imgUrl} alt="" className="cardModel-img" />
-
-                                <div className="cardModel-text">
-                                    <p className="m-0 page-subsubheading h60 w-80">{place.properties.name}</p>
-                                    <p className="m-0 purple-text">{place.properties.categoryTitle}</p>
-                                    <p className="my-1 small gray-text"><strong>County:</strong> {place.properties.county}</p>
-                                    <p className="my-1 small gray-text"><strong>Address:</strong> {place.properties.address_line2}</p>
-                                    <p className="my-1 small gray-text"><strong>Distance:</strong> {place.properties.distance} km</p>
-                                </div>
-                            </div> : null
-
-
-
-                        })
-                    }
-                    {/* </div> */}
-                </Scrollbars>
-            </div>
-
+            <div className="empty-2"></div>
+            <div className="empty-2"></div>
             <div className="empty-1"></div>
 
         </>

@@ -291,6 +291,12 @@ button:focus-visible {
   display: block;
   margin: auto;
 }
+.position-right {
+  margin: 0 0 0 auto;
+}
+.position-bottom {
+  margin: auto 0 0 0;
+}
 
 .right {
   float: right;
@@ -727,6 +733,18 @@ button:focus-visible {
   position: absolute;
   z-index: 1002;
   overflow: hidden;
+}
+.loadingBox-inline {
+  background-color: white;
+  /* width: 500px; defined in element style {{}} */
+  /* height: 550px; define in element style {{}} */
+  padding: 32px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  /* margin-top: 25px; */
+  /* overflow: hidden; */
+  position: relative;
 }
 
 .loadingDiv{
@@ -1331,11 +1349,12 @@ button:focus-visible {
 }
 
 .aligns-l {
-  align-self: self-start;
+  align-self: flex-start;
 }
 
 .aligns-r {
-  align-self: self-end;
+  align-self: flex-end;
+  margin-left: auto;
 }
 
 .password-collapsible {
@@ -1472,10 +1491,12 @@ input {
 }
 
 .dateBox{
-  background-color: gainsboro;
+  background-color: rgb(235, 235, 235);
   /* width: 160px; */
   text-align: center;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
   color: #242424;
 }
 
@@ -1775,6 +1796,22 @@ p {
   opacity: 1;
 }
 
+.placeCard2 {
+  /* width: 100%; */
+  height: 130px;
+  border-bottom: 2px solid gainsboro;
+  /* border-radius: 12px; */
+  background-color: white;
+  overflow: hidden;
+  transition: 0.3s;
+  padding: 12px 12px;
+}
+.placeCard2-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
 .placeCard {
   /* width: 100%; */
   height: 130px;
@@ -1809,8 +1846,22 @@ p {
   opacity: 0.35;
   transition: 0.2s;
 }
+.placeCard2:hover .onHover-50 {
+  opacity: 0.35;
+  transition: 0.2s;
+}
 
 .placeCard .popUp {
+  background-color: white;
+  /* height: 50px; */
+  /* width: 200px; */
+  border: 1px solid gainsboro;
+  border-radius: 8px;
+  transition: 0.3s;
+  position: absolute;
+  z-index: 1;
+}
+.placeCard2 .popUp {
   background-color: white;
   /* height: 50px; */
   /* width: 200px; */
@@ -1905,7 +1956,7 @@ p {
 }
 
 .placeCards {
-  height: 540px;
+  height: 520px;
   /* overflow: scroll; */
 }
 
@@ -1934,6 +1985,8 @@ p {
   font-weight: 400;
   font-size: medium;
   color: gray;
+  height: 48px;
+  overflow: hidden;
 }
 
 .body-address-PTC {
@@ -2807,6 +2860,7 @@ p {
   margin-top: 25px;
 }
 
+
 .mt-5 {
   margin-top: 50px;
 }
@@ -3309,6 +3363,94 @@ p {
 
 .checkbox-medium {
   zoom: 1.2;
+  /* accent-color: red; */
+}
+
+/* input[type=checkbox]:before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #99AFC1;
+  border-radius: 3px;
+  padding: 1px;
+  background-color: #ffffff;
+} */
+
+.userTrips {
+  margin-top: 24px;
+}
+.userTrip-box {
+  /* background-color: #007ACC; */
+  width: 240px;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.userTrip-box .popUp {
+  position: absolute;
+  width: 140px;
+  background-color: white;
+  border-radius: 8px;
+  bottom: 25%;
+  right: 5%;
+  /* display: flex;
+  flex-direction: column; */
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+.userTrip-box .popUp .option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 0px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.userTrip-box .popUp .option:hover {
+  background-color: rgb(240, 240, 240);
+  transition: 0.2s;
+}
+.userTrip-box .destImg {
+  width: 100%;
+  height: 65%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.userTrip-box .box-title {
+  width: 90%;
+  overflow: hidden;
+  /* background-color: #55ca46; */
+}
+.userTrip-box .vertIcon {
+  position: absolute;
+  opacity: 0.5;
+  right: 0;
+  bottom: 18%;
+  /* background-color: gray; */
+  cursor: pointer;
+}
+
+.d-none {
+  display: none;
+}
+.placesLists {
+  border-bottom: 1px solid gainsboro;
+}
+.unselectedPlaceList {
+  border-bottom: 4px solid transparent;
+  color: gainsboro;
+  cursor: pointer;
+}
+.selectedPlaceList {
+  border-bottom: 4px solid #6663FC;
+}
+
+.suggestedCategories .selected {
+  color: #6663FC;
+  background-color: #F0EFFF;
 }
 
 @media only screen and (max-width: 1200px) {
@@ -3335,6 +3477,12 @@ p {
   }
   .h540{
     height: 540px;
+  }
+  .h482{
+    height: 482px;
+  }
+  .mt-4-respond1024 {
+    margin-top: 25px;
   }
 
   .right-respond1024{

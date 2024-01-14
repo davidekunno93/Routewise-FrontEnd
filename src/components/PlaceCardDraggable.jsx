@@ -10,10 +10,10 @@ export const PlaceCardDraggable = ({ i, place, removePlace, dayId, draggableSnap
             </div>
 
 
-            <div className="placeCard w-100 position-relative flx-r my-2" style={{ borderColor: `${draggableSnapshot.isDragging ? "#6663FC" : "gainsboro"}`, boxShadow: `${draggableSnapshot.isDragging ? "0 0 20px rgba(0, 0, 0, 0.1)" : "0 0 0px rgba(0, 0, 0, 0.1)"}` }}>
+            <div className="placeCard2 w-100 position-relative flx-r my-2" style={{ borderColor: `${draggableSnapshot.isDragging ? "#6663FC" : "gainsboro"}`, boxShadow: `${draggableSnapshot.isDragging ? "0 0 20px rgba(0, 0, 0, 0.1)" : "0 0 0px rgba(0, 0, 0, 0.1)"}` }}>
 
                 <div className="placeCard-img-div flx-1">
-                    <img className="placeCard-img" src={place.imgURL} />
+                    <img className="placeCard2-img" src={place.imgURL} />
                 </div>
                 <div className="placeCard-body flx-2">
                     <p className="body-title">{place.placeName}</p>
