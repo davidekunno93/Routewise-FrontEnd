@@ -169,19 +169,27 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         // setCalendar(format(new Date(), 'MM/dd/yyyy'))
         document.addEventListener('keydown', hideOnEscape, true)
         document.addEventListener('click', hideOnClickOutside, true)
+        document.addEventListener('click', hidePopUpOnClickOutside, true)
     })
     const hideOnEscape = (e) => {
         if (e.key === "Escape") {
             setCalendarOpen(false)
+            closeUserTripPopup()
         }
     }
     const hideOnClickOutside = (e) => {
         if (refOne.current && !refOne.current.contains(e.target)) {
             setCalendarOpen(false)
-            closeUserTripPopup()
+            // closeUserTripPopup()
         }
     }
     const refOne = useRef(null);
+    const hidePopUpOnClickOutside = (e) => {
+        if (refPopUp.current && !refPopUp.current.contains(e.target)) {
+            closeUserTripPopup()
+        }
+    }
+    const refPopUp = useRef(null);
 
 
     const openSignUp = () => {
@@ -443,7 +451,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
 
 
                                     return <div key={index} className="userTrip-box">
-                                        <div ref={refOne} id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                        <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
                                             <div className="option">
                                                 <span className="material-symbols-outlined large mx-1">
                                                     edit
