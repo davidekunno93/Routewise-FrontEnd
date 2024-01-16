@@ -121,7 +121,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }, [placeToConfirm, places])
 
 
-
+    function wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
     const goToDashboard = () => {
         navigate('/dashboard')
     }
@@ -743,7 +745,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         setFirstTimeOnPage(false)
     }
 
-    const [selectedPlaceList, setSelectedPlaceList] = useState("Suggested")
+    const [selectedPlaceList, setSelectedPlaceList] = useState("Added")
     const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null)
     const updateSuggestedPlacesFilter = (num, categoryTitle) => {
         // let category = document.getElementById(`suggestedCategory-${num}`)
@@ -772,6 +774,17 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         let blacklistCopy = [...blacklist]
         blacklistCopy.pop()
         setBlacklist(blacklistCopy)
+    }
+
+    const flashAdded = (index) => {
+        let added = document.getElementById(`added-${index}`)
+
+        added.classList.remove('hidden-o')
+
+        wait(1200).then(() => {
+            added.classList.add('hidden-o')
+        })
+
     }
 
     return (
@@ -950,12 +963,12 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                     }
                                     <div className="flx-r align-r">
                                         {blacklist.length > 0 &&
-                                        <div onClick={() => undoHidePlace()} className="flx-r align-c onHover-fadelite">
-                                            <span className="material-symbols-outlined purple-text medium mr-1">
-                                                undo
-                                            </span>
-                                            <p className="my-2 purple-text pointer small">Undo Hide</p>
-                                        </div>
+                                            <div onClick={() => undoHidePlace()} className="flx-r align-c onHover-fadelite">
+                                                <span className="material-symbols-outlined purple-text medium mr-1">
+                                                    undo
+                                                </span>
+                                                <p className="my-2 purple-text pointer small">Undo Hide</p>
+                                            </div>
                                         }
 
                                         <Link to='/survey-update' className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
@@ -991,6 +1004,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                     if (!suggestedPlacesFilter) {
                                                         return suggestedPlace.name && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
+                                                            <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
+                                                                <p className="m-0 purple-text">Added!</p>
+                                                            </div>
                                                             <div className="placeCard-img-div flx-3">
                                                                 <img className="placeCard2-img" src={suggestedPlace.imgUrl} />
                                                             </div>
@@ -1002,7 +1018,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                             </div>
                                                             <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
-                                                                <div onClick={() => addPlaceToList(suggestedPlace)} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
+                                                                <div onClick={() => { addPlaceToList(suggestedPlace); flashAdded(index) }} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
                                                                     <span className="material-symbols-outlined m-auto medium purple-text">
                                                                         add
                                                                     </span>

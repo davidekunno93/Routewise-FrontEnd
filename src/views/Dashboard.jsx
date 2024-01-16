@@ -51,24 +51,27 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const [userTrips, setUserTrips] = useState(null)
 
     // get user trips code
-    const getTripsData = async () => {
+    const getUserTripsData = async () => {
         const response = await axios.get(`https://routewise-backend.onrender.com/places/trips/${auth.currentUser.uid}`)
         return response.status === 200 ? response.data : "error - it didn't work"
     }
 
-    const loadTripsData = async () => {
-        let data = await getTripsData()
+    const loadUserTripsData = async () => {
+        let data = await getUserTripsData()
         setUserTrips(data)
         console.log(data)
     }
 
     useEffect(() => {
         if (auth.currentUser) {
-            loadTripsData()
-            console.log(auth.currentUser.uid)
+            loadUserTripsData()
+            // console.log(auth.currentUser.uid)
         }
         console.log(userTrips)
     }, [])
+    useEffect(() => {
+        loadUserTripsData()
+    }, [user])
 
     const apiKey = 'ka/g7nybqosAgLyFNCod1A==WBv07XT0PI2TrXTO'
     const updateMapCenter = async () => {
