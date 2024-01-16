@@ -3505,6 +3505,10 @@ p {
     float: none;
     display: block;
     margin: auto;
+    font-size: large;
+    margin-top: 24px;
+    padding-left: 36px;
+    padding-right: 36px;
   }
   .showOnHover {
     opacity: 1;

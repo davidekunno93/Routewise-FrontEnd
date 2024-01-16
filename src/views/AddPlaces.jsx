@@ -943,10 +943,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                 </div>
                                             }
                                         </Scrollbars>
+                                        {/* <div className="generate-btn-space w-100">
+                                            <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button>
+                                        </div> */}
+                                    </div>
                                         <div className="generate-btn-space w-100">
                                             <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button>
                                         </div>
-                                    </div>
                                 </>
                             }
 
