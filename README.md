@@ -52,6 +52,12 @@ Fix generate itinerary bug that Cheryl found
 Figma stickies from Jenny
 get my trips to be responsive
 
+**18Jan24 meeting**
+Will create a modal check that says this place is a duplicate, are you sure you want to add? when adding duplicate places
+Have places updated as well when itinerary is added to or if places are removed
+Max 4 places per day
+Will create a space/folders for places that didn't make it into the itinerary
+
 REMEMBER TO...
 Take out unnecessary routes
 Remove unnecessary console.logs
@@ -66,7 +72,7 @@ trips recorded on dashboard
 
 APIs 
 - api ninjas geocoding API for city names
-- unsplash api for city images
+- *unsplash api for city images 50req/day*
 *GEOAPIFY - 3000 req/day*
 - address autocomplete api for adding places
 - place details api to populate place info when adding place

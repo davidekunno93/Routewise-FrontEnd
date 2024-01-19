@@ -858,6 +858,11 @@ button:focus-visible {
   font-size: large;
 }
 
+input:-webkit-autofill {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: black;
+}
+
 .input-model-title {
   text-align: left;
   width: 360px;
