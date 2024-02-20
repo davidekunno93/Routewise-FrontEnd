@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { OpenMap } from '../components/OpenMap'
 import axios from 'axios'
@@ -11,7 +11,11 @@ import StarPlacesToolTip from '../components/StarPlacesToolTip'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { firestore } from '../firebase'
 import { LoadingBox } from '../components/LoadingBox'
-
+import 'react-date-range/dist/styles.css'; // main style file
+import 'react-date-range/dist/theme/default.css'; // theme css file
+import { DateRange, DateRangePicker } from 'react-date-range';
+import format from 'date-fns/format';
+import { addDays } from 'date-fns'
 
 
 export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
@@ -104,6 +108,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     // ])
     useEffect(() => {
         getSearchData()
+        console.log(searchText)
     }, [searchText])
 
     useEffect(() => {
@@ -409,10 +414,12 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                 if (place.categoryTag) {
                     imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + place.categoryTag
                 } else if (categoryTitle === "Shopping" || categoryTitle === "Nature") {
+                    // use category name to make img more appropriate
                     imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + categoryTitle
                     // console.log('if')
                     // console.log(categoryTitle)
                 } else if (place.name.split(' ').length === 1) {
+                    // one word names combine w address to be more appropriate
                     imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + addressLine2Short
                     // console.log('else if')
                 } else {
@@ -580,10 +587,16 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     const getSearchData = async () => {
         if (searchText.length < 2) {
+            if (searchText.length === 0) {
+                resetSearch()
+            }
             // console.log('')
         } else {
+            let searchQuery = searchText.slice(0, -1)
+            // let searchQuery = searchText.replace(/ /g, "%20")
+            console.log(searchQuery)
             const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-            let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchText}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
+            let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchQuery}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
             // console.log(url)
             const response = await axios.get(url)
             return response.status === 200 ? response.data : null
@@ -619,34 +632,38 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const sendPlaces = async () => {
-        let currentTripCopy = { ...currentTrip }
-        currentTripCopy.itinerary = null
-        setCurrentTrip(currentTripCopy)
+        // itinerary handled by communicating with Backend, loadingScreen (from isLoading) pulls up 
+        // and waits for itinerary to be set, createItinerary func in the bg waiting for itinerary to be set, once iti is set loadingscreen navigates to iti page anthen response shuttled thru createItinerary func
+        // 
+        if (places.length > 0) {
+            // reset itinerary
+            let currentTripCopy = { ...currentTrip }
+            currentTripCopy.itinerary = null
+            setCurrentTrip(currentTripCopy)
 
-        setIsLoading(true)
-        let places_serial = {}
-        let placesLast = places.length
-        for (let i = 0; i < places.length; i++) {
-            places_serial[i + 1] = { id: i + 1, ...places[i] }
-        }
-        let data = {
-            tripId: currentTrip.tripID,
-            placesLast: placesLast,
-            places_serial: places_serial,
-        }
-        console.log(data)
-        const response = axios.post(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`, JSON.stringify(data), {
-            headers: { "Content-Type": "application/json" }
-        }).then((response) => createItinerary(response))
-            .catch((error) => {
-                console.log(error)
-                setIsLoading(false)
-                alert('Something went wrong. Please try again')
-            })
+            setIsLoading(true)
+            let places_serial = {}
+            let placesLast = places.length
+            for (let i = 0; i < places.length; i++) {
+                places_serial[i + 1] = { id: i + 1, ...places[i] }
+            }
+            let data = {
+                tripId: currentTrip.tripID,
+                placesLast: placesLast,
+                places_serial: places_serial,
+            }
+            console.log(data)
+            const response = axios.post(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`, JSON.stringify(data), {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => createItinerary(response))
+                .catch((error) => {
+                    console.log(error)
+                    setIsLoading(false)
+                    alert('Something went wrong. Please try again')
+                })
 
+        }
     }
-
-
 
     const createItinerary = (response) => {
         let currentTripCopy = { ...currentTrip }
@@ -787,13 +804,114 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     }
 
+    // added places render 'added to places' button
+    const [addedPlaceAddresses, setAddedPlaceAddresses] = useState([])
+    const updatePlaceAddresses = () => {
+        let addedPlaceAddressesCopy = []
+        if (places.length > 0) {
+            for (let i = 0; i < places.length; i++) {
+                addedPlaceAddressesCopy.push(places[i].address)
+            }
+        } else {
+            addedPlaceAddressesCopy = []
+        }
+        setAddedPlaceAddresses(addedPlaceAddressesCopy)
+        // console.log('updated added place addresses')
+    }
+    // const [justAddedIsAnimating, setJustAddedIsAnmimating] = useState(false);
+
+    // const justRemovedAnimation = () => {
+    //     const removedText = document.getElementById('placeRemovedText')
+    //     console.log(removedText)
+    //     removedText.style.transition = "0.3s"
+    //     // removedText.classList.remove('hidden-o')
+    //     setJustAddedIsAnmimating(true)
+
+    //     wait(2000).then(() => {
+    //         // removedText.classList.add('hidden-o')
+    //         setJustAddedIsAnmimating(false)
+    //         removedText.style.removeProperty('transition')
+    //     })
+    // }
+    useEffect(() => {
+        updatePlaceAddresses()
+    }, [places])
+
+    const printAddedPlaceAddresses = () => {
+        console.log(addedPlaceAddresses)
+    }
+
+    const [selectionRange, setSelectionRange] = useState([{
+        startDate: new Date("11/08/2023"),
+        endDate: new Date("11/11/2023"),
+        key: "selection"
+    }])
+
+    const datinormal = (systemDate) => {
+        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+        if (month.toString().length === 1) {
+            month = "0" + month
+        }
+        // console.log(month)
+        let fullYear = systemDate.getFullYear()
+        // console.log(month+"/"+day+"/"+fullYear)
+        return month + "/" + day + "/" + fullYear
+    }
+    const datify = (normalDate) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let day = normalDate.slice(3, 5)
+        let monthNum = normalDate.slice(0, 2)
+        if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+        }
+        let fullYear = normalDate.slice(6)
+        const month = months[monthNum - 1]
+        if (day.charAt(0) === "0") {
+            day = day[1]
+        }
+        let twoYear = fullYear.slice(2)
+        return month + " " + day + ", " + twoYear
+    }
+
+    const [calendarOpen, setCalendarOpen] = useState(false);
+    const closeCalendar = () => {
+        setCalendarOpen(false)
+    }
+    useEffect(() => {
+        window.addEventListener('click', hideCalendarOnClickOutside, true)
+    }, [])
+
+    const refCalendar = useRef(null);
+    const hideCalendarOnClickOutside = (e) => {
+        if (refCalendar.current && !refCalendar.current.contains(e.target)) {
+            setCalendarOpen(false)
+        }
+    }
+
+    const updateTripDates = (startDate, endDate) => {
+        let url = ""
+        let data = {
+            start_date: startDate,
+            end_date: endDate
+        }
+        const response = axios.patch(url, data, {
+            headers: { "Content-Type": "application/json" }
+        }).then((response) => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
     return (
         <>
             <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
             <div className="page-container90 mt-4">
-                <div className="tripFlow flx-r">
+
+                <div className="tripFlow flx-r align-c">
                     <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
                     <span className="material-symbols-outlined">
                         arrow_right
@@ -801,28 +919,43 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     <p className="m-0 purple-text bold700">Add Places</p>
 
                 </div>
-                {/* <Link to='/dashboard' className=''>
-                    <span className="material-symbols-outlined v-tbott mr-2 purple-text">
-                        arrow_back
-                    </span>
-                    <p className="inline large purple-text">Back</p>
-                </Link> */}
-                <p onClick={() => showCurrentTrip()} className="page-heading-bold m-0 mt-3">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
-                <div className="flx-r mb-2 align-c gap-2">
-                    <span className="material-symbols-outlined o-50">
-                        calendar_month
-                    </span>
-                    <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : <p className="m-0">Dec 7, 23 &nbsp; - &nbsp; Dec 11, 23</p>}</div>
-                    <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
-                    <p className="m-0 purple-text">Edit</p>
+            </div>
+
+            <div className="page-container90 vh-100 flx-c">
+                <div className="add-places-title-row flx-r align-c gap-8">
+
+                    <p onClick={() => showCurrentTrip()} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                    <div className="tripInfo flx-r align-c gap-2 position-relative">
+                        <span className="material-symbols-outlined o-50">
+                            calendar_month
+                        </span>
+                        <div onClick={() => printAddedPlaceAddresses()} className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : <p className="m-0">{datify(datinormal(selectionRange[0].startDate))} &nbsp; - &nbsp;{datify(datinormal(selectionRange[0].endDate))}</p>}</div>
+                        <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : (selectionRange[0].endDate.getTime() - selectionRange[0].startDate.getTime()) / (1000 * 3600 * 24) + 1}</span>&nbsp;days</div>
+                        <div ref={refCalendar} className="calendarContainer">
+                            <p onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)} className="m-0 purple-text pointer">Edit</p>
+
+                            {calendarOpen &&
+                                <DateRange
+                                    onChange={(item) => setSelectionRange([item.selection])}
+                                    ranges={selectionRange}
+                                    months={1}
+                                    className='calendarElement'
+                                />
+                            }
+                        </div>
+                    </div>
+                    <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
+
+
                 </div>
+
                 <div className="flx-r onHover-fadelite d-none">
                     <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>
                 <div className="body-section flx-r-respond">
-                    <div className="map-section flx-5">
+                    <div className="add-places-c1 map-section flx-5">
                         <div className="gray-box-respond position-relative flx">
 
                             <div className="searchBar position-absolute w-100 z-10000">
@@ -870,19 +1003,40 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                         </div>
                                         <div className="placeCard-body flx-2">
                                             <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                                            <p className="body-title">{placeToConfirm.placeName}</p>
-                                            <p onClick={() => togglePopUp('PTC')} className="body-info pointer mb-1">{placeToConfirm.info}</p>
+                                            <p className="body-title-PTC">{placeToConfirm.placeName}</p>
+                                            <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p>
                                             <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-                                            <div onClick={() => addPlace()} className="flx-r right pr-4 onHover-fadelite ">
-                                                <div className="addIcon-small flx pointer mx-2">
-                                                    <span className="material-symbols-outlined m-auto medium purple-text">
-                                                        add
-                                                    </span>
+
+                                            {addedPlaceAddresses.includes(placeToConfirm.address) ?
+                                                <div className="flx-r position-bottom">
+                                                    <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
+                                                        <div className="addIcon-filled-green-smaller flx mx-2">
+                                                            <span className="material-symbols-outlined m-auto medium white-text">
+                                                                done
+                                                            </span>
+                                                        </div>
+                                                        <div className="flx">
+                                                            <p className="green-text page-text-smaller m-auto">Added to places</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className="flx">
-                                                    <p className="purple-text page-text m-auto">Add to places</p>
+                                                :
+                                                <div className="flx-r position-bottom">
+                                                    <div onClick={() => addPlace()} className="add-place-btn position-relative">
+                                                        {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
+                                                        <div className="flx pointer mx-2">
+                                                            <span className="material-symbols-outlined m-auto medium purple-text">
+                                                                add
+                                                            </span>
+                                                        </div>
+                                                        <div className="flx">
+                                                            <p className="purple-text page-text-smaller m-auto">Add to places</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            }
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -893,10 +1047,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                         </div>
                     </div>
 
+                    <div className="add-places-c2 flx-c flx-4">
 
-
-                    <div className="places-list flx-c flx-4">
-                        <div className="mt-4-respond1024">
+                        <div className="places-section mt-4-respond1024">
                             <div className="placesLists flx-r gap-6">
                                 <p onClick={() => setSelectedPlaceList("Added")} className={`${selectedPlaceList === "Added" ? "selectedPlaceList" : "unselectedPlaceList"} page-subsubheading-bold m-0`}>Added places ({places.length})</p>
                                 <p onClick={() => setSelectedPlaceList("Suggested")} className={`${selectedPlaceList === "Suggested" ? "selectedPlaceList" : "unselectedPlaceList"} page-subsubheading-bold m-0`}>Suggested places</p>
@@ -904,7 +1057,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
                             {selectedPlaceList === "Added" &&
                                 <>
-                                    <p onClick={() => clearAllPlaces()} className="my-2 purple-text pointer z-1 right-text bold500">Clear list</p>
+                                    <div className="flx">
+                                        <p onClick={() => clearAllPlaces()} className="my-2 purple-text pointer z-1 position-right bold500 mr-1">Clear list</p>
+                                    </div>
                                     <div className={`placeCards ${places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
 
@@ -918,14 +1073,14 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                         <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
                                                         <p className="body-title ">{place.placeName}</p>
                                                         <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p>
-                                                        <p className="body-address">{place.address}</p>
+                                                        <p className="m-0 body-address">{place.address}</p>
                                                     </div>
                                                     <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
                                                         {place.favorite !== true ?
-                                                            <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" />
+                                                            <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />
                                                             :
-                                                            <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/Tw0AsU7.png" alt="" className="star-full my-2" />
+                                                            <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/M5Yj2Nu.png" alt="" className="star-full my-2" />
                                                         }
                                                         <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                                             delete
@@ -938,7 +1093,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                     <span className="material-symbols-outlined xx-large">
                                                         location_on
                                                     </span>
-                                                    <p className="large bold700 my-1 o-50">Add some places</p>
+                                                    <p className="large bold700 my-1 o-50">Add places</p>
                                                     <p className="m-0 w-60 center-text o-50 addPlace-text">Use the search bar on the map to add places that you want to go</p>
                                                 </div>
                                             }
@@ -947,9 +1102,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                             <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button>
                                         </div> */}
                                     </div>
-                                        <div className="generate-btn-space w-100">
-                                            <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button>
-                                        </div>
+                                    <div className="generate-btn-space w-100">
+                                        {/* <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button> */}
+                                    </div>
                                 </>
                             }
 
@@ -957,9 +1112,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                 <>
                                     {userInterests.length > 0 &&
                                         <div className="suggestedCategories flx-r gap-2 my-2">
-                                            <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className="dateBox px-2 pointer selected">All</div>
+                                            <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className="dateBox-rounder px-2 pointer unselected selected">All</div>
                                             {userInterests ? userInterests.map((interest, index) => {
-                                                return <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, interest.categoryTitle)} className="dateBox px-2 pointer unselected">{interest.categoryTitle}</div>
+                                                return <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, interest.categoryTitle)} className="dateBox-rounder px-2 pointer unselected">{interest.categoryTitle}</div>
                                             }) : null}
 
                                         </div>
@@ -1001,6 +1156,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                     let id = 'suggested-' + index
                                                     let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
                                                     let blacklisted = false
+                                                    let added = addedPlaceAddresses.includes(suggestedPlace.formatted)
                                                     if (blacklist.includes(suggestedPlace.name)) {
                                                         blacklisted = true
                                                     }
@@ -1020,12 +1176,18 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                                 <p className="body-address">{suggestedPlace.address_line2}</p>
                                                             </div>
                                                             <div className="placeCard-starOrDelete flx-c just-sb align-c">
-
-                                                                <div onClick={() => { addPlaceToList(suggestedPlace); flashAdded(index) }} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
-                                                                    <span className="material-symbols-outlined m-auto medium purple-text">
-                                                                        add
-                                                                    </span>
-                                                                </div>
+                                                                {added ?
+                                                                    <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.formatted)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                                                        <span className="material-symbols-outlined m-auto mt-h medium white-text">
+                                                                            done
+                                                                        </span>
+                                                                    </div>
+                                                                    :
+                                                                    <div onClick={() => { addPlaceToList(suggestedPlace); flashAdded(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
+                                                                        <span className="material-symbols-outlined m-auto medium purple-text">
+                                                                            add
+                                                                        </span>
+                                                                    </div>}
 
                                                                 <span onClick={() => addToBlacklist(suggestedPlace.name)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                                                     visibility_off
@@ -1048,11 +1210,18 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                                 </div>
                                                                 <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
-                                                                    <div onClick={() => addPlaceToList(suggestedPlace)} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
-                                                                        <span className="material-symbols-outlined m-auto medium purple-text">
-                                                                            add
-                                                                        </span>
-                                                                    </div>
+                                                                    {added ?
+                                                                        <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.formatted)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                                                            <span className="material-symbols-outlined m-auto mt-h medium white-text">
+                                                                                done
+                                                                            </span>
+                                                                        </div>
+                                                                        :
+                                                                        <div onClick={() => { addPlaceToList(suggestedPlace); flashAdded(index) }} className="addIcon-small flx pointer mx-2 mt-2 onHover-fadelite">
+                                                                            <span className="material-symbols-outlined m-auto medium white-text">
+                                                                                add
+                                                                            </span>
+                                                                        </div>}
 
                                                                     <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                                                         visibility_off

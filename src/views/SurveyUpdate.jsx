@@ -161,7 +161,7 @@ export const SurveyUpdate = () => {
 
     const updateFirestore = () => {
         // userId should be auth.currentUser.uid
-        let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2" 
+        let userId = auth.currentUser ? auth.currentUser.uid : "testUser2"
         let userPreferences = { ...categories, uid: userId }
         setDoc(doc(firestore, `userPreferences/${userId}`), userPreferences)
         console.log("firestore updated!")
@@ -170,7 +170,7 @@ export const SurveyUpdate = () => {
     const getUserPref = async () => {
         // if doc not in firestore, the returned doc will be undefined but no error will run
         // userId should be auth.currentUser.uid
-        let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2" 
+        let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2"
         const userPref = await getDoc(doc(firestore, `userPreferences/${userId}`))
         console.log(userPref.data())
     }
@@ -186,19 +186,19 @@ export const SurveyUpdate = () => {
 
     return (
         <>
-            
-                <div id='updatedOverlay' className="overlay-white flx td-3 d-none">
-                    <Slide duration={400} className='m-auto' direction='up' triggerOnce>
-                        <Fade triggerOnce>
-                            <p className="purple-text center-text page-heading-bold m-auto">Travel Preferences Updated!</p>
-                            <div className="flx-r mt-3 just-ce">
-                                <button onClick={() => closeUpdatedOverlay()} className="btn-outlineflex mx-2">Keep Editing</button>
-                                <button onClick={() => goBack()} className="btn-primaryflex mx-2">Go Back</button>
-                            </div>
-                        </Fade>
-                    </Slide>
-                </div>
-            
+
+            <div id='updatedOverlay' className="overlay-white flx td-3 d-none">
+                <Slide duration={400} className='m-auto' direction='up' triggerOnce>
+                    <Fade triggerOnce>
+                        <p className="purple-text center-text page-heading-bold m-auto">Travel Preferences Updated!</p>
+                        <div className="flx-r mt-3 just-ce">
+                            <button onClick={() => closeUpdatedOverlay()} className="btn-outlineflex mx-2">Keep Editing</button>
+                            <button onClick={() => goBack()} className="btn-primaryflex mx-2">Go Back</button>
+                        </div>
+                    </Fade>
+                </Slide>
+            </div>
+
             <div className="page-container90">
                 {/* <h1 className="page-title">Personalize your recommendations</h1> */}
                 {/* <p className="page-text">Routewise suggests places and activities based on your interests and preferences.</p> */}
@@ -231,7 +231,7 @@ export const SurveyUpdate = () => {
                     })}
 
                 </div>
-                <button onClick={() => { updateFirestore(); updateUserPreferences(); openUpdatedOverlay()}} className="btn-primaryflex2 center mt-5">
+                <button onClick={() => { updateFirestore(); updateUserPreferences(); openUpdatedOverlay() }} className="btn-primaryflex2 center mt-5">
                     <p className='inline'>Update Preferences</p>
                 </button>
             </div>

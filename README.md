@@ -25,20 +25,19 @@ BackEnd (Kate) checkpoints
 <!-- DONE*make more aesthetic scrollbars -->
 *if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
 *add extra destinations to a trip
-*daySelection scrollable
 *My Trips, My Interests, My Account
 <!-- *suggested places > load from places api > filter categories from categories state, make horizontally scrollable -->
-*figure out pseudo-class that causes input fields to change color when dropdown suggestion list of old items pop up - img on phone
+<!-- *figure out pseudo-class that causes input fields to change color when dropdown suggestion list of old items pop up - img on phone -->
 **show route button on each day
 <!-- *light bulb on the day that the added location is closest to -->
 <!-- *add place via itinerary add place btn inside flowbox -->
 <!-- *make suggested places a bottom up panel that swipes horizontally on phone/tablet device widths -->
-*click out of suggested places info
+<!-- *click out of suggested places info -->
 *google auth users issue with creating a trip?
 *suggested places panel not coming all the way up on phone device? (Kathleen's apple phone)
 **08Jan24 meeting**
 *google sign in create trip issue?
-*Finish toolTip 
+<!-- *Finish toolTip  -->
 *SAVE FEATURE - save trip, auto-save, edit trip, remove trip, trips on dashboard w/ pop-up
 *how much is google api? how long is it free for?
 *STAR FEATURE - ....
@@ -48,8 +47,8 @@ Google gives 6k requests per month for free?
 Google maps API - $200 worth of rq per month - 28,500 maploads
 Save trips
 Load saved trips
-Fix generate itinerary bug that Cheryl found
-Figma stickies from Jenny
+<!-- Fix generate itinerary bug that Cheryl found -->
+<!-- Figma stickies from Jenny -->
 get my trips to be responsive
 
 **18Jan24 meeting**
@@ -57,6 +56,46 @@ Will create a modal check that says this place is a duplicate, are you sure you 
 Have places updated as well when itinerary is added to or if places are removed
 Max 4 places per day
 Will create a space/folders for places that didn't make it into the itinerary
+*trips on dashboard spacing is weird, give it gap instead of space-between*
+loading circle while my trips are loading
+Removed from places fade out
+<!-- *'# places' on flow box unless screen width is skinny* -->
+Show if place already added on itinerary map place card
+<!-- make sidebar sticky -->
+<!-- sidebar only shows in itinerary page -->
+edit trip info in add places page - bring up date range picker and update the date range (update date range of trip_id route needed)
+<!-- fade overlay z-index not on top -->
+update highlight day code - days w many places will never be fully in window
+send kate updated trip duration from add places on generate itinerary
+update start : end date on dashboard
+
+**22Jan24 meeting**
+Making a social space for users to create itinerary
+
+**25Jan24 meeting**
+Drag n drop a place from itinerary into saved places?
+Drag n drop a place from saved places into itinerary and modal pops up 
+Place Card pop up - view on map, add to itinerary, 
+
+**12Feb24 meeting**
+Landing page - more colors, more entry points, about me with team members, more stuff on the page
+inspiration
+thatch.co 
+elude.co
+
+**12Feb24 meeting**
+Itinerary, add places only with the sidebar nav
+new always available top navbar
+titles smaller
+<!-- zeplin product to transfer figma design into code -->
+itinerary map needs to stay in view
+add places page all in view height
+updated add place to day card and lightbulb icon
+updated datebox design on figma
+
+Questions?
+Will saved places have an 'in itinerary' indication?
+
 
 REMEMBER TO...
 Take out unnecessary routes

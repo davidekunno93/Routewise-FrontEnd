@@ -1,37 +1,28 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { HeroCarousel } from '../components/HeroCarousel'
 import { HeroFade } from '../components/HeroFade'
 import { Fade, Slide } from 'react-awesome-reveal'
 import { DataContext } from '../Context/DataProvider'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { DateRange } from 'react-date-range'
+import format from 'date-fns/format';
+import Scrollbars from 'react-custom-scrollbars-2'
 
 export const Landing = () => {
     const { user, setUser } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
-    const cards = [
-        {
-            imgUrl: 'https://i.imgur.com/S1hglkm.jpg',
-            title: 'Personalized Recommendations',
-            desc: ''
-        },
-        {
-            imgUrl: 'https://i.imgur.com/S1hglkm.jpg',
-            title: 'Efficient Routes',
-            desc: ''
-        },
-        {
-            imgUrl: 'https://i.imgur.com/S1hglkm.jpg',
-            title: 'Adaptable Itineraries',
-            desc: ''
-        }
-    ]
-
-    const navigate = useNavigate()
-
-    const openSignUp = () => {
-        setSignUpIsOpen(true)
+    const { showNavbar, setShowNavbar } = useContext(DataContext);
+    const { authIndex, setAuthIndex } = useContext(DataContext);
+    useEffect(() => {
+        setShowNavbar(false)
+        return restoreNavbar;
+    }, [])
+    const restoreNavbar = () => {
+        setShowNavbar(true)
     }
 
+    // navigate function
+    const navigate = useNavigate()
     const goToDashboard = () => {
         if (!user) {
             openSignUp()
@@ -40,83 +31,246 @@ export const Landing = () => {
         }
     }
 
+    // auth related functions
+    const openSignUp = () => {
+        setAuthIndex(0)
+        setSignUpIsOpen(true)
+    }
+    const openSignIn = () => {
+        setAuthIndex(1)
+        setSignUpIsOpen(true)
+    }
+
+
+    // item library
+    const actionPoints = [
+        {
+            imgUrl: "https://i.imgur.com/TUK3CGM.png",
+            title: "Get Suggestions",
+            text: "Browse a catalog of suggested places personalized to your travel preferences and catered to your interests."
+        },
+        {
+            imgUrl: "https://i.imgur.com/uMthR47.png",
+            title: "Plan Efficiently",
+            text: "Simplify plainning with an itinerary generator that optimizes nearby destinations for effortless travel."
+        },
+        {
+            imgUrl: "https://i.imgur.com/78p1JDz.png",
+            title: "Adapt Your Itinerary",
+            text: "Travel confidently with a fully customizable itinerary to meet your travel needs."
+        },
+    ]
+    // no longer using these how it works images
+    const howItWorksCards = ["https://i.imgur.com/wx4upLO.png", "https://i.imgur.com/02aZHAR.png"]
+
+    // calendar code
+    const [calendarOpen, setCalendarOpen] = useState(false);
+    const toggleCalendarOpen = () => {
+        if (calendarOpen) {
+            setCalendarOpen(false);
+            // console.log('close calendar')
+        } else {
+            setCalendarOpen(true);
+            // console.log('open calendar')
+        }
+        // console.log(calendarOpen)
+    }
+
+    const [range, setRange] = useState([
+        {
+            startDate: null, // new Date(),
+            endDate: null, // addDays(new Date(), 7),
+            key: 'selection'
+        }
+    ])
+    const rangePlaceholder = [
+        {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection'
+        }
+    ]
     useEffect(() => {
-        // window.scrollTo(0, 0)
-    }, [])
+        // setCalendar(format(new Date(), 'MM/dd/yyyy'))
+        document.addEventListener('keydown', hideOnEscape, true)
+        document.addEventListener('click', hideOnClickOutsideCalendar, true)
+    })
+    const hideOnEscape = (e) => {
+        if (e.key === "Escape") {
+            setCalendarOpen(false)
+            closeUserTripPopup()
+        }
+    }
+    const hideOnClickOutsideCalendar = (e) => {
+        if (refOne.current && !refOne.current.contains(e.target)) {
+            setCalendarOpen(false)
+            // closeUserTripPopup()
+        }
+    }
+    const refOne = useRef(null);
+
+
+    // other functions
+    const datify = (normalDate) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let day = normalDate.slice(3, 5)
+        let monthNum = normalDate.slice(0, 2)
+        if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+        }
+        let fullYear = normalDate.slice(6)
+        const month = months[monthNum - 1]
+        if (day.charAt(0) === "0") {
+            day = day[1]
+        }
+        let twoYear = fullYear.slice(2)
+        return month + " " + day + ", " + twoYear
+    }
 
     return (
         <>
             <div className="hero-section w-100 position-relative">
-                <div className="abs-vcenter center-text z-100 w-60">
-                    <h1 className="hero-title mt15-respond">Explore with ease.</h1>
-                    <p className="hero-text bold700">Effortlessly craft the perfect itinerary based on your interests and travel needs</p>
-                    <button onClick={() => goToDashboard()} className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button>
+                <div className="hero-navbar">
+                    <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml5" />
+                    <div className="flx-r align-c gap-6 mr5">
+                        <button onClick={() => openSignUp()} className="btn-primaryflex">Sign Up</button>
+                        <p onClick={() => openSignIn()} className="m-0 pointer onHover-fade">Log in</p>
+                    </div>
                 </div>
-                {/* <img src="https://i.imgur.com/6E1qXMc.jpg" alt="" className="hero-img" /> */}
+
+                <div className="hero-content-box">
+
+
+                    <h1 className="hero-title bold500 m-0">Your Next Great <br />Adventure Starts Here</h1>
+                    <p className="hero-text w-40 bold600">Effortlessly craft the perfect trip with a more optimized travel itinerary</p>
+                    {/* <button onClick={() => goToDashboard()} className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button> */}
+
+                    <div className="selection-box-landing flx-c">
+                        <div className="box-title flx-2 flx-c just-ce"><p className='m-0 mb-2'>Start planning your next adventure</p></div>
+                        <div className="box-items flx-3 flx-r mb-4 flx-wrap">
+                            <div className="item-location flx-3 flx-c just-en">
+                                <div className="mr-2-disappear768">
+                                    <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
+                                    <input id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' required />
+                                </div>
+                            </div>
+                            <div className="item-dates flx- flx-c just-en">
+                                <div className="box-heading dark-text page-subsubheading">When will you be there?</div>
+                                <div ref={refOne} className="calendarWrap mr-2-disappear768">
+                                    <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
+                                        <div className="startDateInput flx-1">
+                                            <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
+                                            <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                        </div>
+                                        <hr className='h-40' />
+                                        <div className="endDateInput flx-1">
+                                            <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
+                                            <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                        </div>
+
+                                    </div>
+                                    <div>
+                                        {calendarOpen &&
+                                            <DateRange
+                                                onChange={item => setRange([item.selection])}
+                                                editableDateInputs={true}
+                                                moveRangeOnFirstSelection={false}
+                                                ranges={range[0].startDate ? range : rangePlaceholder}
+                                                months={1}
+                                                direction='horizontal'
+                                                className='calendarElement'
+                                            />
+                                        }
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div className="flx-c">
+                                <Link to='/dashboard' className='position-bottom'>
+                                    <button className="btn-primaryflex2 position-bottom">Start Planning</button>
+                                </Link>
+                            </div>
+                        </div>
+                        {/* <div className="item-addtrip flx style-respond">
+                            <button className="btn-primaryflex2 mt-3">Start Planning</button>
+                        </div> */}
+                    </div>
+
+                </div>
                 <HeroFade />
             </div>
-            {/* <div className="flx align-c w-100 blend-bg">
-                <button className="btn-primaryflex mt-3 w-50 m-auto appear425"><p className="my-1 mx-2 white-text">Start planning now</p></button>
-            </div> */}
 
 
-            <div className="planning-section">
+            <div className="planning-section mt-8">
                 <Fade delay={300} triggerOnce>
                     <Slide direction='up' triggerOnce>
-                        <h1 className="page-title w-65 center-text m-auto my-12">Planning your day-to-day travel itinerary just got a whole lot easier</h1>
+                        <h1 className="page-title w-65 center-text m-auto my-9 font-noto bold600">Planning your day-to-day travel itinerary just got a whole lot easier</h1>
+                        <div className="action-points">
+                            {actionPoints.map((point, index) => {
+                                let first = 0
+                                let last = actionPoints.length - 1
+                                return <div key={index} className="point-holder">
+                                    <div className={`v-line-divider ${index === last ? "d-none" : null}`}></div>
+                                    <div className="point">
+                                        <img src={point.imgUrl} alt="" className='point-img' />
+                                        <div className="title">{point.title}</div>
+                                        <div className="text">{point.text}</div>
 
+                                    </div>
+                                </div>
+                            })}
 
-                        <div className="page-container90 flx-r">
-                            <div className="img flx-4">
-                                <img src="https://i.imgur.com/jlXivfT.png" alt="" className='w-100' />
-                            </div>
-                            <div className="text flx flx-3">
-                                <p className="m-auto bold500 pad28-respond">
-                                    RouteWise groups nearby locations for a hassle-free day of exploration. <br /><br />
-                                    Maximize your time and make every moment count with simplified travel planning at your fingertips!
-                                </p>
-                            </div>
 
                         </div>
 
 
-                        {/* <div className="cards flx-r flx-wrap just-se">
-                    {cards.map((card, index) => {
-                        return <div key={index} className="card mx-5 my-4">
-                            <img src={card.imgUrl} alt="" className="card-img" />
-
-                            <div className="card-text">
-                                <div className="card-title page-subheading center-text"><strong>{card.title}</strong></div>
-                                <div className="card-desc center-text">{card.desc}</div>
-                            </div>
-                        </div>
-                    })}
-
-                </div> */}
-                        <div className="empty-3"></div>
+                        {/* <div className="empty-3"></div> */}
                     </Slide>
                 </Fade>
             </div>
 
 
 
-            <div className="how-it-works">
-                <Fade delay={300} triggerOnce>
-                    <Slide direction='up' triggerOnce>
-                        <h1 className="page-title center-text my-8">How it Works</h1>
-                    </Slide>
-                </Fade>
-                <div className="cards w-90 m-auto">
+            <div className="how-it-works mt-8">
+
+
+                <div className="page-card2 flx-c">
+                    <h2 className="page-title center-text m-0 mb-5 font-noto bold600">How it Works</h2>
+                    <div className="flx-r">
+                        <img src="https://i.imgur.com/gFaUZYk.png" alt="" className="page-card2-img" />
+                        <div className="page-card2-text">
+                            <div className="page-card2-instructions just-sb">
+                                <div className="item flx-r gap-2">
+                                    <img src="https://i.imgur.com/kw860Zt.png" alt="" className="pin-bullet mr-3" />
+                                    <p className="landing-title flx align-c m-0">Add places you want to visit</p>
+                                </div>
+                                <div className="item flx-r gap-2">
+                                    <img src="https://i.imgur.com/RrfU0xB.png" alt="" className="pin-bullet mr-3" />
+                                    <p className="landing-title flx align-c m-0">Generate your proximity-based itinerary</p>
+                                </div>
+                                <div className="item flx-r gap-2">
+                                    <img src="https://i.imgur.com/CotfU04.png" alt="" className="pin-bullet mr-3" />
+                                    <p className="landing-title flx align-c m-0">Customize your itinerary and explore!</p>
+                                </div>
+                                <div className="flx-r just-ce">
+                                    <button className="btn-primaryflex2">Start Planning</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* <div className="cards w-90 m-auto">
                     <Fade delay={500} fraction={0.6} triggerOnce>
                         <Slide fraction={0.6} direction='left' triggerOnce>
                             <div className="card4-l flx-r-respond600 my-10">
                                 <div className="flx-3">
-                                    <img src="https://i.imgur.com/wx4upLO.png" alt="" className="card4-img" />
+                                    <img src="https://i.imgur.com/un3ARG9.png" alt="" className="card4-img" />
                                 </div>
                                 <div className="flx-2 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
-                                            {/* <p className="ws-nowrap">1.&nbsp;&nbsp;</p> */}
                                             <div className="">
                                                 <img src="https://i.imgur.com/B1KMmUe.png" alt="" className="pin-bullet mr-3" />
                                             </div>
@@ -135,7 +289,6 @@ export const Landing = () => {
                                 <div className="flx-2 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
-                                            {/* <p className="ws-nowrap">2.&nbsp;&nbsp;</p> */}
                                             <div className="">
                                                 <img src="https://i.imgur.com/X80Z1AG.png" alt="" className="pin-bullet mr-3" />
                                             </div>
@@ -147,7 +300,7 @@ export const Landing = () => {
                                     </div>
                                 </div>
                                 <div className="flx-3">
-                                    <img src="https://i.imgur.com/02aZHAR.png" alt="" className="card4-img" />
+                                    <img src="https://i.imgur.com/jreQknC.png" alt="" className="card4-img" />
                                 </div>
                             </div>
                         </Slide>
@@ -159,7 +312,6 @@ export const Landing = () => {
                                 <div className="flx-1 flx pad2p">
                                     <div className="m-auto">
                                         <div className="landing-title flx-r">
-                                            {/* <p className="ws-nowrap mt-0">3.&nbsp;&nbsp;</p> */}
                                             <div className="">
                                                 <img src="https://i.imgur.com/ARSN66k.png" alt="" className="pin-bullet mr-3" />
                                             </div>
@@ -172,24 +324,38 @@ export const Landing = () => {
                                 </div>
                             </div>
                         </Slide>
-                        {/* <Slide fraction={0.6} direction='right' triggerOnce>
-                        <div className="card4-r flx-r my-10">
-                            <div className="flx-1 pad28"><p className="page-heading-bold"> 4. Generate itinerary</p> </div>
-                            <div className="flx-1">
-                                <img src="https://i.imgur.com/WHVlrc4.png" alt="" className="card4-img" />
-                            </div>
-                        </div>
-                        </Slide> */}
                     </Fade>
 
-                </div>
+                </div> */}
 
 
             </div>
 
-            <div className="empty-2"></div>
+            <div className="empty-4"></div>
 
-            <div className="page-card">
+            <div className="explore-section">
+                <div className="page-title font-noto center-text my-5">Explore with us on Instagram!</div>
+                <div className="ig-carousel-window">
+
+                    {/* <div className="inner-no-flex"> */}
+                    <div className="ig-cards">
+
+
+                        <div className="ig-card"></div>
+                        <div className="ig-card ml-4"></div>
+                        <div className="ig-card ml-4"></div>
+                        <div className="ig-card ml-4"></div>
+                        <div className="ig-card ml-4"></div>
+                        <div className="ig-card ml-4"></div>
+                        <div className="ig-card ml-4"></div>
+
+
+                    </div>
+                    {/* </div> */}
+                </div>
+            </div>
+
+            {/* <div className="page-card">
                 <div className="flx-r-respond768">
                     <p className="page-heading-bold page-card-title center-text appear768">Did you know?</p>
                     <div className="img flx-1 flx">
@@ -207,7 +373,7 @@ export const Landing = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
 
         </>

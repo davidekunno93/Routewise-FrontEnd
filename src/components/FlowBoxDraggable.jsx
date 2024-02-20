@@ -28,6 +28,32 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
         }
     }, [dayTitle])
 
+
+    // detect narrow window to render # of places in flowbox
+    const [narrowWindow, setNarrowWindow] = useState(false);
+    const [placeOrPlaces, setPlaceOrPlaces] = useState(`${day.placeIds.length === 1 ? "place" : "places"}`)
+    useEffect(() => {
+        window.addEventListener('resize', updateNarrowWindow,)
+    }, [])
+
+    useEffect(() => {
+        console.log('placeIds length =', day.placeIds.length)
+        if (day.placeIds.length === 1) {
+            setPlaceOrPlaces("place")
+        } else {
+            setPlaceOrPlaces("places")
+        }
+    }, [day.placeIds])
+
+    const updateNarrowWindow = () => {
+        // console.log(window.innerWidth)
+        if (window.innerWidth < 1024) {
+            setNarrowWindow(true)
+        } else if (window.innerWidth >= 1024) {
+            setNarrowWindow(false)
+        }
+    }
+
     return (
         <div id={`flowBox-${id}`} className="flow-box">
 
@@ -38,16 +64,16 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                             expand_more
                         </span>
                         {day.date_converted.split(' ')[0]} <span className="smalltext-respond"> {day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span></p>
-                    <p id={`placeCount-${id}`} className="gray-text m-0 mt-2 bold500 placeCount ws-nowrap td-2 o-none">({day.placeIds.length})</p></div>
+                    <p id={`placeCount-${id}`} className="gray-text m-0 mt-2 bold500 placeCount ws-nowrap td-2 o-none">{narrowWindow ? "("+day.placeIds.length+")" : day.placeIds.length+" "+placeOrPlaces }</p></div>
                 <div className="addTitle-input position-relative">
                     <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
-                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-50 edit-overlay">
+                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-50 edit-overlay large">
                         edit
                     </span></label>
                 </div>
             </div>
-            <div id={`flow-${id}`} className="flowBody-collapsible">
-                <div id={`flowBody-${id}`} className="flowBody ml-5-respond w-90">
+            <div id={`flow-${id}`} className="flowBody-collapsible pr-2">
+                <div id={`flowBody-${id}`} className="flowBody ml-5-respon w-100">
                     <Droppable droppableId={day.id}>
                         {(droppableProvided, droppableSnaphot) => (
 

@@ -1,24 +1,27 @@
 import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
 import { AuthModal } from './auth/AuthModal';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
 
-export const Navbar = () => {
+export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
+  const { showNavbar } = useContext(DataContext);
+
   const { user, setUser } = useContext(DataContext);
   const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
   // auth modal open and close states
   const [isOpen, setIsOpen] = useState(false);
-  const [authIndex, setAuthIndex] = useState(null);
+  const { authIndex, setAuthIndex } = useContext(DataContext);
 
 
-
+  // load user
   useEffect(() => {
     auth.currentUser ? setUser(auth.currentUser) : null
   }, [])
 
+  // show auth modal
   const openSignUp = () => {
     setAuthIndex(0);
     setSignUpIsOpen(true);
@@ -27,26 +30,24 @@ export const Navbar = () => {
     setAuthIndex(1);
     setSignUpIsOpen(true);
   }
-  // if (signUpIsOpen) {
-  //   openSignUp()
-  //   setSignUpIsOpen(false)
-  //   // console.log('open!!')
-  // }
 
-  const toggleUserMenu = () => {
-    const userMenu = document.getElementById('userMenu')
-    userMenu.classList.toggle('d-none')
-  }
 
+
+
+  // logout function
   const logOut = () => {
     // window.localStorage.removeItem("userData");
     // window.localStorage.removeItem("userPref");
     // window.localStorage.removeItem("isLoggedIn");
     // console.log('remove loggedIn')
-    signOut()
+    signOut(auth)
     setUser(null)
+    // navigate('/') can't navigate on a link element
   }
 
+
+
+  // send Kate data testing
   const sendData = async () => {
     // let authUser = auth.currentUser
     let data = {
@@ -62,31 +63,6 @@ export const Navbar = () => {
     }).then((response => console.log(response)))
       .catch((error) => console.log(error))
   }
-
-  const sendTripDataTest = () => {
-    let data = {
-      uid: "1234567",
-      tripName: "Big Apple",
-      Destination: "New York City, New York",
-      DestinationImgUrl: "https://i.imgur.com/RxO0dfy.jpg",
-      startDate: "11/17/2023",
-      endDate: "11/20/2023"
-    }
-  }
-
-  useEffect(() => {
-    document.addEventListener('click', hideOnClickOutside, true)
-  })
-
-  const hideOnClickOutside = (e) => {
-    if (refUserDropdown.current && !refUserDropdown.current.contains(e.target)) {
-      const userMenu = document.getElementById('userMenu')
-      userMenu.classList.add('d-none')
-    }
-  }
-  const refUserDropdown = useRef(null);
-
-
   const sendDataTest = async () => {
     let data = {
       uid: 'helloMotto123',
@@ -100,6 +76,38 @@ export const Navbar = () => {
       headers: { "Content-Type": "application/json" }
     }).then((response => console.log(response)))
       .catch((error) => console.log(error))
+  }
+  // Demo trip data
+  const sendTripDataTest = () => {
+    let data = {
+      uid: "1234567",
+      tripName: "Big Apple",
+      Destination: "New York City, New York",
+      DestinationImgUrl: "https://i.imgur.com/RxO0dfy.jpg",
+      startDate: "11/17/2023",
+      endDate: "11/20/2023"
+    }
+  }
+
+
+  // User (profile icon click) menu
+  const toggleUserMenu = () => {
+    const userMenu = document.getElementById('userMenu')
+    userMenu.classList.toggle('d-none')
+  }
+  useEffect(() => {
+    document.addEventListener('click', hideOnClickOutside, true)
+  })
+  const hideOnClickOutside = (e) => {
+    if (refUserDropdown.current && !refUserDropdown.current.contains(e.target)) {
+      const userMenu = document.getElementById('userMenu')
+      userMenu.classList.add('d-none')
+    }
+  }
+  const refUserDropdown = useRef(null);
+  const closeUserMenu = () => {
+    let userMenu = document.getElementById('userMenu')
+    userMenu.classList.add('d-none')
   }
 
 
@@ -116,15 +124,7 @@ export const Navbar = () => {
     let prototypeMenu = document.getElementById('prototype-menu')
     prototypeMenu.classList.toggle('d-none')
   }
-
-
-  const closeUserMenu = () => {
-    let userMenu = document.getElementById('userMenu')
-    userMenu.classList.add('d-none')
-  }
-
   const refMenu = useRef(null)
-
   useEffect(() => {
     document.addEventListener('click', hideOnClickOutsideMenu, true)
   }, [])
@@ -136,13 +136,22 @@ export const Navbar = () => {
   }
 
 
+  // other functions
+  const navigate = useNavigate()
+
 
   return (
     <>
-      <div className='navbar bg-white w-100 flx-r just-sb'>
+      <div className={`navbar bg-white w-100 flx-r just-sb ${sidebarDisplayed ? "border-bottom-gains" : null} ${!showNavbar ? "d-none" : null} `}>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         <div className="flx-c just-ce">
-          <Link onClick={() => togglePrototypeMenu()} className='ml15-disappear768'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link>
+          <Link onClick={() => togglePrototypeMenu()} className=''>
+            {sidebarDisplayed ?
+            <p className="m-0 page-heading-bold darkpurple-text ws-nowrap ml1vw">{placeListDisplay}</p>
+            :
+            <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
+            }
+          </Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
         <div ref={refMenu} id='prototype-menu' className="prototype-menu d-none">
@@ -154,9 +163,44 @@ export const Navbar = () => {
           <Link onClick={() => closePrototypeMenu()} to='/itinerary'><div className="option">Itinerary</div></Link>
 
         </div>
+        <div className="navbar-left-side gap-7 position-left">
+            <Link to='/dashboard'>
+            <div className="option">
+              <div className="flx-r gap-2">
+                <img src="https://i.imgur.com/A3Uavfg.png" alt="" className="navbar-icon" />
+                <p className="m-0">Dashboard</p>
+              </div>
+            </div>
+            </Link>
+            <div className="option">
+              <div className="flx-r gap-2">
+                
+                <img src="https://i.imgur.com/7ewt7zr.png" alt="" className="navbar-icon" />
+                <p className="m-0">My Profile</p>
+              </div>
+            </div>
+            <div className="option">
+              <div className="flx-r gap-2">
+                <span className="material-symbols-outlined">
+                  flight_takeoff
+                </span>
+                <p className="m-0">My Trips</p>
+              </div>
+            </div>
+            <div className="option">
+              <div className="flx-r gap-2">
+                <span className="material-symbols-outlined">
+                  explore
+                </span>
+                <p className="m-0">Discover</p>
+              </div>
+            </div>
+
+
+        </div>
 
         {user ?
-          <div className="right-btns flx-c just-ce position-relative">
+          <div ref={refUserDropdown} className="z-1 right-btns flx-c just-ce position-relative">
             <div className="flx-r">
               <div className="flx-c just-ce">
                 <p className='username-text m-0 mt- inline mx-2'>{user.displayName}</p>
@@ -166,22 +210,17 @@ export const Navbar = () => {
               </div>
 
             </div>
-            <div ref={refUserDropdown} id='userMenu' className="user-menu flx-c position-absolute d-none">
-              <Link><div className="option">
-                <span className="material-symbols-outlined">
-                  flight_takeoff
-                </span>
-                <p className="m-0 ml-2">My Trips</p></div></Link>
+            <div id='userMenu' className="user-menu flx-c position-absolute d-none">
               <Link onClick={() => closeUserMenu()} to='/survey-update'><div className="option">
                 <span className="material-symbols-outlined">
-                  settings
+                  favorite
                 </span><p className="m-0 ml-2">Travel Preferences</p></div></Link>
               <Link><div className="option">
                 <span className="material-symbols-outlined">
-                  person
+                  settings
                 </span>
-                <p className="m-0 ml-2">My Account</p></div></Link>
-              <Link onClick={() => {logOut(); closeUserMenu()}}><div className="option">
+                <p className="m-0 ml-2">Account Settings</p></div></Link>
+              <Link to='/' onClick={() => { logOut(); closeUserMenu() }}><div className="option">
                 <span className="material-symbols-outlined">
                   logout
                 </span>

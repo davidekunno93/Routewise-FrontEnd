@@ -10,6 +10,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import facebookProvider from '../../firebaseFacebook';
 import axios from 'axios';
 import { Fade, Slide } from 'react-awesome-reveal';
+import { LoadingScreen } from '../LoadingScreen';
+import { Loading } from '../Loading';
 
 export const AuthModal = ({ open, authIndex, onClose }) => {
     if (!open) return null
@@ -185,6 +187,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                 displayName: data.user.displayName,
                 email: data.user.email
             }
+            setIsLoading(true)
             const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(userData), {
                 headers: { "Content-Type": "application/json" }
             })
@@ -209,77 +212,81 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
 
     // getRedirectResult(auth).then
 
+    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <>
-            
-                <Fade duration={200} className='z-99999' triggerOnce>
-                        <div className="overlay"></div>
-                        <div className="modal">
-                            <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />
-                            <div className="carousel-window m-auto mt-4 flx-r position-relative">
-                                <span onClick={onClose} className="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
-                                    close
-                                </span>
-                                <div id='inner' className="inner" style={{ transform: `translateX(-${activeIndex * 50}%)` }}>
-                                    <div className='sign-up-box flx-c m-auto position-relative'>
 
-                                        <h1 className='mt-4'>Sign Up</h1>
-                                        <button onClick={() => googleSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
-                                        <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
-                                        <div className="hr-block w-75 flx-r">
-                                            <div className="flx-1 flx-c just-ce">
-                                                <hr className='w-100 border-gains' />
-                                            </div>
-                                            <p className='px-2'><strong>or</strong></p>
-                                            <div className="flx-1 flx-c just-ce">
-                                                <hr className='w-100 border-gains' />
-                                            </div>
-                                        </div>
-                                        <p id='invalidEmail' className="m-0 red-text o-none">&nbsp;</p>
-                                        <div className="inputBox my-2">
-                                            <input id='registerEmail' onChange={(e) => updateRegisterEmail(e)} type='text' className='input-model' required />
-                                            <span className='title font-jakarta'>Email</span>
-                                        </div>
+            <Fade duration={200} className='z-99999' triggerOnce>
+                <div className="overlay"></div>
+                <div className="modal">
+                    <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />
+                    <div className="carousel-window m-auto mt-4 flx-r position-relative">
+                        <div id='loadingBox' className={`loadingBox-2 z-1000000 w-100 h-100 ${isLoading ? null : "hidden-o"}`}>
+                            <Loading />
+                        </div>
+                        <span onClick={onClose} className="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
+                            close
+                        </span>
+                        <div id='inner' className="inner" style={{ transform: `translateX(-${activeIndex * 50}%)` }}>
+                            <div className='sign-up-box flx-c m-auto position-relative'>
 
-                                        <button id='continueEmail' onClick={() => continueWithEmail()} className='btn-primary bg-white font-jakarta bg-lightpurple white-text'>Continue with email</button>
-                                        <div className='m-0 small mt-3 font-jakarta dark-text'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
+                                <h1 className='mt-4'>Let's Sign Up</h1>
+                                <button onClick={() => googleSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
+                                <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
+                                <div className="hr-block w-75 flx-r">
+                                    <div className="flx-1 flx-c just-ce">
+                                        <hr className='w-100 border-gains' />
                                     </div>
-                                    <div className="sign-in-box m-auto">
-                                        <h1 className='mt-4'>Sign In</h1>
-                                        <Link><button onClick={() => googleSignIn()} className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
-                                        <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>
-                                        <div className="hr-block w-75 flx-r">
-                                            <div className="flx-1 flx-c just-ce">
-                                                <hr className='w-100 border-gains' />
-                                            </div>
-                                            <p className='px-2'><strong>or</strong></p>
-                                            <div className="flx-1 flx-c just-ce">
-                                                <hr className='w-100 border-gains' />
-                                            </div>
-                                        </div>
-
-                                        <div className="inputBox my-2">
-                                            <input id='loginEmail' onChange={(e) => updateLoginEmail(e)} type='text' className='input-model' required />
-                                            <span className='title font-jakarta'>Email</span>
-                                        </div>
-
-                                        <div id='login-password-input' className="inputBox mb-2">
-                                            <input id='loginPassword' onChange={(e) => updateLoginPassword(e)} type='password' className='input-model' required />
-                                            <span className='title font-jakarta'>Password</span>
-                                            <div id='loginPasswordOpen' onClick={() => showPassword('loginPassword')} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/DkqcKz7.png" alt="" className="icon-xsmall center o-80" /></div>
-                                            <div id='loginPasswordClose' onClick={() => hidePassword('loginPassword')} className='icon-right flx-c just-ce d-none'><img src="https://i.imgur.com/yoo70zI.png" alt="" className="icon-xsmall center o-80" /></div>
-                                        </div>
-
-                                        <button onClick={() => signInWithEmail()} id='loginWithEmail' className='btn-primary bg-lightpurple white-text font-jakarta'>Sign in with email</button>
-                                        <div className='m-0 small mt-3 font-jakarta dark-text'>Create an account? <Link onClick={() => updateIndex(0)} className='link-text'><strong>Sign Up</strong></Link></div>
-
+                                    <p className='px-2'><strong>or</strong></p>
+                                    <div className="flx-1 flx-c just-ce">
+                                        <hr className='w-100 border-gains' />
                                     </div>
                                 </div>
+                                <p id='invalidEmail' className="m-0 red-text o-none">&nbsp;</p>
+                                <div className="inputBox my-2">
+                                    <input id='registerEmail' onChange={(e) => updateRegisterEmail(e)} type='text' className='input-model' required />
+                                    <span className='title font-jakarta'>Email</span>
+                                </div>
+
+                                <button id='continueEmail' onClick={() => continueWithEmail()} className='btn-primary bg-white font-jakarta bg-lightpurple white-text'>Continue with email</button>
+                                <div className='m-0 small mt-3 font-jakarta dark-text'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
+                            </div>
+                            <div className="sign-in-box m-auto">
+                                <h1 className='mt-4'>Sign In</h1>
+                                <Link><button onClick={() => googleSignIn()} className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign in with Google</button></Link>
+                                <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign in with Facebook</button>
+                                <div className="hr-block w-75 flx-r">
+                                    <div className="flx-1 flx-c just-ce">
+                                        <hr className='w-100 border-gains' />
+                                    </div>
+                                    <p className='px-2'><strong>or</strong></p>
+                                    <div className="flx-1 flx-c just-ce">
+                                        <hr className='w-100 border-gains' />
+                                    </div>
+                                </div>
+
+                                <div className="inputBox my-2">
+                                    <input id='loginEmail' onChange={(e) => updateLoginEmail(e)} type='text' className='input-model' required />
+                                    <span className='title font-jakarta'>Email</span>
+                                </div>
+
+                                <div id='login-password-input' className="inputBox mb-2">
+                                    <input id='loginPassword' onChange={(e) => updateLoginPassword(e)} type='password' className='input-model' required />
+                                    <span className='title font-jakarta'>Password</span>
+                                    <div id='loginPasswordOpen' onClick={() => showPassword('loginPassword')} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/DkqcKz7.png" alt="" className="icon-xsmall center o-80" /></div>
+                                    <div id='loginPasswordClose' onClick={() => hidePassword('loginPassword')} className='icon-right flx-c just-ce d-none'><img src="https://i.imgur.com/yoo70zI.png" alt="" className="icon-xsmall center o-80" /></div>
+                                </div>
+
+                                <button onClick={() => signInWithEmail()} id='loginWithEmail' className='btn-primary bg-lightpurple white-text font-jakarta'>Sign in with email</button>
+                                <div className='m-0 small mt-3 font-jakarta dark-text'>Create an account? <Link onClick={() => updateIndex(0)} className='link-text'><strong>Sign Up</strong></Link></div>
+
                             </div>
                         </div>
-                </Fade>
-            
+                    </div>
+                </div>
+            </Fade>
+
         </>
     )
 }

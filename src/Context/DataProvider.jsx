@@ -3,7 +3,7 @@ import { auth } from '../firebase';
 
 
 const DataProvider = (props) => {
-
+    const [showNavbar, setShowNavbar] = useState(true);
     const [user, setUser] = useState(null);
     const [userPreferences, setUserPreferences] = useState({
         landmarks: false,
@@ -19,11 +19,11 @@ const DataProvider = (props) => {
         firstSignIn: true
     })
     const [signUpIsOpen, setSignUpIsOpen] = useState(false)
-
+    const [authIndex, setAuthIndex] = useState(null);
     
 
     return (
-        <DataContext.Provider value={{ 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences }}>
+        <DataContext.Provider value={{ 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences }}>
             {props.children}
         </DataContext.Provider>
     )

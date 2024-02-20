@@ -495,6 +495,49 @@ export const Test = () => {
 
 
 
+            {/* Old side panel that we are no longer using */}
+            {/* <div id='dayPanel' className="itinerary-c1">
+          <div onClick={() => showDayPanel()} id='showDayPanelBtn' className="arrowToOpen">
+            <span className="material-symbols-outlined o-50 xx-large onHover-fade position-fixed z-1 top-128">
+              keyboard_double_arrow_right
+            </span>
+          </div>
+
+          <div className="dayPanelContainer">
+            <div id='dayPanelBody' className="it-column1 white-bg position-fixed ml-3 flx-c align-c o-none d-none">
+              <img src="https://i.imgur.com/46q31Cx.png" alt="" className="vertical-logo" />
+
+              <div onClick={() => hideDayPanel()} className="arrowToClose my-2">
+                <span className="material-symbols-outlined o-50 xx-large right onHover-fade">
+                  keyboard_double_arrow_left
+                </span>
+              </div>
+
+              <button className="btn-secondaryflex">
+                <span className="material-symbols-outlined btn-symbol v-align x-large white-text">
+                  expand_more
+                </span>
+                <p className="inline v-align white-text">Itinerary &nbsp;&nbsp;</p>
+              </button>
+
+              <div className="it-datesPanel w-100 flx-c mt-3">
+
+                {tripState.day_order.map((dayNum, id) => {
+                  const day = tripState.days[dayNum]
+
+                  return <div key={id} onClick={() => scrollToSection(id)} className="day-date flx-r onHover-fade pointer">
+                    <p className="it-dateBlock my-1 flx-1 gray-text">{day.day_short}</p>
+                    <p className="it-dayBlock my-1 flx-1 gray-text">{day.date_short}</p>
+                  </div>
+                })}
+              </div>
+            </div>
+          </div>
+
+        </div> */}
+            {/* End Old side panel that we are no longer using */}
+
+
 
             <div className="empty-6"></div>
             <div className="empty-6"></div>

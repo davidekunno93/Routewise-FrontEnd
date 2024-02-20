@@ -14,7 +14,9 @@ import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
 import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { LoadingScreen } from '../components/LoadingScreen';
+import EditTripModal from '../components/EditTripModal';
 
 
 
@@ -163,11 +165,25 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     // calendar
     const [range, setRange] = useState([
         {
-            startDate: new Date(),
-            endDate: addDays(new Date(), 7),
+            startDate: null, // new Date(),
+            endDate: null, // addDays(new Date(), 7),
             key: 'selection'
         }
     ])
+    const rangePlaceholder = [
+        {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection'
+        }
+    ]
+    const toggleCalendarOpen = () => {
+        if (calendarOpen) {
+            setCalendarOpen(false);
+        } else {
+            setCalendarOpen(true);
+        }
+    }
     useEffect(() => {
         // setCalendar(format(new Date(), 'MM/dd/yyyy'))
         document.addEventListener('keydown', hideOnEscape, true)
@@ -299,7 +315,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
 
     useEffect(() => {
-        console.log(city)
+        // console.log(city)
         if (city) {
             if (city.length > 0) {
                 let cityInput = document.getElementById('cityInput')
@@ -353,6 +369,9 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         const end = datishort(endDate)
         const startMonth = start.slice(0, 3)
         const endMonth = end.slice(0, 3)
+        // console.log(startDate)
+        // console.log(start)
+        // console.log(endDate)
 
         if (startMonth === endMonth) {
             return start + " - " + end.slice(4)
@@ -373,7 +392,104 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         }
     }
 
+    const navigate = useNavigate()
 
+    const viewTrip = async (trip) => {
+        // setIsLoading(true)
+        let url = `http://127.0.0.1:5000/places/trip/${trip.trip_id}`
+        const response = axios.get(url)
+            .then((response) => {
+                createItinerary(response, trip)
+            })
+            .catch((error) => {
+                console.log(error)
+                setIsLoading(false)
+                alert('Something went wrong. Please try again')
+            })
+    }
+    const createItinerary = (response, trip) => {
+        let currentTripCopy = {
+            tripID: trip.trip_id,
+            tripName: trip.trip_name,
+            city: trip.dest_city,
+            country: trip.dest_country,
+            country_2letter: trip.dest_country_2letter,
+            startDate: trip.start_date,
+            endDate: trip.end_date,
+            tripDuration: trip.duration,
+            geocode: [trip.dest_lat, trip.dest_long],
+            imgUrl: trip.dest_img,
+            places: Object.values(response.data.places_serial),
+            itinerary: response.data,
+        }
+        // currentTripCopy["itinerary"] = response.data
+        // currentTripCopy["places"] = Object.values(response.data.places_serial)
+        console.log(response.data)
+        console.log(currentTripCopy)
+        setCurrentTrip(currentTripCopy)
+        navigate('/itinerary')
+    }
+    const [isLoading, setIsLoading] = useState(false);
+    const stopLoadingScreen = () => {
+        setIsLoading(false)
+    }
+
+    const deleteTrip = (trip) => {
+        let url = `http://127.0.0.1:5000/places/delete-trip/${trip.trip_id}`
+        const response = axios.delete(url)
+        .then((response) => {
+            console.log(response.data)
+            loadUserTripsData()
+            closeUserTripPopup()
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
+    // test updating trip
+    const testUpdateTrip = async (trip_id) => {
+        let url = `http://localhost:5000/places/update_trip/${trip_id}`
+        let data = {
+            tripName : "New Trip Name",
+            startDate: null,
+            endDate: null
+        }
+        const response = await axios.patch(url, data, {
+            headers: {"Content-Type": "application/json"}
+        }).then((response) => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+
+    // edit trip modal code
+    const [editTripModalOpen, setEditTripModalOpen] = useState(false)
+    const openEditTripModal = (trip) => {
+        setTripToEdit(trip)
+        setEditTripModalOpen(true);
+    }
+    const [tripToEdit, setTripToEdit] = useState(null)
+
+
+    // other functions
+    const datify = (normalDate) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let day = normalDate.slice(3, 5)
+        let monthNum = normalDate.slice(0, 2)
+        if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+        }
+        let fullYear = normalDate.slice(6)
+        const month = months[monthNum - 1]
+        if (day.charAt(0) === "0") {
+            day = day[1]
+        }
+        let twoYear = fullYear.slice(2)
+        return month + " " + day + ", " + twoYear
+    }
 
     return (
         <>
@@ -382,7 +498,8 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             </div>
              */}
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
-
+            <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
+            <EditTripModal open={editTripModalOpen} trip={tripToEdit} onClose={() => setEditTripModalOpen(false)} />
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
@@ -393,33 +510,44 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                         <div className="item-location flx-3 flx-c just-en">
                             <div className="mr-2-disappear768">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
-                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' required />
+                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' required />
                             </div>
                         </div>
                         <div className="item-dates flx- flx-c just-en">
                             <div className="box-heading dark-text page-subsubheading">When will you be there?</div>
-                            <div className="calendarWrap mr-2-disappear768">
-                                <span onClick={() => setCalendarOpen(true)} className="material-symbols-outlined position-absolute inputIcon-right xx-large o-50 pointer">
+                            <div ref={refOne} className="calendarWrap mr-2-disappear768">
+                                {/* <span onClick={() => setCalendarOpen(true)} className="material-symbols-outlined position-absolute inputIcon-right xx-large o-50 pointer">
                                     date_range
-                                </span>
-                                <input
+                                </span> */}
+                                {/* <input
                                     onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)}
                                     // value={`${range[0].startDate && range[0].endDate ? format(range[0].startDate, "MM/dd/yyyy")+"      |      "+format(range[0].endDate, "MM/dd/yyyy") : "Start Date   End Date" } `} 
                                     value={` ${format(range[0].startDate, "MM/dd/yyyy")}            -to-           ${format(range[0].endDate, "MM/dd/yyyy")} `}
                                     className="calendarInput pointer"
                                     readOnly
-                                />
-                                <div ref={refOne}>
+                                /> */}
+                                <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
+                                    <div className="startDateInput flx-1">
+                                        <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
+                                        <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date" }</p>
+                                    </div>
+                                    <hr className='h-40' />
+                                    <div className="endDateInput flx-1">
+                                        <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
+                                        <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date" }</p>
+                                    </div>
+                                </div>
+                                <div>
                                     {calendarOpen &&
                                         <DateRange
                                             onChange={item => setRange([item.selection])}
                                             editableDateInputs={true}
                                             moveRangeOnFirstSelection={false}
-                                            ranges={range}
+                                            ranges={range[0].startDate ? range : rangePlaceholder}
                                             months={2}
                                             direction='vertical'
                                             className='calendarElement'
-                                            placeholder="hi" />
+                                        />
                                     }
                                 </div>
                             </div>
@@ -444,10 +572,16 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                         </span>
                                     </div>
                                 </Link>
-                                : null}
+                                : null }
                         </div>
+                        {!userTrips.length > 0 &&
+                            <>
+                                <p className="m-0 gray-text">No trips created. <span onClick={() => getCity()} className="purple-text bold500 pointer">Enter a city</span>  to start!</p>
+                                {/* <p className="m-0 gray-text small">Come back after you've created a trip to view created itineraries</p> */}
+                            </>
+                        }
 
-                        <div className="userTrips flx-r just-sb">
+                        <div className="userTrips flx-r gap-3">
                             {userTrips.map((trip, index) => {
 
                                 if (index < 4) {
@@ -455,23 +589,29 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
 
                                     return <div key={index} className="userTrip-box">
                                         <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                            <div className="option">
+                                            <div onClick={(() => {openEditTripModal(trip); closeUserTripPopup()})} className="option">
+                                                <p className="m-0">Edit trip</p>
                                                 <span className="material-symbols-outlined large mx-1">
                                                     edit
                                                 </span>
-                                                <p className="m-0">Edit trip</p>
                                             </div>
-                                            <div className="option">
+                                            <div onClick={(() => viewTrip(trip))} className="option">
+                                                <p className="m-0">View trip</p>
+                                                <span className="material-symbols-outlined large mx-1">
+                                                    map
+                                                </span>
+                                            </div>
+                                            <div onClick={() => deleteTrip(trip)} className="option">
+                                                <p className="m-0">Delete trip</p>
                                                 <span className="material-symbols-outlined large mx-1">
                                                     delete
                                                 </span>
-                                                <p className="m-0">Delete trip</p>
                                             </div>
                                         </div>
-                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
+                                        <span ref={refPopUp} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
                                             more_vert
                                         </span>
-                                        <img src={trip.dest_img} alt="" className="destImg" />
+                                        <img src={trip.dest_img} alt="" className="destImg pointer" />
                                         <p className="m-0 box-title">{trip.trip_name}</p>
                                         <div className="flx-r">
                                             <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
@@ -483,7 +623,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                             })}
                         </div>
                     </>
-                    : null}
+                    : null }
 
                 {/* map code */}
                 <div className="map my-5 flx">
@@ -505,7 +645,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                         </span>
                                         <p className="m-0 inline white-text"> 86 Likes</p>
                                     </div>
-                                    <div className="page-subheading-bold my-2">{city.name}</div>
+                                    <div className="page-subheading-bold my-2 black-text">{city.name}</div>
                                 </div>
                             })}
 
