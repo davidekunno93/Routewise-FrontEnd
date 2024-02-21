@@ -1733,6 +1733,7 @@ p {
 .page-title {
   /* font-size: xxx-large;  */
   font-size: 36px; 
+  color: #242424;
 }
 
 .page-heading {

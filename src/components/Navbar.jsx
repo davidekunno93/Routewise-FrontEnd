@@ -19,7 +19,7 @@ export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
   // load user
   useEffect(() => {
     auth.currentUser ? setUser(auth.currentUser) : null
-  }, [])
+  }, [auth])
 
   // show auth modal
   const openSignUp = () => {
