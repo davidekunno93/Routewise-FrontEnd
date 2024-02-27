@@ -23,7 +23,9 @@ import EditTripModal from '../components/EditTripModal';
 export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     // login require
     const { user, setUser } = useContext(DataContext);
+    const { userPreferences } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
+    const { pageOpen, setPageOpen } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
@@ -51,6 +53,52 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         }
     ]);
     const [userTrips, setUserTrips] = useState(null)
+    const resetPageOpen = () => {
+        setPageOpen(null)
+    }
+    useEffect(() => {
+        setPageOpen('dashboard')
+        return resetPageOpen;
+    }, [])
+
+    const cards2 = [
+        {
+            userPreference: "landmarks",
+            imgUrl: 'https://i.imgur.com/FvhWwnV.png',
+            title: 'Landmarks & Attractions'
+        },
+        {
+            userPreference: "nature",
+            imgUrl: 'https://i.imgur.com/8imPNfF.png',
+            title: 'Nature'
+        },
+        {
+            userPreference: "shopping",
+            imgUrl: 'https://i.imgur.com/oGV9gqi.png',
+            title: 'Shopping'
+        },
+        {
+            userPreference: "food",
+            imgUrl: 'https://i.imgur.com/dTAAsWU.png',
+            title: 'Food & Nightlife'
+        },
+        {
+            userPreference: "relaxation",
+            imgUrl: 'https://i.imgur.com/3UOXniG.png',
+            title: 'Spa & Relaxation'
+        },
+        {
+            userPreference: "entertainment",
+            imgUrl: 'https://i.imgur.com/3WPIK0i.png',
+            title: 'Music & Entertainment'
+        },
+        {
+            userPreference: "arts",
+            imgUrl: 'https://i.imgur.com/BdhaXO4.png',
+            title: 'Arts & Culture'
+        }
+    ]
+
 
     // get user trips code
     const getUserTripsData = async () => {
@@ -395,19 +443,13 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const navigate = useNavigate()
 
     const viewTrip = async (trip) => {
-        // setIsLoading(true)
-        let url = `http://127.0.0.1:5000/places/trip/${trip.trip_id}`
-        const response = axios.get(url)
-            .then((response) => {
-                createItinerary(response, trip)
-            })
-            .catch((error) => {
-                console.log(error)
-                setIsLoading(false)
-                alert('Something went wrong. Please try again')
-            })
+        setIsLoading(true)
+        let url = `http://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
+        console.log(url)
+        const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+        return response.status === 200 ? loadItinerary(response, trip) : alert('Something went wrong. Please try again.')
     }
-    const createItinerary = (response, trip) => {
+    const loadItinerary = (response, trip) => {
         let currentTripCopy = {
             tripID: trip.trip_id,
             tripName: trip.trip_name,
@@ -419,13 +461,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             tripDuration: trip.duration,
             geocode: [trip.dest_lat, trip.dest_long],
             imgUrl: trip.dest_img,
-            places: Object.values(response.data.places_serial),
+            places: Object.values(response.data.places),
             itinerary: response.data,
         }
-        // currentTripCopy["itinerary"] = response.data
-        // currentTripCopy["places"] = Object.values(response.data.places_serial)
-        console.log(response.data)
-        console.log(currentTripCopy)
+        // console.log(response.data)
+        // console.log(currentTripCopy)
+        setIsLoading(false)
         setCurrentTrip(currentTripCopy)
         navigate('/itinerary')
     }
@@ -437,26 +478,26 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const deleteTrip = (trip) => {
         let url = `http://127.0.0.1:5000/places/delete-trip/${trip.trip_id}`
         const response = axios.delete(url)
-        .then((response) => {
-            console.log(response.data)
-            loadUserTripsData()
-            closeUserTripPopup()
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+            .then((response) => {
+                console.log(response.data)
+                loadUserTripsData()
+                closeUserTripPopup()
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     // test updating trip
     const testUpdateTrip = async (trip_id) => {
         let url = `http://localhost:5000/places/update_trip/${trip_id}`
         let data = {
-            tripName : "New Trip Name",
+            tripName: "New Trip Name",
             startDate: null,
             endDate: null
         }
         const response = await axios.patch(url, data, {
-            headers: {"Content-Type": "application/json"}
+            headers: { "Content-Type": "application/json" }
         }).then((response) => {
             console.log(response.data)
         }).catch((error) => {
@@ -491,6 +532,161 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         return month + " " + day + ", " + twoYear
     }
 
+    const [awaitingItinerary, setAwaitingItinerary] = useState(false);
+    const testItinerary = () => {
+        // test itinerary object
+        let testObject = {
+            tripID: "",
+            places_last: 8,
+            places: {
+                1: {
+                    id: 1,
+                    placeName: "Traflagar Square",
+                    info: "Open 24 hours",
+                    address: "Trafalgar Sq, London WC2N 5DS, UK",
+                    imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+                    lat: 51.50806,
+                    long: -0.12806,
+                    geocode: [51.50806, -0.12806],
+                    favorite: true,
+                    place_id: null
+                },
+                2: {
+                    id: 2,
+                    placeName: "Tate Modern",
+                    info: "Mon-Sun 10 AM-6 PM",
+                    address: "Bankside, London SE1 9TG, UK",
+                    imgURL: "https://i.imgur.com/FYc6OB3.jpg",
+                    lat: 51.507748,
+                    long: -0.099469,
+                    geocode: [51.507748, -0.099469],
+                    favorite: false,
+                    place_id: null
+                },
+                3: {
+                    id: 3,
+                    placeName: "Hyde Park",
+                    info: "Mon-Sun 5 AM-12 AM",
+                    address: "Hyde Park, London W2 2UH, UK",
+                    imgURL: "https://i.imgur.com/tZBnXz4.jpg",
+                    lat: 51.502777,
+                    long: -0.151250,
+                    geocode: [51.502777, -0.151250],
+                    favorite: false,
+                    place_id: null
+                },
+                4: {
+                    id: 4,
+                    placeName: "Buckingham Palace",
+                    info: "Tours Start at 9am",
+                    address: "Buckingham Palace, London SW1A 1AA, UK",
+                    imgURL: "https://i.imgur.com/lw40mp9.jpg",
+                    lat: 51.501476,
+                    long: -0.140634,
+                    geocode: [51.501476, -0.140634],
+                    favorite: true,
+                    place_id: null
+                },
+                5: {
+                    id: 5,
+                    placeName: "Borough Market",
+                    info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
+                    address: "Borough Market, London SE1 9AL, UK",
+                    imgURL: "https://i.imgur.com/9KiBKqI.jpg",
+                    lat: 51.50544,
+                    long: -0.091249,
+                    geocode: [51.50544, -0.091249],
+                    favorite: true,
+                    place_id: null
+                },
+                6: {
+                    id: 6,
+                    placeName: "Traflagar Square",
+                    info: "Open 24 hours",
+                    address: "Trafalgar Sq, London WC2N 5DS, UK",
+                    imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+                    lat: 51.50806,
+                    long: -0.12806,
+                    geocode: [51.50806, -0.12806],
+                    favorite: false,
+                    place_id: null
+                },
+                7: {
+                    id: 7,
+                    placeName: "Borough Market",
+                    info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
+                    address: "Borough Market, London SE1 9AL, UK",
+                    imgURL: "https://i.imgur.com/9KiBKqI.jpg",
+                    lat: 51.50544,
+                    long: -0.091249,
+                    geocode: [51.50544, -0.091249],
+                    favorite: false,
+                    place_id: null
+                },
+                8: {
+                    id: 8,
+                    placeName: "Traflagar Square",
+                    info: "Open 24 hours",
+                    address: "Trafalgar Sq, London WC2N 5DS, UK",
+                    imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
+                    lat: 51.50806,
+                    long: -0.12806,
+                    geocode: [51.50806, -0.12806],
+                    favorite: false,
+                    place_id: null
+                }
+            },
+            days: {
+                "day-1": {
+                    id: "day-1",
+                    date_converted: "Wednesday, November 8",
+                    day_short: "Wed",
+                    date_short: "11/8",
+                    dayName: "",
+                    placeIds: [2]
+                },
+                "day-2": {
+                    id: "day-2",
+                    date_converted: "Thursday, November 9",
+                    day_short: "Thurs",
+                    date_short: "11/9",
+                    dayName: "",
+                    placeIds: [3, 4]
+                },
+                "day-3": {
+                    id: "day-3",
+                    date_converted: "Friday, November 10",
+                    dayName: "",
+                    day_short: "Fri",
+                    date_short: "11/10",
+                    placeIds: [5, 6]
+                },
+                "day-4": {
+                    id: "day-4",
+                    date_converted: "Saturday, November 11",
+                    dayName: "",
+                    day_short: "Sat",
+                    date_short: "11/11",
+                    placeIds: [7, 8, 1]
+                }
+
+            },
+            "day_order": ["day-1", "day-2", "day-3", "day-4"]
+        }
+        // set current trip itinerary to test object
+        let currentTripCopy = { ...currentTrip }
+        currentTripCopy.itinerary = testObject
+        setAwaitingItinerary(true);
+        setCurrentTrip(currentTripCopy)
+        // navigate to itinerary
+    }
+    useEffect(() => {
+        if (awaitingItinerary && currentTrip.itinerary) {
+            setAwaitingItinerary(false)
+            navigate('/itinerary')
+        }
+    }, [currentTrip])
+
     return (
         <>
             {/* <div className=''>
@@ -499,11 +695,13 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
              */}
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
-            <EditTripModal open={editTripModalOpen} trip={tripToEdit} onClose={() => setEditTripModalOpen(false)} />
+            <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadUserTripsData={loadUserTripsData} onClose={() => setEditTripModalOpen(false)} />
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
-                <h1 className="page-title inline-block">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="small-pic ml-2" />
+                <h1 className="page-subsubheading-bold inline-block mb-5">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="xsmall-pic ml-2" />
+                {/* <button onClick={() => testItinerary()} className="btn-primaryflex">Test Itinerary</button> */}
+                {/* start trip selection box */}
                 <div className="selection-box flx-c">
                     <div className="box-title flx-2 flx-c just-ce"><p className='my-3'>Start planning your next adventure</p></div>
                     <div className="box-items flx-3 flx-r mb-4 flx-wrap">
@@ -529,12 +727,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                 <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
                                     <div className="startDateInput flx-1">
                                         <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                        <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date" }</p>
+                                        <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
                                     </div>
                                     <hr className='h-40' />
                                     <div className="endDateInput flx-1">
                                         <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                        <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date" }</p>
+                                        <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
                                     </div>
                                 </div>
                                 <div>
@@ -558,11 +756,13 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                         </div>
                     </div>
                 </div>
+                {/* end start trip selection box */}
 
+                {/* my trips */}
+                <p className="m-0 page-subsubheading-bold mt-5">My Trips</p>
                 {userTrips ?
                     <>
-                        <div className="flx-r align-r just-sb mt-5">
-                            <p className="m-0 page-heading-bold">My Trips</p>
+                        <div className="flx-r align-r just-sb">
                             {userTrips.length > 4 ?
                                 <Link>
                                     <div className="flx-r align-c">
@@ -572,7 +772,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                         </span>
                                     </div>
                                 </Link>
-                                : null }
+                                : null}
                         </div>
                         {!userTrips.length > 0 &&
                             <>
@@ -588,42 +788,66 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
 
 
                                     return <div key={index} className="userTrip-box">
-                                        <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                            <div onClick={(() => {openEditTripModal(trip); closeUserTripPopup()})} className="option">
-                                                <p className="m-0">Edit trip</p>
-                                                <span className="material-symbols-outlined large mx-1">
-                                                    edit
-                                                </span>
+                                        <div ref={refPopUp}>
+                                            <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                                <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                                    <p className="m-0">Edit details</p>
+                                                    <span className="material-symbols-outlined large mx-1">
+                                                        edit
+                                                    </span>
+                                                </div>
+                                                <div className="option">
+                                                    <p className="m-0">View places</p>
+                                                    <span className="material-symbols-outlined large mx-1">
+                                                        location_on
+                                                    </span>
+                                                </div>
+                                                <div onClick={(() => viewTrip(trip))} className="option">
+                                                    <p className="m-0">View itinerary</p>
+                                                    <span className="material-symbols-outlined large mx-1">
+                                                        map
+                                                    </span>
+                                                </div>
+                                                <div onClick={() => deleteTrip(trip)} className="option">
+                                                    <p className="m-0">Delete trip</p>
+                                                    <span className="material-symbols-outlined large mx-1">
+                                                        delete
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div onClick={(() => viewTrip(trip))} className="option">
-                                                <p className="m-0">View trip</p>
-                                                <span className="material-symbols-outlined large mx-1">
-                                                    map
-                                                </span>
-                                            </div>
-                                            <div onClick={() => deleteTrip(trip)} className="option">
-                                                <p className="m-0">Delete trip</p>
-                                                <span className="material-symbols-outlined large mx-1">
-                                                    delete
-                                                </span>
-                                            </div>
+                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
+                                                more_vert
+                                            </span>
                                         </div>
-                                        <span ref={refPopUp} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
-                                            more_vert
-                                        </span>
                                         <img src={trip.dest_img} alt="" className="destImg pointer" />
-                                        <p className="m-0 box-title">{trip.trip_name}</p>
-                                        <div className="flx-r">
-                                            <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                            <p className="m-0 gray-text">&nbsp; &#9679; &nbsp;</p>
-                                            <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+                                        <div className="box-text-container">
+                                            <p className="m-0 box-title">{trip.trip_name}</p>
+                                            <div className="flx-r">
+                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                                <p className="m-0 gray-text">&nbsp; &#9679; &nbsp;</p>
+                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 }
                             })}
                         </div>
                     </>
-                    : null }
+                    : null}
+                {/* end my trips */}
+                {/* {userPreferences ? 
+                            userPreferences.map((pref, index) => {
+                                return 
+                            }) : null} */}
+                {/* user preferences selection */}
+                <div className="myTravelPreferences-section mt-5">
+                    <div className="flx-r align-c gap-8">
+                        <p className="page-subsubheading-bold">My Travel Preferences</p>
+                        <Link to='/survey-update'><p className="m-0 purple-text mt-h">Edit</p></Link>
+                    </div>
+
+                </div>
+                {/* end user preferences selection */}
 
                 {/* map code */}
                 <div className="map my-5 flx">

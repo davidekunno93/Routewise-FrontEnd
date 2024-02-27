@@ -138,30 +138,37 @@ export const Survey = () => {
 
     const cards2 = [
         {
+            userPreference: "landmarks",
             imgUrl: 'https://i.imgur.com/FvhWwnV.png',
             title: 'Landmarks & Attractions'
         },
         {
+            userPreference: "nature",
             imgUrl: 'https://i.imgur.com/8imPNfF.png',
             title: 'Nature'
         },
         {
+            userPreference: "shopping",
             imgUrl: 'https://i.imgur.com/oGV9gqi.png',
             title: 'Shopping'
         },
         {
+            userPreference: "food",
             imgUrl: 'https://i.imgur.com/dTAAsWU.png',
             title: 'Food & Nightlife'
         },
         {
+            userPreference: "relaxation",
             imgUrl: 'https://i.imgur.com/3UOXniG.png',
             title: 'Spa & Relaxation'
         },
         {
+            userPreference: "entertainment",
             imgUrl: 'https://i.imgur.com/3WPIK0i.png',
             title: 'Music & Entertainment'
         },
         {
+            userPreference: "arts",
             imgUrl: 'https://i.imgur.com/BdhaXO4.png',
             title: 'Arts & Culture'
         }

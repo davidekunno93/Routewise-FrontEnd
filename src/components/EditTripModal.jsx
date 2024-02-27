@@ -8,7 +8,7 @@ import { LoadingModal } from './LoadingModal';
 import LoadOnTop from './LoadOnTop';
 
 
-const EditTripModal = ({ open, trip, onClose }) => {
+const EditTripModal = ({ open, trip, loadUserTripsData, onClose }) => {
     if (!open) return null
 
     // date conversion functions
@@ -138,15 +138,16 @@ const EditTripModal = ({ open, trip, onClose }) => {
     }
     const updateInDB = (sendData) => {
         setIsLoading(true)
-        let url = "" // url??
+        let url = `https://routewise-backend.onrender.com/places/update-trip/${trip.trip_id}`
         let data = sendData
         const response = axios.patch(url, data, {
             headers: { "Content-Type": "application/json" }
         }).then((response) => {
             console.log(response.data)
             setIsLoading(false)
+            loadUserTripsData()
             // response object to say if itnirary was updated - if so, show link allowing user to navigate to iti
-            // onClose()
+            onClose()
         }).catch((error) => {
             setIsLoading(false)
             console.log(error)
@@ -155,7 +156,7 @@ const EditTripModal = ({ open, trip, onClose }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [editTripOverlayOpen, setEditTripOverlayOpen] = useState(false);
-    // need nav to itinerary function 
+    // need navigate to itinerary function 
 
     return (
         <div className="overlay-placeholder">

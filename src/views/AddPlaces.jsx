@@ -16,6 +16,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange, DateRangePicker } from 'react-date-range';
 import format from 'date-fns/format';
 import { addDays } from 'date-fns'
+import ItineraryUpdatedModal from '../components/ItineraryUpdatedModal'
 
 
 export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
@@ -106,6 +107,52 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     //         placeId: "5",
     //     }
     // ])
+
+    // date functions
+    const datinormal = (systemDate) => {
+        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+        if (month.toString().length === 1) {
+            month = "0" + month
+        }
+        // console.log(month)
+        let fullYear = systemDate.getFullYear()
+        // console.log(month+"/"+day+"/"+fullYear)
+        return month + "/" + day + "/" + fullYear
+    }
+    const datify = (normalDate) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let day = normalDate.slice(3, 5)
+        let monthNum = normalDate.slice(0, 2)
+        if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+        }
+        let fullYear = normalDate.slice(6)
+        const month = months[monthNum - 1]
+        if (day.charAt(0) === "0") {
+            day = day[1]
+        }
+        let twoYear = fullYear.slice(2)
+        return month + " " + day + ", " + twoYear
+    }
+    // from slash or normal date to dash date
+    const datidash = (mmddyyyy) => {
+        let year = mmddyyyy.slice(6)
+        let month = mmddyyyy.slice(0, 2)
+        let day = mmddyyyy.slice(3, 5)
+        return year + "-" + month + "-" + day
+    }
+    // from dash date to slash or normal date
+    const datiundash = (dashDate) => {
+        let fullyear = dashDate.slice(0, 4)
+        let month = dashDate.slice(5, 7)
+        let day = dashDate.slice(8)
+        return month + "/" + day + "/" + fullyear
+    }
+
+    const firstRender = useRef(true);
+    const secondRender = useRef(true);
+
     useEffect(() => {
         getSearchData()
         console.log(searchText)
@@ -842,38 +889,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const [selectionRange, setSelectionRange] = useState([{
-        startDate: new Date("11/08/2023"),
-        endDate: new Date("11/11/2023"),
+        startDate: currentTrip.startDate ? new Date(datiundash(currentTrip.startDate)) : new Date("11/08/2023"),
+        endDate: currentTrip.endDate ? new Date(datiundash(currentTrip.endDate)) : new Date("11/11/2023"),
         key: "selection"
     }])
-
-    const datinormal = (systemDate) => {
-        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
-        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
-        if (month.toString().length === 1) {
-            month = "0" + month
-        }
-        // console.log(month)
-        let fullYear = systemDate.getFullYear()
-        // console.log(month+"/"+day+"/"+fullYear)
-        return month + "/" + day + "/" + fullYear
-    }
-    const datify = (normalDate) => {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        let day = normalDate.slice(3, 5)
-        let monthNum = normalDate.slice(0, 2)
-        if (monthNum.charAt(0) === "0") {
-            monthNum = monthNum[1]
-        }
-        let fullYear = normalDate.slice(6)
-        const month = months[monthNum - 1]
-        if (day.charAt(0) === "0") {
-            day = day[1]
-        }
-        let twoYear = fullYear.slice(2)
-        return month + " " + day + ", " + twoYear
-    }
-
+    const [sendDataStandby, setSendDataStandby] = useState({
+        tripDates: false
+    });
+    
+    
     const [calendarOpen, setCalendarOpen] = useState(false);
     const closeCalendar = () => {
         setCalendarOpen(false)
@@ -881,7 +905,17 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     useEffect(() => {
         window.addEventListener('click', hideCalendarOnClickOutside, true)
     }, [])
-
+    useEffect(() => {
+        
+        if (currentTrip.itinerary) {
+            
+            console.log("respond")
+        }
+        if (selectionRange.startDate !== currentTrip.startDate){
+            
+        }
+    }, [calendarOpen])
+    
     const refCalendar = useRef(null);
     const hideCalendarOnClickOutside = (e) => {
         if (refCalendar.current && !refCalendar.current.contains(e.target)) {
@@ -889,16 +923,53 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         }
     }
 
-    const updateTripDates = (startDate, endDate) => {
+
+    // send new trip dates data to backend
+    useEffect(() => {
+        if (!firstRender.current) {
+            // console.log("first render is false")
+            if (!secondRender.current) {
+                // console.log("second render is false")
+                let sendDataStandbyCopy = {...sendDataStandby}
+                sendDataStandbyCopy.tripDates = true
+                setSendDataStandby(sendDataStandbyCopy)
+            }            
+            secondRender.current = false;
+        }
+        firstRender.current = false;
+    }, [selectionRange])
+    useEffect(() => {
+        if (sendDataStandby.tripDates) {
+            // send data to Kate
+            console.log('send data now')
+            updateTripDatesInDB(datidash(datinormal(selectionRange[0].startDate)), datidash(datinormal(selectionRange[0].endDate)))
+
+            let sendDataStandbyCopy = {...sendDataStandby}
+            sendDataStandbyCopy.tripDates = false
+            setSendDataStandby(sendDataStandbyCopy)
+        } else {
+            
+        }
+    }, [calendarOpen])
+    
+
+    const [itineraryUpdatedModalOpen, setItineraryUpdatedModalOpen] = useState(false);
+    const updateTripDatesInDB = (startDate, endDate) => {
+        console.log(currentTrip.startDate)
+        console.log(currentTrip.endDate)
+
         let url = ""
         let data = {
-            start_date: startDate,
-            end_date: endDate
+            start_date: startDate === currentTrip.startDate ? null : startDate,
+            end_date: endDate === currentTrip.endDate ? null : endDate
         }
+        console.log(data)
+        return "c"
         const response = axios.patch(url, data, {
             headers: { "Content-Type": "application/json" }
         }).then((response) => {
             console.log(response.data)
+            console.log(response.data.message)
         }).catch((error) => {
             console.log(error)
         })
@@ -906,6 +977,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     return (
         <>
+            <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} />
             <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
@@ -929,7 +1001,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                         <span className="material-symbols-outlined o-50">
                             calendar_month
                         </span>
-                        <div onClick={() => printAddedPlaceAddresses()} className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : <p className="m-0">{datify(datinormal(selectionRange[0].startDate))} &nbsp; - &nbsp;{datify(datinormal(selectionRange[0].endDate))}</p>}</div>
+                        <div onClick={() => printAddedPlaceAddresses()} className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">{datify(datinormal(selectionRange[0].startDate))} &nbsp; - &nbsp;{datify(datinormal(selectionRange[0].endDate))}</p>}</div>
                         <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : (selectionRange[0].endDate.getTime() - selectionRange[0].startDate.getTime()) / (1000 * 3600 * 24) + 1}</span>&nbsp;days</div>
                         <div ref={refCalendar} className="calendarContainer">
                             <p onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)} className="m-0 purple-text pointer">Edit</p>

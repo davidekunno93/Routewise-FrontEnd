@@ -15,7 +15,18 @@ export const Footer = () => {
           </div>
         </div>
         <div className="flx-c just-ce">
-          <div className="large font-jakarta mb-1 mt- dark-text">2023</div>
+          <div className="large font-jakarta mb-1 dark-text">Follow us!</div>
+          <div className="flx-r gap-2">
+            <Link target='_blank' to='https://www.instagram.com/routewise_/'>
+              <img src="https://i.imgur.com/voUVM5d.png" alt="" className="footer-icon" />
+            </Link>
+            <Link>
+              <img src="https://i.imgur.com/ytSgpeP.png" alt="" className="footer-icon" />
+            </Link>
+            <Link>
+              <img src="https://i.imgur.com/ApmsmMC.png" alt="" className="footer-icon" />
+            </Link>
+          </div>
           {/* <Link><p className="m-0 my-1 ml-3">About Us</p></Link>
           <Link><p className="m-0 my-1 ml-3">Contact Us</p></Link> */}
         </div>

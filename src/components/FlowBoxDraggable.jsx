@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { PlaceCardDraggable } from './PlaceCardDraggable';
 import { Link } from 'react-router-dom';
 import { SearchPlace } from './SearchPlace';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+// import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { Draggable, Droppable } from '@hello-pangea/dnd';
 
 
 const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country }) => {
@@ -37,7 +38,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
     }, [])
 
     useEffect(() => {
-        console.log('placeIds length =', day.placeIds.length)
+        // console.log('placeIds length =', day.placeIds.length)
         if (day.placeIds.length === 1) {
             setPlaceOrPlaces("place")
         } else {

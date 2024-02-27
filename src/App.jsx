@@ -60,6 +60,17 @@ function App() {
     wakeUpBackEnd()
   }, [])
 
+  const testRedirect = () => {
+    let url = 'https://routewise-backend.onrender.com/places/update-trip/12'
+    const response = axios.post(url, {data: 'test-data'}, {
+      headers: {"Content-Type" : "application/json"}
+    }).then((response) => {
+      console.log(response.data)
+    }).catch((error) => {
+      console.log(error)
+    })
+  }
+
   const wakeUpBackEnd = async () => {
     let url = "https://routewise-backend.onrender.com/profile/test"
     let data = "wakeUp"
@@ -166,7 +177,8 @@ function App() {
               <img src="https://i.imgur.com/Eu8Uf2u.png" alt="" className="text-logo-icon" />
 
             </div>
-            <div className="option">
+            {/* <button onClick={() => testRedirect()} className="btn-primaryflex">Test Redirect</button> */}
+            {/* <div className="option">
               <div className="icon">
                 <img src={auth.currentUser ? auth.currentUser.photoURL : "https://i.imgur.com/Cd8150t.png"} alt="" className="icon-profile" />
               </div>
@@ -176,7 +188,7 @@ function App() {
                 <p className="m-0 x-small gray-text">View Profile</p>
               </div>
 
-            </div>
+            </div> */}
             <div className="option">
               <img src="https://i.imgur.com/46TY6aA.png" alt="" className="icon" />
 

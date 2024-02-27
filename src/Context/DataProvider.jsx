@@ -21,9 +21,10 @@ const DataProvider = (props) => {
     const [signUpIsOpen, setSignUpIsOpen] = useState(false)
     const [authIndex, setAuthIndex] = useState(null);
     
+    const [pageOpen, setPageOpen] = useState(null)
 
     return (
-        <DataContext.Provider value={{ 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences }}>
+        <DataContext.Provider value={{ 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences }}>
             {props.children}
         </DataContext.Provider>
     )

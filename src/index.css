@@ -458,9 +458,27 @@ w-0 {
   background-color: aquamarine;
 }
 
+.xxsmall-pic {
+  width: 20px;
+  object-fit: contain;
+}
+.xsmall-pic {
+  width: 30px;
+  object-fit: contain;
+}
 .small-pic {
   width: 40px;
   object-fit: contain;
+}
+.footer-icon {
+  width: 40px;
+  object-fit: contain;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.footer-icon:hover {
+  opacity: 0.75;
+  transition: 0.2s;
 }
 
 .med-pic {
@@ -554,6 +572,14 @@ w-0 {
 .navbar-left-side .option:hover {
   filter: brightness(50%);
   transition: 0.2s;
+}
+.navbar-left-side .option-selected {
+  cursor: pointer;
+  transition: 0.2s;
+}
+.navbar-left-side .option-selected p {
+  font-size: 14px;
+  color: #646CFF;
 }
 
 .nav-link {
@@ -1670,15 +1696,19 @@ input {
   border-radius: 12px;
   color: #242424;
   transition: 0.2s;
+  border: 1px solid transparent;
 }
 .dateBox-rounder-selected{
-  background-color: #0F0680;
+  /* background-color: #0F0680; */
+  background-color: #F0EFFF;
+  border: 1px solid #646CFF;
   /* width: 160px; */
   text-align: center;
   display: flex;
   align-items: center;
   border-radius: 12px;
-  color: white;
+  /* color: white; */
+  color: #646CFF;
   transition: 0.2s;
 }
 
@@ -3281,7 +3311,9 @@ p {
 .mt-4 {
   margin-top: 25px;
 }
-
+.mt-4h {
+  margin-top: 32px;
+}
 
 .mt-5 {
   margin-top: 50px;
@@ -3763,6 +3795,13 @@ p {
   box-sizing: border-box;
   transition: 0.2s;
 }
+.prototype-menu .option-selected{
+  padding: 12px;
+  width: 100%;
+  color: #646CFF;
+  box-sizing: border-box;
+  transition: 0.2s;
+}
 .prototype-menu .option:hover{
   background-color: rgb(240, 240, 240);
   transition: 0.2s;
@@ -3789,14 +3828,33 @@ p {
 }
 .page-card2{
   width: 90%;
-  padding: 4% 5.5%;
+  height: 90vh;
+  /* padding: 4% 5.5%; */
   box-sizing: border-box;
   margin: auto;
-  /* background-color: #F0EFFF; */
+  background-color: #F0EFFF;
   /* border: 1px solid red; */
-  /* border-radius: 12px; */
-  background-image: url("https://i.imgur.com/KfFpf1q.jpg");
+  border-radius: 24px;
+  /* background-image: url("https://i.imgur.com/KfFpf1q.jpg"); */
   background-size:cover;
+  overflow: hidden;
+}
+.page-card2 .left-side {
+  width: 100%;
+  height: 100%;
+  background-image: url(https://i.imgur.com/psCYP7X.jpg);
+  background-size: cover;
+  background-position: center;
+}
+.page-card2 .right-side {
+  width: 100%;
+  height: 100%;
+  background-image: url(https://i.imgur.com/PUPrtZZ.png);
+  background-size: cover;
+}
+.page-card2 .content {
+  height: 100%;
+  padding: 6% 12%;
 }
 .page-card2-img{
   width: 50%;
@@ -3808,7 +3866,7 @@ p {
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 1.5% 0%;
+  padding-left: 1%;
   /* background-color: beige; */
 }
 .page-card2-instructions {
@@ -3820,7 +3878,7 @@ p {
   /* background-color: beige; */
 }
 .page-card2 .item {
-  height: 99px;
+  height: 75px;
 }
 .explore-section {
   height: 500px;
@@ -3851,6 +3909,7 @@ p {
   transition: 0.2s;
   cursor: pointer;
   display: inline-flex;
+  overflow: hidden;
 }
 .ig-card:hover {
   transform: translateY(-10px);
@@ -3858,6 +3917,14 @@ p {
   height: 315px; */
   transition: 0.2s;
 }
+.fill-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+
 .appear768{
   display: none;
 }
@@ -3888,10 +3955,13 @@ p {
   display: flex;
   flex-direction: column;
   position: relative;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
 }
 .userTrip-box .popUp {
   position: absolute;
-  width: 150px;
+  /* height: 133px; */
+  width: 190px;
   background-color: white;
   border-radius: 8px;
   bottom: 25%;
@@ -3920,7 +3990,10 @@ p {
   width: 100%;
   height: 65%;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: 12px 12px 0 0;
+}
+.userTrip-box .box-text-container {
+  padding: 12px;
 }
 .userTrip-box .box-title {
   width: 90%;
@@ -3930,8 +4003,8 @@ p {
 .userTrip-box .vertIcon {
   position: absolute;
   opacity: 0.5;
-  right: 0;
-  bottom: 18%;
+  right: 6px;
+  bottom: 17%;
   /* background-color: gray; */
   cursor: pointer;
 }
@@ -4341,9 +4414,9 @@ p {
   left: 0;
 }
 .go-to-itinerary-modal {
-  width: 340px;
-  height: 200px;
-  padding: 12px;
+  width: 380px;
+  height: 240px;
+  padding: 24px;
   box-sizing: border-box;
   font-size: large;
   background-color: white;

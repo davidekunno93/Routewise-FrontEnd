@@ -127,6 +127,14 @@ export const Landing = () => {
         return month + " " + day + ", " + twoYear
     }
 
+    const exploreImgs = [
+        "https://i.imgur.com/NCoueOB.png",
+        "https://i.imgur.com/Vq3WthR.jpg",
+        "https://i.imgur.com/kStMRiW.jpg",
+        "https://i.imgur.com/V82Owfa.jpg",
+        "https://i.imgur.com/Mf39Zrc.jpg",
+    ]
+
     return (
         <>
             <div className="hero-section w-100 position-relative">
@@ -235,28 +243,35 @@ export const Landing = () => {
             <div className="how-it-works mt-8">
 
 
-                <div className="page-card2 flx-c">
-                    <h2 className="page-title center-text m-0 mb-5 font-noto bold600">How it Works</h2>
-                    <div className="flx-r">
-                        <img src="https://i.imgur.com/gFaUZYk.png" alt="" className="page-card2-img" />
-                        <div className="page-card2-text">
-                            <div className="page-card2-instructions just-sb">
+                <div className="page-card2 flx-r">
+                    <div className="flx-1 left-side">
+                    </div>
+                    <div className="flx-1 right-side flx-c">
+                        <div className="content">
+
+                            <p className="large m-0 mb-5 font-jakarta bold600 purple-text">HOW IT WORKS</p>
+                            <h2 className="page-title font-noto bold500 mt-6">Craft the Perfect Getaway</h2>
+                            <div className="page-card2-text">
+
                                 <div className="item flx-r gap-2">
-                                    <img src="https://i.imgur.com/kw860Zt.png" alt="" className="pin-bullet mr-3" />
+                                    <img src="https://i.imgur.com/DkwGOth.png" alt="" className="pin-bullet mr-3" />
                                     <p className="landing-title flx align-c m-0">Add places you want to visit</p>
                                 </div>
                                 <div className="item flx-r gap-2">
-                                    <img src="https://i.imgur.com/RrfU0xB.png" alt="" className="pin-bullet mr-3" />
+                                    <img src="https://i.imgur.com/qGDtWpZ.png" alt="" className="pin-bullet mr-3" />
                                     <p className="landing-title flx align-c m-0">Generate your proximity-based itinerary</p>
                                 </div>
                                 <div className="item flx-r gap-2">
-                                    <img src="https://i.imgur.com/CotfU04.png" alt="" className="pin-bullet mr-3" />
+                                    <img src="https://i.imgur.com/93zoDqE.png" alt="" className="pin-bullet mr-3" />
                                     <p className="landing-title flx align-c m-0">Customize your itinerary and explore!</p>
                                 </div>
-                                <div className="flx-r just-ce">
-                                    <button className="btn-primaryflex2">Start Planning</button>
-                                </div>
                             </div>
+                            <div className="flx-r mt-5">
+                                <button onClick={() => setSignUpIsOpen(true)} className="btn-primaryflex2">Sign up</button>
+                            </div>
+
+
+
                         </div>
                     </div>
                 </div>
@@ -340,15 +355,12 @@ export const Landing = () => {
                     {/* <div className="inner-no-flex"> */}
                     <div className="ig-cards">
 
-
-                        <div className="ig-card"></div>
-                        <div className="ig-card ml-4"></div>
-                        <div className="ig-card ml-4"></div>
-                        <div className="ig-card ml-4"></div>
-                        <div className="ig-card ml-4"></div>
-                        <div className="ig-card ml-4"></div>
-                        <div className="ig-card ml-4"></div>
-
+                        {exploreImgs.map((img, index) => {
+                            let first = index === 0 ? true : false
+                            return <div key={index} className={`ig-card ${!first ? "ml-4" : ""}`}>
+                                <img src={img} alt="" className="fill-img" />
+                            </div>
+                        })}
 
                     </div>
                     {/* </div> */}

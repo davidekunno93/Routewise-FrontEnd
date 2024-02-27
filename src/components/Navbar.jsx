@@ -8,7 +8,7 @@ import axios from 'axios';
 
 export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
   const { showNavbar } = useContext(DataContext);
-
+  const { pageOpen, setPageOpen } = useContext(DataContext);
   const { user, setUser } = useContext(DataContext);
   const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
   // auth modal open and close states
@@ -20,6 +20,16 @@ export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
   useEffect(() => {
     auth.currentUser ? setUser(auth.currentUser) : null
   }, [auth])
+
+  const checkAuth = () => {
+    if (!user && auth.currentUser) {
+      setUser(auth.currentUser)
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('click', checkAuth)
+  }, [])
+
 
   // show auth modal
   const openSignUp = () => {
@@ -147,9 +157,9 @@ export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
         <div className="flx-c just-ce">
           <Link onClick={() => togglePrototypeMenu()} className=''>
             {sidebarDisplayed ?
-            <p className="m-0 page-heading-bold darkpurple-text ws-nowrap ml1vw">{placeListDisplay}</p>
-            :
-            <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
+              <p className="m-0 page-heading-bold darkpurple-text ws-nowrap ml1vw">{placeListDisplay}</p>
+              :
+              <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
             }
           </Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
@@ -158,43 +168,47 @@ export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
           <div className="option-head">PROTOTYPE MENU</div>
           <Link onClick={() => closePrototypeMenu()} to='/'><div className="option">Landing Page</div></Link>
           <Link onClick={() => closePrototypeMenu()} to='/survey'><div className="option">Survey</div></Link>
-          <Link onClick={() => closePrototypeMenu()} to='/dashboard'><div className="option">Dashboard</div></Link>
+          <Link onClick={() => closePrototypeMenu()} to='/dashboard'><div className={`${pageOpen === "dashboard" ? "option-selected" : "option"}`}>Dashboard</div></Link>
           <Link onClick={() => closePrototypeMenu()} to='/add-places'><div className="option">Add Places</div></Link>
           <Link onClick={() => closePrototypeMenu()} to='/itinerary'><div className="option">Itinerary</div></Link>
 
         </div>
         <div className="navbar-left-side gap-7 position-left">
-            <Link to='/dashboard'>
-            <div className="option">
+          <Link to='/dashboard'>
+            <div className={`${pageOpen === "dashboard" ? "option-selected" : "option"}`}>
               <div className="flx-r gap-2">
-                <img src="https://i.imgur.com/A3Uavfg.png" alt="" className="navbar-icon" />
+                {pageOpen === "dashboard" ?
+                  <img src="https://i.imgur.com/K594sfY.png" alt="" className="navbar-icon" />
+                  :
+                  <img src="https://i.imgur.com/N6JGq3D.png" alt="" className="navbar-icon" />
+                }
                 <p className="m-0">Dashboard</p>
               </div>
             </div>
-            </Link>
-            <div className="option">
-              <div className="flx-r gap-2">
-                
-                <img src="https://i.imgur.com/7ewt7zr.png" alt="" className="navbar-icon" />
-                <p className="m-0">My Profile</p>
-              </div>
+          </Link>
+          <div className="option">
+            <div className="flx-r gap-2">
+
+              <img src="https://i.imgur.com/7ewt7zr.png" alt="" className="navbar-icon" />
+              <p className="m-0">My Profile</p>
             </div>
-            <div className="option">
-              <div className="flx-r gap-2">
-                <span className="material-symbols-outlined">
-                  flight_takeoff
-                </span>
-                <p className="m-0">My Trips</p>
-              </div>
+          </div>
+          <div className="option">
+            <div className="flx-r gap-2">
+              <span className="material-symbols-outlined">
+                flight_takeoff
+              </span>
+              <p className="m-0">My Trips</p>
             </div>
-            <div className="option">
-              <div className="flx-r gap-2">
-                <span className="material-symbols-outlined">
-                  explore
-                </span>
-                <p className="m-0">Discover</p>
-              </div>
+          </div>
+          <div className="option">
+            <div className="flx-r gap-2">
+              <span className="material-symbols-outlined">
+                explore
+              </span>
+              <p className="m-0">Discover</p>
             </div>
+          </div>
 
 
         </div>

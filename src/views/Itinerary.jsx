@@ -6,7 +6,8 @@ import { FlowBox } from '../components/FlowBox'
 import { useRef, lazy } from 'react'
 import { OpenMap } from '../components/OpenMap'
 import { auth } from '../firebase'
-import { DragDropContext } from 'react-beautiful-dnd'
+// import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext } from '@hello-pangea/dnd'
 import Scrollbars from 'react-custom-scrollbars-2'
 import axios from 'axios'
 import LoadBox from '../components/LoadBox'
@@ -166,7 +167,50 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   //   setMarkers(Object.values(tripState.places))
   //   // console.log(tripDays)
   // }, [])
-
+  // date conversion functions
+  // system date to normal or slash date
+  const datinormal = (systemDate) => {
+    let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+    let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+    if (month.toString().length === 1) {
+      month = "0" + month
+    }
+    // console.log(month)
+    let fullYear = systemDate.getFullYear()
+    // console.log(systemDate)
+    // console.log(month+"/"+day+"/"+fullYear)
+    return month + "/" + day + "/" + fullYear
+  }
+  // normal date to modern date
+  const datify = (normalDate) => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    let day = normalDate.slice(3, 5)
+    let monthNum = normalDate.slice(0, 2)
+    if (monthNum.charAt(0) === "0") {
+      monthNum = monthNum[1]
+    }
+    let fullYear = normalDate.slice(6)
+    const month = months[monthNum - 1]
+    if (day.charAt(0) === "0") {
+      day = day[1]
+    }
+    let twoYear = fullYear.slice(2)
+    return month + " " + day + ", " + twoYear
+  }
+  // from slash or normal date to dash date
+  const datidash = (mmddyyyy) => {
+    let year = mmddyyyy.slice(6)
+    let month = mmddyyyy.slice(0, 2)
+    let day = mmddyyyy.slice(3, 5)
+    return year + "-" + month + "-" + day
+  }
+  // from dash date to slash or normal date
+  const datiundash = (dashDate) => {
+    let fullyear = dashDate.slice(0, 4)
+    let month = dashDate.slice(5, 7)
+    let day = dashDate.slice(8)
+    return month + "/" + day + "/" + fullyear
+  }
 
 
   useEffect(() => {
@@ -545,7 +589,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       place: sendPlace,
       day_id: sendPlace.day_id
     }
-    const response = await axios.post(`http://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
+    const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
       headers: { "Content-Type": "application/json" }
     }).then((response) => {
       console.log(response.status)
@@ -638,7 +682,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   // delete place from database
   const deletePlaceFromDatabase = (placeId) => {
     let place_id = tripState.places[placeId].place_id
-    const response = axios.delete(`http://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`)
+    const response = axios.delete(`https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`)
       .then((response) => {
         console.log(response.data)
       }).catch((error) => {
@@ -648,7 +692,9 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
 
   // update place in database
   const updatePlaceInDatabase = (place_id, day_id) => {
-    let url = `http://routewise-backend.onrender.com/itinerary/update-place/${place_id}`
+    console.log(place_id)
+    console.log(day_id)
+    let url = `https://routewise-backend.onrender.com/itinerary/update-place/${place_id}`
     const response = axios.patch(url, { "day_id": day_id }, {
       headers: { "Content-Type": "application/json" }
     }).then((response) => {
@@ -658,17 +704,17 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     })
   }
   // update place in database TEST
-  const updatePlaceInDatabaseTEST = () => {
-    let url = ""
-    let data = "?"
-    const response = axios.patch(url, { "edited_field": "day_id", "day_id": "new value" }, {
-      headers: { "Content-Type": "application/json" }
-    }).then((response) => {
-      console.log(response.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
+  // const updatePlaceInDatabaseTEST = () => {
+  //   let url = ""
+  //   let data = "?"
+  //   const response = axios.patch(url, { "edited_field": "day_id", "day_id": "new value" }, {
+  //     headers: { "Content-Type": "application/json" }
+  //   }).then((response) => {
+  //     console.log(response.data)
+  //   }).catch((error) => {
+  //     console.log(error)
+  //   })
+  // }
 
   const removePlace = (dayNum, placeId) => {
     // tripState > days[dayNum] > remove placeIds[placeId]
@@ -954,7 +1000,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     }
     // send db_place_id to Kate with updated day_id
     // tripState.places[removed].day_id = destinationDay.day_id
-    updatePlaceInDatabase(tripState.places[removed].place_id, destinationDay.day_id)
+    updatePlaceInDatabase(tripState.places[removed].place_id, destinationDay.db_id)
 
     const endPlaceIds = Array.from(destinationDay.placeIds)
     endPlaceIds.splice(destination.index, 0, removed);
@@ -962,7 +1008,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       ...destinationDay,
       placeIds: endPlaceIds,
     }
-    const updatedPlace = { ...tripState.places[removed], day_id: destinationDay.day_id }
+    const updatedPlace = { ...tripState.places[removed], day_id: destinationDay.db_id }
     const newState = {
       ...tripState,
       places: {
@@ -1273,7 +1319,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   const printTripObject = () => {
     console.log(tripState)
   }
-  
+
 
   // suggested place popup code
   const openSuggestedPlacePopUp = (place_id) => {
@@ -1323,7 +1369,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       }
       place = placeConverted
     }
-    
+
     if (!savedPlaces.addresses.includes(place.address)) {
       savedPlacesCopy.places.push(place)
       savedPlacesCopy.addresses.push(place.address)
@@ -1390,7 +1436,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                   <span className="material-symbols-outlined o-50">
                     calendar_month
                   </span>
-                  <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? currentTrip.startDate + " - " + currentTrip.endDate : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
+                  <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
                   <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
                   {/* <p className="m-0 purple-text">Edit</p> */}
                 </div>
@@ -1550,7 +1596,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                               </span>
                               <p className="m-0">View on Map</p>
                             </div>
-                            <div onClick={() => addToSavedPlaces(suggestedPlace,"suggestedPlace")} className="option">
+                            <div onClick={() => addToSavedPlaces(suggestedPlace, "suggestedPlace")} className="option">
                               <span className="material-symbols-outlined">
                                 bookmark
                               </span>

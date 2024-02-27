@@ -92,6 +92,7 @@ itinerary map needs to stay in view
 add places page all in view height
 updated add place to day card and lightbulb icon
 updated datebox design on figma
+CHANGE add userpreferences list of preferences to object so you can map it!
 
 Questions?
 Will saved places have an 'in itinerary' indication?
