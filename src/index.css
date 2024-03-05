@@ -199,6 +199,12 @@ button:focus-visible {
 .dark-text {
   color: #242424;
 }
+.faint-text {
+  color: rgba(0, 0, 0, 0.5);
+}
+.gains-text {
+  color: gainsboro;
+}
 
 .black-text {
   color: black;
@@ -3985,6 +3991,19 @@ p {
 .userTrip-box .popUp .option:hover {
   background-color: rgb(240, 240, 240);
   transition: 0.2s;
+}
+.userTrip-box .popUp .option-disabled {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid rgb(240, 240, 240);
+  align-items: center;
+  padding: 4px 12px;
+  transition: 0.2s;
+  cursor: pointer;
+  justify-content: space-between;
+}
+.userTrip-box .popUp .option-disabled p {
+  color: gainsboro;
 }
 .userTrip-box .destImg {
   width: 100%;

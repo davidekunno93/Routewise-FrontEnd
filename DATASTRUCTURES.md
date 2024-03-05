@@ -52,7 +52,7 @@ day = {
 }
 
 place = {
-    id: #, - local
+    id: #, - local (index + 1)
     address: "",
     favorite: bool,
     geocode: [#, #],
@@ -61,6 +61,6 @@ place = {
     lat: #,
     long: #,
     placeName: "",
-    place_id: # - database
+    place_id: # - from database
 }
 

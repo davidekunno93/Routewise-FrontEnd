@@ -155,7 +155,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     useEffect(() => {
         getSearchData()
-        console.log(searchText)
+        // console.log(searchText)
     }, [searchText])
 
     useEffect(() => {
@@ -277,29 +277,66 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         resetSearch()
     }
 
-    const addPlace = () => {
+    const addPlace = async () => {
         // let imgQuery = place.name.replace(/ /g, '-')
         // let placeInfo = await loadPlaceDetails(place.place_id)
         // let imgUrl = await loadCityImg(imgQuery)
-        let placeCopy = [...places]
-        let newPlace = placeToConfirm
-        placeCopy.push(newPlace)
-        console.log(placeCopy)
-        setPlaces(placeCopy)
-        let currentTripCopy = { ...currentTrip }
-        currentTripCopy.places.push(newPlace)
-        // currentTripCopy.places = places
-        setCurrentTrip(currentTripCopy)
-        clearPlaceToConfirm()
-        if (firstTimeOnPage) {
-            openStarPlacesToolTip()
+        let placesCopy = [...places]
+        let newPlace = { ...placeToConfirm, id: placesCopy.length + 1 }
+        // let place_id = await addPlaceInDB(newPlace)
+        console.log("new place:", newPlace)
+
+        if (currentTrip.tripID) {
+
+            // add place in database
+            let url = `https://routewise-backend.onrender.com/places/add-get-place/${currentTrip.tripID}`
+            const response = await axios.post(url, newPlace, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log("response:", response.data)
+                let place_id = response.data
+                newPlace = { ...newPlace, place_id: place_id }
+                console.log("new Place after db:", newPlace)
+
+                placesCopy.push(newPlace)
+                console.log("new places", placesCopy)
+                setPlaces(placesCopy)
+                let currentTripCopy = { ...currentTrip }
+                currentTripCopy.places.push(newPlace)
+                // currentTripCopy.places = places
+                setCurrentTrip(currentTripCopy)
+                clearPlaceToConfirm()
+                if (firstTimeOnPage) {
+                    openStarPlacesToolTip()
+                }
+
+
+            }).catch((error) => {
+                console.log(error)
+            })
+        } else {
+            // if just navigating site without login
+            placesCopy.push(newPlace)
+            console.log("new places", placesCopy)
+            setPlaces(placesCopy)
+            let currentTripCopy = { ...currentTrip }
+            currentTripCopy.places.push(newPlace)
+            // currentTripCopy.places = places
+            setCurrentTrip(currentTripCopy)
+            clearPlaceToConfirm()
+            if (firstTimeOnPage) {
+                openStarPlacesToolTip()
+            }
         }
+
     }
 
     const addPlaceToList = async (place) => {
         let placeInfo = await loadPlaceDetails(place.place_id)
+        let placesCopy = [...places]
 
         let newPlace = {
+            id: placesCopy.length + 1,
             placeName: place.name,
             info: placeInfo,
             address: place.formatted,
@@ -311,26 +348,85 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             geocode: [place.lat, place.lon],
             placeId: place.place_id
         }
-        let placeCopy = [...places]
-        placeCopy.push(newPlace)
-        console.log(placeCopy)
-        setPlaces(placeCopy)
-        let currentTripCopy = { ...currentTrip }
-        currentTripCopy.places.push(newPlace)
-        // currentTripCopy.places = places
-        setCurrentTrip(currentTripCopy)
-        if (firstTimeOnPage) {
-            openStarPlacesToolTip()
+
+
+        // add place in database
+        if (currentTrip.tripID) {
+            let url = `https://routewise-backend.onrender.com/places/add-get-place/${currentTrip.tripID}`
+            const response = await axios.post(url, newPlace, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log("response:", response.data)
+                let place_id = response.data
+                newPlace = { ...newPlace, place_id: place_id }
+                console.log("new Place after db:", newPlace)
+
+
+
+                placesCopy.push(newPlace)
+                console.log(placesCopy)
+                setPlaces(placesCopy)
+                let currentTripCopy = { ...currentTrip }
+                currentTripCopy.places.push(newPlace)
+                // currentTripCopy.places = places
+                setCurrentTrip(currentTripCopy)
+                if (firstTimeOnPage) {
+                    openStarPlacesToolTip()
+                }
+
+            }).catch((error) => {
+                console.log(error)
+            })
+
+        } else {
+            // if just navigating site without login 
+            placesCopy.push(newPlace)
+            console.log(placesCopy)
+            setPlaces(placesCopy)
+            let currentTripCopy = { ...currentTrip }
+            currentTripCopy.places.push(newPlace)
+            // currentTripCopy.places = places
+            setCurrentTrip(currentTripCopy)
+            if (firstTimeOnPage) {
+                openStarPlacesToolTip()
+            }
         }
+
     }
 
-    const removePlace = (index) => {
+    const addPlaceInDB = async (trip) => {
+
+        let url = `https://routewise-backend.onrender.com/places/add-get-place/${currentTrip.tripID}`
+        const response = await axios.post(url, data, {
+            headers: { "Content-Type": "application/json" }
+        }).then((response) => {
+            return response.data
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+    const removePlace = async (index) => {
         let placeCopy = [...places]
-        placeCopy.splice(index, 1)
-        setPlaces(placeCopy)
-        let currentTripCopy = { ...currentTrip }
-        currentTripCopy.places.splice(index, 1)
-        setCurrentTrip(currentTripCopy)
+
+        if (places[index].place_id) {
+            let place_id = places[index].place_id
+            // console.log(place_id)
+            let url = `https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`
+            const response = await axios.delete(url)
+                .then((response) => {
+                    console.log(response.data)
+                    placeCopy.splice(index, 1)
+                    setPlaces(placeCopy)
+                    let currentTripCopy = { ...currentTrip }
+                    currentTripCopy.places.splice(index, 1)
+                    setCurrentTrip(currentTripCopy)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+
     }
 
 
@@ -641,7 +737,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         } else {
             let searchQuery = searchText.slice(0, -1)
             // let searchQuery = searchText.replace(/ /g, "%20")
-            console.log(searchQuery)
+            // console.log(searchQuery)
             const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
             let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchQuery}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
             // console.log(url)
@@ -689,20 +785,23 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             setCurrentTrip(currentTripCopy)
 
             setIsLoading(true)
-            let places_serial = {}
-            let placesLast = places.length
-            for (let i = 0; i < places.length; i++) {
-                places_serial[i + 1] = { id: i + 1, ...places[i] }
-            }
-            let data = {
-                tripId: currentTrip.tripID,
-                placesLast: placesLast,
-                places_serial: places_serial,
-            }
-            console.log(data)
-            const response = axios.post(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`, JSON.stringify(data), {
-                headers: { "Content-Type": "application/json" }
-            }).then((response) => createItinerary(response))
+            // let places_serial = {}
+            // let placesLast = places.length
+            // for (let i = 0; i < places.length; i++) {
+            //     places_serial[i + 1] = { id: i + 1, ...places[i] }
+            // }
+            // let data = {
+            //     tripId: currentTrip.tripID,
+            //     placesLast: placesLast,
+            //     places_serial: places_serial,
+            // }
+            // console.log(data)
+            console.log(currentTrip.tripID)
+            const response = await axios.get(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`)
+                .then((response) => {
+                    createItinerary(response)
+                    navigate('/itinerary')
+                })
                 .catch((error) => {
                     console.log(error)
                     setIsLoading(false)
@@ -896,8 +995,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     const [sendDataStandby, setSendDataStandby] = useState({
         tripDates: false
     });
-    
-    
+
+
     const [calendarOpen, setCalendarOpen] = useState(false);
     const closeCalendar = () => {
         setCalendarOpen(false)
@@ -906,16 +1005,16 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         window.addEventListener('click', hideCalendarOnClickOutside, true)
     }, [])
     useEffect(() => {
-        
+
         if (currentTrip.itinerary) {
-            
+
             console.log("respond")
         }
-        if (selectionRange.startDate !== currentTrip.startDate){
-            
+        if (selectionRange.startDate !== currentTrip.startDate) {
+
         }
     }, [calendarOpen])
-    
+
     const refCalendar = useRef(null);
     const hideCalendarOnClickOutside = (e) => {
         if (refCalendar.current && !refCalendar.current.contains(e.target)) {
@@ -930,10 +1029,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             // console.log("first render is false")
             if (!secondRender.current) {
                 // console.log("second render is false")
-                let sendDataStandbyCopy = {...sendDataStandby}
+                let sendDataStandbyCopy = { ...sendDataStandby }
                 sendDataStandbyCopy.tripDates = true
                 setSendDataStandby(sendDataStandbyCopy)
-            }            
+            }
             secondRender.current = false;
         }
         firstRender.current = false;
@@ -944,14 +1043,14 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             console.log('send data now')
             updateTripDatesInDB(datidash(datinormal(selectionRange[0].startDate)), datidash(datinormal(selectionRange[0].endDate)))
 
-            let sendDataStandbyCopy = {...sendDataStandby}
+            let sendDataStandbyCopy = { ...sendDataStandby }
             sendDataStandbyCopy.tripDates = false
             setSendDataStandby(sendDataStandbyCopy)
         } else {
-            
+
         }
     }, [calendarOpen])
-    
+
 
     const [itineraryUpdatedModalOpen, setItineraryUpdatedModalOpen] = useState(false);
     const updateTripDatesInDB = (startDate, endDate) => {
@@ -975,11 +1074,15 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         })
     }
 
+    const printPlaces = () => {
+        console.log(places)
+    }
+
     return (
         <>
             <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} />
             <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
-            <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
+            <LoadingScreen open={isLoading} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
             <div className="page-container90 mt-4">
 
@@ -996,7 +1099,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             <div className="page-container90 vh-100 flx-c">
                 <div className="add-places-title-row flx-r align-c gap-8">
 
-                    <p onClick={() => showCurrentTrip()} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                    <p onClick={() => printPlaces()} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                     <div className="tripInfo flx-r align-c gap-2 position-relative">
                         <span className="material-symbols-outlined o-50">
                             calendar_month

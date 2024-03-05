@@ -40,8 +40,10 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         dayName: "",
         places: [
           {
+            // id: 1,
             placeName: "Traflagar Square",
             info: "Open 24 hours",
+            // category: "landmarks",
             address: "Trafalgar Sq, London WC2N 5DS, UK",
             imgURL: "https://i.imgur.com/xwY6Bdd.jpg",
             lat: 51.50806,

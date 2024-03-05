@@ -6,9 +6,10 @@ import { DateRange } from 'react-date-range';
 import { LoadingScreen } from './LoadingScreen';
 import { LoadingModal } from './LoadingModal';
 import LoadOnTop from './LoadOnTop';
+import ItineraryUpdatedModal from './ItineraryUpdatedModal';
 
 
-const EditTripModal = ({ open, trip, loadUserTripsData, onClose }) => {
+const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }) => {
     if (!open) return null
 
     // date conversion functions
@@ -146,8 +147,15 @@ const EditTripModal = ({ open, trip, loadUserTripsData, onClose }) => {
             console.log(response.data)
             setIsLoading(false)
             loadUserTripsData()
-            // response object to say if itnirary was updated - if so, show link allowing user to navigate to iti
-            onClose()
+            // response object to say if itinerary was updated - if so, show link allowing user to navigate to iti
+            if (response.data.days) {
+                console.log('itinerary updated')
+                console.log(response.data)
+                setUpdatedItinerary(response.data)
+                // setItineraryUpdatedModalOpen(true)
+            } else {
+                onClose()
+            }
         }).catch((error) => {
             setIsLoading(false)
             console.log(error)
@@ -158,11 +166,20 @@ const EditTripModal = ({ open, trip, loadUserTripsData, onClose }) => {
     const [editTripOverlayOpen, setEditTripOverlayOpen] = useState(false);
     // need navigate to itinerary function 
 
+    const [itineraryUpdatedModalOpen, setItineraryUpdatedModalOpen] = useState(false);
+    const [updatedItinerary, setUpdatedItinerary] = useState({});
+    useEffect(() => {
+        if (updatedItinerary.days) {
+            setItineraryUpdatedModalOpen(true);
+        }
+    }, [updatedItinerary])
+
     return (
         <div className="overlay-placeholder">
             <Fade duration={200} triggerOnce>
                 <div className="overlay flx">
                     <div className="edit-trip-modal">
+                        <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} trip={trip} updatedItinerary={updatedItinerary} loadItinerary={loadItinerary} onClose={() => setItineraryUpdatedModalOpen(false)} />
                         <LoadOnTop open={isLoading} full={true} borderRadius={8} />
                         <div className={`editTripOverlay ${editTripOverlayOpen ? null : "hidden-o"}`}>
                             <div className="go-to-itinerary-modal">

@@ -442,14 +442,42 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
 
     const navigate = useNavigate()
 
-    const viewTrip = async (trip) => {
+    const viewTrip = async (trip, navigation) => {
         setIsLoading(true)
-        let url = `http://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
-        console.log(url)
-        const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-        return response.status === 200 ? loadItinerary(response, trip) : alert('Something went wrong. Please try again.')
+        if (navigation === "itinerary") {
+            let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
+            const response = await axios.get(url)
+            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+            return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
+        } else if (navigation === "places") {
+            let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
+            const response = await axios.get(url)
+            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+            return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
+        }
     }
-    const loadItinerary = (response, trip) => {
+    const loadPlaces = (place_list, trip) => {
+        console.log(place_list)
+        let placesList = []
+        for (let i = 0; i < place_list.length; i++) {
+            let place = {
+                category: place_list[i].category,
+                favorite: place_list[i].favorite,
+                placeId: place_list[i].geoapify_placeId,
+                id: place_list[i].local_id,
+                place_id: place_list[i].place_id, // db
+                // tripId : place_list[i].trip_id,
+                long: place_list[i].long,
+                lat: place_list[i].lat,
+                geocode: [place_list[i].lat, place_list[i].long],
+                imgURL: place_list[i].place_img,
+                info: place_list[i].info,
+                placeName: place_list[i].place_name,
+                address: place_list[i].place_address,
+            }
+            placesList.push(place)
+        }
+        console.log(placesList)
         let currentTripCopy = {
             tripID: trip.trip_id,
             tripName: trip.trip_name,
@@ -461,8 +489,29 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             tripDuration: trip.duration,
             geocode: [trip.dest_lat, trip.dest_long],
             imgUrl: trip.dest_img,
-            places: Object.values(response.data.places),
-            itinerary: response.data,
+            places: placesList,
+            itinerary: null,
+        }
+        // console.log(response.data)
+        // console.log(currentTripCopy)
+        setIsLoading(false)
+        setCurrentTrip(currentTripCopy)
+        navigate('/add-places')
+    }
+    const loadItinerary = (itinerary, trip) => {
+        let currentTripCopy = {
+            tripID: trip.trip_id,
+            tripName: trip.trip_name,
+            city: trip.dest_city,
+            country: trip.dest_country,
+            country_2letter: trip.dest_country_2letter,
+            startDate: trip.start_date,
+            endDate: trip.end_date,
+            tripDuration: trip.duration,
+            geocode: [trip.dest_lat, trip.dest_long],
+            imgUrl: trip.dest_img,
+            places: Object.values(itinerary.places),
+            itinerary: itinerary,
         }
         // console.log(response.data)
         // console.log(currentTripCopy)
@@ -476,7 +525,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
 
     const deleteTrip = (trip) => {
-        let url = `http://127.0.0.1:5000/places/delete-trip/${trip.trip_id}`
+        let url = `http://routewise-backend.onrender.com/places/delete-trip/${trip.trip_id}`
         const response = axios.delete(url)
             .then((response) => {
                 console.log(response.data)
@@ -695,7 +744,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
              */}
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
-            <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadUserTripsData={loadUserTripsData} onClose={() => setEditTripModalOpen(false)} />
+            <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={() => setEditTripModalOpen(false)} />
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
@@ -791,23 +840,32 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                         <div ref={refPopUp}>
                                             <div id={`userTrip-popUp-${index}`} className="popUp d-none">
                                                 <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                                    <p className="m-0">Edit details</p>
+                                                    <p className="m-0">Edit trip details</p>
                                                     <span className="material-symbols-outlined large mx-1">
                                                         edit
                                                     </span>
                                                 </div>
-                                                <div className="option">
+                                                <div onClick={(() => viewTrip(trip, "places"))} className="option">
                                                     <p className="m-0">View places</p>
                                                     <span className="material-symbols-outlined large mx-1">
                                                         location_on
                                                     </span>
                                                 </div>
-                                                <div onClick={(() => viewTrip(trip))} className="option">
-                                                    <p className="m-0">View itinerary</p>
-                                                    <span className="material-symbols-outlined large mx-1">
-                                                        map
-                                                    </span>
-                                                </div>
+                                                {trip.is_itinerary &&
+                                                    <div onClick={(() => viewTrip(trip, "itinerary"))} className="option">
+                                                        <p className={`m-0`}>View itinerary</p>
+                                                        <span className="material-symbols-outlined large mx-1">
+                                                            map
+                                                        </span>
+                                                    </div>
+                                                    // :
+                                                    // <div className="option-disabled">
+                                                    //     <p className={`m-0`}>View itinerary</p>
+                                                    //     <span className="material-symbols-outlined large mx-1 gains-text">
+                                                    //         map
+                                                    //     </span>
+                                                    // </div>
+                                                }
                                                 <div onClick={() => deleteTrip(trip)} className="option">
                                                     <p className="m-0">Delete trip</p>
                                                     <span className="material-symbols-outlined large mx-1">

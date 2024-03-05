@@ -1,7 +1,7 @@
 import React from 'react'
 import { Fade } from 'react-awesome-reveal';
 
-const ItineraryUpdatedModal = ({ open, onClose }) => {
+const ItineraryUpdatedModal = ({ open, trip, updatedItinerary, loadItinerary, onClose }) => {
     if (!open) return null;
 
     return (
@@ -12,7 +12,7 @@ const ItineraryUpdatedModal = ({ open, onClose }) => {
                         <p className="m-0 x-large bold600 center-text">Itinerary updated!</p>
                         <p className="m-0 center-text">Would you like to view your new itinerary?</p>
                         <div className="flx-r just-ce gap-4">
-                            <button className="btn-primaryflex">Go to itinerary</button>
+                            <button onClick={() => loadItinerary(updatedItinerary, trip)} className="btn-primaryflex">Go to itinerary</button>
                             <button onClick={() => onClose()} className="btn-outlineflex">Later</button>
                         </div>
                     </div>
