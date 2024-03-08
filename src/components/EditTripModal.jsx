@@ -179,7 +179,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
             <Fade duration={200} triggerOnce>
                 <div className="overlay flx">
                     <div className="edit-trip-modal">
-                        <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} trip={trip} updatedItinerary={updatedItinerary} loadItinerary={loadItinerary} onClose={() => setItineraryUpdatedModalOpen(false)} />
+                        <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} trip={trip} updatedItinerary={updatedItinerary} loadItinerary={loadItinerary} onClose={() => {setItineraryUpdatedModalOpen(false); onClose()}} />
                         <LoadOnTop open={isLoading} full={true} borderRadius={8} />
                         <div className={`editTripOverlay ${editTripOverlayOpen ? null : "hidden-o"}`}>
                             <div className="go-to-itinerary-modal">

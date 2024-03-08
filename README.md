@@ -116,7 +116,7 @@ APIs
 *GEOAPIFY - 3000 req/day*
 - address autocomplete api for adding places
 - place details api to populate place info when adding place
-
+- map tiles - client.stadiamaps.com
 
 
 addPlaces page <-- tripID -- Destination, tripName

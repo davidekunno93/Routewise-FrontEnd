@@ -1776,6 +1776,7 @@ p {
   font-family: 'Plus Jakarta Sans';
   font-size: 40px;
   font-weight: 500;
+  color: #242424;
 }
 .landing-title{
   font-family: 'Plus Jakarta Sans';
@@ -1787,30 +1788,35 @@ p {
   font-family: 'Plus Jakarta Sans';
   font-size: 40px;
   font-weight: 700;
+  color: #242424;
 }
 
 .page-subheading {
   font-family: 'Plus Jakarta Sans';
   font-size: 30px;
   font-weight: 500;
+  color: #242424;
 }
 
 .page-subheading-bold {
   font-family: 'Plus Jakarta Sans';
   font-size: 30px;
   font-weight: 700;
+  color: #242424;
 }
 
 .page-subsubheading {
   font-family: 'Plus Jakarta Sans';
   font-size: 24px;
   font-weight: 500;
+  color: #242424;
 }
 
 .page-subsubheading-bold {
   font-family: 'Plus Jakarta Sans';
   font-size: 24px;
   font-weight: 700;
+  color: #242424;
 }
 
 .gray-box {

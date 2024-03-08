@@ -26,6 +26,7 @@ function App() {
   const userPref = window.localStorage.getItem("userPref")
   const { user, setUser } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
+  const { sidebarDisplayed, setSidebarDisplayed, showSidebar, hideSidebar } = useContext(DataContext);
   const [currentTrip, setCurrentTrip] = useState({
     tripID: null,
     tripName: "",
@@ -137,13 +138,7 @@ function App() {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
-  const [sidebarDisplayed, setSidebarDisplayed] = useState(false);
-  const showSidebar = () => {
-    setSidebarDisplayed(true)
-  }
-  const hideSidebar = () => {
-    setSidebarDisplayed(false)
-  }
+  
 
   // for itinerary page only - decides which list is being displayed
   const [placeListDisplay, setPlaceListDisplay] = useState('Itinerary') // Suggested Places, Saved Places

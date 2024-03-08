@@ -272,6 +272,8 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                 let cityInput = document.getElementById('cityInput')
                 cityInput.classList.add('entry-error')
                 console.log("no city")
+            } else if (!range[0].startDate || !range[0].endDate) {
+                alert("Please enter a start and end date for your trip")
             } else {
                 // if there is a city entered
                 startLoading()

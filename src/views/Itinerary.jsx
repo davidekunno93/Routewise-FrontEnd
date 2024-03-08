@@ -1047,7 +1047,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }
 
   const updateDayName = (e, dayNum) => {
-    tripStateCopy = { ...tripState }
+    let tripStateCopy = { ...tripState }
     tripStateCopy.days[dayNum].dayName = e.target.value
   }
 
