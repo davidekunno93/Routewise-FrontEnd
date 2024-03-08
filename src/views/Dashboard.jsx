@@ -525,7 +525,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
 
     const deleteTrip = (trip) => {
-        let url = `http://routewise-backend.onrender.com/places/delete-trip/${trip.trip_id}`
+        let url = `https://routewise-backend.onrender.com/places/delete-trip/${trip.trip_id}`
         const response = axios.delete(url)
             .then((response) => {
                 console.log(response.data)
