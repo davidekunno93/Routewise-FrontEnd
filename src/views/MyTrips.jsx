@@ -3,22 +3,35 @@ import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { Loading } from '../components/Loading';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const MyTrips = () => {
+const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     const { user } = useContext(DataContext);
+    const { pageOpen, setPageOpen } = useContext(DataContext);
     const [userTrips, setUserTrips] = useState(null)
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
+    const navigate = useNavigate()
+    const resetPageOpen = () => {
+        setPageOpen(null)
+    }
+    useEffect(() => {
+        setPageOpen('my trips')
+        return resetPageOpen;
+    }, [])
+
     // get user trips code
     const getUserTripsData = async () => {
         const response = await axios.get(`https://routewise-backend.onrender.com/places/trips/${auth.currentUser.uid}`)
         return response.status === 200 ? response.data : "error - it didn't work"
     }
     const loadUserTripsData = async () => {
-        setIsLoadingTrips(true)
-        let data = await getUserTripsData()
-        setUserTrips(data)
-        console.log(data)
-        setIsLoadingTrips(false)
+        if (auth.currentUser) {
+            setIsLoadingTrips(true)
+            let data = await getUserTripsData()
+            setUserTrips(data)
+            console.log(data)
+            setIsLoadingTrips(false)
+        }
     }
     useEffect(() => {
         if (auth.currentUser) {
@@ -50,6 +63,95 @@ const MyTrips = () => {
         }
     }
     const refPopUp = useRef(null);
+
+
+
+    
+    
+
+    const viewTrip = async (trip, navigation) => {
+        clearCurrentTrip()
+        setIsLoading(true)
+        if (navigation === "itinerary") {
+            let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
+            const response = await axios.get(url)
+            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+            return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
+        } else if (navigation === "places") {
+            let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
+            const response = await axios.get(url)
+            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+            return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
+        }
+    }
+    const loadPlaces = (place_list, trip) => {
+        console.log(place_list)
+        let placesList = []
+        for (let i = 0; i < place_list.length; i++) {
+            let place = {
+                category: place_list[i].category,
+                favorite: place_list[i].favorite,
+                placeId: place_list[i].geoapify_placeId,
+                id: place_list[i].local_id,
+                place_id: place_list[i].place_id, // db
+                // tripId : place_list[i].trip_id,
+                long: place_list[i].long,
+                lat: place_list[i].lat,
+                geocode: [place_list[i].lat, place_list[i].long],
+                imgURL: place_list[i].place_img,
+                info: place_list[i].info,
+                placeName: place_list[i].place_name,
+                address: place_list[i].place_address,
+            }
+            placesList.push(place)
+        }
+        console.log(placesList)
+        let currentTripCopy = {
+            tripID: trip.trip_id,
+            tripName: trip.trip_name,
+            city: trip.dest_city,
+            country: trip.dest_country,
+            country_2letter: trip.dest_country_2letter,
+            startDate: trip.start_date,
+            endDate: trip.end_date,
+            tripDuration: trip.duration,
+            geocode: [trip.dest_lat, trip.dest_long],
+            imgUrl: trip.dest_img,
+            places: placesList,
+            itinerary: null,
+        }
+        // console.log(response.data)
+        // console.log(currentTripCopy)
+        setIsLoading(false)
+        setCurrentTrip(currentTripCopy)
+        navigate('/add-places')
+    }
+    const loadItinerary = (itinerary, trip) => {
+        let currentTripCopy = {
+            tripID: trip.trip_id,
+            tripName: trip.trip_name,
+            city: trip.dest_city,
+            country: trip.dest_country,
+            country_2letter: trip.dest_country_2letter,
+            startDate: trip.start_date,
+            endDate: trip.end_date,
+            tripDuration: trip.duration,
+            geocode: [trip.dest_lat, trip.dest_long],
+            imgUrl: trip.dest_img,
+            places: Object.values(itinerary.places),
+            itinerary: itinerary,
+        }
+        // console.log(response.data)
+        // console.log(currentTripCopy)
+        setIsLoading(false)
+        setCurrentTrip(currentTripCopy)
+        navigate('/itinerary')
+    }
+    const [isLoading, setIsLoading] = useState(false);
+    const stopLoadingScreen = () => {
+        setIsLoading(false)
+    }
+
 
 
 
@@ -104,23 +206,51 @@ const MyTrips = () => {
                     </div>
                 }
 
+
                 <div className="userTrips flx-r flx-wrap gap-8">
-                    <div className="userTrip-card">
-                        <img src="https://i.imgur.com/PToTA7p.png" alt="" className="card-img" />
-                        <div className="card-footer">
-                            <div className="card-info">
-                                <div className="align-all-items">
-                                    <div className="card-title">Paris 2024</div>
+                    {userTrips ? userTrips.map((trip, index) => {
+
+                        return <div className="userTrip-card">
+                            <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                    <p className="m-0">Edit trip details</p>
+                                    <span className="material-symbols-outlined large mx-1">
+                                        edit
+                                    </span>
                                 </div>
-                                <div className="card-days">Paris 2024</div>
+
+                                <div onClick={() => deleteTrip(trip)} className="option">
+                                    <p className="m-0">Delete trip</p>
+                                    <span className="material-symbols-outlined large mx-1">
+                                        delete
+                                    </span>
+                                </div>
                             </div>
-                            <div className="card-icons">
-                                <span className="material-symbols-outlined position-right gray-text">more_vert</span>
-                                <span className="material-symbols-outlined position-right gray-text">lock</span>
+                            <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                <img src={trip.dest_img} alt="" className="card-img pointer" />
+                            </div>
+                            <div className="card-footer">
+                                <div className="card-info">
+                                    <div className="align-all-items">
+                                        <div className="card-title">{trip.trip_name}</div>
+                                    </div>
+                                    <div className="card-days">
+
+                                        <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                        <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                        <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
+                                    </div>
+                                </div>
+                                <div className="card-icons">
+                                    <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                    <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {userTrips ? userTrips.map((trip, index) => {
+                    }) : null}
+
+                    {/* {userTrips ? userTrips.map((trip, index) => {
 
 
                         return <div key={index} className="userTrip-box">
@@ -154,7 +284,7 @@ const MyTrips = () => {
                                 </div>
                             </div>
                         </div>
-                    }) : null}
+                    }) : null} */}
 
 
                 </div>

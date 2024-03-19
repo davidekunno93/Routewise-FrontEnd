@@ -115,7 +115,7 @@ function App() {
             <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
             <Route children path='/add-places' element={<AddPlaces currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
             <Route children path='/itinerary' element={<Itinerary currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} showSidebar={showSidebar} hideSidebar={hideSidebar} placeListDisplay={placeListDisplay} setPlaceListDisplay={setPlaceListDisplay} />} />
-            <Route children path='/mytrips' element={<MyTrips />} />
+            <Route children path='/mytrips' element={<MyTrips currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
             <Route children path='/test' element={<Test />} />
             <Route children path='/map' element={<OpenMap />} />
             <Route children path='/hero' element={<HeroFade />} />

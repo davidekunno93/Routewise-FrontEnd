@@ -194,9 +194,9 @@ export const Navbar = () => {
               <p className="m-0">My Profile</p>
             </div>
           </div>
-          <Link to='/mytrips'><div className="option">
+          <Link to='/mytrips'><div className={`${pageOpen === "my trips" ? "option-selected" : "option"}`}>
             <div className="flx-r gap-2">
-              <span className="material-symbols-outlined">
+              <span className={`material-symbols-outlined ${pageOpen === 'my trips' && "purple-text"}`}>
                 flight_takeoff
               </span>
               <p className="m-0">My Trips</p>
@@ -214,14 +214,14 @@ export const Navbar = () => {
 
         </div>
 
-        {user ?
+        {auth.currentUser ?
           <div ref={refUserDropdown} className="z-1 right-btns flx-c just-ce position-relative">
             <div className="flx-r">
               <div className="flx-c just-ce">
-                <p className='username-text m-0 mt- inline mx-2'>{user.displayName}</p>
+                <p className='username-text m-0 mt- inline mx-2'>{auth.currentUser.displayName}</p>
               </div>
               <div className="profile-icon">
-                <img onClick={() => toggleUserMenu()} src={user.photoURL} alt="" className="profile-img pointer" />
+                <img onClick={() => toggleUserMenu()} src={auth.currentUser.photoURL} alt="" className="profile-img pointer" />
               </div>
 
             </div>
