@@ -24,6 +24,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     // login require
     const { user, setUser } = useContext(DataContext);
     const { userPreferences } = useContext(DataContext);
+    const { sidebarDisplayed, setSidebarDisplayed, showSidebar, hideSidebar } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
@@ -57,6 +58,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         setPageOpen(null)
     }
     useEffect(() => {
+        hideSidebar()
         setPageOpen('dashboard')
         return resetPageOpen;
     }, [])
@@ -99,7 +101,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         }
     ]
 
-
+    const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     // get user trips code
     const getUserTripsData = async () => {
         const response = await axios.get(`https://routewise-backend.onrender.com/places/trips/${auth.currentUser.uid}`)
@@ -107,9 +109,11 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
 
     const loadUserTripsData = async () => {
+        setIsLoadingTrips(true)
         let data = await getUserTripsData()
         setUserTrips(data)
         console.log(data)
+        setIsLoadingTrips(false)
     }
 
     useEffect(() => {
@@ -445,6 +449,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const navigate = useNavigate()
 
     const viewTrip = async (trip, navigation) => {
+        clearCurrentTrip()
         setIsLoading(true)
         if (navigation === "itinerary") {
             let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
@@ -562,6 +567,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const openEditTripModal = (trip) => {
         setTripToEdit(trip)
         setEditTripModalOpen(true);
+    }
+    const closeEditTripModal = () => {
+        console.log('hy')
+        setTripToEdit(null)
+        hideSidebar();
+        setEditTripModalOpen(false);
     }
     const [tripToEdit, setTripToEdit] = useState(null)
 
@@ -746,7 +757,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
              */}
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
-            <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={() => setEditTripModalOpen(false)} />
+            <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={closeEditTripModal} />
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
@@ -811,11 +822,17 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
 
                 {/* my trips */}
                 <p className="m-0 page-subsubheading-bold mt-5">My Trips</p>
+                {isLoadingTrips &&
+                    // <p className='m-0'>Loading...</p>
+                    <div className="loadingDiv">
+                        <Loading noMascot={true} noText={true} />
+                    </div>
+                }
                 {userTrips ?
                     <>
                         <div className="flx-r align-r just-sb">
                             {userTrips.length > 4 ?
-                                <Link>
+                                <Link to='/mytrips'>
                                     <div className="flx-r align-c">
                                         <p className="m-0 purple-text page-text">See all trips</p>
                                         <span className="material-symbols-outlined ml-1 purple-text">
@@ -847,7 +864,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                         edit
                                                     </span>
                                                 </div>
-                                                <div onClick={(() => viewTrip(trip, "places"))} className="option">
+                                                {/* <div onClick={(() => viewTrip(trip, "places"))} className="option">
                                                     <p className="m-0">View places</p>
                                                     <span className="material-symbols-outlined large mx-1">
                                                         location_on
@@ -867,7 +884,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                     //         map
                                                     //     </span>
                                                     // </div>
-                                                }
+                                                } */}
                                                 <div onClick={() => deleteTrip(trip)} className="option">
                                                     <p className="m-0">Delete trip</p>
                                                     <span className="material-symbols-outlined large mx-1">
@@ -879,7 +896,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                 more_vert
                                             </span>
                                         </div>
-                                        <img src={trip.dest_img} alt="" className="destImg pointer" />
+                                        <img onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} src={trip.dest_img} alt="" className="destImg pointer" />
                                         <div className="box-text-container">
                                             <p className="m-0 box-title">{trip.trip_name}</p>
                                             <div className="flx-r">

@@ -546,6 +546,14 @@ w-0 {
 .pointer {
   cursor: pointer;
 }
+.point-and-fade {
+  cursor: pointer;
+  transition: 0.2s;
+}
+.point-and-fade:hover {
+  opacity: 0.75;
+  transition: 0.2s;
+}
 
 .navbar {
   height: 56px;
@@ -1037,6 +1045,15 @@ input:-webkit-autofill {
   background-color: rgba(245, 245, 245, 0.8);
 }
 
+.input-edit {
+  width: 150px;
+  background-color: white;
+  font-size: 40px;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans';
+  border: none;
+}
+
 .h-25 {
   height: 25%;
 }
@@ -1188,7 +1205,7 @@ input:-webkit-autofill {
 }
 
 .btn-outlineflex {
-  padding: 11px 20px;
+  padding: 11px 36px;
   background-color: white;
   color: #6663FC;
   border-radius: 8px;
@@ -2342,6 +2359,10 @@ p {
   align-items: flex-end;
 }
 
+.page-container75 {
+  width: 75%;
+  margin: auto;
+}
 .page-container80 {
   width: 80%;
   margin: auto;
@@ -3257,6 +3278,9 @@ p {
 .mb-4 {
   margin-bottom: 25px;
 }
+.mb-4h {
+  margin-bottom: 32px;
+}
 
 .mb-5 {
   margin-bottom: 50px;
@@ -4077,6 +4101,8 @@ p {
   width: 92px;
   background-color: #F0EFFF;
   transition: 0.4s;
+  display: flex;
+
 }
 
 .itinerary-sidebar-expanded {
@@ -4084,6 +4110,11 @@ p {
   padding: 16px 24px;
   box-sizing: border-box;
   background-color: #F0EFFF;
+  /* background-color: beige; */
+  /* position: -webkit-sticky; */
+  position: sticky;
+  align-self: flex-start;
+  top: 0;
   /* border-right: 1px solid white; */
   display: flex;
   flex-direction: column;
@@ -4469,7 +4500,62 @@ p {
   height: 70px;
 }
 
-
+.trip-options {
+  display: flex;
+  flex-direction: row;
+}
+.trip-options .option {
+  font-family: 'Plus Jakarta Sans';
+  font-size: 20px;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 3px solid gainsboro;
+}
+.trip-options .option.upcoming {
+  width: 150px;
+}
+.trip-options .option.past {
+  width: 162px;
+}
+.trip-options .option.published {
+  width: 200px;
+}
+.userTrip-card {
+  width: 338px;
+  height: 393px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 0 16px rgba(0, 0, 0, 0.12);
+}
+.userTrip-card .card-img {
+  width: 100%;
+  height: 70%;
+  object-fit: cover;
+  border-radius: 0%;
+}
+.userTrip-card .card-footer {
+  display: flex;
+  flex-direction: row;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.userTrip-card .card-info {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans';
+}
+.userTrip-card .card-days {
+  color: gray;
+}
+.userTrip-card .card-icons {
+  color: gray;
+  display: flex;
+  flex-direction: column;
+  margin: 0 0 0 auto;
+  padding: 4px 0px;
+}
 
 
 

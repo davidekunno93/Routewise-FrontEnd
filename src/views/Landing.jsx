@@ -13,7 +13,9 @@ export const Landing = () => {
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { showNavbar, setShowNavbar } = useContext(DataContext);
     const { authIndex, setAuthIndex } = useContext(DataContext);
+    const { hideSidebar } = useContext(DataContext);
     useEffect(() => {
+        hideSidebar()
         setShowNavbar(false)
         return restoreNavbar;
     }, [])

@@ -18,9 +18,10 @@ import { Loading } from '../components/Loading'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 
-export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clearCurrentTrip, showSidebar, hideSidebar, sidebarOptions, placeListDisplay, setPlaceListDisplay }) => {
+export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clearCurrentTrip, placeListDisplay, setPlaceListDisplay }) => {
   // if (!currentTrip) return null
   const { userPreferences, setUserPreferences } = useContext(DataContext);
+  const { sidebarDisplayed, setSidebarDisplayed, showSidebar, hideSidebar } = useContext(DataContext);
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
   const [lightbulbDays, setLightbulbDays] = useState([]);
   const [markers, setMarkers] = useState(null);
@@ -152,23 +153,11 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   useEffect(() => {
     setPlaceListDisplay("Itinerary")
   }, [])
-  // useEffect(() => {
-  //   // for loop thru each day index
-  //   // merge each day.places to larger list called allDays.places
-  //   // [ {gc: } {gc: } {gc: } {gc: } ]
-  //   tripDays['allDays'] = {
-  //     places: []
-  //   }
-  //   for (let i = 0; i < tripDays.days.length; i++) {
-  //     // console.log(tripDays.days[i])
-  //     for (let j = 0; j < tripDays.days[i].places.length; j++) {
-  //       tripDays.allDays.places.push(tripDays.days[i].places[j])
-  //       // console.log(tripDays.days[i].places[j])
-  //     }
-  //   }
-  //   setMarkers(Object.values(tripState.places))
-  //   // console.log(tripDays)
-  // }, [])
+  // other functions
+  function wait(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+  }
+
   // date conversion functions
   // system date to normal or slash date
   const datinormal = (systemDate) => {
@@ -214,15 +203,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     return month + "/" + day + "/" + fullyear
   }
 
-
-  useEffect(() => {
-    showSidebar()
-    return hideSidebar;
-  }, [])
-  function wait(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-  }
-
+  // vestigial code
   const showDayPanel = () => {
     const dayPanel = document.getElementById('dayPanel')
     const dayPanelBody = document.getElementById('dayPanelBody')
@@ -262,6 +243,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }
 
 
+  // flowbox operations code
   const rotateSymbol = (id, deg) => {
     const symbol = document.getElementById(`expandArrow-${id}`)
     symbol.style.transform = `rotate(${deg}deg)`
@@ -330,13 +312,12 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       addPlaceExpand.style.height = '30px'
     })
   }
-
   const flowBoxSize = (id) => {
     const flowBox = document.getElementById(`flowBox-${id}`)
     let height = flowBox.offsetHeight
     console.log(height)
   }
-
+  // creating refs for each day (flowbox)
   let refs = useRef([])
   useEffect(() => {
     refs.current = refs.current.slice(0, tripData.day_order.length)
@@ -353,10 +334,16 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     })
   }
 
+
+  // places code
+  // unsplash api code
   const getCityImg = async (imgQuery) => {
     const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
     return response.status === 200 ? response.data : "error"
-
+  }
+  const getCityImg2 = async () => {
+    const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M&query=${tripData.cityName}-${tripData.state}-landmarks`)
+    return response.status === 200 ? response.data : "error"
   }
   const loadCityImg = async (imgQuery) => {
     const data = await getCityImg(imgQuery)
@@ -368,6 +355,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       return data.results[0].urls.regular
     }
   }
+  // geoapify api code
   const getPlaceDetails = async (placeDetailsQuery) => {
     const response = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
     return response.status === 200 ? response.data : "error"
@@ -383,6 +371,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       return data.features[0].properties.opening_hours ? data.features[0].properties.opening_hours : "No hours information"
     }
   }
+
   const clearPlaceToConfirm = () => {
     setPlaceToConfirm(null)
   }
@@ -432,6 +421,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     resetSearch()
     resetPanelSearch()
   }
+
+  // place search code
   const [currentTimeout, setCurrentTimeout] = useState(null);
   useEffect(() => {
 
@@ -533,7 +524,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }
 
 
-
+  // saved places popup
   const togglePopUp = (index) => {
     let popUp = document.getElementById(`popUp-${index}`)
     popUp.classList.toggle('d-none')
@@ -580,8 +571,6 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       day_id: tripStateCopy.days[dayNum].day_id,
       trip_id: tripStateCopy.trip_id
     }
-
-
 
     let place_id = null
     // if database on then procede else do not proceed (create databaseOn in DataProvider)
@@ -907,14 +896,13 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }
 
 
-
+  // itinerary access point - try to switch out tripData completely w tripState
   const tripData = currentTrip.itinerary ? currentTrip.itinerary : tripTestData
 
   useEffect(() => {
     console.log(currentTrip.itinerary)
     console.log(currentTrip)
   }, [])
-
 
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
   useEffect(() => {
@@ -1026,6 +1014,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     setTripState(newState);
   }
 
+  // place confirm animation
   const [placeConfirmationAnimation, setPlaceConfirmationAnimation] = useState(false);
 
   useEffect(() => {
@@ -1037,9 +1026,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }, [tripState, placeToConfirm, placeConfirmationAnimation])
 
 
-
+  // date chosen for place to be added to
   const [dateToConfirm, setDateToConfirm] = useState(null);
-
 
   const updateDateToConfirm = (day, date) => {
     setDateToConfirm(day + ", " + date)
@@ -1200,7 +1188,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     }
     setUserInterests(userInterestsCopy)
     // load 5 places per userInterest
-    getSuggestedPlaces(userInterestsTEST, 5)
+    // getSuggestedPlaces(userInterestsTEST, 5)
   }, [])
 
   const getSuggestedPlaces = async (categoryObjectsArr, limit) => {
@@ -1349,7 +1337,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }, [])
 
 
-  // saved places code
+  // saved places operations code
   const [savedPlaces, setSavedPlaces] = useState({
     places: [],
     addresses: []
@@ -1399,9 +1387,108 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     setSavedPlaces(savedPlacesCopy)
   }
 
+
+  // sidebar code - needs to hide on mobile screens
+  const [sidebarExpanded, setSidebarExpanded] = useState(false)
+  const expandSidebar = () => {
+    let logo = document.getElementById('sb-logoSpace')
+    const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
+    const sidebar = document.getElementById('itinerarySidebar')
+    sidebar.style.width = "300px"
+    sidebarPlaceholder.style.width = "300px"
+
+    wait(200).then(() => {
+      logo.style.width = "252px"
+      let expandItems = document.getElementsByClassName('sb-expanded')
+      for (let i = 0; i < expandItems.length; i++) {
+        expandItems[i].style.display = "block"
+        wait(200).then(() => {
+          expandItems[i].classList.add('show')
+        })
+      }
+    })
+
+    setSidebarExpanded(true)
+  }
+  const collapseSidebar = () => {
+    let logo = document.getElementById('sb-logoSpace')
+    let expandItems = document.getElementsByClassName('sb-expanded')
+    const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
+    const sidebar = document.getElementById('itinerarySidebar')
+    logo.style.width = "34px"
+
+    for (let i = 0; i < expandItems.length; i++) {
+      expandItems[i].classList.remove('show')
+      wait(200).then(() => {
+        expandItems[i].style.display = "none"
+      })
+    }
+    wait(200).then(() => {
+      sidebar.style.width = "92px"
+      sidebarPlaceholder.style.width = "92px"
+    })
+    setSidebarExpanded(false)
+  }
+  const toggleSidebarExpanded = () => {
+    if (sidebarExpanded) {
+      collapseSidebar()
+    } else {
+      expandSidebar()
+    }
+  }
+  const sidebarOptions = [
+    {
+      title: "Itinerary",
+      iconUrl: "https://i.imgur.com/UeFtCUp.png"
+    },
+    {
+      title: "Saved Places",
+      iconUrl: "https://i.imgur.com/YnFB61Q.png"
+    },
+    {
+      title: "Suggested Places",
+      iconUrl: "https://i.imgur.com/YoB68Vw.png"
+    },
+  ]
+
+  const [tripName, setTripName] = useState(currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!")
+  const loadTripName = () => {
+    let nameInput = document.getElementById('tripNameInput')
+    // let tripName = currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"
+    nameInput.value = tripName
+    nameInput.style.width = tripName.length * 25 + 'px'
+  }
+  useEffect(() => {
+    loadTripName()
+  }, [])
+
   return (
     <>
       <div className="itinerary-page flx-r">
+
+        <div id='itinerarySideBarPlaceholder' className="itinerary-sidebar-placeholder sticky">
+          <div id='itinerarySidebar' className="itinerary-sidebar-expanded sticky position-fixe">
+            <div id='sb-logoSpace' className="logo-space">
+              <div className="icon-cold">
+                <img onClick={() => toggleSidebarExpanded()} src="https://i.imgur.com/d2FMf3s.png" alt="" className="logo-icon" />
+              </div>
+
+              <img src="https://i.imgur.com/Eu8Uf2u.png" alt="" className="text-logo-icon" />
+
+            </div>
+
+            {sidebarOptions.map((option, index) => {
+              let selected = placeListDisplay === option.title ? true : false
+              return <div key={index} onClick={() => setPlaceListDisplay(option.title)} className={`${selected ? "option-selected" : "option"}`}>
+                <img src={option.iconUrl} alt="" className="icon" />
+                <p className="m-0 darkpurple-text sb-expanded">{option.title}</p>
+              </div>
+            })}
+
+          </div>
+        </div>
+
+
 
         {/* Itinerary Display */}
         {placeListDisplay === "Itinerary" &&
@@ -1425,8 +1512,12 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
               </span>
               <p className="inline large purple-text">Back</p>
             </Link> */}
-              <p className="page-heading-bold m-0">Hey {auth.currentUser ? auth.currentUser.displayName : "Josh"},</p>
-              <p className="page-heading-bold m-0 mb-2">Here's your trip itinerary!</p>
+              <div className="align-all-items gap-6">
+                {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
+                <input id='tripNameInput' type="text" className="input-edit" />
+                <span className="material-symbols-outlined xx-large gains-text">edit</span>
+              </div>
+
               {/* <div className="flx-r onHover-fadelite">
               <p className="mt-1 mb-3 purple-text"><span className="material-symbols-outlined v-bott mr-2 purple-text">
                 add
@@ -2001,7 +2092,6 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
           </div>
 
 
-
           <div className="empty-6"></div>
 
 
@@ -2010,12 +2100,26 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
 
       </div >
 
-      {/* Completion buttons */}
-      < div className="save-btn-row flx-r just-ce mt-5" >
-        <button className="btn-outlineflex w-1h large center-text mx-2">Save</button>
-        <button className="btn-primaryflex w-2h large center-text mx-2">Complete Itinerary</button>
-      </div >
-      {/* End Completion buttons */}
+      <div className="flx-r">
+        <div className="itinerary-sidebar-placeholder">
+
+        </div>
+
+        <div className="position-right mr-5">
+
+          {/* Completion buttons */}
+          < div className="save-btn-row flx-r just-ce mt-5" >
+            <button className="btn-outlineflex large center-text mx-2">Back to Dashboard</button>
+            <button className="btn-primaryflex w-2h large center-text mx-2">Share Itinerary</button>
+          </div >
+          {/* End Completion buttons */}
+
+          <h1 className='empty-3'></h1>
+
+
+        </div>
+      </div>
+
     </>
   )
 }

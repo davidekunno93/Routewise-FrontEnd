@@ -130,3 +130,6 @@ Xsign up error
 catch error for emails already in use
 Xget w/Kate to sort out auth
 >>>>>Kate's db's only allow uids that have already been authenticated
+
+
+destImg in userTrip boxes get bigger upon hover?

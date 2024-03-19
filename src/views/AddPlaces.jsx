@@ -23,6 +23,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     // Send Kate Data
     const { user, setUser } = useContext(DataContext);
     const { firstTimeUser, setFirstTimeUser } = useContext(DataContext);
+    const { hideSidebar } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
@@ -160,6 +161,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
 
     useEffect(() => {
         console.log(currentTrip)
+        hideSidebar()
     }, [])
 
     useEffect(() => {
@@ -215,6 +217,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         //         console.log(response.results[0].urls.regular)
         //         setCityImg(response.results[0].urls.regular)
         //     })
+    }
+    const getCityImg2 = async () => {
+        const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M&query=${tripData.cityName}-${tripData.state}-landmarks`)
+        return response.status === 200 ? response.data : "error"
     }
     const loadCityImg = async (imgQuery) => {
         const data = await getCityImg(imgQuery)

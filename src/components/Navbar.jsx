@@ -6,8 +6,9 @@ import { DataContext } from '../Context/DataProvider';
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
 
-export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
+export const Navbar = () => {
   const { showNavbar } = useContext(DataContext);
+  const { sidebarDisplayed, placeListDisplay } = useContext(DataContext);
   const { pageOpen, setPageOpen } = useContext(DataContext);
   const { user, setUser } = useContext(DataContext);
   const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
@@ -157,7 +158,7 @@ export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
         <div className="flx-c just-ce">
           <Link onClick={() => togglePrototypeMenu()} className=''>
             {sidebarDisplayed ?
-              <p className="m-0 page-heading-bold darkpurple-text ws-nowrap ml1vw">{placeListDisplay}</p>
+              <p className="m-0 page-subheading-bold darkpurple-text ws-nowrap ml1vw">{placeListDisplay}</p>
               :
               <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
             }
@@ -193,14 +194,14 @@ export const Navbar = ({ sidebarDisplayed, placeListDisplay }) => {
               <p className="m-0">My Profile</p>
             </div>
           </div>
-          <div className="option">
+          <Link to='/mytrips'><div className="option">
             <div className="flx-r gap-2">
               <span className="material-symbols-outlined">
                 flight_takeoff
               </span>
               <p className="m-0">My Trips</p>
             </div>
-          </div>
+          </div></Link>
           <div className="option">
             <div className="flx-r gap-2">
               <span className="material-symbols-outlined">

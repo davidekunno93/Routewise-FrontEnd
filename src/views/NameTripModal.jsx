@@ -19,19 +19,42 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         console.log(tripData)
     }, [])
 
-    const getCityImg = async () => {
-        const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${tripData.cityName}-${tripData.state}-landmarks`)
+    const getCityImg = () => {
+        const response = axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${tripData.cityName}-${tripData.state}-landmarks`)
+            .then((response) => {
+                console.log('.then method working')
+                console.log(response)
+                return response.data
+            })
+        // return response.status === 200 ? response.data : "error"
+    }
+    const getCityImg2 = async () => {
+        const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M&query=${tripData.cityName}-${tripData.state}-landmarks`)
         return response.status === 200 ? response.data : "error"
-        // .then((response) => {
-        //         console.log(response.results[0].urls.regular)
-        //         setCityImg(response.results[0].urls.regular)
-        //     })
     }
     const loadCityImg = async () => {
-        const data = await getCityImg()
-        console.log(data)
-        console.log(data.results[0].urls.regular)
-        setCityImg(data.results[0].urls.regular)
+        let apiKey_1 = "S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo"
+        let apiKey_2 = "yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M"
+        const response = axios.get(`https://api.unsplash.com/search/photos/?client_id=${apiKey_1}&query=${tripData.cityName}-${tripData.state}-landmarks`)
+            .then((response) => {
+                let data = response.data
+                console.log('.then method working')
+                setCityImg(data.results[0].urls.regular)
+            })
+            .catch((error) => {
+                const response2 = axios.get(`https://api.unsplash.com/search/photos/?client_id=${apiKey_2}&query=${tripData.cityName}-${tripData.state}-landmarks`)
+                    .then((response2) => {
+                        let data = response2.data
+                        console.log('.then method working')
+                        setCityImg(data.results[0].urls.regular)
+                    })
+            })
+
+
+        // const data = await getCityImg()
+        // console.log("unsplash error:", data)
+        // console.log(data.results[0].urls.regular)
+        // setCityImg(data.results[0].urls.regular)
     }
 
     const typer = () => {
@@ -79,13 +102,13 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         const response = await axios.post("https://routewise-backend.onrender.com/places/trip", JSON.stringify(data), {
             headers: { "Content-Type": "application/json" }
         })
-        // return response.status === 200 ? response.data : "error"
-        .then((response) => processData(response))
-        .catch((error) => {
-            console.log(error)
-            setLoading(false);
-            alert("Something went wrong. Please try again")
-        })
+            // return response.status === 200 ? response.data : "error"
+            .then((response) => processData(response))
+            .catch((error) => {
+                console.log(error)
+                setLoading(false);
+                alert("Something went wrong. Please try again")
+            })
     }
 
     const processData = async (response) => {

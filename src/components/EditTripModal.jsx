@@ -158,7 +158,9 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
             }
         }).catch((error) => {
             setIsLoading(false)
-            console.log(error)
+            // console.log(error)
+            console.log("error caught")
+            alert("Something went wrong. Please Try again later.")
         })
     }
 
@@ -194,7 +196,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
                         <div onClick={() => onClose()} className="closeBtn">
                             <span className="material-symbols-outlined">close</span>
                         </div>
-                        <div className="page-subsubheading center-text">Edit your trip to {trip ? trip.dest_city : "*city*"}</div>
+                        <div className="page-subsubheading center-text dark-text">Edit your trip to {trip ? trip.dest_city : "*city*"}</div>
 
                         <img src={`${trip ? trip.dest_img : null}`} alt="" className="edit-trip-modal-img my-3" />
 
