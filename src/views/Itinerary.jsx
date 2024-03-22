@@ -1078,7 +1078,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   const hideSidebarOnResize = () => {
     if (window.innerWidth <= 768) {
       hideSidebar()
-      showBottombar()
+      // showBottombar()
+      hideBottombar()
     } else if (window.innerWidth > 768) {
       showSidebar()
       hideBottombar()
@@ -1451,15 +1452,46 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     },
   ]
 
+  const tripNameRef = useRef(null);
   const [tripName, setTripName] = useState(currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!")
+  const [tripNameIsUpdating, setTripNameIsUpdating] = useState(false);
+  const [tripNameSendStandby, setTripNameSendStandby] = useState(false);
+  useEffect(() => {
+    if (tripNameIsUpdating) {
+      console.log('is updating')
+      setTripNameSendStandby(true)
+    }
+  }, [tripNameIsUpdating])
   const loadTripName = () => {
     let nameInput = document.getElementById('tripNameInput')
     // let tripName = currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"
     nameInput.value = tripName
-    nameInput.style.width = tripName.length * 25 + 'px'
+    nameInput.style.width = tripName.length * 15 + 'px'
   }
   useEffect(() => {
     loadTripName()
+  }, [])
+  const updateTripName = (e) => {
+    let nameInput = document.getElementById('tripNameInput')
+    nameInput.style.width = e.target.value.length * 15 + 'px'
+    setTripName(e.target.value)
+  }
+  const updatedTripName = () => {
+    console.log('updated trip name')
+  }
+  const clickOutsideTripName = (e) => {
+    if (tripNameRef.current && !tripNameRef.current.contains(e.target)) {
+      setTripNameIsUpdating(false);
+      if (tripNameSendStandby) {
+        console.log('send data')
+        setTripNameSendStandby(false)
+      }
+    }
+  }
+  // issues?
+  useEffect(() => {
+    document.addEventListener('click', clickOutsideTripName, true)
+    return document.removeEventListener('click', clickOutsideTripName, true);
   }, [])
 
   return (
@@ -1494,8 +1526,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         {placeListDisplay === "Itinerary" &&
           <div className="itinerary-c2 flx-1">
             <div className="page-container96">
-
-              <div className="tripFlow flx-r mt-3">
+              <p className="m-0 page-subheading-bold">Itinerary</p>
+              <div className="tripFlow flx-r">
                 <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
                 <span className="material-symbols-outlined">
                   arrow_right
@@ -1514,8 +1546,8 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
             </Link> */}
               <div className="align-all-items gap-6">
                 {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
-                <input id='tripNameInput' type="text" className="input-edit" />
-                <span className="material-symbols-outlined xx-large gains-text">edit</span>
+                <input ref={tripNameRef} onClick={() => setTripNameIsUpdating(true)} onChange={(e) => updateTripName(e)} id='tripNameInput' type="text" className="input-edit" />
+                <span className="material-symbols-outlined x-large gains-text">edit</span>
               </div>
 
               {/* <div className="flx-r onHover-fadelite">
@@ -1580,6 +1612,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         {placeListDisplay === "Saved Places" &&
           <div className="itinerary-c2 flx-1">
             <div className="page-container96">
+            <p className="m-0 page-subheading-bold">Saved Places</p>
               <p onClick={() => printSavedPlaces()} className="m-0 page-subheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
               <div className="placeCards-itinerary">
@@ -1626,6 +1659,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         {placeListDisplay === "Suggested Places" &&
           <div className="itinerary-c2 flx-1">
             <div className="page-container96">
+            <p className="m-0 page-subheading-bold">Suggested Places</p>
 
               <p onClick={() => printTripObject()} className="page-subheading-bold m-0 my-2">Here are some places in <span className="purple-text">*city*</span> that you might like based on your travel preferences</p>
 

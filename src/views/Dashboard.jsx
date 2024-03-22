@@ -864,13 +864,13 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                         edit
                                                     </span>
                                                 </div>
-                                                {/* <div onClick={(() => viewTrip(trip, "places"))} className="option">
-                                                    <p className="m-0">View places</p>
+                                                <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="option">
+                                                    <p className="m-0">Edit Itinerary</p>
                                                     <span className="material-symbols-outlined large mx-1">
-                                                        location_on
+                                                        map
                                                     </span>
                                                 </div>
-                                                {trip.is_itinerary &&
+                                                {/* {trip.is_itinerary &&
                                                     <div onClick={(() => viewTrip(trip, "itinerary"))} className="option">
                                                         <p className={`m-0`}>View itinerary</p>
                                                         <span className="material-symbols-outlined large mx-1">

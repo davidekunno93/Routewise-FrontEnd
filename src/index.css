@@ -572,14 +572,24 @@ w-0 {
   height: 18px;
   object-fit: contain;
 }
-.navbar-left-side .option p, .navbar-left-side .option .material-symbols-outlined {
+.navbar-left-side .option .material-symbols-outlined {
   font-size: 22px;
   color: gray;
 }
+.navbar-left-side .option-selected .material-symbols-outlined {
+  font-size: 22px;
+  color: #6663FC;
+}
 .navbar-left-side .option p {
   font-size: 14px;
+  color: gray;
 }
 .navbar-left-side .option {
+  cursor: pointer;
+  transition: 0.2s;
+}
+.navbar-left-side .option p {
+  font-size: 14px;
   cursor: pointer;
   transition: 0.2s;
 }
@@ -1046,9 +1056,9 @@ input:-webkit-autofill {
 }
 
 .input-edit {
-  width: 150px;
+  /* width: 150px; */
   background-color: white;
-  font-size: 40px;
+  font-size: 24px;
   font-weight: 700;
   font-family: 'Plus Jakarta Sans';
   border: none;
@@ -4576,13 +4586,27 @@ p {
   display: flex;
   flex-direction: row;
 }
+.trip-options .option-cold {
+  font-family: 'Plus Jakarta Sans';
+  font-size: 20px;
+  color: gainsboro;
+  text-align: center;
+  font-weight: 600;
+  border-bottom: 3px solid rgb(240, 240, 240);
+}
 .trip-options .option {
   font-family: 'Plus Jakarta Sans';
   font-size: 20px;
-  color: #242424;
+  color: gainsboro;
   text-align: center;
   font-weight: 600;
-  border-bottom: 3px solid gainsboro;
+  border-bottom: 3px solid rgb(240, 240, 240);
+  cursor: pointer;
+  transition: 0.2s;
+}
+.trip-options .option:hover {
+  color: rgb(200, 200, 200);
+  transition: 0.2s;
 }
 .trip-options .option.upcoming {
   width: 150px;
@@ -4593,11 +4617,43 @@ p {
 .trip-options .option.published {
   width: 200px;
 }
-
-
-
-
-
+.trip-options .option.selected {
+  color: #242424;
+  border-bottom: 3px solid #6663FC;
+}
+.dropdown-box {
+  border: 1px solid gainsboro;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: row;
+  padding: 6px 12px;
+  font-size: 18px;
+  color: #7a7a7a;
+  align-items: center;
+  cursor: pointer;
+}
+.dropdown-box .selection {
+  color: gray;
+}
+.searchDiv {
+  position: relative;
+}
+.search-box {
+  border: 2px solid #d9d9d9;
+  border-radius: 8px;
+  background-color: white;
+  padding: 12px 60px 12px 24px;
+  font-size: 16px;
+}
+.search-box:focus {
+  outline: none;
+}
+.right-icon-overlay {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 20px;
+}
 
 
 

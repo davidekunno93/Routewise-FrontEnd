@@ -157,11 +157,9 @@ export const Navbar = () => {
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         <div className="flx-c just-ce">
           <Link onClick={() => togglePrototypeMenu()} className=''>
-            {sidebarDisplayed ?
-              <p className="m-0 page-subheading-bold darkpurple-text ws-nowrap ml1vw">{placeListDisplay}</p>
-              :
+            
               <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
-            }
+            
           </Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
@@ -196,7 +194,7 @@ export const Navbar = () => {
           </div>
           <Link to='/mytrips'><div className={`${pageOpen === "my trips" ? "option-selected" : "option"}`}>
             <div className="flx-r gap-2">
-              <span className={`material-symbols-outlined ${pageOpen === 'my trips' && "purple-text"}`}>
+              <span className={`material-symbols-outlined`}>
                 flight_takeoff
               </span>
               <p className="m-0">My Trips</p>

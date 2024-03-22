@@ -66,8 +66,8 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
 
 
 
-    
-    
+
+
 
     const viewTrip = async (trip, navigation) => {
         clearCurrentTrip()
@@ -152,7 +152,18 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
         setIsLoading(false)
     }
 
-
+    // my trip list code
+    const [myTripList, setMyTripList] = useState('upcoming');
+    const [tripSearchQuery, setTripSearchQuery] = useState(null);
+    const updateTripSearchQuery = (e) => {
+        console.log(e.target.value)
+        if (e.target.value.length > 0) {
+            console.log('updating search query')
+            setTripSearchQuery(e.target.value.toLowerCase())
+        } else {
+            setTripSearchQuery(null)
+        }
+    }
 
 
     // date change code
@@ -186,22 +197,38 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     }
 
 
+
     return (
         <div>
             <div className="page-container75 flx-c">
-                <p className="m-0 page-subheading-bold mt-6 mb-4h">My Trips</p>
+                <div className="align-all-items mt-6 mb-4h">
+                    <p className="m-0 page-subheading-bold">My Trips</p>
+                    <div className="searchDiv position-right">
+                        <input onChange={(e) => updateTripSearchQuery(e)} type="text" className="search-box" placeholder='Search my trips' />
+                        <span className="material-symbols-outlined right-icon-overlay gray-text">search</span>
+                    </div>
+
+                </div>
 
                 <div className="trip-options flx-r">
-                    <div className="option upcoming">Upcoming Trips</div>
-                    <div className="option past">Past Trips</div>
+                    <div onClick={() => setMyTripList('upcoming')} className={`option upcoming ${myTripList === 'upcoming' && "selected"}`}>Upcoming Trips</div>
+                    <div onClick={() => setMyTripList('past')} className={`option past ${myTripList === 'past' && "selected"}`}>Past Trips</div>
                     <div className="option published">Published Itineraries</div>
+                    <div className="option-cold flx-1"></div>
+                    <div className="sortBy flx-r align-all-items gap-2 ml-4 position-right">
+                        <p className="m-0 gray-text">Sort By:</p>
+                        <div className="dropdown-box flx-r">
+                            <p className="m-0 selection">Most Recent</p>
+                            <span className="material-symbols-outlined selection">arrow_drop_down</span>
+                        </div>
+                    </div>
                 </div>
 
 
 
                 {isLoadingTrips &&
                     // <p className='m-0'>Loading...</p>
-                    <div className="loadingDiv">
+                    <div className="loadingDiv mt-4">
                         <Loading noMascot={true} noText={true} />
                     </div>
                 }
@@ -209,52 +236,180 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
 
                 <div className="userTrips flx-r flx-wrap gap-8">
                     {userTrips ? userTrips.map((trip, index) => {
+                        let upcoming = new Date(trip.endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)
+                        let searchMatch = tripSearchQuery ? trip.trip_name.toLowerCase().includes(tripSearchQuery) : "n/a"
+                        if (!tripSearchQuery) {
 
-                        return <div className="userTrip-card">
-                            <div id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                    <p className="m-0">Edit trip details</p>
-                                    <span className="material-symbols-outlined large mx-1">
-                                        edit
-                                    </span>
-                                </div>
 
-                                <div onClick={() => deleteTrip(trip)} className="option">
-                                    <p className="m-0">Delete trip</p>
-                                    <span className="material-symbols-outlined large mx-1">
-                                        delete
-                                    </span>
-                                </div>
-                            </div>
-                            <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
-                                <img src={trip.dest_img} alt="" className="card-img pointer" />
-                            </div>
-                            <div className="card-footer">
-                                <div className="card-info">
-                                    <div className="align-all-items">
-                                        <div className="card-title">{trip.trip_name}</div>
+                            if (myTripList === 'upcoming' && !tripSearchQuery) {
+
+                                return upcoming && <div className="userTrip-card">
+                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                            <p className="m-0">Edit trip details</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                edit
+                                            </span>
+                                        </div>
+
+                                        <div onClick={() => deleteTrip(trip)} className="option">
+                                            <p className="m-0">Delete trip</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                delete
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="card-days">
+                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                    </div>
+                                    <div className="card-footer">
+                                        <div className="card-info">
+                                            <div className="align-all-items">
+                                                <div className="card-title">{trip.trip_name}</div>
+                                            </div>
+                                            <div className="card-days">
 
-                                        <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                        <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
-                                        <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
 
+                                            </div>
+                                        </div>
+                                        <div className="card-icons">
+                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="card-icons">
-                                    <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
-                                    <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                            } else if (myTripList === 'past' && !tripSearchQuery) {
+                                return !upcoming && <div className="userTrip-card">
+                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                            <p className="m-0">Edit trip details</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                edit
+                                            </span>
+                                        </div>
+
+                                        <div onClick={() => deleteTrip(trip)} className="option">
+                                            <p className="m-0">Delete trip</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                delete
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                    </div>
+                                    <div className="card-footer">
+                                        <div className="card-info">
+                                            <div className="align-all-items">
+                                                <div className="card-title">{trip.trip_name}</div>
+                                            </div>
+                                            <div className="card-days">
+
+                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
+                                            </div>
+                                        </div>
+                                        <div className="card-icons">
+                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            }
+                        } else if (tripSearchQuery) {
+                            if (myTripList === 'upcoming') {
+
+                                return upcoming && searchMatch && <div className="userTrip-card">
+                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                            <p className="m-0">Edit trip details</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                edit
+                                            </span>
+                                        </div>
+
+                                        <div onClick={() => deleteTrip(trip)} className="option">
+                                            <p className="m-0">Delete trip</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                delete
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                    </div>
+                                    <div className="card-footer">
+                                        <div className="card-info">
+                                            <div className="align-all-items">
+                                                <div className="card-title">{trip.trip_name}</div>
+                                            </div>
+                                            <div className="card-days">
+
+                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
+                                            </div>
+                                        </div>
+                                        <div className="card-icons">
+                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                        </div>
+                                    </div>
+                                </div>
+                            } else if (myTripList === 'past') {
+                                return !upcoming && searchMatch && <div className="userTrip-card">
+                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                            <p className="m-0">Edit trip details</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                edit
+                                            </span>
+                                        </div>
+
+                                        <div onClick={() => deleteTrip(trip)} className="option">
+                                            <p className="m-0">Delete trip</p>
+                                            <span className="material-symbols-outlined large mx-1">
+                                                delete
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                    </div>
+                                    <div className="card-footer">
+                                        <div className="card-info">
+                                            <div className="align-all-items">
+                                                <div className="card-title">{trip.trip_name}</div>
+                                            </div>
+                                            <div className="card-days">
+
+                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
+                                            </div>
+                                        </div>
+                                        <div className="card-icons">
+                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
                     }) : null}
-
+                    <div className="empty-6"></div>
                     {/* {userTrips ? userTrips.map((trip, index) => {
 
-
+                        
                         return <div key={index} className="userTrip-box">
-                            <div ref={refPopUp}>
+                        <div ref={refPopUp}>
                                 <div id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
                                         <p className="m-0">Edit trip details</p>
