@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { Loading } from '../components/Loading';
@@ -8,7 +8,10 @@ import { useNavigate } from 'react-router-dom';
 const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     const { user } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
-    const [userTrips, setUserTrips] = useState(null)
+    const [userTrips, setUserTrips] = useState([])
+    const [upcomingTrips, setUpcomingTrips] = useState(null);
+    const [pastTrips, setPastTrips] = useState(null);
+    const [publishedTrips, setPublishedTrips] = useState(null);
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     const navigate = useNavigate()
     const resetPageOpen = () => {
@@ -18,6 +21,15 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
         setPageOpen('my trips')
         return resetPageOpen;
     }, [])
+
+    const examplePublishedTrip = {
+        trip_name: "Paris 2024",
+        imgUrl: "https://i.imgur.com/NIID4oP.jpg",
+        duration: "5 days, 4 nights",
+        desc: "Description section for users to create a concise and engaging summary of what their audience can expect if they were to purchase the itinerary and visit the featured places",
+        tags: ["budgetFriendly", "foodie", "history"],
+        price: 5.00,
+    }
 
     // get user trips code
     const getUserTripsData = async () => {
@@ -30,19 +42,64 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
             let data = await getUserTripsData()
             setUserTrips(data)
             console.log(data)
+            // sortMyTrips()
+
+            let upcomingTripsArr = []
+            let pastTripsArr = []
+            // sort trips into past and upcoming
+            if (data && data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    if (new Date(data[i].endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)) {
+                        upcomingTripsArr.push(data[i])
+                    } else {
+                        pastTripsArr.push(data[i])
+                    }
+                }
+                // console.log("past Trips", pastTripsArr)
+                // console.log("upcoming Trips", upcomingTripsArr)
+            }
+            setPastTrips(pastTripsArr)
+            setPublishedTrips([examplePublishedTrip])
+            setUpcomingTrips(upcomingTripsArr)
+
             setIsLoadingTrips(false)
         }
     }
+
     useEffect(() => {
         if (auth.currentUser) {
             loadUserTripsData()
             // console.log(auth.currentUser.uid)
         }
-        console.log(userTrips)
+        // console.log(userTrips)
     }, [])
+    // useEffect(() => {
+    //     loadUserTripsData()
+    // }, [user])
+    // sort user trips
+    const sortMyTrips = () => {
+        // userTrips is simple list array of trip objects
+        if (userTrips && userTrips.length > 0) {
+            let upcomingTripsArr = []
+            let pastTripsArr = []
+            for (let i = 0; i < userTrips.length; i++) {
+                if (new Date(userTrips[i].endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)) {
+                    upcomingTripsArr.push(userTrips[i])
+                } else {
+                    pastTripsArr.push(userTrips[i])
+                }
+                // new Date(trip.endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)
+            }
+            console.log("past Trips", pastTripsArr)
+            // console.log("upcoming Trips", upcomingTripsArr)
+            setPastTrips(pastTripsArr)
+            setUpcomingTrips(upcomingTripsArr)
+        }
+    }
     useEffect(() => {
-        loadUserTripsData()
-    }, [user])
+        document.addEventListener('click', hidePopUpOnClickOutside, true);
+        return document.removeEventListener('click', hidePopUpOnClickOutside, true);
+    }, [])
 
 
     // user trip box code
@@ -58,9 +115,10 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
         }
     }
     const hidePopUpOnClickOutside = (e) => {
-        if (refPopUp.current && !refPopUp.current.contains(e.target)) {
+        if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id !== "userTripPopUpBtn") {
             closeUserTripPopup()
         }
+        console.log('hi')
     }
     const refPopUp = useRef(null);
 
@@ -156,14 +214,21 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     const [myTripList, setMyTripList] = useState('upcoming');
     const [tripSearchQuery, setTripSearchQuery] = useState(null);
     const updateTripSearchQuery = (e) => {
-        console.log(e.target.value)
+        // console.log(e.target.value)
         if (e.target.value.length > 0) {
-            console.log('updating search query')
+            // console.log('updating search query')
             setTripSearchQuery(e.target.value.toLowerCase())
         } else {
             setTripSearchQuery(null)
         }
     }
+
+    // published trips popup code
+    const togglePublishedTripPopUp = (index) => {
+        let popUp = document.getElementById(`publishedTrip-popUp-${index}`)
+        popUp.classList.toggle('hidden-o')
+    }
+
 
 
     // date change code
@@ -197,7 +262,6 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     }
 
 
-
     return (
         <div>
             <div className="page-container75 flx-c">
@@ -213,7 +277,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                 <div className="trip-options flx-r">
                     <div onClick={() => setMyTripList('upcoming')} className={`option upcoming ${myTripList === 'upcoming' && "selected"}`}>Upcoming Trips</div>
                     <div onClick={() => setMyTripList('past')} className={`option past ${myTripList === 'past' && "selected"}`}>Past Trips</div>
-                    <div className="option published">Published Itineraries</div>
+                    <div onClick={() => setMyTripList('published')} className={`option published ${myTripList === 'published' && 'selected'}`}>Published Itineraries</div>
                     <div className="option-cold flx-1"></div>
                     <div className="sortBy flx-r align-all-items gap-2 ml-4 position-right">
                         <p className="m-0 gray-text">Sort By:</p>
@@ -235,173 +299,266 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
 
 
                 <div className="userTrips flx-r flx-wrap gap-8">
-                    {userTrips ? userTrips.map((trip, index) => {
-                        let upcoming = new Date(trip.endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)
+                    {/* upcoming trips */}
+                    {upcomingTrips ? myTripList === 'upcoming' && upcomingTrips.length === 0 &&
+                        <p className="m-0">No Upcoming Trips</p>
+                        :
+                        null
+                    }
+                    {upcomingTrips ? myTripList === 'upcoming' && upcomingTrips.length > 0 && upcomingTrips.map((trip, index) => {
+                        // let upcoming = new Date(trip.endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)
                         let searchMatch = tripSearchQuery ? trip.trip_name.toLowerCase().includes(tripSearchQuery) : "n/a"
                         if (!tripSearchQuery) {
 
-
-                            if (myTripList === 'upcoming' && !tripSearchQuery) {
-
-                                return upcoming && <div className="userTrip-card">
-                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                            <p className="m-0">Edit trip details</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                edit
-                                            </span>
-                                        </div>
-
-                                        <div onClick={() => deleteTrip(trip)} className="option">
-                                            <p className="m-0">Delete trip</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                delete
-                                            </span>
-                                        </div>
+                            return <div key={index} className="userTrip-card">
+                                <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                    <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            edit
+                                        </span>
                                     </div>
-                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
-                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
-                                    </div>
-                                    <div className="card-footer">
-                                        <div className="card-info">
-                                            <div className="align-all-items">
-                                                <div className="card-title">{trip.trip_name}</div>
-                                            </div>
-                                            <div className="card-days">
 
-                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
-                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
-
-                                            </div>
-                                        </div>
-                                        <div className="card-icons">
-                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
-                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
-                                        </div>
+                                    <div onClick={() => deleteTrip(trip)} className="option">
+                                        <p className="m-0">Delete trip</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            delete
+                                        </span>
                                     </div>
                                 </div>
-                            } else if (myTripList === 'past' && !tripSearchQuery) {
-                                return !upcoming && <div className="userTrip-card">
-                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                            <p className="m-0">Edit trip details</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                edit
-                                            </span>
+                                <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                    <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                </div>
+                                <div className="card-footer">
+                                    <div className="card-info">
+                                        <div className="align-all-items">
+                                            <div className="card-title">{trip.trip_name}</div>
                                         </div>
+                                        <div className="card-days">
 
-                                        <div onClick={() => deleteTrip(trip)} className="option">
-                                            <p className="m-0">Delete trip</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                delete
-                                            </span>
+                                            <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                            <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                            <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
                                         </div>
                                     </div>
-                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
-                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
-                                    </div>
-                                    <div className="card-footer">
-                                        <div className="card-info">
-                                            <div className="align-all-items">
-                                                <div className="card-title">{trip.trip_name}</div>
-                                            </div>
-                                            <div className="card-days">
-
-                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
-                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
-
-                                            </div>
-                                        </div>
-                                        <div className="card-icons">
-                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
-                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
-                                        </div>
+                                    <div className="card-icons">
+                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
                                     </div>
                                 </div>
-                            }
+                            </div>
+
                         } else if (tripSearchQuery) {
-                            if (myTripList === 'upcoming') {
 
-                                return upcoming && searchMatch && <div className="userTrip-card">
-                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                            <p className="m-0">Edit trip details</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                edit
-                                            </span>
-                                        </div>
-
-                                        <div onClick={() => deleteTrip(trip)} className="option">
-                                            <p className="m-0">Delete trip</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                delete
-                                            </span>
-                                        </div>
+                            return searchMatch && <div key={index} className="userTrip-card">
+                                <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                    <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            edit
+                                        </span>
                                     </div>
-                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
-                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
-                                    </div>
-                                    <div className="card-footer">
-                                        <div className="card-info">
-                                            <div className="align-all-items">
-                                                <div className="card-title">{trip.trip_name}</div>
-                                            </div>
-                                            <div className="card-days">
 
-                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
-                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
-
-                                            </div>
-                                        </div>
-                                        <div className="card-icons">
-                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
-                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
-                                        </div>
+                                    <div onClick={() => deleteTrip(trip)} className="option">
+                                        <p className="m-0">Delete trip</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            delete
+                                        </span>
                                     </div>
                                 </div>
-                            } else if (myTripList === 'past') {
-                                return !upcoming && searchMatch && <div className="userTrip-card">
-                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                            <p className="m-0">Edit trip details</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                edit
-                                            </span>
+                                <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                    <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                </div>
+                                <div className="card-footer">
+                                    <div className="card-info">
+                                        <div className="align-all-items">
+                                            <div className="card-title">{trip.trip_name}</div>
                                         </div>
+                                        <div className="card-days">
 
-                                        <div onClick={() => deleteTrip(trip)} className="option">
-                                            <p className="m-0">Delete trip</p>
-                                            <span className="material-symbols-outlined large mx-1">
-                                                delete
-                                            </span>
+                                            <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                            <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                            <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
                                         </div>
                                     </div>
-                                    <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
-                                        <img src={trip.dest_img} alt="" className="card-img pointer" />
-                                    </div>
-                                    <div className="card-footer">
-                                        <div className="card-info">
-                                            <div className="align-all-items">
-                                                <div className="card-title">{trip.trip_name}</div>
-                                            </div>
-                                            <div className="card-days">
-
-                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                                <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
-                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
-
-                                            </div>
-                                        </div>
-                                        <div className="card-icons">
-                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
-                                            <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
-                                        </div>
+                                    <div className="card-icons">
+                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
                                     </div>
                                 </div>
-                            }
+                            </div>
+
+                        }
+                    }) : null}
+
+                    {/* past trips */}
+                    {pastTrips ? myTripList === 'past' && pastTrips.length === 0 &&
+                        <p className="m-0">No Past Trips</p>
+                        :
+                        null
+                    }
+                    {pastTrips ? myTripList === 'past' && pastTrips.length > 0 && pastTrips.map((trip, index) => {
+                        // let upcoming = new Date(trip.endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)
+                        let searchMatch = tripSearchQuery ? trip.trip_name.toLowerCase().includes(tripSearchQuery) : "n/a"
+                        if (!tripSearchQuery) {
+
+                            return <div key={index} className="userTrip-card">
+                                <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                    <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            edit
+                                        </span>
+                                    </div>
+
+                                    <div onClick={() => deleteTrip(trip)} className="option">
+                                        <p className="m-0">Delete trip</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                                <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                    <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                </div>
+                                <div className="card-footer">
+                                    <div className="card-info">
+                                        <div className="align-all-items">
+                                            <div className="card-title">{trip.trip_name}</div>
+                                        </div>
+                                        <div className="card-days">
+
+                                            <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                            <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                            <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
+                                        </div>
+                                    </div>
+                                    <div className="card-icons">
+                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        } else if (tripSearchQuery) {
+
+                            return searchMatch && <div className="userTrip-card">
+                                <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                    <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            edit
+                                        </span>
+                                    </div>
+
+                                    <div onClick={() => deleteTrip(trip)} className="option">
+                                        <p className="m-0">Delete trip</p>
+                                        <span className="material-symbols-outlined large mx-1">
+                                            delete
+                                        </span>
+                                    </div>
+                                </div>
+                                <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="card-imgFrame">
+                                    <img src={trip.dest_img} alt="" className="card-img pointer" />
+                                </div>
+                                <div className="card-footer">
+                                    <div className="card-info">
+                                        <div className="align-all-items">
+                                            <div className="card-title">{trip.trip_name}</div>
+                                        </div>
+                                        <div className="card-days">
+
+                                            <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
+                                            <p className="m-0 gray-text small">&nbsp; &#9679; &nbsp;</p>
+                                            <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+
+                                        </div>
+                                    </div>
+                                    <div className="card-icons">
+                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                    }) : null}
+
+                    {/* published trips */}
+                    {publishedTrips ? myTripList === 'published' && publishedTrips.length === 0 &&
+                        <p className="m-0">No Published Trips</p>
+                        :
+                        null
+                    }
+                    {publishedTrips ? myTripList === 'published' && publishedTrips.length > 0 && publishedTrips.map((trip, index) => {
+                        let searchMatch = tripSearchQuery ? trip.trip_name.toLowerCase().includes(tripSearchQuery) : "n/a"
+                        if (!tripSearchQuery) {
+
+                            return <div key={index} className="publishedTrip-card">
+                                <div id={`publishedTrip-popUp-${index}`} className="popUp hidden-o">
+                                    <div className="option">
+                                        <p className="m-0">Edit details</p>
+                                        <span className="material-symbols-outlined large">edit</span>
+                                    </div>
+                                    <div className="option">
+                                        <p className="m-0">Edit itinerary</p>
+                                        <span className="material-symbols-outlined large">map</span>
+                                    </div>
+                                    <div className="option">
+                                        <p className="m-0">View analytics</p>
+                                        <span className="material-symbols-outlined large">bar_chart</span>
+                                    </div>
+                                    <div className="option">
+                                        <p className="m-0">Share</p>
+                                        <span className="material-symbols-outlined large">share</span>
+                                    </div>
+
+                                </div>
+                                <img src={trip.imgUrl} alt="" className="card-img" />
+                                <div className="card-body">
+                                    <p className="m-0 title">{trip.trip_name}</p>
+                                    <p className="m-0 duration">{trip.duration}</p>
+
+                                    <p className="m-0 description">{trip.desc}</p>
+
+                                    <div className="tags flx-r">
+                                        {trip.tags.map((tag, index) => {
+                                            return <div key={index} className="tag">#{tag}</div>
+                                        })}
+                                    </div>
+
+                                    <p className="m-0 itinerary-price">${trip.price}{!trip.price.toString().includes(".") && ".00"}</p>
+                                </div>
+                                <div className="side-options">
+                                    <span onClick={() => togglePublishedTripPopUp(index)} className="material-symbols-outlined pointer">more_vert</span>
+                                    <span className="material-symbols-outlined">public</span>
+                                </div>
+                            </div>
+                        } else {
+                            return searchMatch && <div key={index} className="publishedTrip-card">
+                                <img src={trip.imgUrl} alt="" className="card-img" />
+                                <div className="card-body">
+                                    <p className="m-0 title">{trip.trip_name}</p>
+                                    <p className="m-0 duration">{trip.duration}</p>
+
+                                    <p className="m-0 description">{trip.desc}</p>
+
+                                    <div className="tags flx-r">
+                                        {trip.tags.map((tag, index) => {
+                                            return <div key={index} className="tag">#{tag}</div>
+                                        })}
+                                    </div>
+
+                                    <p className="m-0 itinerary-price">${trip.price}{!trip.price.toString().includes(".") && ".00"}</p>
+                                </div>
+                                <div className="side-options">
+                                    <span className="material-symbols-outlined pointer">more_vert</span>
+                                    <span className="material-symbols-outlined">public</span>
+                                </div>
+                            </div>
                         }
                     }) : null}
                     <div className="empty-6"></div>

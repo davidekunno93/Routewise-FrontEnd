@@ -14,6 +14,47 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
     const [tripName, setTripName] = useState('')
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate()
+    // date functions
+    const datinormal = (systemDate) => {
+        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+        if (month.toString().length === 1) {
+            month = "0" + month
+        }
+        // console.log(month)
+        let fullYear = systemDate.getFullYear()
+        // console.log(month+"/"+day+"/"+fullYear)
+        return month + "/" + day + "/" + fullYear
+    }
+    const datify = (normalDate) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let day = normalDate.slice(3, 5)
+        let monthNum = normalDate.slice(0, 2)
+        if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+        }
+        let fullYear = normalDate.slice(6)
+        const month = months[monthNum - 1]
+        if (day.charAt(0) === "0") {
+            day = day[1]
+        }
+        let twoYear = fullYear.slice(2)
+        return month + " " + day + ", " + twoYear
+    }
+    // from slash or normal date to dash date
+    const datidash = (mmddyyyy) => {
+        let year = mmddyyyy.slice(6)
+        let month = mmddyyyy.slice(0, 2)
+        let day = mmddyyyy.slice(3, 5)
+        return year + "-" + month + "-" + day
+    }
+    // from dash date to slash or normal date
+    const datiundash = (dashDate) => {
+        let fullyear = dashDate.slice(0, 4)
+        let month = dashDate.slice(5, 7)
+        let day = dashDate.slice(8)
+        return month + "/" + day + "/" + fullyear
+    }
     useEffect(() => {
         loadCityImg()
         console.log(tripData)
@@ -22,7 +63,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
     const getCityImg = () => {
         const response = axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${tripData.cityName}-${tripData.state}-landmarks`)
             .then((response) => {
-                console.log('.then method working')
+                // console.log('.then method working')
                 console.log(response)
                 return response.data
             })
@@ -76,7 +117,11 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         let tripNameInput = document.getElementById('tripNameInput')
         if (tripName.length > 0) {
             // updateCurrentTrip()
-            sendData()
+            if (auth.currentUser) {
+                sendData()
+            } else {
+                processData()
+            }
             // navigate('/add-places')
         } else {
             tripNameInput.classList.add('entry-error')
@@ -92,56 +137,52 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
     const sendData = async () => {
         setLoading(true)
         let tripDataCopy = { ...tripData }
-        tripDataCopy['tripName'] = tripName,
-            tripDataCopy['destinationImg'] = cityImg
-        let data = {
-            uid: auth.currentUser.uid,
-            tripData: tripDataCopy
-        }
-        console.log(data)
-        const response = await axios.post("https://routewise-backend.onrender.com/places/trip", JSON.stringify(data), {
-            headers: { "Content-Type": "application/json" }
-        })
-            // return response.status === 200 ? response.data : "error"
-            .then((response) => processData(response))
-            .catch((error) => {
-                console.log(error)
-                setLoading(false);
-                alert("Something went wrong. Please try again")
+        tripDataCopy['tripName'] = tripName
+        tripDataCopy['destinationImg'] = cityImg
+        if (auth.currentUser) {
+
+            let data = {
+                uid: auth.currentUser.uid,
+                tripData: tripDataCopy
+            }
+            console.log(data)
+            const response = await axios.post("https://routewise-backend.onrender.com/places/trip", JSON.stringify(data), {
+                headers: { "Content-Type": "application/json" }
             })
+                // return response.status === 200 ? response.data : "error"
+                .then((response) => processData(response))
+                .catch((error) => {
+                    console.log(error)
+                    setLoading(false);
+                    alert("Something went wrong. Please try again")
+                })
+        }
     }
 
     const processData = async (response) => {
         // **old code - we went thru processData first to await the sent data before continuing but errors were not handled as desired
-        // setLoading(true)
-        // let data = await sendData()
-        let data = response.data
-        // console.log(data)
-        // if (data === 'error') {
-        //     setLoading(false)
-        //     alert('Something went wrong. Please try again later')
-        // } else {
+        let data = response ? response.data : null
         let currentTripCopy = { ...currentTrip }
-        currentTripCopy.tripID = data.trip_id
+        const one_day = 1000*60*60*24;
+        currentTripCopy.tripID = data ? data.trip_id : null
         currentTripCopy.tripName = tripName
         currentTripCopy.city = tripData.cityName
         currentTripCopy.country = tripData.country
         currentTripCopy.country_2letter = tripData.country_2letter
-        currentTripCopy.startDate = data.start_date
+        currentTripCopy.startDate = data ? data.start_date : datidash(tripData.startDate)
         // currentTripCopy.startDate = data.start_date.split(' ').slice(1, 4).join(' ')
-        currentTripCopy.endDate = data.end_date
+        currentTripCopy.endDate = data ? data.end_date : datidash(tripData.endDate)
         // currentTripCopy.endDate = data.end_date.split(' ').slice(1, 4).join(' ')
-        currentTripCopy.tripDuration = data.duration
+        currentTripCopy.tripDuration = data ? data.duration : Math.ceil((new Date(tripData.endDate).getTime()-new Date(tripData.startDate).getTime())/(one_day))+1
         currentTripCopy.geocode = tripData.geocode
         currentTripCopy.imgUrl = cityImg
         // reset itinerary in case it has already been generated from previous trip by user
         currentTripCopy.itinerary = null
         currentTripCopy.places = []
+        console.log(currentTripCopy)
         setCurrentTrip(currentTripCopy)
         setLoading(false)
         navigate('/add-places')
-
-        // }
     }
 
 
@@ -164,13 +205,13 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
                         Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span>
                         <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link onClick={changeCity}>here</Link> to find the right one</p>
                     </div>
-                    <input onChange={(e) => updateTripName(e)} id='tripNameInput' className="input-model" placeholder='Enter a name for your trip' required />
+                    <input onChange={(e) => updateTripName(e)} id='tripNameInput' className="input-model" placeholder='Enter a name for your trip' autoComplete='off' required />
                     {/* <img src="https://i.imgur.com/sCT1BpF.jpg" alt="" className="tripModal-img my-3" /> */}
                     {cityImg &&
                         <img src={cityImg} alt="" className="tripModal-img my-3" />
                     }
                     <button onClick={() => startPlanningWithName()} className="btn-primaryflex">Start Planning!</button>
-                    <Link onClick={() => startPlanningWithoutName()} className='font-jakarta mt-1'>Skip</Link>
+                    {/* <Link onClick={() => startPlanningWithoutName()} className='font-jakarta mt-1'>Skip</Link> */}
                 </div>
             </div>
         </>

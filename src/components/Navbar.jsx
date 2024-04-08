@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
+import SurveyModal from './SurveyModal';
 
 export const Navbar = () => {
   const { showNavbar } = useContext(DataContext);
@@ -52,6 +53,7 @@ export const Navbar = () => {
     // window.localStorage.removeItem("isLoggedIn");
     // console.log('remove loggedIn')
     signOut(auth)
+    // auth.signOut()
     setUser(null)
     // navigate('/') can't navigate on a link element
   }
@@ -250,6 +252,7 @@ export const Navbar = () => {
         }
       </div>
       <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
+      {/* <SurveyModal /> */}
     </>
   )
 }

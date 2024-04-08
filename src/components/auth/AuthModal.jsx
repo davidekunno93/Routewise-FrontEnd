@@ -139,6 +139,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
             nature: prefs ? prefs.nature : false,
             shopping: prefs ? prefs.shopping : false,
             food: prefs ? prefs.food : false,
+            nightclub: prefs ? prefs.nightclub ? prefs.nightclub : false : false,
             relaxation: prefs ? prefs.relaxation : false,
             entertainment: prefs ? prefs.entertainment : false,
             arts: prefs ? prefs.arts : false

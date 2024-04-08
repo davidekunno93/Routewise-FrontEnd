@@ -1083,6 +1083,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     const printPlaces = () => {
         console.log(places)
     }
+    const printCurrentTrip = () => {
+        console.log(currentTrip)
+    }
 
     return (
         <>
@@ -1105,7 +1108,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             <div className="page-container90 vh-100 flx-c">
                 <div className="add-places-title-row flx-r align-c gap-8">
 
-                    <p onClick={() => printPlaces()} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                    <p onClick={() => {printPlaces(); printCurrentTrip()}} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                     <div className="tripInfo flx-r align-c gap-2 position-relative">
                         <span className="material-symbols-outlined o-50">
                             calendar_month
@@ -1125,8 +1128,11 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                             }
                         </div>
                     </div>
+                    {currentTrip.tripID !== null ?
                     <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
-
+                    :
+                    <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
+                }
 
                 </div>
 

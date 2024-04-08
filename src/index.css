@@ -917,6 +917,34 @@ w-0 {
   background-color: beige;
   border-radius: 8px;
 }
+.survey-modal {
+  background-color: white;
+  width: 80%;
+  height: 90vh;
+  margin: auto;
+  border-radius: 12px;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  /* overflow: auto; */
+}
+.overflow-auto {
+  overflow: auto;
+}
+.survey-modal::-webkit-scrollbar {
+  width: 0;
+}
+.survey-modal .content {
+  padding: 0px 32px;
+}
+.survey-modal .title {
+  font-size: 36px;
+  font-weight: 600;
+}
+.survey-modal .text {
+  font-size: 20px;
+}
 
 .overlay-placeholder {
   position: fixed;
@@ -1940,11 +1968,11 @@ p {
   color: #242424;
 }
 
-.card2 {
+.card2-smaller {
   display: flex;
   flex-direction: column;
-  width: 200px;
-  height: 250px;
+  width: 109px;
+  height: 130px;
   padding: 0;
   align-items: center;
   border: 3px solid gainsboro;
@@ -1952,13 +1980,14 @@ p {
   background-color: white;
   cursor: pointer;
   transition: 0.2s;
+  position: relative;
 }
 
-.card2-selected {
+.card2-smaller-selected {
   display: flex;
   flex-direction: column;
-  width: 200px;
-  height: 250px;
+  width: 109px;
+  height: 130px;
   padding: 0;
   align-items: center;
   border: 3px solid #D1CDF0;
@@ -1966,6 +1995,58 @@ p {
   background-color: #F0EFFF;
   cursor: pointer;
   transition: 0.2s;
+  position: relative;
+}
+.card2-smaller:hover {
+  filter: brightness(95%);
+  transition: 0.2s;
+}
+
+.card2-smaller:active {
+  filter: brightness(85%);
+}
+.card2-frozen {
+  display: flex;
+  flex-direction: column;
+  width: 167px;
+  height: 200px;
+  padding: 0;
+  align-items: center;
+  border: 3px solid gainsboro;
+  border-radius: 8px;
+  background-color: white;
+  /* cursor: pointer; */
+  transition: 0.2s;
+  position: relative;
+}
+.card2 {
+  display: flex;
+  flex-direction: column;
+  width: 167px;
+  height: 200px;
+  padding: 0;
+  align-items: center;
+  border: 3px solid gainsboro;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
+}
+
+.card2-selected {
+  display: flex;
+  flex-direction: column;
+  width: 167px;
+  height: 200px;
+  padding: 0;
+  align-items: center;
+  border: 3px solid #D1CDF0;
+  border-radius: 8px;
+  background-color: #F0EFFF;
+  cursor: pointer;
+  transition: 0.2s;
+  position: relative;
 }
 
 .card2:hover {
@@ -1977,19 +2058,24 @@ p {
   filter: brightness(85%);
 }
 
-.green-checkbox {
-  width: 30px;
-  height: 30px;
-  background-color: #55ca46;
-  border-radius: 18px;
+.card2-imgDiv {
   display: flex;
-  position: absolute;
-  top: 12px;
-  right: 14px;
+  flex: 1;
 }
-
 .card2-img {
-  width: 60%;
+  /* width: 60%; */
+  height: 64px;
+  width: 64px;
+  object-fit: contain;
+  margin: auto 0 0 0;
+  /* border-radius: 12px; */
+}
+.card2-smaller-img {
+  /* width: 60%; */
+  height: 50px;
+  width: 50px;
+  object-fit: contain;
+  margin: auto 0 0 0;
   /* border-radius: 12px; */
 }
 
@@ -2001,10 +2087,26 @@ p {
   font-family: 'Plus Jakarta Sans';
   font-weight: 600;
   width: 100%;
+  color: #242424;
 }
 
 .card2-title {
-  font-size: x-large;
+  font-size: 18px;
+  text-align: center;
+}
+.card2-smaller-title {
+  font-size: 13px;
+  text-align: center;
+}
+.green-checkbox {
+  width: 30px;
+  height: 30px;
+  background-color: #55ca46;
+  border-radius: 18px;
+  display: flex;
+  position: absolute;
+  top: 12px;
+  right: 14px;
 }
 
 .card4-img {
@@ -2021,6 +2123,110 @@ p {
   border-radius: 12px;
   overflow: hidden;
   background-color: white;
+}
+
+.publishedTrip-card {
+  /* background-color: beige; */
+  width: 100%;
+  height: 340px;
+  padding: 24px 0px;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid gainsboro;
+  position: relative;
+}
+.publishedTrip-card .popUp {
+  display: flex;
+  top: 48px;
+  right: 20px;
+  flex-direction: column;
+  background-color: white;
+  color: #242424;
+  border-radius: 8px;
+  width: 200px;
+  position: absolute;
+  overflow: hidden;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+.publishedTrip-card .popUp .option {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 8px;
+  border-bottom: 1px solid rgb(235, 235, 235);
+  transition: 0.2s;
+  cursor: pointer;
+  justify-content: space-between;
+}
+.publishedTrip-card .popUp .option:hover {
+  background-color: rgb(235, 235, 235);
+  transition: 0.2s;
+}
+.publishedTrip-card .card-img {
+  height: 100%;
+  width: 258px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+}
+.publishedTrip-card .card-body {
+  flex: 1;
+  height: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  color: #242424;
+}
+.publishedTrip-card .card-body .title {
+  font-size: 24px;
+  font-weight: 600;
+}
+.publishedTrip-card .card-body .duration {
+  font-size: 16px;
+  color: gray;
+}
+.publishedTrip-card .card-body .description {
+  font-size: 18px;
+  color: gray;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  height: 80px;
+  overflow: auto;
+}
+.publishedTrip-card .card-body .description::-webkit-scrollbar {
+  width: 0px;
+}
+.publishedTrip-card .card-body .itinerary-price {
+  font-size: 20px;
+  font-weight: 600;
+  margin: auto 0 0 0;
+}
+.publishedTrip-card .card-body .tags {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  margin: auto 0 0 0;
+}
+.publishedTrip-card .card-body .tag {
+  background-color: #f1f1f1;
+  border-radius: 22px;
+  padding: 4px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Plus Jakarta Sans'
+}
+
+.publishedTrip-card .side-options {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: 0.5;
+  padding: 24px 0px;
+  box-sizing: border-box;
 }
 
 .imgBorder {
@@ -2402,6 +2608,16 @@ p {
   background-color: white;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   height: 140px;
+}
+.progress-bar-modal-container {
+  position: -webkit-sticky;
+  position: sticky;
+  z-index: 20;
+  left: 3%;
+  top: 0;
+  background-color: white;
+  box-shadow: 0 12px 15px -8px rgba(0, 0, 0, 0.05);
+  height: 80px;
 }
 
 .progress-bar {

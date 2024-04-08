@@ -8,7 +8,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import format from 'date-fns/format';
-import { addDays, isWithinInterval } from 'date-fns'
+import { addDays, isWithinInterval, set } from 'date-fns'
 import { SpecifyCity } from './SpecifyCity';
 import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
@@ -21,9 +21,94 @@ import EditTripModal from '../components/EditTripModal';
 
 
 export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
+    // library
+    const cards2 = [
+        {
+            userPreference: "landmarks",
+            imgUrl: 'https://i.imgur.com/nixatab.png',
+            title: 'Landmarks & Attractions'
+        },
+        {
+            userPreference: "nature",
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
+            title: 'Nature'
+        },
+        {
+            userPreference: "shopping",
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
+            title: 'Shopping'
+        },
+        {
+            userPreference: "food",
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
+            title: 'Food & Restaurants'
+        },
+        {
+            userPreference: "arts",
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
+            title: 'Arts & Culture'
+        },
+        {
+            userPreference: "nightlife",
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
+            title: 'Nightlife'
+        },
+        {
+            userPreference: "entertainment",
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
+            title: 'Music & Entertainment'
+        },
+        {
+            userPreference: "relaxation",
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
+            title: 'Spa & Relaxation'
+        },
+    ]
+    const cards2_dict = {
+        "landmarks": {
+            userPreference: "landmarks",
+            imgUrl: 'https://i.imgur.com/nixatab.png',
+            title: 'Landmarks & Attractions'
+        },
+        "nature": {
+            userPreference: "nature",
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
+            title: 'Nature'
+        },
+        "shopping": {
+            userPreference: "shopping",
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
+            title: 'Shopping'
+        },
+        "food": {
+            userPreference: "food",
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
+            title: 'Food & Restaurants'
+        },
+        "arts": {
+            userPreference: "arts",
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
+            title: 'Arts & Culture'
+        },
+        "nightlife": {
+            userPreference: "nightlife",
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
+            title: 'Nightlife'
+        },
+        "entertainment": {
+            userPreference: "entertainment",
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
+            title: 'Music & Entertainment'
+        },
+        "relaxation": {
+            userPreference: "relaxation",
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
+            title: 'Spa & Relaxation'
+        },
+    }
     // login require
     const { user, setUser } = useContext(DataContext);
-    const { userPreferences } = useContext(DataContext);
+    const { userPreferences, setPreferences } = useContext(DataContext);
     const { sidebarDisplayed, setSidebarDisplayed, showSidebar, hideSidebar } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
@@ -35,7 +120,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const [calendarOpen, setCalendarOpen] = useState(false)
     const [city, setCity] = useState(null);
     const [tripData, setTripData] = useState(null);
-    const [specifyCityOpen, setSpecifyCityOpen] = useState(false)
+    const [specifyCityOpen, setSpecifyCityOpen] = useState(false);
     const [cityOptions, setCityOptions] = useState([
         {
             name: "Rome",
@@ -58,48 +143,15 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         setPageOpen(null)
     }
     useEffect(() => {
+        console.log(Object.entries(userPreferences))
+        console.log(auth.currentUser)
+        setPreferences()
         hideSidebar()
         setPageOpen('dashboard')
         return resetPageOpen;
     }, [])
 
-    const cards2 = [
-        {
-            userPreference: "landmarks",
-            imgUrl: 'https://i.imgur.com/FvhWwnV.png',
-            title: 'Landmarks & Attractions'
-        },
-        {
-            userPreference: "nature",
-            imgUrl: 'https://i.imgur.com/8imPNfF.png',
-            title: 'Nature'
-        },
-        {
-            userPreference: "shopping",
-            imgUrl: 'https://i.imgur.com/oGV9gqi.png',
-            title: 'Shopping'
-        },
-        {
-            userPreference: "food",
-            imgUrl: 'https://i.imgur.com/dTAAsWU.png',
-            title: 'Food & Nightlife'
-        },
-        {
-            userPreference: "relaxation",
-            imgUrl: 'https://i.imgur.com/3UOXniG.png',
-            title: 'Spa & Relaxation'
-        },
-        {
-            userPreference: "entertainment",
-            imgUrl: 'https://i.imgur.com/3WPIK0i.png',
-            title: 'Music & Entertainment'
-        },
-        {
-            userPreference: "arts",
-            imgUrl: 'https://i.imgur.com/BdhaXO4.png',
-            title: 'Arts & Culture'
-        }
-    ]
+
 
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     // get user trips code
@@ -112,7 +164,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         setIsLoadingTrips(true)
         let data = await getUserTripsData()
         setUserTrips(data)
-        console.log(data)
+        // console.log(data)
         setIsLoadingTrips(false)
     }
 
@@ -239,9 +291,16 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     useEffect(() => {
         // setCalendar(format(new Date(), 'MM/dd/yyyy'))
         document.addEventListener('keydown', hideOnEscape, true)
+        return document.removeEventListener('keydown', hideOnEscape, true)
+    }, [])
+    useEffect(() => {
         document.addEventListener('click', hideOnClickOutside, true)
+        return document.removeEventListener('click', hideOnClickOutside, true)
+    }, [])
+    useEffect(() => {
         document.addEventListener('click', hidePopUpOnClickOutside, true)
-    })
+        return document.removeEventListener('click', hidePopUpOnClickOutside, true)
+    }, [])
     const hideOnEscape = (e) => {
         if (e.key === "Escape") {
             setCalendarOpen(false)
@@ -256,9 +315,13 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
     const refOne = useRef(null);
     const hidePopUpOnClickOutside = (e) => {
-        if (refPopUp.current && !refPopUp.current.contains(e.target)) {
+        if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id !== "userTripPopUpBtn") {
             closeUserTripPopup()
+            // console.log('triggered')
         }
+        // console.log(e.target.id)
+        // console.log("refPopup", refPopUp.current)
+        // console.log("e.target", e.target)
     }
     const refPopUp = useRef(null);
 
@@ -484,7 +547,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             }
             placesList.push(place)
         }
-        console.log(placesList)
+        // console.log(placesList)
         let currentTripCopy = {
             tripID: trip.trip_id,
             tripName: trip.trip_name,
@@ -821,8 +884,20 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                 {/* end start trip selection box */}
 
                 {/* my trips */}
-                <p className="m-0 page-subsubheading-bold mt-5">My Trips</p>
-                {isLoadingTrips &&
+                <div className="flx-r align-r just-sb">
+                    <p className="m-0 page-subsubheading-bold mt-5">My Trips</p>
+                    {userTrips && userTrips.length > 4 ?
+                        <Link to='/mytrips'>
+                            <div className="flx-r align-c">
+                                <p className="m-0 purple-text page-text">See all trips</p>
+                                <span className="material-symbols-outlined ml-1 purple-text large">
+                                    arrow_forward
+                                </span>
+                            </div>
+                        </Link>
+                        : null}
+                </div>
+                {isLoadingTrips && auth.currentUser &&
                     // <p className='m-0'>Loading...</p>
                     <div className="loadingDiv">
                         <Loading noMascot={true} noText={true} />
@@ -830,18 +905,6 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                 }
                 {userTrips ?
                     <>
-                        <div className="flx-r align-r just-sb">
-                            {userTrips.length > 4 ?
-                                <Link to='/mytrips'>
-                                    <div className="flx-r align-c">
-                                        <p className="m-0 purple-text page-text">See all trips</p>
-                                        <span className="material-symbols-outlined ml-1 purple-text">
-                                            arrow_forward
-                                        </span>
-                                    </div>
-                                </Link>
-                                : null}
-                        </div>
                         {!userTrips.length > 0 &&
                             <>
                                 <p className="m-0 gray-text">No trips created. <span onClick={() => getCity()} className="purple-text bold500 pointer">Enter a city</span>  to start!</p>
@@ -852,7 +915,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                         <div className="userTrips flx-r gap-8">
                             {userTrips.map((trip, index) => {
 
-                                if (index < 4) {
+                                if (index < 5) {
 
 
                                     return <div key={index} className="userTrip-box">
@@ -870,21 +933,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                         map
                                                     </span>
                                                 </div>
-                                                {/* {trip.is_itinerary &&
-                                                    <div onClick={(() => viewTrip(trip, "itinerary"))} className="option">
-                                                        <p className={`m-0`}>View itinerary</p>
-                                                        <span className="material-symbols-outlined large mx-1">
-                                                            map
-                                                        </span>
-                                                    </div>
-                                                    // :
-                                                    // <div className="option-disabled">
-                                                    //     <p className={`m-0`}>View itinerary</p>
-                                                    //     <span className="material-symbols-outlined large mx-1 gains-text">
-                                                    //         map
-                                                    //     </span>
-                                                    // </div>
-                                                } */}
+
                                                 <div onClick={() => deleteTrip(trip)} className="option">
                                                     <p className="m-0">Delete trip</p>
                                                     <span className="material-symbols-outlined large mx-1">
@@ -892,7 +941,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                     </span>
                                                 </div>
                                             </div>
-                                            <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
+                                            <span id='userTripPopUpBtn' onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
                                                 more_vert
                                             </span>
                                         </div>
@@ -912,17 +961,32 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                     </>
                     : null}
                 {/* end my trips */}
-                {/* {userPreferences ? 
-                            userPreferences.map((pref, index) => {
-                                return 
-                            }) : null} */}
+
                 {/* user preferences selection */}
                 <div className="myTravelPreferences-section mt-5">
                     <div className="flx-r align-c gap-8">
                         <p className="page-subsubheading-bold">My Travel Preferences</p>
                         <Link to='/survey-update'><p className="m-0 purple-text mt-h">Edit</p></Link>
                     </div>
-
+                    <div className="flx-r flx-wrap gap-6">
+                        {Object.entries(userPreferences).map((category, index) => {
+                            let categoryName = category[0]
+                            let selected = category[1]
+                            return selected && <div key={index} className="card2-frozen">
+                                <div className="green-checkbox">
+                                    <span className="material-symbols-outlined white-text m-auto">
+                                        check
+                                    </span>
+                                </div>
+                                <div className="card2-imgDiv">
+                                    <img src={cards2_dict[categoryName].imgUrl} alt="" className="card2-img" />
+                                </div>
+                                <div className="card2-text flx-1">
+                                    <div className="card2-title">{cards2_dict[categoryName].title}</div>
+                                </div>
+                            </div>
+                        })}
+                    </div>
                 </div>
                 {/* end user preferences selection */}
 
@@ -952,7 +1016,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
 
                         </div>
                     </div>
-                    <div className="btns mb-2">
+                    <div className="btns mb-10">
                         <button onClick={() => slideCarouselLeft()} className={translationIndex === 0 ? 'btn-primaryflex-disabled' : 'btn-carousel-special hover-left'}>
                             <span className="material-symbols-outlined mt-1 white-text">
                                 arrow_back

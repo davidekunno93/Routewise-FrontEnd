@@ -57,33 +57,45 @@ export const SurveyUpdate = () => {
 
     const cards2 = [
         {
-            imgUrl: 'https://i.imgur.com/FvhWwnV.png',
+            userPreference: "landmarks",
+            imgUrl: 'https://i.imgur.com/nixatab.png',
             title: 'Landmarks & Attractions'
         },
         {
-            imgUrl: 'https://i.imgur.com/8imPNfF.png',
+            userPreference: "nature",
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
             title: 'Nature'
         },
         {
-            imgUrl: 'https://i.imgur.com/oGV9gqi.png',
+            userPreference: "shopping",
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
             title: 'Shopping'
         },
         {
-            imgUrl: 'https://i.imgur.com/dTAAsWU.png',
-            title: 'Food & Nightlife'
+            userPreference: "food",
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
+            title: 'Food & Restaurants'
         },
         {
-            imgUrl: 'https://i.imgur.com/3UOXniG.png',
-            title: 'Spa & Relaxation'
+            userPreference: "arts",
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
+            title: 'Arts & Culture'
         },
         {
-            imgUrl: 'https://i.imgur.com/3WPIK0i.png',
+            userPreference: "nightlife",
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
+            title: 'Nightlife'
+        },
+        {
+            userPreference: "entertainment",
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
             title: 'Music & Entertainment'
         },
         {
-            imgUrl: 'https://i.imgur.com/BdhaXO4.png',
-            title: 'Arts & Culture'
-        }
+            userPreference: "relaxation",
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
+            title: 'Spa & Relaxation'
+        },
     ]
 
 
@@ -223,7 +235,9 @@ export const SurveyUpdate = () => {
                                     check
                                 </span>
                             </div>
-                            <img src={card2.imgUrl} alt="" className="card2-img mt-2" />
+                            <div className="card2-imgDiv">
+                                <img src={card2.imgUrl} alt="" className="card2-img" />
+                            </div>
                             <div className="card2-text flx-1">
                                 <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
                             </div>
@@ -231,7 +245,7 @@ export const SurveyUpdate = () => {
                     })}
 
                 </div>
-                <button onClick={() => { updateFirestore(); updateUserPreferences(); openUpdatedOverlay() }} className="btn-primaryflex2 center mt-5">
+                <button onClick={() => { updateFirestore(); updateUserPreferences(); openUpdatedOverlay() }} className="btn-primaryflex2 center my-5">
                     <p className='inline'>Update Preferences</p>
                 </button>
             </div>

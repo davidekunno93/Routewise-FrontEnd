@@ -108,8 +108,8 @@ function App() {
           <Navbar />
           <Routes>
             <Route children path='/register' element={<SignUp />} />
-            <Route children path='/' element={auth.currentUser ? <Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} /> : <Landing />} />
-            <Route children path='/landing' element={<Landing />} />
+            <Route children path='/' element={auth.currentUser ? <Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} /> : <Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
+            <Route children path='/landing' element={<Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
             <Route children path='/survey' element={<Survey />} />
             <Route children path='/survey-update' element={<SurveyUpdate />} />
             <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />

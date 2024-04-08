@@ -94,6 +94,8 @@ updated add place to day card and lightbulb icon
 updated datebox design on figma
 CHANGE add userpreferences list of preferences to object so you can map it!
 
+userTrips saves to central user object for quick load after first load
+
 Questions?
 Will saved places have an 'in itinerary' indication?
 

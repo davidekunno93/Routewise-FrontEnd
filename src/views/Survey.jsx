@@ -139,39 +139,44 @@ export const Survey = () => {
     const cards2 = [
         {
             userPreference: "landmarks",
-            imgUrl: 'https://i.imgur.com/FvhWwnV.png',
+            imgUrl: 'https://i.imgur.com/nixatab.png',
             title: 'Landmarks & Attractions'
         },
         {
             userPreference: "nature",
-            imgUrl: 'https://i.imgur.com/8imPNfF.png',
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
             title: 'Nature'
         },
         {
             userPreference: "shopping",
-            imgUrl: 'https://i.imgur.com/oGV9gqi.png',
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
             title: 'Shopping'
         },
         {
             userPreference: "food",
-            imgUrl: 'https://i.imgur.com/dTAAsWU.png',
-            title: 'Food & Nightlife'
-        },
-        {
-            userPreference: "relaxation",
-            imgUrl: 'https://i.imgur.com/3UOXniG.png',
-            title: 'Spa & Relaxation'
-        },
-        {
-            userPreference: "entertainment",
-            imgUrl: 'https://i.imgur.com/3WPIK0i.png',
-            title: 'Music & Entertainment'
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
+            title: 'Food & Restaurants'
         },
         {
             userPreference: "arts",
-            imgUrl: 'https://i.imgur.com/BdhaXO4.png',
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
             title: 'Arts & Culture'
-        }
+        },
+        {
+            userPreference: "nightlife",
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
+            title: 'Nightlife'
+        },
+        {
+            userPreference: "entertainment",
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
+            title: 'Music & Entertainment'
+        },
+        {
+            userPreference: "relaxation",
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
+            title: 'Spa & Relaxation'
+        },
     ]
 
     const toggleSelection = (id) => {
@@ -251,7 +256,7 @@ export const Survey = () => {
                     </Fade>
                 </Slide>
             </div>
-            
+
 
             <div id='progressBarContainer' className="progress-bar-container">
                 <div className="progress-bar w-95 m-auto flx-r just-sb my-5">
@@ -300,7 +305,9 @@ export const Survey = () => {
                                     check
                                 </span>
                             </div>
-                            <img src={card2.imgUrl} alt="" className="card2-img mt-2" />
+                            <div className="card2-imgDiv flx-1">
+                                <img src={card2.imgUrl} alt="" className="card2-img" />
+                            </div>
                             <div className="card2-text flx-1">
                                 <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
                             </div>
