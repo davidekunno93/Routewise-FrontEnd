@@ -628,6 +628,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     // edit trip modal code
     const [editTripModalOpen, setEditTripModalOpen] = useState(false)
     const openEditTripModal = (trip) => {
+        // console.log(trip)
         setTripToEdit(trip)
         setEditTripModalOpen(true);
     }
@@ -637,7 +638,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         hideSidebar();
         setEditTripModalOpen(false);
     }
-    const [tripToEdit, setTripToEdit] = useState(null)
+    const [tripToEdit, setTripToEdit] = useState(null);
 
 
     // other functions

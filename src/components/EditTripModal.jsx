@@ -146,7 +146,9 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
         }).then((response) => {
             console.log(response.data)
             setIsLoading(false)
-            loadUserTripsData()
+            if (loadUserTripsData) {
+                loadUserTripsData()
+            }
             // response object to say if itinerary was updated - if so, show link allowing user to navigate to iti
             if (response.data.days) {
                 console.log('itinerary updated')

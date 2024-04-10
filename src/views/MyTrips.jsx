@@ -4,6 +4,7 @@ import { DataContext } from '../Context/DataProvider';
 import { Loading } from '../components/Loading';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import EditTripModal from '../components/EditTripModal';
 
 const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     const { user } = useContext(DataContext);
@@ -261,9 +262,29 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
 
     }
 
+    // const [editTripModalOpen, setEditTripModalOpen] = useState(false);
+    const [editTripModalReducer, setEditTripModalReducer] = useState({
+        open: false,
+        trip: null,
+    });
+    const openEditTripModal = (trip) => {
+        // console.log(trip)
+        setEditTripModalReducer({
+            open: true,
+            trip: trip
+        });
+    }
+    const closeEditTripModal = () => {
+        setEditTripModalReducer({
+            open: false,
+            trip: null,
+        });
+    }
+    // const [tripToEdit, setTripToEdit] = useState(null);
 
     return (
         <div>
+            <EditTripModal open={editTripModalReducer.open} trip={editTripModalReducer.trip} loadItinerary={loadItinerary} onClose={() => closeEditTripModal()} />
             <div className="page-container75 flx-c">
                 <div className="align-all-items mt-6 mb-4h">
                     <p className="m-0 page-subheading-bold">My Trips</p>
@@ -313,7 +334,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                             return <div key={index} className="userTrip-card">
                                 <div id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <p className="m-0">Edit trip details</p>
                                         <span className="material-symbols-outlined large mx-1">
                                             edit
                                         </span>
@@ -354,7 +375,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                             return searchMatch && <div key={index} className="userTrip-card">
                                 <div id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <p className="m-0">Edit trip details</p>
                                         <span className="material-symbols-outlined large mx-1">
                                             edit
                                         </span>
@@ -407,7 +428,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                             return <div key={index} className="userTrip-card">
                                 <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <p className="m-0">Edit trip details</p>
                                         <span className="material-symbols-outlined large mx-1">
                                             edit
                                         </span>
@@ -448,7 +469,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                             return searchMatch && <div className="userTrip-card">
                                 <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                        <p onClick={() => viewTrip(trip, 'itinerary')} className="m-0">Edit trip details</p>
+                                        <p className="m-0">Edit trip details</p>
                                         <span className="material-symbols-outlined large mx-1">
                                             edit
                                         </span>
