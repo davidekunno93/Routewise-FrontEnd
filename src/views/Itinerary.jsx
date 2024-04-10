@@ -1130,9 +1130,21 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }
   useEffect(() => {
     window.addEventListener('scroll', observeFlowBoxes)
+    return window.removeEventListener('scroll', observeFlowBoxes)
   }, [])
 
 
+  // saved places
+  useEffect(() => {
+
+    if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
+      console.log("saved places: " + currentTrip.itinerary.saved_places)
+      let saved_places = tripState.saved_places
+      // for (let i=0;i<saved_places.length;i++) {
+
+      // }
+    }
+  }, [])
 
   // added places render 'added to places' button ?
   const [addedPlaceAddresses, setAddedPlaceAddresses] = useState([])
@@ -1451,6 +1463,15 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
       iconUrl: "https://i.imgur.com/YoB68Vw.png"
     },
   ]
+  // if saved places in itinerary make initial value = 0, else = null
+  const [toolTipIndex, setToolTipIndex] = useState(0);
+  const updateToolTipIndex = (index) => {
+    if (index || index === 0) {
+      setToolTipIndex(index);
+    } else if (index === null) {
+      setToolTipIndex(null);
+    }
+  }
 
   const tripNameRef = useRef(null);
   const [tripName, setTripName] = useState(currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!")
@@ -1498,8 +1519,50 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     <>
       <div className="itinerary-page flx-r">
 
+        {/* itinerary sidebar */}
         <div id='itinerarySideBarPlaceholder' className="itinerary-sidebar-placeholder sticky">
           <div id='itinerarySidebar' className="itinerary-sidebar-expanded sticky position-fixe">
+            {/* tooltip for saved places */}
+            <div className={`sidebar-tooltip saved-places ${toolTipIndex === 0 ? "shown" : "hidden-o"}`}>
+              <div className="dot-indicators just-ce">
+                <div className="dot selected"></div>
+                <div onClick={() => updateToolTipIndex(1)} className="dot"></div>
+              </div>
+              <div className="title align-all-items gap-2 my-2">
+                <span className="material-symbols-outlined lightpurple-text">bookmark</span>
+                <p className="m-0 lightpurple-text">Find more in Saved Places</p>
+              </div>
+              <div className="body-text">
+                <p className="m-0 white-text">We couldn't fit all of your places in the itinerary, but don't worry-they're
+                  in your Saved Places folder!</p>
+                <br />
+                <p className="m-0 white-text">Feel free to add them to your itinerary as you wish and use this folder for
+                  additional places you're interested in but not ready to add to your itinerary just yet.</p>
+              </div>
+              <div className="btns flx-r just-en mt-2">
+                <button onClick={() => updateToolTipIndex(1)} className="btn-primaryflex">Got it</button>
+              </div>
+            </div>
+            
+            {/* tooltip for suggested places */}
+            <div className={`sidebar-tooltip suggested-places  ${toolTipIndex === 1 ? "shown" : "hidden-o"}`}>
+              <div className="dot-indicators just-ce">
+                <div onClick={() => updateToolTipIndex(0)} className="dot"></div>
+                <div className="dot selected"></div>
+              </div>
+              <div className="title align-all-items gap-2 my-2">
+                <span className="material-symbols-outlined lightpurple-text">emoji_objects</span>
+                <p className="m-0 lightpurple-text">Suggested Places</p>
+              </div>
+              <div className="body-text">
+                <p className="m-0 white-text">Find personalized recommendations based on your travel preferences
+                  and interests.</p>
+              </div>
+              <div className="btns flx-r just-en mt-2">
+                <button onClick={() => updateToolTipIndex(null)} className="btn-primaryflex">Close</button>
+              </div>
+            </div>
+
             <div id='sb-logoSpace' className="logo-space">
               <div className="icon-cold">
                 <img onClick={() => toggleSidebarExpanded()} src="https://i.imgur.com/d2FMf3s.png" alt="" className="logo-icon" />
@@ -1565,12 +1628,13 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                   <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
                   {/* <p className="m-0 purple-text">Edit</p> */}
                 </div>
-                <div className="flx-r gap-2">
+                <div className="flx-r flx-wrap gap-2">
 
                   {tripState.day_order.map((dayNum, id) => {
                     const day = tripState.days[dayNum]
 
                     return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-rounder px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>{day.day_short} {day.date_short}</div>
+                
                   })}
 
                 </div>
@@ -1612,7 +1676,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         {placeListDisplay === "Saved Places" &&
           <div className="itinerary-c2 flx-1">
             <div className="page-container96">
-            <p className="m-0 page-subheading-bold">Saved Places</p>
+              <p className="m-0 page-subheading-bold">Saved Places</p>
               <p onClick={() => printSavedPlaces()} className="m-0 page-subheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
               <div className="placeCards-itinerary">
@@ -1659,7 +1723,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         {placeListDisplay === "Suggested Places" &&
           <div className="itinerary-c2 flx-1">
             <div className="page-container96">
-            <p className="m-0 page-subheading-bold">Suggested Places</p>
+              <p className="m-0 page-subheading-bold">Suggested Places</p>
 
               <p onClick={() => printTripObject()} className="page-subheading-bold m-0 my-2">Here are some places in <span className="purple-text">*city*</span> that you might like based on your travel preferences</p>
 

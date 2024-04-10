@@ -23,7 +23,7 @@ export const Footer = () => {
             <Link>
               <img src="https://i.imgur.com/ytSgpeP.png" alt="" className="footer-icon" />
             </Link>
-            <Link>
+            <Link target='_blank' to='https://www.linkedin.com/company/travelsmartwithroutewise/'>
               <img src="https://i.imgur.com/ApmsmMC.png" alt="" className="footer-icon" />
             </Link>
           </div>
