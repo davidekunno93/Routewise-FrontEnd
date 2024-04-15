@@ -169,9 +169,10 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         currentTripCopy.city = tripData.cityName
         currentTripCopy.country = tripData.country
         currentTripCopy.country_2letter = tripData.country_2letter
-        currentTripCopy.startDate = data ? data.start_date : datidash(tripData.startDate)
+        // for some reason data.start_date and data.end_date return new Date formatted dates
+        currentTripCopy.startDate = datidash(tripData.startDate)
         // currentTripCopy.startDate = data.start_date.split(' ').slice(1, 4).join(' ')
-        currentTripCopy.endDate = data ? data.end_date : datidash(tripData.endDate)
+        currentTripCopy.endDate = datidash(tripData.endDate)
         // currentTripCopy.endDate = data.end_date.split(' ').slice(1, 4).join(' ')
         currentTripCopy.tripDuration = data ? data.duration : Math.ceil((new Date(tripData.endDate).getTime()-new Date(tripData.startDate).getTime())/(one_day))+1
         currentTripCopy.geocode = tripData.geocode

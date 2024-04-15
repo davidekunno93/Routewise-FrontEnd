@@ -18,6 +18,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
     const { showNavbar, setShowNavbar } = useContext(DataContext);
     const { authIndex, setAuthIndex } = useContext(DataContext);
     const { hideSidebar } = useContext(DataContext);
+    const { logOut } = useContext(DataContext);
     // navigate function
     const navigate = useNavigate()
     const goToDashboard = () => {
@@ -34,6 +35,12 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
     //     }
     // }, [auth.currentUser])
 
+    // useEffect(() => {
+    //     console.log("user =", auth.currentUser)
+    //     if (auth.currentUser) {
+    //         setUser(auth.currentUser)
+    //     }
+    // }, [auth])
     useEffect(() => {
         hideSidebar()
         setShowNavbar(false)
@@ -107,8 +114,13 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
     useEffect(() => {
         // setCalendar(format(new Date(), 'MM/dd/yyyy'))
         document.addEventListener('keydown', hideOnEscape, true)
+        return document.removeEventListener('keydown', hideOnEscape, true)
+    }, [])
+    useEffect(() => {
+        // setCalendar(format(new Date(), 'MM/dd/yyyy'))
         document.addEventListener('click', hideOnClickOutsideCalendar, true)
-    })
+        return document.removeEventListener('click', hideOnClickOutsideCalendar, true)
+    }, [])
     const hideOnEscape = (e) => {
         if (e.key === "Escape") {
             setCalendarOpen(false)
@@ -256,10 +268,18 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
             <div className="hero-section w-100 position-relative">
                 <div className="hero-navbar">
                     <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml5" />
+
+                    {!auth.currentUser ?
                     <div className="flx-r align-c gap-6 mr5">
                         <button onClick={() => openSignUp()} className="btn-primaryflex">Sign Up</button>
                         <p onClick={() => openSignIn()} className="m-0 pointer onHover-fade">Log in</p>
                     </div>
+                    :
+                    <div className="flx-r align-c gap-6 mr5">
+                        <button onClick={() => goToDashboard()} className="btn-primaryflex">Go to dashboard</button>
+                        <p onClick={() => logOut()} className="m-0 pointer onHover-fade">Log out</p>
+                    </div>
+                    }
                 </div>
 
                 <div className="hero-content-box">

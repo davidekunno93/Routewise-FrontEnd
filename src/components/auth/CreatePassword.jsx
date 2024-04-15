@@ -18,7 +18,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
                 createUserWithEmailAndPassword(auth, email, createPassword).then((userCredentials) => {
                     console.log(userCredentials)
                     handleSignIn()
-                }).catch ((error) => {
+                }).catch((error) => {
                     console.log(error.code)
                     handleError(error.code)
                     // console.log(error.message)
@@ -137,9 +137,10 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
 
     return (
         <>
-            <AuthLoadingScreen displayName={displayName} loading={isLoading} onClose={() => stopLoading()} closeAll={closeAll2} />
-            <div className="sign-up-part2 flx-c">
-                <span onClick={onClose} class="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
+   
+            <div className="create-password flx-c">
+                <AuthLoadingScreen displayName={displayName} loading={isLoading} onClose={() => stopLoading()} closeAll={closeAll2} />
+                <span onClick={onClose} class="closeBtn-auth material-symbols-outlined position-absolute xx-large color-gains">
                     close
                 </span>
                 <p id='welcomeToRoutewise' className="mb-1 mt-4 center-text xx-large bold700">Welcome to Routewise!</p>
@@ -173,9 +174,10 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
                     <div id='createConfirmPasswordOpen' onClick={() => showPassword('createConfirmPassword')} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/DkqcKz7.png" alt="" className="icon-xsmall center o-80" /></div>
                     <div id='createConfirmPasswordClose' onClick={() => hidePassword('createConfirmPassword')} className='icon-right flx-c just-ce d-none'><img src="https://i.imgur.com/yoo70zI.png" alt="" className="icon-xsmall center o-80" /></div>
                 </div>
-                <button onClick={() => createAccount()} className="btn-primary center mt-4">Sign me up!</button>
+                <button onClick={() => createAccount()} className="btn-primary center mt-4">Join RouteWise</button>
                 <p className="small center-text mt-1">Sign up a different way? <Link onClick={onClose}><strong>Go Back</strong></Link> </p>
             </div>
+            
         </>
     )
 }

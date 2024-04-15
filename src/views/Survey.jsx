@@ -315,13 +315,14 @@ export const Survey = () => {
                     })}
 
                 </div>
-                <button onClick={() => { updateFirestore(), updateUserPreferences(), openContinueOverlay() }} className="btn-primaryflex2 right mt-3">
+                <button onClick={() => { updateFirestore(), updateUserPreferences(), openContinueOverlay() }} className="btn-primaryflex2 right mt-4">
                     <p className='inline'>Continue</p>
                     <span className="material-symbols-outlined arrow v-bott ml-2">
                         arrow_forward
                     </span>
                 </button>
             </div>
+            <div className="empty-3"></div>
         </>
     )
 }

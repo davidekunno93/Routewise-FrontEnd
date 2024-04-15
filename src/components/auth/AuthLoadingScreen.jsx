@@ -12,6 +12,7 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
     if (!loading) return null
     const { user, setUser } = useContext(DataContext);
     const navigate = useNavigate()
+    
 
     function wait(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms))
@@ -65,6 +66,7 @@ export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) =
         })
     }
     useEffect(() => {
+
         wait(4000).then(() => {
             updateProfile(auth.currentUser, {
                 displayName: displayName,

@@ -178,6 +178,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
             imgUrl: trip.dest_img,
             places: placesList,
             itinerary: null,
+            itineraryFirstLoad: false
         }
         // console.log(response.data)
         // console.log(currentTripCopy)
@@ -185,7 +186,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
         setCurrentTrip(currentTripCopy)
         navigate('/add-places')
     }
-    const loadItinerary = (itinerary, trip) => {
+    const loadItinerary = (itinerary, trip, firstLoad) => {
         let currentTripCopy = {
             tripID: trip.trip_id,
             tripName: trip.trip_name,
@@ -199,6 +200,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
             imgUrl: trip.dest_img,
             places: Object.values(itinerary.places),
             itinerary: itinerary,
+            itineraryFirstLoad: firstLoad ? true : false
         }
         // console.log(response.data)
         // console.log(currentTripCopy)

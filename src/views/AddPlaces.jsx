@@ -820,6 +820,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     const createItinerary = (response) => {
         let currentTripCopy = { ...currentTrip }
         currentTripCopy["itinerary"] = response.data
+        currentTripCopy["itineraryFirstLoad"] = true
         console.log(response.data)
         console.log(currentTripCopy)
         setCurrentTrip(currentTripCopy)

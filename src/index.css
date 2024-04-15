@@ -690,6 +690,14 @@ w-0 {
   background-color: white;
 
 }
+.carousel-window-auth {
+  width: 564px;
+  height: 600px;
+  /* box-shadow: 0 0 40px rgba(0, 0, 0, 0.25); */
+  border-radius: 24px;
+  overflow: hidden;
+  background-color: white;
+}
 
 .carousel2-window {
   width: 100%;
@@ -765,27 +773,19 @@ w-0 {
 #fade{
   transition: 2s;
 }
-.sign-in-box {
+
+
+.sign-up-box, .sign-in-box, .create-password {
   width: 500px;
   height: 550px;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  position: relative;
   align-items: center;
-  padding: 32px;
-  /* background-color: white; */
-}
-
-.sign-up-box {
-  width: 500px;
-  height: 550px;
-  /* display: flex;
-  flex-direction: column; */
-  align-items: center;
-  /* box-shadow: 0 0 40px rgba(0, 0, 0, 0.25); */
-  /* border-radius: 24px; */
-  padding: 32px;
-  /* background-color: white; */
-  /* overflow: hidden; */
+  padding: 12px 32px;
+  transition-duration: 0.2s;
+  position: relative;
 }
 
 .sign-up-part2 {
@@ -800,13 +800,17 @@ w-0 {
   position: absolute;
 }
 
+
 .sign-up-loading {
   background-color: white;
-  width: 500px;
-  height: 550px;
-  padding: 32px;
-  border-radius: 24px;
-  margin-top: 25px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* padding: 32px; */
+  box-sizing: border-box;
+  /* border-radius: 24px; */
+  /* margin-top: 25px; */
   position: absolute;
   z-index: 1002;
   overflow: hidden;
@@ -872,6 +876,17 @@ w-0 {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.auth-modal {
+  position: fixed;
+  z-index: 100000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px 0px;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
 }
 
 .modalTop {
@@ -982,6 +997,14 @@ w-0 {
   background-color: rgba(255, 255, 255, 0.9);
   z-index: 9;
   padding-top: 10%;
+}
+
+.auth-modal-imgDiv {
+  margin-left: 24px;
+  height: 600px;
+}
+.auth-modal-img {
+  height: 100%;
 }
 
 .routewise-logo {
@@ -1686,6 +1709,14 @@ input {
 .closeBtn {
   position: absolute;
   top: 16px;
+  right: 18px;
+  z-index: 100000;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.closeBtn-auth {
+  position: absolute;
+  top: 0;
   right: 18px;
   z-index: 100000;
   cursor: pointer;

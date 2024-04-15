@@ -14,7 +14,7 @@ import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
 import { auth } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useRouteError } from 'react-router-dom';
 import { LoadingScreen } from '../components/LoadingScreen';
 import EditTripModal from '../components/EditTripModal';
 
@@ -152,7 +152,6 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }, [])
 
 
-
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     // get user trips code
     const getUserTripsData = async () => {
@@ -165,15 +164,28 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         let data = await getUserTripsData()
         setUserTrips(data)
         // console.log(data)
-        setIsLoadingTrips(false)
+        setIsLoadingTrips(false);
     }
 
+    const [userPreferencesCount, setUserPreferencesCount] = useState(null);
     useEffect(() => {
         if (auth.currentUser) {
             loadUserTripsData()
             // console.log(auth.currentUser.uid)
         }
         console.log(userTrips)
+        console.log(userPreferences)
+        let userPreferencesBooleans = Object.values(userPreferences)
+        // console.log(userPreferencesBooleans)
+        let count = 0
+        for (let i = 0;i<userPreferencesBooleans.length;i++) {
+            console.log(userPreferencesBooleans[i])
+            if (userPreferencesBooleans[i] === true) {
+                count++
+            }
+        }
+        setUserPreferencesCount(count);
+        // console.log(count)
     }, [])
     useEffect(() => {
         loadUserTripsData()
@@ -561,6 +573,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             imgUrl: trip.dest_img,
             places: placesList,
             itinerary: null,
+            itineraryFirstLoad: false
         }
         // console.log(response.data)
         // console.log(currentTripCopy)
@@ -568,7 +581,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         setCurrentTrip(currentTripCopy)
         navigate('/add-places')
     }
-    const loadItinerary = (itinerary, trip) => {
+    const loadItinerary = (itinerary, trip, firstLoad) => {
         let currentTripCopy = {
             tripID: trip.trip_id,
             tripName: trip.trip_name,
@@ -582,6 +595,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             imgUrl: trip.dest_img,
             places: Object.values(itinerary.places),
             itinerary: itinerary,
+            itineraryFirstLoad: firstLoad ? true : false
         }
         // console.log(response.data)
         // console.log(currentTripCopy)
@@ -970,7 +984,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                         <Link to='/survey-update'><p className="m-0 purple-text mt-h">Edit</p></Link>
                     </div>
                     <div className="flx-r flx-wrap gap-6">
-                        {Object.entries(userPreferences).map((category, index) => {
+                        {userPreferencesCount && userPreferencesCount > 0 ? Object.entries(userPreferences).map((category, index) => {
                             let categoryName = category[0]
                             let selected = category[1]
                             return selected && <div key={index} className="card2-frozen">
@@ -986,9 +1000,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                     <div className="card2-title">{cards2_dict[categoryName].title}</div>
                                 </div>
                             </div>
-                        })}
+                        })
+                        : 
+                        <p className="m-0">Add <span className="purple-text bold500">Travel Preferences</span> to get personalized suggestions for your trips!</p>
+                    }
                     </div>
-                </div>
+                    </div>
                 {/* end user preferences selection */}
 
                 {/* map code */}

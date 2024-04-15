@@ -12,9 +12,9 @@ export const Navbar = () => {
   const { sidebarDisplayed, placeListDisplay } = useContext(DataContext);
   const { pageOpen, setPageOpen } = useContext(DataContext);
   const { user, setUser } = useContext(DataContext);
-  const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
+  const { logOut } = useContext(DataContext);
   // auth modal open and close states
-  const [isOpen, setIsOpen] = useState(false);
+  const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
   const { authIndex, setAuthIndex } = useContext(DataContext);
 
 
@@ -46,17 +46,6 @@ export const Navbar = () => {
 
 
 
-  // logout function
-  const logOut = () => {
-    // window.localStorage.removeItem("userData");
-    // window.localStorage.removeItem("userPref");
-    // window.localStorage.removeItem("isLoggedIn");
-    // console.log('remove loggedIn')
-    signOut(auth)
-    // auth.signOut()
-    setUser(null)
-    // navigate('/') can't navigate on a link element
-  }
 
 
 
@@ -235,7 +224,8 @@ export const Navbar = () => {
                   settings
                 </span>
                 <p className="m-0 ml-2">Account Settings</p></div></Link>
-              <Link to='/' onClick={() => { logOut(); closeUserMenu() }}><div className="option">
+              <Link onClick={() => { logOut(); closeUserMenu() }}>
+                <div className="option">
                 <span className="material-symbols-outlined">
                   logout
                 </span>

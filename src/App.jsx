@@ -40,7 +40,8 @@ function App() {
     geocode: null,
     imgUrl: null,
     places: [],
-    itinerary: null
+    itinerary: null,
+    itineraryFirstLoad: false
   });
   const clearCurrentTrip = () => {
     setCurrentTrip({
@@ -54,7 +55,9 @@ function App() {
       tripDuration: "",
       geocode: null,
       imgUrl: null,
-      itinerary: null
+      places: [],
+      itinerary: null,
+      itineraryFirstLoad: false
     })
   }
   // const [tripID, setTripID] = useState(null);
@@ -86,7 +89,7 @@ function App() {
   }
 
 
-  
+
 
 
   // other functions
@@ -96,34 +99,34 @@ function App() {
 
 
 
-  
-  
+
+
 
 
   return (
     <>
-      
 
-        <div className="flx-1 flx-c">
-          <Navbar />
-          <Routes>
-            <Route children path='/register' element={<SignUp />} />
-            <Route children path='/' element={auth.currentUser ? <Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} /> : <Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
-            <Route children path='/landing' element={<Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
-            <Route children path='/survey' element={<Survey />} />
-            <Route children path='/survey-update' element={<SurveyUpdate />} />
-            <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
-            <Route children path='/add-places' element={<AddPlaces currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
-            <Route children path='/itinerary' element={<Itinerary currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} showSidebar={showSidebar} hideSidebar={hideSidebar} placeListDisplay={placeListDisplay} setPlaceListDisplay={setPlaceListDisplay} />} />
-            <Route children path='/mytrips' element={<MyTrips currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
-            <Route children path='/test' element={<Test />} />
-            <Route children path='/map' element={<OpenMap />} />
-            <Route children path='/hero' element={<HeroFade />} />
-          </Routes>
-          {/* <h1 className='empty-3'></h1> */}
-          {/* <h1 className='empty-6'></h1> */}
-        </div>
-      
+
+      <div className="flx-1 flx-c">
+        <Navbar />
+        <Routes>
+          <Route children path='/register' element={<SignUp />} />
+          <Route children path='/' element={user ? <Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} /> : <Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
+          <Route children path='/landing' element={<Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
+          <Route children path='/survey' element={<Survey />} />
+          <Route children path='/survey-update' element={<SurveyUpdate />} />
+          <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
+          <Route children path='/add-places' element={<AddPlaces currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
+          <Route children path='/itinerary' element={<Itinerary currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} showSidebar={showSidebar} hideSidebar={hideSidebar} placeListDisplay={placeListDisplay} setPlaceListDisplay={setPlaceListDisplay} />} />
+          <Route children path='/mytrips' element={<MyTrips currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
+          <Route children path='/test' element={<Test />} />
+          <Route children path='/map' element={<OpenMap />} />
+          <Route children path='/hero' element={<HeroFade />} />
+        </Routes>
+        {/* <h1 className='empty-3'></h1> */}
+        {/* <h1 className='empty-6'></h1> */}
+      </div>
+
       <Footer />
     </>
   )

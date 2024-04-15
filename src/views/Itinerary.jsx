@@ -1134,15 +1134,16 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
   }, [])
 
 
-  // saved places
+  // catch saved places 
   useEffect(() => {
-
+    console.log(currentTrip)
     if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
       console.log("saved places: " + currentTrip.itinerary.saved_places)
-      let saved_places = tripState.saved_places
-      // for (let i=0;i<saved_places.length;i++) {
 
-      // }
+      let saved_places = currentTrip.itinerary.saved_places
+      for (let i=0;i<saved_places.length;i++) {
+
+      }
     }
   }, [])
 
@@ -1351,6 +1352,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
 
 
   // saved places operations code
+  // switch savedplaces to currentTrip.itinerary.saved_places
   const [savedPlaces, setSavedPlaces] = useState({
     places: [],
     addresses: []
@@ -1515,6 +1517,16 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
     return document.removeEventListener('click', clickOutsideTripName, true);
   }, [])
 
+  useEffect(() => {
+    console.log(currentTrip)
+  }, [])
+
+  const removeItineraryFirstLoad = () => {
+    let currentTripCopy = {...currentTrip}
+    currentTripCopy.itineraryFirstLoad = false;
+    setCurrentTrip(currentTripCopy);
+  }
+
   return (
     <>
       <div className="itinerary-page flx-r">
@@ -1523,7 +1535,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
         <div id='itinerarySideBarPlaceholder' className="itinerary-sidebar-placeholder sticky">
           <div id='itinerarySidebar' className="itinerary-sidebar-expanded sticky position-fixe">
             {/* tooltip for saved places */}
-            <div className={`sidebar-tooltip saved-places ${toolTipIndex === 0 ? "shown" : "hidden-o"}`}>
+            <div className={`sidebar-tooltip saved-places ${currentTrip.itineraryFirstLoad ? toolTipIndex === 0 ? "shown" : "hidden-o" : "hidden-o"}`}>
               <div className="dot-indicators just-ce">
                 <div className="dot selected"></div>
                 <div onClick={() => updateToolTipIndex(1)} className="dot"></div>
@@ -1545,7 +1557,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
             </div>
             
             {/* tooltip for suggested places */}
-            <div className={`sidebar-tooltip suggested-places  ${toolTipIndex === 1 ? "shown" : "hidden-o"}`}>
+            <div className={`sidebar-tooltip suggested-places  ${toolTipIndex === 1 ? "shown" : "hidden-o" }`}>
               <div className="dot-indicators just-ce">
                 <div onClick={() => updateToolTipIndex(0)} className="dot"></div>
                 <div className="dot selected"></div>
@@ -1559,7 +1571,7 @@ export const Itinerary = ({ tripId, setTripID, currentTrip, setCurrentTrip, clea
                   and interests.</p>
               </div>
               <div className="btns flx-r just-en mt-2">
-                <button onClick={() => updateToolTipIndex(null)} className="btn-primaryflex">Close</button>
+                <button onClick={() => {updateToolTipIndex(null); removeItineraryFirstLoad()}} className="btn-primaryflex">Close</button>
               </div>
             </div>
 
