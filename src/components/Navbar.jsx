@@ -12,7 +12,6 @@ export const Navbar = () => {
   const { sidebarDisplayed, placeListDisplay } = useContext(DataContext);
   const { pageOpen, setPageOpen } = useContext(DataContext);
   const { user, setUser } = useContext(DataContext);
-  const { logOut } = useContext(DataContext);
   // auth modal open and close states
   const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
   const { authIndex, setAuthIndex } = useContext(DataContext);
@@ -141,6 +140,23 @@ export const Navbar = () => {
   // other functions
   const navigate = useNavigate()
 
+  const logOut = () => {
+    signOut(auth).then(() => {
+      setUser(null)
+      setLogoutStandby(true);
+      console.log('signed out')
+      console.log("auth = ", auth.currentUser)
+    })
+  }
+  const [logoutStandby, setLogoutStandby] = useState(false);
+  useEffect(() => {
+    if (logoutStandby && !user) {
+      setLogoutStandby(false);
+      navigate('/') // can't navigate on a link element
+      console.log("auth : ", auth)
+      console.log("user: ", user)
+    }
+  }, [logoutStandby])
 
   return (
     <>
@@ -148,9 +164,9 @@ export const Navbar = () => {
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         <div className="flx-c just-ce">
           <Link onClick={() => togglePrototypeMenu()} className=''>
-            
-              <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
-            
+
+            <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml15-disappear768" />
+
           </Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
@@ -226,10 +242,10 @@ export const Navbar = () => {
                 <p className="m-0 ml-2">Account Settings</p></div></Link>
               <Link onClick={() => { logOut(); closeUserMenu() }}>
                 <div className="option">
-                <span className="material-symbols-outlined">
-                  logout
-                </span>
-                <p className="m-0 ml-2">Sign Out</p></div></Link>
+                  <span className="material-symbols-outlined">
+                    logout
+                  </span>
+                  <p className="m-0 ml-2">Sign Out</p></div></Link>
             </div>
           </div>
           :

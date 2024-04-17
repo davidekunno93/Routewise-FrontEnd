@@ -986,7 +986,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                     <div className="flx-r flx-wrap gap-6">
                         {userPreferencesCount && userPreferencesCount > 0 ? Object.entries(userPreferences).map((category, index) => {
                             let categoryName = category[0]
-                            let selected = category[1]
+                            let selected = category[1] // this is the boolean value of the interest
                             return selected && <div key={index} className="card2-frozen">
                                 <div className="green-checkbox">
                                     <span className="material-symbols-outlined white-text m-auto">

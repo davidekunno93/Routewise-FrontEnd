@@ -28,6 +28,9 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
             navigate('/dashboard')
         }
     }
+    useEffect(() => {
+        console.log(auth)
+    }, [])
     // useEffect(() => {
     //     // console.log(auth.currentUser)
     //     if (auth.currentUser) {

@@ -59,14 +59,21 @@ const DataProvider = (props) => {
 
     const [pageOpen, setPageOpen] = useState(null);
 
+    // logout code currently disabled
     const logOut = () => {
         // window.localStorage.removeItem("userData");
         // window.localStorage.removeItem("userPref");
         // window.localStorage.removeItem("isLoggedIn");
         // console.log('remove loggedIn')
-        signOut(auth);
-        setUser(null);
-        setLogoutStandby(true);
+        signOut(auth).then(() => {
+            console.log("user signed out")
+        })
+        console.log("this btn")
+        // signOut(auth).then(() => {
+            // console.log("user signed out")
+            // setUser(null);
+            // setLogoutStandby(true);
+        // })
     }
     const [logoutStandby, setLogoutStandby] = useState(false);
     useEffect(() => {
@@ -78,7 +85,7 @@ const DataProvider = (props) => {
     }, [logoutStandby])
 
     return (
-        <DataContext.Provider value={{ 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences, 'logOut': logOut }}>
+        <DataContext.Provider value={{ 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences }}>
             {props.children}
         </DataContext.Provider>
     )
