@@ -24,6 +24,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     const { user, setUser } = useContext(DataContext);
     const { firstTimeUser, setFirstTimeUser } = useContext(DataContext);
     const { hideSidebar } = useContext(DataContext);
+    const { setSignUpIsOpen, setAuthIndex } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
@@ -1132,7 +1133,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     {currentTrip.tripID !== null ?
                     <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
                     :
-                    <button className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
+                    <button onClick={() => {setSignUpIsOpen(true); setAuthIndex(0)}} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
                 }
 
                 </div>
