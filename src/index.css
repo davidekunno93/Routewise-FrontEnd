@@ -464,6 +464,57 @@ w-0 {
   background-color: aquamarine;
 }
 
+/* img short hands */
+.img-xxxsmall {
+  width: 14px;
+  object-fit: contain;
+}
+.img-xxsmall {
+  width: 20px;
+  object-fit: contain;
+}
+.img-xxsmall-h {
+  height: 20px;
+  object-fit: contain;
+}
+
+.img-xsmall {
+  width: 30px;
+  object-fit: contain;
+}
+.img-xsmall-h {
+  height: 30px;
+  object-fit: contain;
+}
+
+.img-small {
+  width: 50px;
+  object-fit: contain;
+}
+.img-small-h {
+  height: 50px;
+  object-fit: contain;
+}
+
+
+.img-smedium {
+  width: 75px;
+  object-fit: contain;
+}
+.img-medium {
+  width: 100px;
+  object-fit: contain;
+}
+.img-medium-h {
+  height: 100px;
+  object-fit: contain;
+}
+
+.img-large {
+  width: 200px;
+  object-fit: contain;
+}
+
 .xxsmall-pic {
   width: 20px;
   object-fit: contain;
@@ -1002,9 +1053,27 @@ w-0 {
 .auth-modal-imgDiv {
   margin-left: 24px;
   height: 600px;
+  position: relative;
 }
 .auth-modal-img {
   height: 100%;
+  border-radius: 12px;
+  width: 454px;
+  object-position: center;
+  object-fit: cover;
+}
+.auth-modal-imgDiv .caption {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  color: white;
+  padding: 8px 16px;
+  font-family: 'Plus Jakarta Sans';
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 .routewise-logo {

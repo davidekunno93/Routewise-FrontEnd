@@ -223,7 +223,13 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                     <div className="overlay"></div>
                     <div className="auth-modal flx-r">
                         <div className="auth-modal-imgDiv">
-                            <img src="https://i.imgur.com/9HR2xh9.png" alt="" className="auth-modal-img" />
+                            <div className="caption">
+                                {/* <span className="material-symbols-outlined white-text">location_on</span> */}
+                                <img src="https://i.imgur.com/nTZTn9C.png" alt="" className="img-xxxsmall" />
+                                <p className='m-0 white-text'>Lisbon, Portugal&nbsp;</p>
+                                </div>
+                            <img src="https://i.imgur.com/8WWTVLl.png" alt="" className="auth-modal-img" />
+                            {/* <img src="https://i.imgur.com/9HR2xh9.png" alt="" className="auth-modal-img" /> */}
                         </div>
                         <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />
                         <div className={`carousel-window-auth m-auto mt- flx-r position-relative ${createPasswordOpen && "d-none"}`}>
@@ -238,7 +244,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
 
                                     <h1 className='mt-4'>Sign Up</h1>
                                     <button onClick={() => googleSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
-                                    <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button>
+                                    {/* <button className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Sign up with Facebook</button> */}
                                     <div className="hr-block w-75 flx-r">
                                         <div className="flx-1 flx-c just-ce">
                                             <hr className='w-100 border-gains' />
@@ -260,7 +266,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                 <div className={`sign-in-box m-aut ${activeIndex !== 1 && "hidden-o"}`}>
                                     <h1 className='mt-4'>Log In</h1>
                                     <Link><button onClick={() => googleSignIn()} className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Log in with Google</button></Link>
-                                    <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Log in with Facebook</button>
+                                    {/* <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Log in with Facebook</button> */}
                                     <div className="hr-block w-75 flx-r">
                                         <div className="flx-1 flx-c just-ce">
                                             <hr className='w-100 border-gains' />

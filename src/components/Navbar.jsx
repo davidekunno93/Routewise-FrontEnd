@@ -192,13 +192,13 @@ export const Navbar = () => {
               </div>
             </div>
           </Link>
-          <div className="option">
+          {/* <div className="option">
             <div className="flx-r gap-2">
 
               <img src="https://i.imgur.com/7ewt7zr.png" alt="" className="navbar-icon" />
               <p className="m-0">My Profile</p>
             </div>
-          </div>
+          </div> */}
           <Link to='/mytrips'><div className={`${pageOpen === "my trips" ? "option-selected" : "option"}`}>
             <div className="flx-r gap-2">
               <span className={`material-symbols-outlined`}>
@@ -207,14 +207,14 @@ export const Navbar = () => {
               <p className="m-0">My Trips</p>
             </div>
           </div></Link>
-          <div className="option">
+          {/* <div className="option">
             <div className="flx-r gap-2">
               <span className="material-symbols-outlined">
                 explore
               </span>
               <p className="m-0">Discover</p>
             </div>
-          </div>
+          </div> */}
 
 
         </div>
