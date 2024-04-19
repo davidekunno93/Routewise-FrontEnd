@@ -5,7 +5,26 @@ export const HeroFade = () => {
     const [bottomIndex, setBottomIndex] = useState(1)
     const [fadeIndex, setFadeIndex] = useState(2)
     // 2 front pics are bridge pics to be compared
-    const heroImgs = ["https://i.imgur.com/hu7bPUa.jpg", "https://i.imgur.com/FzGZqA8.jpg", "https://i.imgur.com/WKgnuQh.jpg", "https://i.imgur.com/38wwsY5.jpg", "https://i.imgur.com/8sJTism.jpg", "https://i.imgur.com/q55B0FZ.jpg", "https://i.imgur.com/A7YyTjp.jpg", "https://i.imgur.com/idjR6V5.jpg", "https://i.imgur.com/95FwIBc.png"]
+    const heroImgs = [
+        // hot air balloons
+        "https://i.imgur.com/WKgnuQh.jpg", 
+        // colloseum
+        "https://i.imgur.com/95FwIBc.png",
+        // ocean view
+        "https://i.imgur.com/hu7bPUa.jpg", 
+        // man on a rock
+        "https://i.imgur.com/FzGZqA8.jpg", 
+        // golden gate bridge
+        "https://i.imgur.com/38wwsY5.jpg", 
+        // windmills
+        "https://i.imgur.com/8sJTism.jpg", 
+        // chinese landscape
+        "https://i.imgur.com/q55B0FZ.jpg", 
+        // london
+        "https://i.imgur.com/A7YyTjp.jpg", 
+        // paris
+        "https://i.imgur.com/idjR6V5.jpg", 
+    ]
     
     const [timer, setTimer] = useState(0)
 

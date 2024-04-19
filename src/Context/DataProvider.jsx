@@ -84,8 +84,23 @@ const DataProvider = (props) => {
         }
     }, [logoutStandby])
 
+    const [mobileMode, setMobileMode] = useState(false);
+    useEffect(() => {
+        window.addEventListener('resize', handleResize, true)
+        return window.removeEventListener('resize', handleResize);
+    }, [])
+    const handleResize = () => {
+        if (window.innerWidth <= 1024 && !mobileMode) {
+            setMobileMode(true);
+            console.log("mobile mode: on")
+        } else if (window.innerWidth > 1024 && mobileMode) {
+            setMobileMode(false);
+            console.log("mobile mode: off")
+        }
+    }
+
     return (
-        <DataContext.Provider value={{ 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences }}>
+        <DataContext.Provider value={{ 'mobileMode': mobileMode, 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences }}>
             {props.children}
         </DataContext.Provider>
     )

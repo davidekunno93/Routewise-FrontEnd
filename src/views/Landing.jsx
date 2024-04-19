@@ -17,6 +17,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { showNavbar, setShowNavbar } = useContext(DataContext);
     const { authIndex, setAuthIndex } = useContext(DataContext);
+    const { mobileMode } = useContext(DataContext);
     const { hideSidebar } = useContext(DataContext);
     const { logOut } = useContext(DataContext);
     // navigate function
@@ -292,9 +293,9 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
                     <p className="hero-text w-40 bold600">Effortlessly craft the perfect trip with a more optimized travel itinerary</p>
                     {/* <button onClick={() => goToDashboard()} className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button> */}
 
-                    <div className="selection-box-landing flx-c">
+                    <div className="selection-box-landing">
                         <div className="box-title flx-2 flx-c just-ce"><p className='m-0 mb-2'>Start planning your next adventure</p></div>
-                        <div className="box-items flx-3 flx-r mb-4 flx-wrap">
+                        <div className={`box-items flx-3 ${mobileMode ? "flx-r" : "flx-r"}  mb-4 flx-wrap`}>
                             <div className="item-location flx-3 flx-c just-en">
                                 <div className="mr-2-disappear768">
                                     <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>

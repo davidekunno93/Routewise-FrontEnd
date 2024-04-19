@@ -15,6 +15,47 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     const [publishedTrips, setPublishedTrips] = useState(null);
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     const navigate = useNavigate()
+    // date functions
+    const datinormal = (systemDate) => {
+        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+        if (month.toString().length === 1) {
+            month = "0" + month
+        }
+        // console.log(month)
+        let fullYear = systemDate.getFullYear()
+        // console.log(month+"/"+day+"/"+fullYear)
+        return month + "/" + day + "/" + fullYear
+    }
+    const datify = (normalDate) => {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let day = normalDate.slice(3, 5)
+        let monthNum = normalDate.slice(0, 2)
+        if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+        }
+        let fullYear = normalDate.slice(6)
+        const month = months[monthNum - 1]
+        if (day.charAt(0) === "0") {
+            day = day[1]
+        }
+        let twoYear = fullYear.slice(2)
+        return month + " " + day + ", " + twoYear
+    }
+    // from slash or normal date to dash date
+    const datidash = (mmddyyyy) => {
+        let year = mmddyyyy.slice(6)
+        let month = mmddyyyy.slice(0, 2)
+        let day = mmddyyyy.slice(3, 5)
+        return year + "-" + month + "-" + day
+    }
+    // from dash date to slash or normal date
+    const datiundash = (dashDate) => {
+        let fullyear = dashDate.slice(0, 4)
+        let month = dashDate.slice(5, 7)
+        let day = dashDate.slice(8)
+        return month + "/" + day + "/" + fullyear
+    }
     const resetPageOpen = () => {
         setPageOpen(null)
     }
@@ -50,7 +91,10 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
             // sort trips into past and upcoming
             if (data && data.length > 0) {
                 for (let i = 0; i < data.length; i++) {
-                    if (new Date(data[i].endDate) > new Date((new Date()).valueOf() - 1000 * 60 * 60 * 24)) {
+                    // let endDate = data[i].end_date
+                    // let yday = new Date(new Date().valueOf() - 1000*60*60*24)
+                    // console.log("trip end date:", new Date(datiundash(endDate)))
+                    if (new Date(datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
                         upcomingTripsArr.push(data[i])
                     } else {
                         pastTripsArr.push(data[i])
@@ -300,7 +344,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                 <div className="trip-options flx-r">
                     <div onClick={() => setMyTripList('upcoming')} className={`option upcoming ${myTripList === 'upcoming' && "selected"}`}>Upcoming Trips</div>
                     <div onClick={() => setMyTripList('past')} className={`option past ${myTripList === 'past' && "selected"}`}>Past Trips</div>
-                    <div onClick={() => setMyTripList('published')} className={`option published ${myTripList === 'published' && 'selected'}`}>Published Itineraries</div>
+                    {/* <div onClick={() => setMyTripList('published')} className={`option published ${myTripList === 'published' && 'selected'}`}>Published Itineraries</div> */}
                     <div className="option-cold flx-1"></div>
                     <div className="sortBy flx-r align-all-items gap-2 ml-4 position-right">
                         <p className="m-0 gray-text">Sort By:</p>

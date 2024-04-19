@@ -1,19 +1,24 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { DataContext } from '../Context/DataProvider'
 
 export const Footer = () => {
+  const { mobileMode } = useContext(DataContext);
+
   return (
-    <div className='footer'>
-      <div className="page-container90 flx-r just-sb pad28-footer boxsize-border">
-        <div className="footer-logo flx-r">
-          <div className="flx">
-            <img src="https://i.imgur.com/d2FMf3s.png" alt="" className="bird-logo m-auto" />
+    <div className={`footer ${mobileMode && "mobile"}`}>
+      <div className={`${!mobileMode ? "page-container90 flx-r" : "flx-c gap-5"}  just-sb pad28-footer boxsize-border`}>
+
+        <div className={`footer-logo ${mobileMode && "mobile"} flx-r`}>
+          <div className="flx w-22pc">
+            <img src="https://i.imgur.com/d2FMf3s.png" alt="" className={`bird-logo m-auto`} />
           </div>
-          <div className="logo-and-text flx-c just-ce ml6">
+          <div className="logo-and-text w-78pc">
             <img src="https://i.imgur.com/Eu8Uf2u.png" alt="" className="word-logo" />
             <p className="slogan m-0 mt-1 ws-nowrap"><i>Plan your trips more efficiently</i></p>
           </div>
         </div>
+
         <div className="flx-c just-ce">
           <div className="large font-jakarta mb-1 dark-text">Follow us!</div>
           <div className="flx-r gap-2">

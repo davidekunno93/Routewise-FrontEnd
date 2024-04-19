@@ -724,6 +724,9 @@ w-0 {
   height: 160px;
   background-color: #F0EFFF;
 }
+.footer.mobile {
+  height: auto;
+}
 
 .redBox {
   width: 100%;
@@ -1096,17 +1099,36 @@ w-0 {
 .model-btn:hover {
   opacity: 1;
 }
-
-.bird-logo {
-  width: 70px;
+.w-22pc {
+  width: 22%;
+}
+.w-78pc {
+  width: 78%;
+}
+.footer-logo {
+  width: 326px;
+}
+.footer-logo.mobile {
+  width: 40vw;
 }
 
-.word-logo {
-  width: 240px;
+.footer-logo .bird-logo {
+  width: 100%;
 }
 
-.slogan {
-  font-size: large;
+
+.footer-logo .word-logo {
+  width: 100%;
+}
+.footer-logo .logo-and-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 6.25%;
+}
+
+.footer-logo .slogan {
+  font-size: 2vw;
 }
 
 input:-webkit-autofill {
@@ -2816,6 +2838,11 @@ p {
   /* height: 200px; */
   border-radius: 12px;
   margin: 62px auto auto auto;
+  display: flex;
+  flex-direction: column;
+}
+.selection-box-landing .box-items {
+  
 }
 
 .box-title {
@@ -5131,15 +5158,15 @@ p {
 
 
 
-
-@media only screen and (max-width: 1200px) {
+/* 1200 */
+@media only screen and (max-width: 1px) {
   .planning-section .text {
     font-size: 24px;
   }
 }
 
-
-@media only screen and (max-width:1024px) {
+/* 1024 */
+@media only screen and (max-width:1px) {
   .hero-title {
     font-size: 42px;
   }
@@ -5198,8 +5225,8 @@ p {
     width: 250px;
   }
 }
-
-@media only screen and (max-width: 975px) {
+/* 975 */
+@media only screen and (max-width: 9px) {
   .hero-title {
     font-size: 32px;
   }
@@ -5251,7 +5278,7 @@ p {
 
 
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 7px) {
   .appear768{
     display: block;
   }
@@ -5441,8 +5468,8 @@ p {
 
 
 
-
-@media only screen and (max-width: 600px) {
+/* 600 */
+@media only screen and (max-width: 6px) {
   .routewise-logo {
     height: 30px;
   }
@@ -5649,8 +5676,8 @@ p {
 .entry-error:valid {
   border: 2px solid gainsboro;
 }
-
-@media only screen and (max-width: 425px) {
+/* 425 */
+@media only screen and (max-width: 4px) {
   /* hero section */
   .heroFade-img{
     width: 100%;
@@ -5898,8 +5925,8 @@ p {
     font-size: small;
   }
 }
-
-@media only screen and (max-width: 375px) {
+/* 375 */
+@media only screen and (max-width: 3px) {
   .placeCard-PTC{
     height: 110px;
     margin-bottom: 20px;
@@ -5937,14 +5964,14 @@ p {
 }
 
 
-
-@media only screen and (min-width: 425px) {
+/* 425 */
+@media only screen and (min-width: 4px) {
   .appear425 {
     display: none;
   }
 }
-
-@media only screen and (min-width: 769px) {
+/* 769 */
+@media only screen and (min-width: 7px) {
   .panel-btns {
     display: none;
   }
@@ -5959,8 +5986,8 @@ p {
   
 
 }
-
-@media only screen and (max-width: 500px) {
+/* 500 */
+@media only screen and (max-width: 5px) {
   .input-special{
     width: 220px;
   }
@@ -5968,8 +5995,8 @@ p {
     font-size: small;
   }
 }
-
-@media only screen and (max-width: 360px) {
+/* 360 */
+@media only screen and (max-width: 3px) {
   .calendarInput {
     font-size: 12px;
   }

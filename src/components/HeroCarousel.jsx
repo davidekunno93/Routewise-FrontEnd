@@ -5,23 +5,33 @@ export const HeroCarousel = () => {
     const [activeIndex, setActiveIndex] = useState(0);
     const images = [
         {
+            // ocean view
             imgUrl: "https://i.imgur.com/I6nDUO6.jpg"
         },
         {
+            // man on a rock
             imgUrl: "https://i.imgur.com/EJm6Wx7.jpgg"
         },
         {
+            // hot air balloons
             imgUrl: "https://i.imgur.com/mGTF2GC.jpg"
         },
         {
+            // golden gate bridge
             imgUrl: "https://i.imgur.com/snzvk0Z.jpg"
         },
         {
+            // windmills
             imgUrl: "https://i.imgur.com/I0DfHwI.jpg"
         },
         {
+            // china landscape
             imgUrl: "https://i.imgur.com/TPeboMl.jpg"
         }
+        // london
+        // paris
+        // colloseum
+        
     ]
 
     function wait(ms) {
