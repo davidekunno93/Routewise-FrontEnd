@@ -85,6 +85,7 @@ const DataProvider = (props) => {
     }, [logoutStandby])
 
     const [mobileMode, setMobileMode] = useState(false);
+    const [mobileModeNarrow, setMobileModeNarrow] = useState(false);
     useEffect(() => {
         handleResize()
         window.addEventListener('resize', handleResize, true)
@@ -96,16 +97,22 @@ const DataProvider = (props) => {
                 // console.log("mobile mode: on")
             }
             setMobileMode(true);
+            if (window.innerWidth <= 600) {
+                setMobileModeNarrow(true);
+            } else {
+                setMobileModeNarrow(false);
+            }
         } else if (window.innerWidth > 1024) {
             if (mobileMode === true) {
                 // console.log("mobile mode: off")
             }
             setMobileMode(false);
+            setMobileModeNarrow(false);
         }
     }
 
     return (
-        <DataContext.Provider value={{ 'mobileMode': mobileMode, 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences }}>
+        <DataContext.Provider value={{ 'mobileMode': mobileMode, 'mobileModeNarrow' : mobileModeNarrow, 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences }}>
             {props.children}
         </DataContext.Provider>
     )

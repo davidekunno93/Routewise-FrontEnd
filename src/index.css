@@ -745,12 +745,15 @@ w-0 {
 
 }
 .carousel-window-auth {
+  /* width: 476px; */
   width: 564px;
   height: 600px;
   /* box-shadow: 0 0 40px rgba(0, 0, 0, 0.25); */
   border-radius: 24px;
   overflow: hidden;
   background-color: white;
+  /* background-color: beige;
+  border: 1px solid salmon; */
 }
 .carousel-window-auth.mobile {
   width: 95vw;
@@ -775,6 +778,7 @@ w-0 {
 .inner-no-flex {
   white-space: nowrap;
   transition: 0.3s;
+  width: 100%;
   /* transform: translateX(-350px); */
 }
 
@@ -782,6 +786,14 @@ w-0 {
   white-space: nowrap;
   transition: 4.0s ease;
   /* transform: translateX(-100%); */
+}
+
+.carousel-item {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  /* background-color: #007ACC;
+  border: 5px solid green; */
 }
 
 .abs-center {
@@ -841,27 +853,22 @@ w-0 {
 
 .sign-up-box, .sign-in-box, .create-password {
   width: 500px;
+  width: 100%;
   height: 550px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
   align-items: center;
-  padding: 12px 32px;
+  padding: 12px 48px;
   transition-duration: 0.2s;
   position: relative;
 }
 .sign-up-box.mobile, .sign-in-box.mobile, .create-password.mobile {
   width: 95vw;
   height: 90vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  align-items: center;
-  padding: 12px 32px;
-  transition-duration: 0.2s;
-  position: relative;
+  padding: 12px 24px;
+  box-sizing: border-box;
 }
 
 .sign-up-part2 {
@@ -1170,6 +1177,7 @@ input:-webkit-autofill {
 
 .input-model {
   height: 40px;
+  height: 48px;
   width: 360px;
   border-radius: 8px;
   border: 2px solid gainsboro;
@@ -1177,7 +1185,11 @@ input:-webkit-autofill {
   color: black;
   background-color: rgba(225, 225, 225, 0.0);
   padding-left: 12px;
+  box-sizing: border-box;
   transition-duration: 0.3s;
+}
+.input-model.mobile {
+  width: 100%;
 }
 
 .input-model:hover {
@@ -1556,6 +1568,9 @@ input:-webkit-autofill {
   transition: 0.3s;
   white-space: nowrap;
 }
+.btn-outline.mobile {
+  width: 100%;
+}
 
 .btn-outline:hover {
   /* filter: brightness(95%); */
@@ -1603,6 +1618,9 @@ input:-webkit-autofill {
   background-color: #6663FC;
   transition: 0.3s;
   white-space: nowrap;
+}
+.btn-primary.mobile {
+  width: 100%;
 }
 
 .btn-primary:hover {
@@ -1678,9 +1696,15 @@ input:-webkit-autofill {
   width: 23px;
   left: 25px;
 }
+.btn-icon-left.mobile {
+  left: 12px;
+}
 
 .inputBox {
   position: relative;
+}
+.inputBox.mobile {
+  width: 100%;
 }
 
 .inputBox .title {
@@ -6108,5 +6132,16 @@ p {
 @media only screen and (max-width: 425px) {
   .page-card2-text.mobile {
     gap: 8px;
+  }
+  .page-card2 .content {
+    padding: 8% 12%;
+  }
+}
+@media only screen and (max-width: 375px) {
+  .city-placeholder-text::placeholder {
+    font-size: small;
+  }
+  .date-placeholder-text {
+    font-size: small;
   }
 }

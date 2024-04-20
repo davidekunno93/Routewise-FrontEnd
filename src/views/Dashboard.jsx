@@ -930,7 +930,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                             </>
                         }
 
-                        <div className="userTrips flx-r gap-8">
+                        <div className="userTrips flx-r flx-wrap gap-8">
                             {userTrips.map((trip, index) => {
 
                                 if (index < 5) {

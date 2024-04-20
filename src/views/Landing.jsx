@@ -305,7 +305,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
                             <div className="item-location flx-3 flx-c just-en">
                                 <div className="item-destination">
                                     <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
-                                    <input id='cityInput' onChange={(e) => updateCity(e)} type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' autoComplete='off' required />
+                                    <input id='cityInput' onChange={(e) => updateCity(e)} type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder city-placeholder-text' autoComplete='off' required />
                                 </div>
                             </div>
                             <div className={`item-dates ${mobileMode && "mobile"}`}>
@@ -314,12 +314,12 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
                                     <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
                                         <div className="startDateInput flx-1">
                                             <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                            <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                            <p className={`m-0 date-placeholder-text ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
                                         </div>
                                         <hr className='h-40' />
                                         <div className="endDateInput flx-1">
                                             <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                            <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                            <p className={`m-0 date-placeholder-text ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
                                         </div>
 
                                     </div>
