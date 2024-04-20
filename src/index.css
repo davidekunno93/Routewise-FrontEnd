@@ -752,6 +752,11 @@ w-0 {
   overflow: hidden;
   background-color: white;
 }
+.carousel-window-auth.mobile {
+  width: 95vw;
+  height: 90vh;
+  border-radius: 24px;
+}
 
 .carousel2-window {
   width: 100%;
@@ -811,6 +816,11 @@ w-0 {
   text-align: left;
   font-family: "Noto Serif", serif;
 }
+.hero-title.mobile {
+  font-size: calc(3vw + 20px);
+  text-align: center;
+  font-family: "Noto Serif", serif;
+}
 
 .heroFade-img{
   width: 100%;
@@ -832,6 +842,18 @@ w-0 {
 .sign-up-box, .sign-in-box, .create-password {
   width: 500px;
   height: 550px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  align-items: center;
+  padding: 12px 32px;
+  transition-duration: 0.2s;
+  position: relative;
+}
+.sign-up-box.mobile, .sign-in-box.mobile, .create-password.mobile {
+  width: 95vw;
+  height: 90vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -941,6 +963,9 @@ w-0 {
   border-radius: 12px;
   padding: 24px 0px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
+}
+.auth-modal.mobile {
+  padding: 12px 0px;
 }
 
 .modalTop {
@@ -1951,6 +1976,9 @@ p {
   font-size: 36px; 
   color: #242424;
 }
+.page-title.mobile {
+  font-size: 24px; 
+}
 
 .page-heading {
   font-family: 'Plus Jakarta Sans';
@@ -1962,6 +1990,9 @@ p {
   font-family: 'Plus Jakarta Sans';
   font-size: 20px;
   font-weight: 600;
+}
+.landing-title.mobile{
+  font-size: 16px;
 }
 
 .page-heading-bold {
@@ -2841,9 +2872,11 @@ p {
   display: flex;
   flex-direction: column;
 }
-.selection-box-landing .box-items {
-  
+.selection-box-landing.mobile {
+  margin-top: 24px;
+  margin-bottom: 0px;
 }
+
 
 .box-title {
   font-size: 24px;
@@ -3385,6 +3418,12 @@ p {
 }
 .item-dates{
   width: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.item-dates.mobile {
+  width: 100%;
 }
 
 .inputIcon-right {
@@ -4135,6 +4174,10 @@ p {
   margin: 24px 0px;
   /* font-weight: 500; */
 }
+.hero-text.mobile {
+  font-size: medium;
+  margin: 24px 0px;
+}
 
 .flxstyle-respond {
   display: flex;
@@ -4234,19 +4277,29 @@ p {
 .page-card2 .left-side {
   width: 100%;
   height: 100%;
-  background-image: url(https://i.imgur.com/psCYP7X.jpg);
-  background-size: cover;
-  background-position: center;
+  /* background-image: url(https://i.imgur.com/psCYP7X.jpg); */
+  /* background-size: cover;
+  background-position: center; */
+  background-color: red;
+  overflow: hidden;
+}
+.left-side-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 .page-card2 .right-side {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   background-image: url(https://i.imgur.com/PUPrtZZ.png);
   background-size: cover;
 }
 .page-card2 .content {
   height: 100%;
   padding: 6% 12%;
+  display: flex;
+  flex-direction: column;
 }
 .page-card2-img{
   width: 50%;
@@ -4260,6 +4313,9 @@ p {
   flex-direction: column;
   padding-left: 1%;
   /* background-color: beige; */
+}
+.page-card2-text.mobile {
+  gap: 2px;
 }
 .page-card2-instructions {
   display: flex;
@@ -4275,7 +4331,7 @@ p {
 .explore-section {
   height: 500px;
   width: 100%;
-  background-color: #F0EFFF;
+  background-color: #F7FFD1;
 }
 .ig-carousel-window {
   width: 100%;
@@ -4302,6 +4358,10 @@ p {
   cursor: pointer;
   display: inline-flex;
   overflow: hidden;
+}
+.ig-card.mobile {
+  width: 240px;
+  height: 240px;
 }
 .ig-card:hover {
   transform: translateY(-10px);
@@ -4890,6 +4950,9 @@ p {
   justify-content: space-around;
   margin-bottom: 40px;
 }
+.action-points.mobile {
+  flex-direction: column;
+}
 .action-points .point-holder {
   flex: 1;
   /* background-color: beige; */
@@ -4908,9 +4971,27 @@ p {
   border: 2px solid #C8BFA9;
   border-radius: 12px;
 }
+.h-line-divider {
+  width: 75%;
+  border: 1px solid #C8BFA9;
+}
 .action-points .point {
   height: 387px;
   width: 400px;
+  /* background-color: #F0EFFF; */
+  /* border-radius: 12px; */
+  color: #0F0680;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+.action-points .point.mobile {
+  height: 387px;
+  width: 100%;
   /* background-color: #F0EFFF; */
   /* border-radius: 12px; */
   color: #0F0680;
@@ -4960,6 +5041,16 @@ p {
   top: 65%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+.hero-content-box.mobile {
+  /* background-color: rgba(0, 0, 0, 0.07); */
+  width: 90%;
+  /* height: 80vh; */
+  /* border: 2px solid salmon; */
+  top: 62%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .editTripOverlay {
   height: 560px;
@@ -6005,5 +6096,17 @@ p {
 @media only screen and (min-width: 1024px) {
   .appear-1024{
     display: none;
+  }
+}
+
+
+@media only screen and (max-width: 1024px) {
+  .page-title {
+    font-size: calc(2vw + 20px);
+  }
+}
+@media only screen and (max-width: 425px) {
+  .page-card2-text.mobile {
+    gap: 8px;
   }
 }

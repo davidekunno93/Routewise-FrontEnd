@@ -150,6 +150,9 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         setPageOpen('dashboard')
         return resetPageOpen;
     }, [])
+    useEffect(() => {
+        console.log(userPreferences)
+    }, [userPreferences])
 
 
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);

@@ -271,40 +271,46 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
             <NameTripModal open={tripModalOpen} tripData={tripData} setCurrentTrip={setCurrentTrip} onClose={() => setTripModalOpen(false)} />
             <div className="hero-section w-100 position-relative">
                 <div className="hero-navbar">
-                    <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo ml5" />
+                    <img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className={`routewise-logo ${!mobileMode && "ml5"}`} />
 
                     {!auth.currentUser ?
-                    <div className="flx-r align-c gap-6 mr5">
-                        <button onClick={() => openSignUp()} className="btn-primaryflex">Sign Up</button>
-                        <p onClick={() => openSignIn()} className="m-0 pointer onHover-fade">Log in</p>
-                    </div>
-                    :
-                    <div className="flx-r align-c gap-6 mr5">
-                        <button onClick={() => goToDashboard()} className="btn-primaryflex">Go to dashboard</button>
-                        <p onClick={() => logOut()} className="m-0 pointer onHover-fade">Log out</p>
-                    </div>
+                        <div className="flx-r align-c gap-6 mr5">
+                            <button onClick={() => openSignUp()} className="btn-primaryflex">Sign Up</button>
+                            {!mobileMode &&
+                                <p onClick={() => openSignIn()} className="m-0 pointer onHover-fade">Log in</p>
+                            }
+                        </div>
+                        :
+                        <div className="flx-r align-c gap-6 mr5">
+                            <button onClick={() => goToDashboard()} className="btn-primaryflex">Go to dashboard</button>
+                            <p onClick={() => logOut()} className="m-0 pointer onHover-fade">Log out</p>
+                        </div>
                     }
                 </div>
 
-                <div className="hero-content-box">
+                <div className={`hero-content-box ${mobileMode && "mobile"}`}>
 
 
-                    <h1 className="hero-title bold500 m-0">Your Next Great <br />Adventure Starts Here</h1>
-                    <p className="hero-text w-40 bold600">Effortlessly craft the perfect trip with a more optimized travel itinerary</p>
+                    <h1 className={`hero-title ${mobileMode && "mobile"} bold500 m-0`}>Your Next Great <br />Adventure Starts Here</h1>
+                    {!mobileMode &&
+                        <p className={`hero-text ${mobileMode ? "mobile" : "w-40"} bold600`}>Effortlessly craft the perfect trip with a more optimized travel itinerary</p>
+                    }
                     {/* <button onClick={() => goToDashboard()} className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button> */}
 
-                    <div className="selection-box-landing">
-                        <div className="box-title flx-2 flx-c just-ce"><p className='m-0 mb-2'>Start planning your next adventure</p></div>
-                        <div className={`box-items flx-3 ${mobileMode ? "flx-r" : "flx-r"}  mb-4 flx-wrap`}>
+                    <div className={`selection-box-landing ${mobileMode && "mobile"}`}>
+                        {!mobileMode &&
+                            <div className="box-title flx-2 flx-c just-ce"><p className='m-0 mb-2'>Start planning your next adventure</p></div>
+                        }
+                        <div className={`box-items flx-3 ${mobileMode ? "flx-c gap-4" : "flx-r gap-4"}  mb-4 flx-wrap`}>
                             <div className="item-location flx-3 flx-c just-en">
-                                <div className="mr-2-disappear768">
+                                <div className="item-destination">
                                     <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
                                     <input id='cityInput' onChange={(e) => updateCity(e)} type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' autoComplete='off' required />
                                 </div>
                             </div>
-                            <div className="item-dates flx- flx-c just-en">
+                            <div className={`item-dates ${mobileMode && "mobile"}`}>
                                 <div className="box-heading dark-text page-subsubheading">When will you be there?</div>
-                                <div ref={refOne} className="calendarWrap mr-2-disappear768">
+                                <div ref={refOne} className="calendarWrap">
                                     <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
                                         <div className="startDateInput flx-1">
                                             <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
@@ -353,19 +359,21 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
             <div className="planning-section mt-8">
                 <Fade delay={300} triggerOnce>
                     <Slide direction='up' triggerOnce>
-                        <h1 className="page-title w-65 center-text m-auto my-9 font-noto bold600">Planning your day-to-day travel itinerary just got a whole lot easier</h1>
-                        <div className="action-points">
+                        <h1 className={`page-title ${mobileMode ? "w-90" : "w-65"} center-text mt-9 m-auto font-noto bold600`}>Planning your day-to-day travel itinerary just got a whole lot easier</h1>
+                        <div className={`action-points  ${mobileMode && "mobile"}`}>
                             {actionPoints.map((point, index) => {
                                 let first = 0
                                 let last = actionPoints.length - 1
                                 return <div key={index} className="point-holder">
-                                    <div className={`v-line-divider ${index === last ? "d-none" : null}`}></div>
-                                    <div className="point">
+                                    <div className={`v-line-divider ${!mobileMode ? index === last ? "d-none" : null : "d-none"}`}></div>
+                                    <div className={`point ${mobileMode && "mobile"}`}>
                                         <img src={point.imgUrl} alt="" className='point-img' />
                                         <div className="title">{point.title}</div>
                                         <div className="text">{point.text}</div>
-
                                     </div>
+                                    {index !== last &&
+                                        <hr className='h-line-divider' />
+                                    }
                                 </div>
                             })}
 
@@ -383,30 +391,33 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
             <div className="how-it-works mt-8">
 
 
-                <div className="page-card2 flx-r">
+                <div className={`page-card2 ${mobileMode ? "flx-c" : "flx-r"}`}>
                     <div className="flx-1 left-side">
+                        <img src="https://i.imgur.com/psCYP7X.jpg" alt="" className="left-side-img" />
                     </div>
-                    <div className="flx-1 right-side flx-c">
+                    <div className={`${mobileMode ? "flx-3" : "flx-1"} right-side flx-c`}>
                         <div className="content">
 
-                            <p className="large m-0 mb-5 font-jakarta bold600 purple-text">HOW IT WORKS</p>
-                            <h2 className="page-title font-noto bold500 mt-6">Craft the Perfect Getaway</h2>
-                            <div className="page-card2-text">
+                            <p className={`large m-0 ${mobileMode ? "mb-3" : "mb-5"} font-jakarta bold600 purple-text`}>HOW IT WORKS</p>
+                            {!mobileMode &&
+                                <h2 className="page-title font-noto bold500 mt-2">Craft the Perfect Getaway</h2>
+                            }
+                            <div className={`page-card2-text ${mobileMode && "mobile"}`}>
 
                                 <div className="item flx-r gap-2">
                                     <img src="https://i.imgur.com/DkwGOth.png" alt="" className="pin-bullet mr-3" />
-                                    <p className="landing-title flx align-c m-0">Add places you want to visit</p>
+                                    <p className={`landing-title ${mobileMode && "mobile"} flx align-c m-0`}>Add places you want to visit</p>
                                 </div>
                                 <div className="item flx-r gap-2">
                                     <img src="https://i.imgur.com/qGDtWpZ.png" alt="" className="pin-bullet mr-3" />
-                                    <p className="landing-title flx align-c m-0">Generate your proximity-based itinerary</p>
+                                    <p className={`landing-title ${mobileMode && "mobile"} flx align-c m-0`}>Generate your proximity-based itinerary</p>
                                 </div>
                                 <div className="item flx-r gap-2">
                                     <img src="https://i.imgur.com/93zoDqE.png" alt="" className="pin-bullet mr-3" />
-                                    <p className="landing-title flx align-c m-0">Customize your itinerary and explore!</p>
+                                    <p className={`landing-title ${mobileMode && "mobile"} flx align-c m-0`}>Customize your itinerary and explore!</p>
                                 </div>
                             </div>
-                            <div className="flx-r mt-5">
+                            <div className={`flx-r ${mobileMode ? "position-bottom" : "mt-5"}`}>
                                 <button onClick={() => setSignUpIsOpen(true)} className="btn-primaryflex2">Sign up</button>
                             </div>
 
@@ -489,7 +500,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
             <div className="empty-4"></div>
 
             <div className="explore-section">
-                <div className="page-title font-noto center-text my-5">Explore with us on Instagram!</div>
+                <div className="page-title w-90 font-noto center-text m-auto my-5">Explore with us on Instagram!</div>
                 <div className="ig-carousel-window">
 
                     {/* <div className="inner-no-flex"> */}
@@ -497,7 +508,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
 
                         {exploreImgs.map((img, index) => {
                             let first = index === 0 ? true : false
-                            return <div key={index} className={`ig-card ${!first ? "ml-4" : ""}`}>
+                            return <div key={index} className={`ig-card ${!first ? "ml-4" : null} ${mobileMode && "mobile"} `}>
                                 <img src={img} alt="" className="fill-img" />
                             </div>
                         })}

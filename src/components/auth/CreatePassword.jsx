@@ -1,11 +1,13 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { auth } from '../../firebase'
 import { AuthLoadingScreen } from './AuthLoadingScreen'
+import { DataContext } from '../../Context/DataProvider'
 
 export const CreatePassword = ({ open, showPassword, hidePassword, email, onClose, closeAll }) => {
     if (!open) return null
+    const { mobileMode } = useContext(DataContext);
     const [createPassword, setCreatePassword] = useState('')
     const [displayName, setDisplayName] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -138,7 +140,7 @@ export const CreatePassword = ({ open, showPassword, hidePassword, email, onClos
     return (
         <>
    
-            <div className="create-password flx-c">
+            <div className={`create-password ${mobileMode && "mobile"} flx-c`}>
                 <AuthLoadingScreen displayName={displayName} loading={isLoading} onClose={() => stopLoading()} closeAll={closeAll2} />
                 <span onClick={onClose} class="closeBtn-auth material-symbols-outlined position-absolute xx-large color-gains">
                     close

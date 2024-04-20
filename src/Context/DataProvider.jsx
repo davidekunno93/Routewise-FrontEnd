@@ -86,16 +86,21 @@ const DataProvider = (props) => {
 
     const [mobileMode, setMobileMode] = useState(false);
     useEffect(() => {
+        handleResize()
         window.addEventListener('resize', handleResize, true)
         return window.removeEventListener('resize', handleResize);
     }, [])
     const handleResize = () => {
-        if (window.innerWidth <= 1024 && !mobileMode) {
+        if (window.innerWidth <= 1024) {
+            if (!mobileMode) {
+                // console.log("mobile mode: on")
+            }
             setMobileMode(true);
-            console.log("mobile mode: on")
-        } else if (window.innerWidth > 1024 && mobileMode) {
+        } else if (window.innerWidth > 1024) {
+            if (mobileMode === true) {
+                // console.log("mobile mode: off")
+            }
             setMobileMode(false);
-            console.log("mobile mode: off")
         }
     }
 

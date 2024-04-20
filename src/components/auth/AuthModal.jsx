@@ -16,6 +16,7 @@ import { Loading } from '../Loading';
 export const AuthModal = ({ open, authIndex, onClose }) => {
     if (!open) return null
     const { user, setUser } = useContext(DataContext);
+    const { mobileMode } = useContext(DataContext);
     const { userPreferences, setUserPreferences } = useContext(DataContext);
     const { firstTimeUser, setFirstTimeUser } = useContext(DataContext);
     const [createPasswordOpen, setCreatePasswordOpen] = useState(false);
@@ -222,6 +223,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                 <Fade duration={200} className='z-99999' triggerOnce>
                     <div className="overlay"></div>
                     <div className="auth-modal flx-r">
+                        {!mobileMode &&
                         <div className="auth-modal-imgDiv">
                             <div className="caption">
                                 {/* <span className="material-symbols-outlined white-text">location_on</span> */}
@@ -231,8 +233,9 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             <img src="https://i.imgur.com/8WWTVLl.png" alt="" className="auth-modal-img" />
                             {/* <img src="https://i.imgur.com/9HR2xh9.png" alt="" className="auth-modal-img" /> */}
                         </div>
+                        }
                         <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />
-                        <div className={`carousel-window-auth m-auto mt- flx-r position-relative ${createPasswordOpen && "d-none"}`}>
+                        <div className={`carousel-window-auth ${mobileMode && "mobile"} m-auto mt- flx-r position-relative ${createPasswordOpen && "d-none"}`}>
                             <div id='loadingBox' className={`loadingBox-2 z-1000000 w-100 h-100 ${isLoading ? null : "hidden-o"}`}>
                                 <Loading />
                             </div>
@@ -240,7 +243,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                 close
                             </span>
                             <div id='inner' className="inner" style={{ transform: `translateX(-${activeIndex * 50}%)` }}>
-                                <div className={`sign-up-box m-aut position-relative ${activeIndex !== 0 && "hidden-o"}`}>
+                                <div className={`sign-up-box ${mobileMode && "mobile"} m-aut position-relative ${activeIndex !== 0 && "hidden-o"}`}>
 
                                     <h1 className='mt-4'>Sign Up</h1>
                                     <button onClick={() => googleSignIn()} className='btn-outline bg-white position-relative my-1 font-jakarta purple-text'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Sign up with Google</button>
@@ -263,7 +266,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                     <button id='continueEmail' onClick={() => continueWithEmail()} className='btn-primary bg-white font-jakarta bg-lightpurple white-text'>Continue with email</button>
                                     <div className='m-0 small mt-3 font-jakarta dark-text'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
                                 </div>
-                                <div className={`sign-in-box m-aut ${activeIndex !== 1 && "hidden-o"}`}>
+                                <div className={`sign-in-box ${mobileMode && "mobile"} m-aut ${activeIndex !== 1 && "hidden-o"}`}>
                                     <h1 className='mt-4'>Log In</h1>
                                     <Link><button onClick={() => googleSignIn()} className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/JN3RsNN.png" alt="" className="btn-icon-left" /> Log in with Google</button></Link>
                                     {/* <button target="_blank" className='btn-outline bg-white purple-text position-relative my-1 font-jakarta'><img src="https://i.imgur.com/24a8oUQ.png" alt="" className="btn-icon-left" /> Log in with Facebook</button> */}
