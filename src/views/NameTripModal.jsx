@@ -1,15 +1,17 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { auth } from '../firebase'
 import { Loading } from '../components/Loading'
 import { LoadingModal } from '../components/LoadingModal'
 import { LoadingBox } from '../components/LoadingBox'
 import { set } from 'date-fns'
+import { DataContext } from '../Context/DataProvider'
 
 export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, clearCurrentTrip, changeCity, onClose }) => {
     // send Kate Data
     if (!open) return null
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     const [cityImg, setCityImg] = useState(null)
     const [tripName, setTripName] = useState('')
     const [loading, setLoading] = useState(false);
@@ -163,7 +165,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         // **old code - we went thru processData first to await the sent data before continuing but errors were not handled as desired
         let data = response ? response.data : null
         let currentTripCopy = { ...currentTrip }
-        const one_day = 1000*60*60*24;
+        const one_day = 1000 * 60 * 60 * 24;
         currentTripCopy.tripID = data ? data.trip_id : null
         currentTripCopy.tripName = tripName
         currentTripCopy.city = tripData.cityName
@@ -174,7 +176,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
         // currentTripCopy.startDate = data.start_date.split(' ').slice(1, 4).join(' ')
         currentTripCopy.endDate = datidash(tripData.endDate)
         // currentTripCopy.endDate = data.end_date.split(' ').slice(1, 4).join(' ')
-        currentTripCopy.tripDuration = data ? data.duration : Math.ceil((new Date(tripData.endDate).getTime()-new Date(tripData.startDate).getTime())/(one_day))+1
+        currentTripCopy.tripDuration = data ? data.duration : Math.ceil((new Date(tripData.endDate).getTime() - new Date(tripData.startDate).getTime()) / (one_day)) + 1
         currentTripCopy.geocode = tripData.geocode
         currentTripCopy.imgUrl = cityImg
         // reset itinerary in case it has already been generated from previous trip by user
@@ -195,26 +197,29 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
     return (
         <>
             <div className="overlay"></div>
-            <div className="modal">
-                <div className="nameTrip-box">
-
-                    <LoadingBox width={450} height={500} open={loading} />
-                    <span onClick={onClose} class="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
-                        close
-                    </span>
-                    <div className="page-subheading-bold font-jakarta my-3 dark-text">
-                        Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span>
+            <div className={`nameTrip-modal ${mobileModeNarrow && "mobileNarrow"}`}>
+                <LoadingBox width={450} height={500} open={loading} />
+                <span onClick={onClose} class="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
+                    close
+                </span>
+                
+                    <div className="my-3">
+                        <p className={`m-0 ${mobileModeNarrow ? "page-subsubheading-bold" : "page-subheading-bold"}`}>Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span></p>
                         <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link onClick={changeCity}>here</Link> to find the right one</p>
                     </div>
-                    <input onChange={(e) => updateTripName(e)} id='tripNameInput' className="input-model" placeholder='Enter a name for your trip' autoComplete='off' required />
+
+                    <div className="input-and-image">
+                    <input onChange={(e) => updateTripName(e)} id='tripNameInput' className={`input-model ${mobileModeNarrow && "mobile"}`} placeholder='Enter a name for your trip' autoComplete='off' required />
                     {/* <img src="https://i.imgur.com/sCT1BpF.jpg" alt="" className="tripModal-img my-3" /> */}
                     {cityImg &&
-                        <img src={cityImg} alt="" className="tripModal-img my-3" />
+                        <img src={cityImg} alt="" className={`tripModal-img ${mobileModeNarrow && "mobile"} my-3`} />
                     }
+                    </div>
+
                     <button onClick={() => startPlanningWithName()} className="btn-primaryflex">Start Planning!</button>
                     {/* <Link onClick={() => startPlanningWithoutName()} className='font-jakarta mt-1'>Skip</Link> */}
                 </div>
-            </div>
+            
         </>
     )
 }

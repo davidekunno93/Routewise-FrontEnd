@@ -12,13 +12,13 @@ import { LoadingModal } from '../components/LoadingModal'
 import axios from 'axios'
 import { auth } from '../firebase'
 
-export const Landing = ({ currentTrip, setCurrentTrip }) => {
+export const Landing = () => {
     const { user, setUser } = useContext(DataContext);
+    const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { showNavbar, setShowNavbar } = useContext(DataContext);
     const { authIndex, setAuthIndex } = useContext(DataContext);
     const { mobileMode } = useContext(DataContext);
-    const { hideSidebar } = useContext(DataContext);
     const { logOut } = useContext(DataContext);
     // navigate function
     const navigate = useNavigate()
@@ -46,7 +46,6 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
     //     }
     // }, [auth])
     useEffect(() => {
-        hideSidebar()
         setShowNavbar(false)
         return restoreNavbar;
     }, [])
@@ -301,7 +300,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
                         {!mobileMode &&
                             <div className="box-title flx-2 flx-c just-ce"><p className='m-0 mb-2'>Start planning your next adventure</p></div>
                         }
-                        <div className={`box-items flx-3 ${mobileMode ? "flx-c gap-4" : "flx-r gap-4"}  mb-4 flx-wrap`}>
+                        <div className={`box-items flx-3 ${mobileMode ? "flx-c" : "flx-r"} gap-4 mb-4 flx-wrap`}>
                             <div className="item-location flx-3 flx-c just-en">
                                 <div className="item-destination">
                                     <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
@@ -371,7 +370,7 @@ export const Landing = ({ currentTrip, setCurrentTrip }) => {
                                         <div className="title">{point.title}</div>
                                         <div className="text">{point.text}</div>
                                     </div>
-                                    {index !== last &&
+                                    {index !== last && mobileMode &&
                                         <hr className='h-line-divider' />
                                     }
                                 </div>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Fade } from 'react-awesome-reveal';
 import format from 'date-fns/format';
 import { DateRange } from 'react-date-range';
@@ -7,6 +7,7 @@ import { LoadingScreen } from './LoadingScreen';
 import { LoadingModal } from './LoadingModal';
 import LoadOnTop from './LoadOnTop';
 import ItineraryUpdatedModal from './ItineraryUpdatedModal';
+import { DataContext } from '../Context/DataProvider';
 
 
 const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }) => {
@@ -52,6 +53,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
         let day = dashDate.slice(8)
         return month + "/" + day + "/" + fullyear
     }
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
 
     // calendar code
     const [calendarOpen, setCalendarOpen] = useState(false);
@@ -100,6 +102,56 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
         setNewTripName(e.target.value)
     }
 
+    const updateTrip = {
+        tripName: function (new_name, trip_id) {
+            // returns success/failed
+            let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
+            let data = { 
+                tripName: new_name,
+                startDate: null,
+                endDate: null,
+             }
+            const response = axios.patch(url, data, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log(response.data)
+                return "success"
+            }).catch((error) => {
+                console.log(error)
+                // console.log("error caught")
+                return "failed"
+            })
+        },
+        tripDates: function(new_start_date, new_end_date, trip_id) {
+            // returns success/failed/itinerary updated
+            let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
+            let data = { 
+                tripName: null,
+                startDate: new_start_date,
+                endDate: new_end_date,
+             }
+             const response = axios.patch(url, data, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log(response.data)
+                let newItinerary = typeof response.data === "object"
+                // let newItinerary = "days" in response.data ? true : false; // days in response data indicates data is an itinerary
+                if (newItinerary) {
+                    console.log('itinerary updated')
+                    // update currentTrip itinerary w/ response.data
+                    // setUpdatedItinerary(response.data)
+                    // setItineraryUpdatedModalOpen(true)
+                    return "itinerary updated"
+                } else {
+                    return "success"
+                }
+            }).catch((error) => {
+                console.log(error)
+                // console.log("error caught")
+                return "failed"
+            })
+        }
+    }
     // send to backend database code
     const sendUpdatedTrip = () => {
         let sendData = {
@@ -108,14 +160,17 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
             endDate: null
         }
         console.log(trip.trip_name)
+        // compare new tripname to old one, if different un-nullify tripName in sendData
         if (trip.trip_name !== newTripName) {
             sendData.tripName = newTripName
         }
+        // compare new start date to old one, if different un-nullify startDate & endDate in sendData
         if (datiundash(trip.start_date) !== newStartDate) {
             // console.log(trip.start_date)
             sendData.startDate = newStartDate
             sendData.endDate = newEndDate
         }
+        // compare new end date to old one, if different un-nullify startDate & endDate in sendData
         if (datiundash(trip.end_date) !== newEndDate) {
             // console.log(trip.end_date)
             sendData.startDate = newStartDate
@@ -182,8 +237,8 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
         <div className="overlay-placeholder">
             <Fade duration={200} triggerOnce>
                 <div className="overlay flx">
-                    <div className="edit-trip-modal">
-                        <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} trip={trip} updatedItinerary={updatedItinerary} loadItinerary={loadItinerary} onClose={() => {setItineraryUpdatedModalOpen(false); onClose()}} />
+                    <div className={`edit-trip-modal ${mobileMode && "mobile"}`}>
+                        <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} trip={trip} updatedItinerary={updatedItinerary} loadItinerary={loadItinerary} onClose={() => { setItineraryUpdatedModalOpen(false); onClose() }} />
                         <LoadOnTop open={isLoading} full={true} borderRadius={8} />
                         <div className={`editTripOverlay ${editTripOverlayOpen ? null : "hidden-o"}`}>
                             <div className="go-to-itinerary-modal">
@@ -210,12 +265,12 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
                             <div onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)} className="calendarInput pointer">
                                 <div className="startDateInput flx-1">
                                     <span className="material-symbols-outlined purple-text">date_range</span>
-                                    <p className="m-0 black-text">{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                    <p className="m-0 black-text small-375">{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
                                 </div>
                                 <hr className='h-40' />
                                 <div className="endDateInput flx-1">
                                     <span className="material-symbols-outlined purple-text">date_range</span>
-                                    <p className="m-0 black-text">{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                    <p className="m-0 black-text small-375">{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
                                 </div>
                             </div>
                             <div>

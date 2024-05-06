@@ -6,8 +6,10 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import EditTripModal from '../components/EditTripModal';
 
-const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
+const MyTrips = () => {
     const { user } = useContext(DataContext);
+    const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
+    const { mobileMode } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
     const [userTrips, setUserTrips] = useState([])
     const [upcomingTrips, setUpcomingTrips] = useState(null);
@@ -143,11 +145,12 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
     }
     useEffect(() => {
         document.addEventListener('click', hidePopUpOnClickOutside, true);
-        return document.removeEventListener('click', hidePopUpOnClickOutside, true);
+        return () => document.removeEventListener('click', hidePopUpOnClickOutside, true);
     }, [])
 
 
     // user trip box code
+    const refPopUp = useRef(null);
     const toggleUserTripPopup = (index) => {
         let popUp = document.getElementById(`userTrip-popUp-${index}`)
         popUp.classList.toggle('d-none')
@@ -160,12 +163,10 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
         }
     }
     const hidePopUpOnClickOutside = (e) => {
-        if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id !== "userTripPopUpBtn") {
+        if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id.split("-")[0] !== "userTripPopUpBtn") {
             closeUserTripPopup()
         }
-        console.log('hi')
     }
-    const refPopUp = useRef(null);
 
 
 
@@ -332,20 +333,29 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
         <div>
             <EditTripModal open={editTripModalReducer.open} trip={editTripModalReducer.trip} loadItinerary={loadItinerary} onClose={() => closeEditTripModal()} />
             <div className="page-container75 flx-c">
-                <div className="align-all-items mt-6 mb-4h">
+                <div className={`${mobileMode ? "flx-c gap-4" : "align-all-items"} mt-6 mb-4h`}>
                     <p className="m-0 page-subheading-bold">My Trips</p>
                     <div className="searchDiv position-right">
-                        <input onChange={(e) => updateTripSearchQuery(e)} type="text" className="search-box" placeholder='Search my trips' />
+                        <input onChange={(e) => updateTripSearchQuery(e)} type="text" className={`search-box ${mobileMode && "w-70"}`} placeholder='Search my trips' />
                         <span className="material-symbols-outlined right-icon-overlay gray-text">search</span>
                     </div>
 
                 </div>
 
-                <div className="trip-options flx-r">
-                    <div onClick={() => setMyTripList('upcoming')} className={`option upcoming ${myTripList === 'upcoming' && "selected"}`}>Upcoming Trips</div>
-                    <div onClick={() => setMyTripList('past')} className={`option past ${myTripList === 'past' && "selected"}`}>Past Trips</div>
-                    {/* <div onClick={() => setMyTripList('published')} className={`option published ${myTripList === 'published' && 'selected'}`}>Published Itineraries</div> */}
-                    <div className="option-cold flx-1"></div>
+                <div className="trip-options">
+                    <div className="flx-1 flx-c">
+
+                        <div className="flx-r gap-6">
+                            <div onClick={() => setMyTripList('upcoming')} className={`option upcoming ${myTripList === 'upcoming' && "selected"}`}>Upcoming Trips</div>
+                            <div onClick={() => setMyTripList('past')} className={`option past ${myTripList === 'past' && "selected"}`}>Past Trips</div>
+                            {/* <div onClick={() => setMyTripList('published')} className={`option published ${myTripList === 'published' && 'selected'}`}>Published Itineraries</div> */}
+                            <div className="option-cold flx-1"></div>
+                        </div>
+                        <div className="box-bar">
+                            <div className={`beam ${myTripList === 'upcoming' && "upcoming"} ${myTripList === 'past' && "past"} ${myTripList === 'published' && "published"}`}></div>
+                        </div>
+
+                    </div>
                     <div className="sortBy flx-r align-all-items gap-2 ml-4 position-right">
                         <p className="m-0 gray-text">Sort By:</p>
                         <div className="dropdown-box flx-r">
@@ -353,8 +363,8 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                             <span className="material-symbols-outlined selection">arrow_drop_down</span>
                         </div>
                     </div>
-                </div>
 
+                </div>
 
 
                 {isLoadingTrips &&
@@ -378,7 +388,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                         if (!tripSearchQuery) {
 
                             return <div key={index} className="userTrip-card">
-                                <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
                                         <p className="m-0">Edit trip details</p>
                                         <span className="material-symbols-outlined large mx-1">
@@ -410,7 +420,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                                         </div>
                                     </div>
                                     <div className="card-icons">
-                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
                                         <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
                                     </div>
                                 </div>
@@ -419,7 +429,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                         } else if (tripSearchQuery) {
 
                             return searchMatch && <div key={index} className="userTrip-card">
-                                <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                <div ref={refPopUp} id={`userTrip-popUp-${index}`} className="popUp d-none">
                                     <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
                                         <p className="m-0">Edit trip details</p>
                                         <span className="material-symbols-outlined large mx-1">
@@ -451,7 +461,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                                         </div>
                                     </div>
                                     <div className="card-icons">
-                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
                                         <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
                                     </div>
                                 </div>
@@ -504,7 +514,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                                         </div>
                                     </div>
                                     <div className="card-icons">
-                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
                                         <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
                                     </div>
                                 </div>
@@ -545,7 +555,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                                         </div>
                                     </div>
                                     <div className="card-icons">
-                                        <span onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
+                                        <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined position-right gray-text pointer">more_vert</span>
                                         <img src="https://i.imgur.com/6VMWZni.png" alt="" className="img-18-square" />
                                     </div>
                                 </div>
@@ -565,7 +575,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                         if (!tripSearchQuery) {
 
                             return <div key={index} className="publishedTrip-card">
-                                <div id={`publishedTrip-popUp-${index}`} className="popUp hidden-o">
+                                <div ref={refPopUp} id={`publishedTrip-popUp-${index}`} className="popUp hidden-o">
                                     <div className="option">
                                         <p className="m-0">Edit details</p>
                                         <span className="material-symbols-outlined large">edit</span>
@@ -600,7 +610,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                                     <p className="m-0 itinerary-price">${trip.price}{!trip.price.toString().includes(".") && ".00"}</p>
                                 </div>
                                 <div className="side-options">
-                                    <span onClick={() => togglePublishedTripPopUp(index)} className="material-symbols-outlined pointer">more_vert</span>
+                                    <span id={`userTripPopUpBtn-${index}`} onClick={() => togglePublishedTripPopUp(index)} className="material-symbols-outlined pointer">more_vert</span>
                                     <span className="material-symbols-outlined">public</span>
                                 </div>
                             </div>
@@ -622,7 +632,7 @@ const MyTrips = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
                                     <p className="m-0 itinerary-price">${trip.price}{!trip.price.toString().includes(".") && ".00"}</p>
                                 </div>
                                 <div className="side-options">
-                                    <span className="material-symbols-outlined pointer">more_vert</span>
+                                    <span id={`userTripPopUpBtn-${index}`} className="material-symbols-outlined pointer">more_vert</span>
                                     <span className="material-symbols-outlined">public</span>
                                 </div>
                             </div>

@@ -1,10 +1,11 @@
-import { Icon, tileLayer } from 'leaflet'
+import { Icon, icon, tileLayer } from 'leaflet'
 import React, { useEffect, useRef, useState } from 'react'
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvent } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
+import OpenMapBox from './OpenMapBox'
 
 
-export const OpenMap = ({ mapCenter, markers, zoom }) => {
+export const OpenMap = ({ mapCenter, markers, newPlaceMarker, zoom }) => {
     const [mapGeo, setMapGeo] = useState(mapCenter ? mapCenter : [51.5072, -0.1276])
     // const [markers, setMarkers] = useState(locations ? locations : [])
     // markers is a list of objects > { geocode: [lat, lon], popUp: "say soomething"}
@@ -14,66 +15,47 @@ export const OpenMap = ({ mapCenter, markers, zoom }) => {
         iconUrl: "https://i.imgur.com/ukt1lYj.png",
         iconSize: [46, 41]
     })
+    const newPinIcon = new Icon({
+        iconUrl: "https://i.imgur.com/0XluxVX.png",
+        iconSize: [60, 51]
+    })
 
-    const setViewOnClick = ({ animateRef }) => {
-        const mapObject = useMapEvent('click', (e) => {
-            mapObject.setView(e.latlng, mapObject.getMaxZoom(), {
-                animate:animateRef.current || false,
-            })
-        })
-        return null
-    }
 
-    const animateExample = () => {
-        const animateRef = useRef(false)
-    }
-
-    // useEffect(() => {
-    //     if (mapCenter) {
-    //         ChangeView(mapCenter[0], mapCenter[1])
-    //     }
-    // }, [mapCenter])
-    // const ChangeView = (lat, lon) => {
-    //     const map = useMapEvent('click', () => {
-    //         map.panTo([lat, lon], map.getZoom())
-    //     })
-    //     return null
-    // }
-
-    // const updateCenter = () => {
-    //     map.leafletElemen
-    // }
     const test = () => {
         console.log(markers)
     }
-    // console.log(markers)
+
 
     useEffect(() => {
         test()
     }, [])
 
+
+
     return (
         <>
+
             {/* <div className="mapBox"> */}
 
-
-            <MapContainer center={mapGeo} zoom={zoom ? zoom : 10} >
-                <TileLayer attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url={tileLayer} />
-                {/* <ChangeView /> */}
-                <MarkerClusterGroup maxClusterRadius={10}>
-                    {markers && markers.length > 0 ? markers.map((marker, i) => (
-                        <Marker key={i} position={marker.geocode} icon={pinIcon}>
-                            <Popup>{marker.placeName}</Popup>
-                        </Marker>
-                    )) : null
-                    }
-                </MarkerClusterGroup>
-            </MapContainer>
-
-
+                <MapContainer center={mapGeo} zoom={zoom ? zoom : 10} >
+                    <TileLayer attribution='&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url={tileLayer} />
+                    {/* <ChangeView /> */}
+                    <MarkerClusterGroup maxClusterRadius={10}>
+                        {markers && markers.length > 0 ? markers.map((marker, i) => (
+                            <Marker key={i} position={marker.geocode} icon={pinIcon}>
+                                <Popup>{marker.placeName}</Popup>
+                            </Marker>
+                        )) : null
+                        }
+                        {newPlaceMarker &&
+                            <Marker position={newPlaceMarker.geocode} icon={newPinIcon}>
+                                <Popup>{newPlaceMarker.placeName}</Popup>
+                            </Marker>
+                        }
+                    </MarkerClusterGroup>
+                </MapContainer>
 
             {/* </div> */}
-
         </>
     )
 }

@@ -1,10 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { auth, firestore } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import axios from 'axios';
 
 
 const DataProvider = (props) => {
     const [showNavbar, setShowNavbar] = useState(true);
+
+    // [user code]
     const [user, setUser] = useState(null);
     const [userPreferences, setUserPreferences] = useState({
         landmarks: false,
@@ -16,7 +19,6 @@ const DataProvider = (props) => {
         entertainment: false,
         arts: false
     });
-
     useEffect(() => {
         if (auth.currentUser) {
             setPreferences()
@@ -43,17 +45,54 @@ const DataProvider = (props) => {
         firstPlaceAdded: true,
         firstSignIn: true
     })
-    // for itinerary page only - decides which list is being displayed
-    const [placeListDisplay, setPlaceListDisplay] = useState('Itinerary') // Suggested Places, Saved Places
-    const [sidebarDisplayed, setSidebarDisplayed] = useState(false);
-    const showSidebar = () => {
-        setSidebarDisplayed(true)
-        console.log('show sidebar')
-    }
-    const hideSidebar = () => {
-        setSidebarDisplayed(false)
-        console.log('hide sidebar')
-    }
+
+
+    // [current trip code]
+    const [currentTrip, setCurrentTrip] = useState({
+        tripID: null,
+        tripName: "Londo-Fundo!",
+        city: null,
+        country: "",
+        country_2letter: null,
+        startDate: "",
+        endDate: "",
+        tripDuration: "",
+        geocode: null,
+        imgUrl: null,
+        places: [],
+        itinerary: null,
+        itineraryFirstLoad: false
+      });
+      const clearCurrentTrip = () => {
+        setCurrentTrip({
+          tripID: null,
+          tripName: "",
+          city: null,
+          country: "",
+          country_2letter: null,
+          startDate: "",
+          endDate: "",
+          tripDuration: "",
+          geocode: null,
+          imgUrl: null,
+          places: [],
+          itinerary: null,
+          itineraryFirstLoad: false
+        })
+      }
+
+
+    // for itinerary page only - decides which list is being displayed - vestigial code
+    // const [placeListDisplay, setPlaceListDisplay] = useState('Itinerary') // Suggested Places, Saved Places
+    // const [sidebarDisplayed, setSidebarDisplayed] = useState(false);
+    // const showSidebar = () => {
+    //     setSidebarDisplayed(true)
+    //     console.log('show sidebar')
+    // }
+    // const hideSidebar = () => {
+    //     setSidebarDisplayed(false)
+    //     console.log('hide sidebar')
+    // }
     const [signUpIsOpen, setSignUpIsOpen] = useState(false);
     const [authIndex, setAuthIndex] = useState(null);
 
@@ -84,6 +123,7 @@ const DataProvider = (props) => {
         }
     }, [logoutStandby])
 
+    // [mobile code]
     const [mobileMode, setMobileMode] = useState(false);
     const [mobileModeNarrow, setMobileModeNarrow] = useState(false);
     useEffect(() => {
@@ -111,8 +151,105 @@ const DataProvider = (props) => {
         }
     }
 
+    const tripUpdate = {
+        tripName: function (new_name, trip_id) {
+            // returns success/failed
+            let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
+            let data = { 
+                tripName: new_name,
+                startDate: null,
+                endDate: null,
+             }
+            const response = axios.patch(url, data, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log(response.data)
+                return "success"
+            }).catch((error) => {
+                console.log(error)
+                // console.log("error caught")
+                return "failed"
+            })
+        },
+        tripDates: function(new_start_date, new_end_date, trip_id) {
+            // returns success/failed/itinerary updated
+            let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
+            let data = { 
+                tripName: null,
+                startDate: new_start_date,
+                endDate: new_end_date,
+             }
+             const response = axios.patch(url, data, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log(response.data)
+                let newItinerary = typeof response.data === "object"
+                // let newItinerary = "days" in response.data ? true : false; // days in response data indicates data is an itinerary
+                if (newItinerary) {
+                    console.log('itinerary updated')
+                    // update currentTrip itinerary w/ response.data
+                    return "itinerary updated"
+                } else {
+                    return "success"
+                }
+            }).catch((error) => {
+                console.log(error)
+                // console.log("error caught")
+                return "failed"
+            })
+        }
+    }
+
+    const timeFunctions = {
+        datinormal: function (systemDate) {
+          // system date => mm/dd/yyyy
+          let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+          let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+          if (month.toString().length === 1) {
+            month = "0" + month
+          }
+          let fullYear = systemDate.getFullYear()
+          return month + "/" + day + "/" + fullYear
+        },
+        datify: function (normalDate) {
+          // mm/dd/yyyy => mmm dd, yy
+          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+          let day = normalDate.slice(3, 5)
+          let monthNum = normalDate.slice(0, 2)
+          if (monthNum.charAt(0) === "0") {
+            monthNum = monthNum[1]
+          }
+          let fullYear = normalDate.slice(6)
+          const month = months[monthNum - 1]
+          if (day.charAt(0) === "0") {
+            day = day[1]
+          }
+          let twoYear = fullYear.slice(2)
+          return month + " " + day + ", " + twoYear
+        },
+        datidash: function (normalDate) {
+          // mm/dd/yyyy => yyyy-mm-dd
+          let year = normalDate.slice(6)
+          let month = normalDate.slice(0, 2)
+          let day = normalDate.slice(3, 5)
+          return year + "-" + month + "-" + day
+        },
+        datiundash: function (dashDate) {
+          // yyyy-mm-dd => mm/dd/yyyy
+          let fullyear = dashDate.slice(0, 4)
+          let month = dashDate.slice(5, 7)
+          let day = dashDate.slice(8)
+          return month + "/" + day + "/" + fullyear
+        }
+      }
+
     return (
-        <DataContext.Provider value={{ 'mobileMode': mobileMode, 'mobileModeNarrow' : mobileModeNarrow, 'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 'placeListDisplay': placeListDisplay, 'setPlaceListDisplay': setPlaceListDisplay, 'sidebarDisplayed': sidebarDisplayed, 'setSidebarDisplayed': setSidebarDisplayed, 'showSidebar': showSidebar, 'hideSidebar': hideSidebar, 'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences }}>
+        <DataContext.Provider value={{ 'mobileMode': mobileMode, 'mobileModeNarrow' : mobileModeNarrow, 
+        'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 
+        'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 
+        'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences, 
+        'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
+        'timeFunctions': timeFunctions, 'tripUpdate': tripUpdate }}>
             {props.children}
         </DataContext.Provider>
     )

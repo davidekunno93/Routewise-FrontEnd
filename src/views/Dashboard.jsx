@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer, useRef, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'
 import { NameTripModal } from './NameTripModal';
@@ -20,7 +20,7 @@ import EditTripModal from '../components/EditTripModal';
 
 
 
-export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => {
+export const Dashboard = () => {
     // library
     const cards2 = [
         {
@@ -108,8 +108,9 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
     // login require
     const { user, setUser } = useContext(DataContext);
+    const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     const { userPreferences, setPreferences } = useContext(DataContext);
-    const { sidebarDisplayed, setSidebarDisplayed, showSidebar, hideSidebar } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
@@ -142,11 +143,11 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const resetPageOpen = () => {
         setPageOpen(null)
     }
-    useEffect(() => {
+
+    useLayoutEffect(() => {
         console.log(Object.entries(userPreferences))
         console.log(auth.currentUser)
         setPreferences()
-        hideSidebar()
         setPageOpen('dashboard')
         return resetPageOpen;
     }, [])
@@ -171,6 +172,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
 
     const [userPreferencesCount, setUserPreferencesCount] = useState(null);
+    const [userPreferencesEmpty, setUserPreferencesEmpty] = useState(true);
     useEffect(() => {
         if (auth.currentUser) {
             loadUserTripsData()
@@ -181,15 +183,18 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
         let userPreferencesBooleans = Object.values(userPreferences)
         // console.log(userPreferencesBooleans)
         let count = 0
-        for (let i = 0;i<userPreferencesBooleans.length;i++) {
+        for (let i = 0; i < userPreferencesBooleans.length; i++) {
             console.log(userPreferencesBooleans[i])
             if (userPreferencesBooleans[i] === true) {
                 count++
             }
         }
         setUserPreferencesCount(count);
-        // console.log(count)
+        console.log(count)
     }, [])
+    useEffect(() => {
+        console.log("pref count = " + userPreferencesCount)
+    }, [userPreferencesCount])
     useEffect(() => {
         loadUserTripsData()
     }, [user])
@@ -296,6 +301,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             key: 'selection'
         }
     ]
+    const calendarSectionRef = useRef(null);
     const toggleCalendarOpen = () => {
         if (calendarOpen) {
             setCalendarOpen(false);
@@ -303,18 +309,27 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
             setCalendarOpen(true);
         }
     }
+    const hideOnClickOutsideCalendar = (e) => {
+        if (calendarSectionRef.current && !calendarSectionRef.current.contains(e.target)) {
+            setCalendarOpen(false);
+        }
+    }
+    useEffect(() => {
+        document.addEventListener('click', hideOnClickOutsideCalendar);
+        return () => document.removeEventListener('click', hideOnClickOutsideCalendar);
+    }, [])
     useEffect(() => {
         // setCalendar(format(new Date(), 'MM/dd/yyyy'))
         document.addEventListener('keydown', hideOnEscape, true)
-        return document.removeEventListener('keydown', hideOnEscape, true)
+        return () => document.removeEventListener('keydown', hideOnEscape, true)
     }, [])
     useEffect(() => {
         document.addEventListener('click', hideOnClickOutside, true)
-        return document.removeEventListener('click', hideOnClickOutside, true)
+        return () => document.removeEventListener('click', hideOnClickOutside, true)
     }, [])
     useEffect(() => {
         document.addEventListener('click', hidePopUpOnClickOutside, true)
-        return document.removeEventListener('click', hidePopUpOnClickOutside, true)
+        return () => document.removeEventListener('click', hidePopUpOnClickOutside, true)
     }, [])
     const hideOnEscape = (e) => {
         if (e.key === "Escape") {
@@ -330,7 +345,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     }
     const refOne = useRef(null);
     const hidePopUpOnClickOutside = (e) => {
-        if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id !== "userTripPopUpBtn") {
+        if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id.split("-")[0] !== ("userTripPopUpBtn")) {
             closeUserTripPopup()
             // console.log('triggered')
         }
@@ -652,7 +667,6 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
     const closeEditTripModal = () => {
         console.log('hy')
         setTripToEdit(null)
-        hideSidebar();
         setEditTripModalOpen(false);
     }
     const [tripToEdit, setTripToEdit] = useState(null);
@@ -845,18 +859,18 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                 <h1 className="page-subsubheading-bold inline-block mb-5">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="xsmall-pic ml-2" />
                 {/* <button onClick={() => testItinerary()} className="btn-primaryflex">Test Itinerary</button> */}
                 {/* start trip selection box */}
-                <div className="selection-box flx-c">
+                <div className={`selection-box ${mobileMode && "mobile"} flx-c`}>
                     <div className="box-title flx-2 flx-c just-ce"><p className='my-3'>Start planning your next adventure</p></div>
-                    <div className="box-items flx-3 flx-r mb-4 flx-wrap">
+                    <div className={`box-items flx-3 ${mobileMode ? "flx-c" : "flx-r"} gap-4 mb-4 flx-wrap`}>
                         <div className="item-location flx-3 flx-c just-en">
-                            <div className="mr-2-disappear768">
+                            <div className="">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
-                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' required />
+                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' autoComplete='off' required />
                             </div>
                         </div>
-                        <div className="item-dates flx- flx-c just-en">
+                        <div className={`item-dates ${mobileMode && "mobile"} flx- flx-c just-en`}>
                             <div className="box-heading dark-text page-subsubheading">When will you be there?</div>
-                            <div ref={refOne} className="calendarWrap mr-2-disappear768">
+                            <div ref={refOne} className="calendarWrap">
                                 {/* <span onClick={() => setCalendarOpen(true)} className="material-symbols-outlined position-absolute inputIcon-right xx-large o-50 pointer">
                                     date_range
                                 </span> */}
@@ -867,29 +881,32 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                     className="calendarInput pointer"
                                     readOnly
                                 /> */}
-                                <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
-                                    <div className="startDateInput flx-1">
-                                        <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                        <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                <div ref={calendarSectionRef} className="calendarSection">
+
+                                    <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
+                                        <div className="startDateInput flx-1">
+                                            <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
+                                            <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                        </div>
+                                        <hr className='h-40' />
+                                        <div className="endDateInput flx-1">
+                                            <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
+                                            <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                        </div>
                                     </div>
-                                    <hr className='h-40' />
-                                    <div className="endDateInput flx-1">
-                                        <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                        <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                    <div>
+                                        {calendarOpen &&
+                                            <DateRange
+                                                onChange={item => setRange([item.selection])}
+                                                editableDateInputs={true}
+                                                moveRangeOnFirstSelection={false}
+                                                ranges={range[0].startDate ? range : rangePlaceholder}
+                                                months={2}
+                                                direction='vertical'
+                                                className='calendarElement'
+                                            />
+                                        }
                                     </div>
-                                </div>
-                                <div>
-                                    {calendarOpen &&
-                                        <DateRange
-                                            onChange={item => setRange([item.selection])}
-                                            editableDateInputs={true}
-                                            moveRangeOnFirstSelection={false}
-                                            ranges={range[0].startDate ? range : rangePlaceholder}
-                                            months={2}
-                                            direction='vertical'
-                                            className='calendarElement'
-                                        />
-                                    }
                                 </div>
                             </div>
                             {/* <input type='text' placeholder='Start Date | End Date' className='input-normal2' /> */}
@@ -930,7 +947,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                             </>
                         }
 
-                        <div className="userTrips flx-r flx-wrap gap-8">
+                        <div className={`userTrips ${mobileMode && "just-se"} flx-r flx-wrap gap-8`}>
                             {userTrips.map((trip, index) => {
 
                                 if (index < 5) {
@@ -959,7 +976,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                                     </span>
                                                 </div>
                                             </div>
-                                            <span id='userTripPopUpBtn' onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
+                                            <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
                                                 more_vert
                                             </span>
                                         </div>
@@ -986,11 +1003,12 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                         <p className="page-subsubheading-bold">My Travel Preferences</p>
                         <Link to='/survey-update'><p className="m-0 purple-text mt-h">Edit</p></Link>
                     </div>
-                    <div className="flx-r flx-wrap gap-6">
-                        {userPreferencesCount && userPreferencesCount > 0 ? Object.entries(userPreferences).map((category, index) => {
+
+                    <div className={`preference-cards flx-r flx-wrap gap-6 ${mobileMode && "just-se"}`}>
+                        {userPreferences && Object.values(userPreferences).includes(true) ? Object.entries(userPreferences).map((category, index) => {
                             let categoryName = category[0]
                             let selected = category[1] // this is the boolean value of the interest
-                            return selected && <div key={index} className="card2-frozen">
+                            return selected && <div key={index} className="card2-frozen" style={{ maxWidth: 167 }}>
                                 <div className="green-checkbox">
                                     <span className="material-symbols-outlined white-text m-auto">
                                         check
@@ -1004,11 +1022,11 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                                 </div>
                             </div>
                         })
-                        : 
-                        <p className="m-0">Add <span className="purple-text bold500">Travel Preferences</span> to get personalized suggestions for your trips!</p>
-                    }
+                            :
+                            <p className="m-0">Add <span className="purple-text bold500">Travel Preferences</span> to get personalized suggestions for your trips!</p>
+                        }
                     </div>
-                    </div>
+                </div>
                 {/* end user preferences selection */}
 
                 {/* map code */}
@@ -1018,7 +1036,7 @@ export const Dashboard = ({ currentTrip, setCurrentTrip, clearCurrentTrip }) => 
                 </div>
 
                 <div className="popular-destinations">
-                    <div className="page-heading-bold my-3">Popular destinations</div>
+                    <div className="page-subsubheading-bold my-3">Popular destinations</div>
 
                     <div className="carousel2-window">
                         <div id='cityCarouselInner' className="inner-no-flex" style={{ transform: `translateX(-${translationIndex * 350}px)` }}>

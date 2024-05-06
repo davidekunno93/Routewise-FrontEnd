@@ -6,7 +6,7 @@ import { SearchPlace } from './SearchPlace';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 
 
-const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country }) => {
+const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef }) => {
 
     const [dayTitle, setDayTitle] = useState('')
 
@@ -67,8 +67,8 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                         {day.date_converted.split(' ')[0]} <span className="smalltext-respond"> {day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span></p>
                     <p id={`placeCount-${id}`} className="gray-text m-0 mt-2 bold500 placeCount ws-nowrap td-2 o-none">{narrowWindow ? "("+day.placeIds.length+")" : day.placeIds.length+" "+placeOrPlaces }</p></div>
                 <div className="addTitle-input position-relative">
-                    <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-special italic-placeholder bold-placeholder ml-5" placeholder='Add subheading' />
-                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-50 edit-overlay large">
+                    <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-dayTitle ml-5" placeholder='Add subheading' />
+                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-20 edit-overlay small">
                         edit
                     </span></label>
                 </div>
@@ -83,7 +83,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                                     <Draggable key={place.id} draggableId={`${place.id}`} index={i} >
                                         {(draggableProvided, draggableSnapshot) => (
                                             <div ref={draggableProvided.innerRef} {...draggableProvided.draggableProps} {...draggableProvided.dragHandleProps} key={i}>
-                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} />
+                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} />
                                             </div>
                                         )}
 
@@ -103,13 +103,14 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                             </span>
                                 Add Places</p>
                         </Link>
-                        <div id={`searchBar-${id}`} className="searchPlace w-100 o-none d-none td-4 flx-r">
+                        <div id={`searchBar-${id}`} className="searchPlace w-100 o-none d-none td-4 flx-r align-c">
                             <div className="flx-c">
-                                <span onClick={() => addSearchClose(id)} className="material-symbols-outlined mt-4 pointer onHover-fade o-50">
+                                <span onClick={() => addSearchClose(id)} className="material-symbols-outlined mt-1 px-1 pointer onHover-fade o-50">
                                     close
                                 </span>
                             </div>
                             <SearchPlace id={id} country={country} addPlaceFromFlowBox={addPlaceFromFlowBox} dayNum={day.id} />
+
                         </div>
                     </div>
 

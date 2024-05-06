@@ -131,6 +131,19 @@ place = {
     lat: #,
     long: #,
     placeName: "",
+    placeId: "", - from API
     place_id: # - from database
+}
+placeToConfirm = {
+    address: "",
+    favorite: bool,
+    geocode: [#, #],
+    imgURL: "",
+    info: "",
+    lat: #,
+    long: #,
+    lightbulb_days: ["dayNums"] - closest day(s), usually just one (this key is only on itinerary page)
+    placeName: "",
+    placeId: "", - from API
 }
 

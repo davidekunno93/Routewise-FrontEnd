@@ -118,7 +118,9 @@ APIs
 *GEOAPIFY - 3000 req/day*
 - address autocomplete api for adding places
 - place details api to populate place info when adding place
-- map tiles - client.stadiamaps.com
+- map tiles - client.stadiamaps.com (200,000 credits per month, current avg. use is 50 - 500 per day, maybe 4000 a month)\
+- Mapbox api. Mapbox GL JS, used react-map-gl
+- Mapbox api. Address Autofill
 
 
 addPlaces page <-- tripID -- Destination, tripName
@@ -132,6 +134,21 @@ Xsign up error
 catch error for emails already in use
 Xget w/Kate to sort out auth
 >>>>>Kate's db's only allow uids that have already been authenticated
+make placeCard title's scroll on hover to see full title
+update code: centroids need to update each time itinerary places changes
+<!-- map place to confirm card intro animation -->
+ellipsis on place cards in itinerary
+update add place from PTC animation 
+
 
 
 destImg in userTrip boxes get bigger upon hover?
+
+<!-- AddPlaces Page -->
+placesList titles smaller
+placesLists on a slider
+make headers same as myTrip headers for consistency
+
+
+<!-- Phone responsive -->
+Name tripmodal and loading screen and specify city (not working on dashboard?)

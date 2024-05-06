@@ -8,9 +8,11 @@ export const Loading = ({ innerText, noMascot, noText }) => {
 
     useEffect(() => {
         let loading = document.getElementById('loading')
-        wait(20000).then(() => {
-            loading.innerText = innerText ? innerText : "This may take up to a minute..."
-        })
+        if (loading) {
+            wait(20000).then(() => {
+                loading.innerText = innerText ? innerText : "This may take up to a minute..."
+            })
+        }
     }, [])
 
     return (

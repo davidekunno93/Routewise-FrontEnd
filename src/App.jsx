@@ -20,6 +20,7 @@ import axios from 'axios'
 import { DataContext } from './Context/DataProvider'
 import { auth } from './firebase'
 import MyTrips from './views/MyTrips'
+import OpenMapBox from './components/OpenMapBox'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -27,39 +28,38 @@ function App() {
   const userPref = window.localStorage.getItem("userPref")
   const { user, setUser } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
-  const { sidebarDisplayed, setSidebarDisplayed, showSidebar, hideSidebar, placeListDisplay, setPlaceListDisplay } = useContext(DataContext);
-  const [currentTrip, setCurrentTrip] = useState({
-    tripID: null,
-    tripName: "",
-    city: null,
-    country: "",
-    country_2letter: null,
-    startDate: "",
-    endDate: "",
-    tripDuration: "",
-    geocode: null,
-    imgUrl: null,
-    places: [],
-    itinerary: null,
-    itineraryFirstLoad: false
-  });
-  const clearCurrentTrip = () => {
-    setCurrentTrip({
-      tripID: null,
-      tripName: "",
-      city: null,
-      country: "",
-      country_2letter: null,
-      startDate: "",
-      endDate: "",
-      tripDuration: "",
-      geocode: null,
-      imgUrl: null,
-      places: [],
-      itinerary: null,
-      itineraryFirstLoad: false
-    })
-  }
+  // const [currentTrip, setCurrentTrip] = useState({
+  //   tripID: null,
+  //   tripName: "",
+  //   city: null,
+  //   country: "",
+  //   country_2letter: null,
+  //   startDate: "",
+  //   endDate: "",
+  //   tripDuration: "",
+  //   geocode: null,
+  //   imgUrl: null,
+  //   places: [],
+  //   itinerary: null,
+  //   itineraryFirstLoad: false
+  // });
+  // const clearCurrentTrip = () => {
+  //   setCurrentTrip({
+  //     tripID: null,
+  //     tripName: "",
+  //     city: null,
+  //     country: "",
+  //     country_2letter: null,
+  //     startDate: "",
+  //     endDate: "",
+  //     tripDuration: "",
+  //     geocode: null,
+  //     imgUrl: null,
+  //     places: [],
+  //     itinerary: null,
+  //     itineraryFirstLoad: false
+  //   })
+  // }
   // const [tripID, setTripID] = useState(null);
   useEffect(() => {
     wakeUpBackEnd()
@@ -89,38 +89,30 @@ function App() {
   }
 
 
-
-
-
   // other functions
   function wait(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
 
-
-
-
-
-
   return (
     <>
-
 
       <div className="flx-1 flx-c">
         <Navbar />
         <Routes>
           <Route children path='/register' element={<SignUp />} />
-          <Route children path='/' element={user ? <Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} /> : <Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
-          <Route children path='/landing' element={<Landing currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} />} />
+          <Route children path='/' element={user ? <Dashboard /> : <Landing />} />
+          <Route children path='/landing' element={<Landing />} />
           <Route children path='/survey' element={<Survey />} />
           <Route children path='/survey-update' element={<SurveyUpdate />} />
-          <Route children path='/dashboard' element={<Dashboard currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
-          <Route children path='/add-places' element={<AddPlaces currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
-          <Route children path='/itinerary' element={<Itinerary currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} showSidebar={showSidebar} hideSidebar={hideSidebar} placeListDisplay={placeListDisplay} setPlaceListDisplay={setPlaceListDisplay} />} />
-          <Route children path='/mytrips' element={<MyTrips currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} />} />
+          <Route children path='/dashboard' element={<Dashboard />} />
+          <Route children path='/add-places' element={<AddPlaces />} />
+          <Route children path='/itinerary' element={<Itinerary />} />
+          <Route children path='/mytrips' element={<MyTrips />} />
           <Route children path='/test' element={<Test />} />
           <Route children path='/map' element={<OpenMap />} />
+          <Route children path='/map2' element={<OpenMapBox />} />
           <Route children path='/hero' element={<HeroFade />} />
         </Routes>
         {/* <h1 className='empty-3'></h1> */}

@@ -10,25 +10,33 @@ import { DataContext } from '../Context/DataProvider'
 import StarPlacesToolTip from '../components/StarPlacesToolTip'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { firestore } from '../firebase'
-import { LoadingBox } from '../components/LoadingBox'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange, DateRangePicker } from 'react-date-range';
-import format from 'date-fns/format';
-import { addDays } from 'date-fns'
 import ItineraryUpdatedModal from '../components/ItineraryUpdatedModal'
+import OpenMapBox from '../components/OpenMapBox'
+import { Fade, Slide } from 'react-awesome-reveal'
 
 
-export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurrentTrip }) => {
+export const AddPlaces = () => {
     // Send Kate Data
     const { user, setUser } = useContext(DataContext);
-    const { firstTimeUser, setFirstTimeUser } = useContext(DataContext);
-    const { hideSidebar } = useContext(DataContext);
+    const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
     const { setSignUpIsOpen, setAuthIndex } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
     const [placeToConfirm, setPlaceToConfirm] = useState(null);
+    const [placeToConfirmAnimation, setPlaceToConfirmAnimation] = useState(false);
+    useEffect(() => {
+        if (placeToConfirm) {
+            wait(100).then(() => {
+                setPlaceToConfirmAnimation(true);
+            })
+        } else {
+            setPlaceToConfirmAnimation(false);
+        }
+    }, [placeToConfirm])
     // const [placeToConfirm, setPlaceToConfirm] = useState({
     //     placeName: "Tate Modern",
     //     info: "Mon-Sun 10 AM-6 PM",
@@ -41,7 +49,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     //     geocode: [51.507748, -0.099469],
     //     placeId: "2",
     // });
-    const [markers, setMarkers] = useState([])
+    const [markers, setMarkers] = useState([]);
+    const [newPlaceMarker, setNewPlaceMarker] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [bias, setBias] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
     const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb')
@@ -155,14 +164,13 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     const firstRender = useRef(true);
     const secondRender = useRef(true);
 
-    useEffect(() => {
-        getSearchData()
-        // console.log(searchText)
-    }, [searchText])
+    // useEffect(() => {
+    // getSearchData()
+    // console.log(searchText)
+    // }, [searchText])
 
     useEffect(() => {
         console.log(currentTrip)
-        hideSidebar()
     }, [])
 
     useEffect(() => {
@@ -170,7 +178,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         // console.log(places)
         // console.log(placeToConfirm)
         if (placeToConfirm) {
-            placeCopy.push(placeToConfirm)
+            // placeCopy.push(placeToConfirm)
+            setNewPlaceMarker(placeToConfirm);
+        } else {
+            setNewPlaceMarker(null);
         }
         setMarkers(placeCopy)
     }, [placeToConfirm, places])
@@ -260,26 +271,41 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         // only load image for place if there isn't already an imgUrl defined in the place object
         let imgUrl = ""
         if (!place.imgUrl) {
-            let imgQuery = place.name.replace(/ /g, '-')
+            // let imgQuery = place.name.replace(/ /g, '-')
+            let imgQuery = place.text.replace(/ /g, '-')
             imgUrl = await loadCityImg(imgQuery)
         } else {
             imgUrl = place.imgUrl
         }
+        let placeInfo = "";
+        // let placeInfo = await loadPlaceDetails(place.place_id)
 
-        let placeInfo = await loadPlaceDetails(place.place_id)
+        // let newPlace = {
+        //     placeName: place.name,
+        //     info: placeInfo,
+        //     address: place.formatted,
+        //     imgURL: imgUrl,
+        //     category: place.category ? place.category : "none",
+        //     favorite: false,
+        //     lat: place.lat,
+        //     long: place.lon,
+        //     geocode: [place.lat, place.lon],
+        //     placeId: place.place_id
+        // }
 
         let newPlace = {
-            placeName: place.name,
+            placeName: place.text,
             info: placeInfo,
-            address: place.formatted,
+            address: place.place_name.split(", ").slice(1, -1).join(", "),
             imgURL: imgUrl,
-            category: place.category ? place.category : "none",
+            category: place.properties.category,
             favorite: false,
-            lat: place.lat,
-            long: place.lon,
-            geocode: [place.lat, place.lon],
-            placeId: place.place_id
+            lat: place.geometry.coordinates[1],
+            long: place.geometry.coordinates[0],
+            geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+            placeId: place.id,
         }
+
         setPlaceToConfirm(newPlace)
         resetSearch()
     }
@@ -339,21 +365,35 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const addPlaceToList = async (place) => {
-        let placeInfo = await loadPlaceDetails(place.place_id)
+        let placeInfo = "";
+        // let placeInfo = await loadPlaceDetails(place.place_id)
         let placesCopy = [...places]
 
+        // let newPlace = {
+        //     id: placesCopy.length + 1,
+        //     placeName: place.name,
+        //     info: placeInfo,
+        //     address: place.formatted,
+        //     imgURL: place.imgUrl,
+        //     category: place.category ? place.category : "none",
+        //     favorite: false,
+        //     lat: place.lat,
+        //     long: place.lon,
+        //     geocode: [place.lat, place.lon],
+        //     placeId: place.place_id
+        // }
+
         let newPlace = {
-            id: placesCopy.length + 1,
-            placeName: place.name,
+            placeName: place.text,
             info: placeInfo,
-            address: place.formatted,
-            imgURL: place.imgUrl,
-            category: place.category ? place.category : "none",
+            address: place.place_name.split(", ").slice(1, -1).join(", "),
+            imgURL: imgUrl,
+            category: place.properties.category,
             favorite: false,
-            lat: place.lat,
-            long: place.lon,
-            geocode: [place.lat, place.lon],
-            placeId: place.place_id
+            lat: place.geometry.coordinates[0],
+            long: place.geometry.coordinates[1],
+            geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+            placeId: place.id,
         }
 
 
@@ -414,7 +454,8 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
     }
 
     const removePlace = async (index) => {
-        let placeCopy = [...places]
+        let placesCopy = [...places]
+        let currentTripCopy = { ...currentTrip }
 
         if (places[index].place_id) {
             let place_id = places[index].place_id
@@ -423,15 +464,20 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             const response = await axios.delete(url)
                 .then((response) => {
                     console.log(response.data)
-                    placeCopy.splice(index, 1)
-                    setPlaces(placeCopy)
-                    let currentTripCopy = { ...currentTrip }
+                    placesCopy.splice(index, 1)
+                    setPlaces(placesCopy)
                     currentTripCopy.places.splice(index, 1)
                     setCurrentTrip(currentTripCopy)
                 })
                 .catch((error) => {
                     console.log(error)
                 })
+        } else {
+            // places being updated without user sign in
+            placesCopy.splice(index, 1)
+            currentTripCopy.places = placesCopy
+            setPlaces(placesCopy)
+            setCurrentTrip(currentTripCopy)
         }
 
     }
@@ -916,7 +962,11 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         setFirstTimeOnPage(false)
     }
 
-    const [selectedPlaceList, setSelectedPlaceList] = useState("Added")
+
+    // PLACEs LIST SELECTION CODE
+    const [selectedPlacesList, setSelectedPlacesList] = useState("Added")
+    const beamRef = useRef(null);
+
     const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null)
     const updateSuggestedPlacesFilter = (num, categoryTitle) => {
         // let category = document.getElementById(`suggestedCategory-${num}`)
@@ -1089,6 +1139,56 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
         console.log(currentTrip)
     }
 
+
+
+    // PLACE CARD TITLE ELLIPSIS RE-RENDER CODE
+    const cardBodyRef = useRef(null);
+    const ptcCardBodyRef = useRef(null);
+    const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(15);
+    const [placeToConfirmCardTitleCharLimit, setPlaceToConfirmCardTitleCharLimit] = useState(0);
+    const [charLimit, setCharLimit] = useState(18);
+    const calculateCharLimit = (width, cardType) => {
+        let extraPercent = (Math.floor((width - 213) / 6)) / 1000;
+        let charLimit = Math.floor(width * (0.07 + extraPercent));
+        // console.log(charLimit);
+        return charLimit
+    }
+    useEffect(() => {
+        if (cardBodyRef.current) {
+            const observer = new ResizeObserver((entries) => {
+                // console.log(entries)
+                let width = entries[0].contentRect.width
+                let charLimit = calculateCharLimit(width);
+                if (charLimit !== 0) {
+                    // if charLimit is 0 (due to deleted place) skip charLimit update
+                    setPlaceCardTitleCharLimit(charLimit);
+                }
+            })
+            observer.observe(cardBodyRef.current)
+        }
+    }, [places, selectedPlacesList])
+    useEffect(() => {
+        if (ptcCardBodyRef.current) {
+            const observer = new ResizeObserver((entries) => {
+                // console.log(entries)
+                let width = entries[0].contentRect.width
+                let charLimit = calculateCharLimit(width);
+                setPlaceToConfirmCardTitleCharLimit(charLimit);
+            })
+            observer.observe(ptcCardBodyRef.current)
+        }
+    }, [placeToConfirm])
+
+    const scrollingAnim = () => {
+        const scrollers = document.querySelectorAll(".scroller");
+        const addAnimation = () => {
+            scrollers.forEach((scroller) => {
+                scroller.setAttribute("data-animated", true)
+            })
+        }
+
+    }
+
     return (
         <>
             <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} />
@@ -1110,7 +1210,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
             <div className="page-container90 vh-100 flx-c">
                 <div className="add-places-title-row flx-r align-c gap-8">
 
-                    <p onClick={() => {printPlaces(); printCurrentTrip()}} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                    <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                     <div className="tripInfo flx-r align-c gap-2 position-relative">
                         <span className="material-symbols-outlined o-50">
                             calendar_month
@@ -1131,10 +1231,10 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                         </div>
                     </div>
                     {currentTrip.tripID !== null ?
-                    <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
-                    :
-                    <button onClick={() => {setSignUpIsOpen(true); setAuthIndex(0)}} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
-                }
+                        <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
+                        :
+                        <button onClick={() => { setSignUpIsOpen(true); setAuthIndex(0) }} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
+                    }
 
                 </div>
 
@@ -1147,7 +1247,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                     <div className="add-places-c1 map-section flx-5">
                         <div className="gray-box-respond position-relative flx">
 
-                            <div className="searchBar position-absolute w-100 z-10000">
+                            <div className="searchBar position-absolute w-100 z-10000 d-none">
                                 <div className="position-relative w-100 h-100">
                                     <div id='autocomplete-container' className="mapSearch-dropdown flx-c">
                                         {/* <div className="inner-box w-96 m-auto h-100 pt-1 flx-c hideOverflow"> */}
@@ -1181,7 +1281,9 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                             </div>
 
                             {placeToConfirm &&
-                                <div className="placeToConfirmCard position-absolute">
+                                // <Fade className='z-1' duration={300} fraction={0} triggerOnce>
+
+                                <div className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
                                     <div className="placeCard-PTC w-97 position-relative flx-r my-2">
                                         <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
                                             close
@@ -1190,10 +1292,11 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                         <div className="placeCard-img-div flx-1">
                                             <img className="placeCard-img" src={placeToConfirm.imgURL} />
                                         </div>
-                                        <div className="placeCard-body flx-2">
+                                        <div ref={ptcCardBodyRef} className="placeToConfirmCard-body flx-2">
                                             <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                                            <p className="body-title-PTC">{placeToConfirm.placeName}</p>
-                                            <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p>
+                                            <p className="body-title-PTC">{placeToConfirm.placeName.length > placeToConfirmCardTitleCharLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit) + "..." : placeToConfirm.placeName}</p>
+                                            {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
+                                            <p className="body-info-PTC pointer mb-1">{placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1)}</p>
                                             <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
 
                                             {addedPlaceAddresses.includes(placeToConfirm.address) ?
@@ -1229,22 +1332,26 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                         </div>
                                     </div>
                                 </div>
+                                // </Fade>
                             }
 
-                            <OpenMap mapCenter={bias} markers={markers} />
-
+                            {/* <OpenMap mapCenter={bias} markers={markers} newPlaceMarker={newPlaceMarker} /> */}
+                            <OpenMapBox addPlaceToConfirm={addPlaceToConfirm} newPlaceMarker={newPlaceMarker} mapCenter={bias} markers={markers} />
                         </div>
                     </div>
 
                     <div className="add-places-c2 flx-c flx-4">
 
                         <div className="places-section mt-4-respond1024">
-                            <div className="placesLists flx-r gap-6">
-                                <p onClick={() => setSelectedPlaceList("Added")} className={`${selectedPlaceList === "Added" ? "selectedPlaceList" : "unselectedPlaceList"} page-subsubheading-bold m-0`}>Added places ({places.length})</p>
-                                <p onClick={() => setSelectedPlaceList("Suggested")} className={`${selectedPlaceList === "Suggested" ? "selectedPlaceList" : "unselectedPlaceList"} page-subsubheading-bold m-0`}>Suggested places</p>
+                            <div className="placesList flx-r gap-6">
+                                <p onClick={() => setSelectedPlacesList("Added")} className={`${selectedPlacesList === "Added" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Added places ({places.length})</p>
+                                <p onClick={() => setSelectedPlacesList("Suggested")} className={`${selectedPlacesList === "Suggested" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Suggested places</p>
+                            </div>
+                            <div className="box-bar">
+                                <div ref={beamRef} className={`beam ${selectedPlacesList === "Added" && "addedPlaces"} ${selectedPlacesList === "Suggested" && "suggestedPlaces"}`}></div>
                             </div>
 
-                            {selectedPlaceList === "Added" &&
+                            {selectedPlacesList === "Added" &&
                                 <>
                                     <div className="flx">
                                         <p onClick={() => clearAllPlaces()} className="my-2 purple-text pointer z-1 position-right bold500 mr-1">Clear list</p>
@@ -1253,15 +1360,27 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                         <Scrollbars autoHide>
 
                                             {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
-                                                return <div key={index} className="placeCard2 position-relative flx-r my-2">
+                                                let firstCategory = place.category.split(",")[0]
+                                                firstCategory = firstCategory.charAt(0).toUpperCase() + firstCategory.slice(1)
+
+                                                return <Fade duration={300} triggerOnce><div key={index} className="placeCard2 position-relative flx-r my-2">
 
                                                     <div className="placeCard-img-div flx-3">
                                                         <img className="placeCard2-img" src={place.imgURL} />
                                                     </div>
-                                                    <div className="placeCard-body flx-5">
+                                                    <div ref={cardBodyRef} className="placeCard-body flx-5">
                                                         <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
-                                                        <p className="body-title ">{place.placeName}</p>
-                                                        <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p>
+                                                        <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}>
+                                                            <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p>
+                                                            <div className="scroller" data-animated="true">
+                                                                <div className="scroller-inner">
+                                                                    <p className="scroll-text body-title">{place.placeName}</p>
+                                                                    <p className="scroll-text body-title">{place.placeName}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
+                                                        <p className="body-info">{firstCategory}</p>
                                                         <p className="m-0 body-address">{place.address}</p>
                                                     </div>
                                                     <div className="placeCard-starOrDelete flx-c just-sb align-c">
@@ -1275,7 +1394,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                                             delete
                                                         </span>
                                                     </div>
-                                                </div>
+                                                </div></Fade>
                                             })
                                                 :
                                                 <div className="add-places-card">
@@ -1297,7 +1416,7 @@ export const AddPlaces = ({ countryGeo, currentTrip, setCurrentTrip, clearCurren
                                 </>
                             }
 
-                            {selectedPlaceList === "Suggested" &&
+                            {selectedPlacesList === "Suggested" &&
                                 <>
                                     {userInterests.length > 0 &&
                                         <div className="suggestedCategories flx-r gap-2 my-2">

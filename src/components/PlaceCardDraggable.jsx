@@ -1,6 +1,29 @@
-import React from 'react'
+import React, { useDebugValue, useEffect, useRef, useState } from 'react'
 
-export const PlaceCardDraggable = ({ i, place, removePlace, dayId, draggableSnapshot }) => {
+export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef }) => {
+    // PLACE CARD TITLE ELLIPSIS RE-RENDER CODE
+    // const cardBodyRef = useRef(null);
+    // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
+    const calculateCharLimit = (width) => {
+        let extraPercent = (Math.floor((width - 213) / 6)) / 1000;
+        let charLimit = Math.floor(width * (0.07 + extraPercent));
+        console.log(charLimit)
+        return charLimit
+    }
+    // useEffect(() => {
+    //     // first place in first day calculates char limit and mutates charLimit in itinerary
+    //     if (cardBodyRef.current && dayId === "day-1" && i === 0) {
+    //         const observer = new ResizeObserver((entries) => {
+    //             // console.log(cardBodyRef.current)
+    //             let width = entries[0].contentRect.width
+    //             let charLimit = calculateCharLimit(width)
+    //             setPlaceCardTitleCharLimit(charLimit);
+    //         })
+    //         observer.observe(cardBodyRef.current)
+    //     }
+    // }, [])
+
+
     return (
         <div className="placeCard-box flx-r grabber">
             <div className="drag-icon flx">
@@ -19,9 +42,10 @@ export const PlaceCardDraggable = ({ i, place, removePlace, dayId, draggableSnap
                     </div>
                     <img className="placeCard2-img" src={place.imgURL} />
                 </div>
-                <div className="placeCard-body flx-3">
+                <div ref={dayId === "day-1" && id == 0 ? cardBodyRef : null} className="placeCard-body flx-3">
+                    {/* <p className="body-title">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit)+"..." : place.placeName}</p> */}
                     <p className="body-title">{place.placeName}</p>
-                    <p className="body-info">{place.info}</p>
+                    <p className="body-info">{place.category ? place.category.split(",")[0].charAt(0).toUpperCase() + place.category.split(",")[0].slice(1) : "No category"}</p>
                     <p className="body-address">{place.address}</p>
                 </div>
                 <div className="placeCard-starOrDelete flx-c just-sb align-c">
