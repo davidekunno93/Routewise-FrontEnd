@@ -12,7 +12,9 @@ const SearchPlaceForMap = ({ addPlaceToConfirm }) => {
     // select a place, give it back to parent component - prop drill the add place function
 
     // SUGGESTIONS CODE
-    const autofill_accessToken = import.meta.env.VITE_APP_MAPBOX_API_KEY;
+    // const autofill_accessToken = import.meta.env.VITE_APP_MAPBOX_API_KEY;
+    const autofill_accessToken = "pk.eyJ1Ijoicm91dGV3aXNlMTAyMyIsImEiOiJjbHZnMGo4enEwcHMxMmpxZncxMzJ6cXJuIn0.becg64t48O9U4HViiduAGA";
+    ;
     const searchRef = useRef(null);
     const [searchText, setSearchText] = useState("");
     const [suggestions, setSuggestions] = useState([]);

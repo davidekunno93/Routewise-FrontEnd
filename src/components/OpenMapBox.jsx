@@ -81,7 +81,8 @@ const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter,
     }
 
     // MAP CODE
-    const mapboxAccessToken = import.meta.env.VITE_APP_MAPBOX_API_KEY;
+    // const mapboxAccessToken = import.meta.env.VITE_APP_MAPBOX_API_KEY;
+    const mapboxAccessToken = "pk.eyJ1Ijoicm91dGV3aXNlMTAyMyIsImEiOiJjbHZnMGo4enEwcHMxMmpxZncxMzJ6cXJuIn0.becg64t48O9U4HViiduAGA";
     const [viewState, setViewState] = useState({
         latitude: mapCenter ? mapCenter[0] : 40,
         longitude: mapCenter ? mapCenter[1] : -74.5,
