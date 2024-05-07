@@ -417,7 +417,7 @@ export const Landing = () => {
                                 </div>
                             </div>
                             <div className={`flx-r ${mobileMode ? "position-bottom" : "mt-5"}`}>
-                                <button onClick={() => setSignUpIsOpen(true)} className="btn-primaryflex2">Sign up</button>
+                                <button onClick={() => openSignUp()} className="btn-primaryflex2">Sign up</button>
                             </div>
 
 

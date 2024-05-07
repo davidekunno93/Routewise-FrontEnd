@@ -666,6 +666,38 @@ export const AddPlaces = () => {
     //     });
     const [userInterests, setUserInterests] = useState([])
 
+    const mapBoxCategoryKey = {
+        landmarks: { category: ["tourist_attraction"], categoryTitle: "Landmarks & Attractions" },
+        nature: { category: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature" },
+        shopping: { category: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping" },
+        food: { category: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Nightlife" },
+        relaxation: { category: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation" },
+        entertainment: { category: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment" },
+        arts: { category: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture" },
+        nightlife: { category: ["nightlife", "bar", "nightclub"], categoryTitle: "Arts & Culture" },
+    }
+    const loadSuggestedPlaces = () => {
+        // get userPreferences of current user
+        for (let userPreference of Object.entries(userPreferences)) {
+            // userPreference = [pref: bool]
+            let category = userPreference[0]
+            let selected = userPreference[1]
+            // get suggestions based on those preferences
+            if (selected) {
+                let resultPlaces = getSuggestedPlaces2(category);
+            }
+        }
+
+    }
+        
+    useEffect(() => {
+
+    }, [])
+    const getSuggestedPlaces2 = () => {
+
+    }
+
+
     useEffect(() => {
         // key for converting travel preference to place category
         const categoryKey = {
@@ -693,8 +725,8 @@ export const AddPlaces = () => {
         console.log(userInterestsList)
         setUserInterests(userInterestsList)
 
-        let conclusion = delayGetSuggestedPlaces(userInterestsList)
-        console.log(conclusion)
+        // let conclusion = delayGetSuggestedPlaces(userInterestsList)
+        // console.log(conclusion)
 
         // user ? continue
         // 0 preferences ? *RENDERED* render button that asks you to update preferences that links to survey page

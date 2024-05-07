@@ -5079,7 +5079,7 @@ p {
 .trip-information-div {
   background-color: white;
   padding: 12px;
-  border-bottom: 2px solid gainsboro;
+  border-bottom: 1px solid rgb(180, 180, 180);
   /* border-top: 2px solid white; */
 }
 .suggested-header-div {

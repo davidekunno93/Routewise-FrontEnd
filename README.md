@@ -152,3 +152,16 @@ make headers same as myTrip headers for consistency
 
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)
+
+
+
+
+
+landmarks:
+nature:
+shopping: 
+food: 
+relaxation: 
+entertainment:
+arts:
+nightlife: night
