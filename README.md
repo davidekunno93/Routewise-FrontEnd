@@ -119,8 +119,8 @@ APIs
 - address autocomplete api for adding places
 - place details api to populate place info when adding place
 - map tiles - client.stadiamaps.com (200,000 credits per month, current avg. use is 50 - 500 per day, maybe 4000 a month)\
-- Mapbox api. Mapbox GL JS, used react-map-gl
-- Mapbox api. Address Autofill
+- Mapbox api. Mapbox GL JS, used react-map-gl >> 50k free map loads/month
+- Mapbox api. Geocoding API (place search) >> 100k free requests/month
 
 
 addPlaces page <-- tripID -- Destination, tripName
@@ -156,12 +156,3 @@ Name tripmodal and loading screen and specify city (not working on dashboard?)
 
 
 
-
-landmarks:
-nature:
-shopping: 
-food: 
-relaxation: 
-entertainment:
-arts:
-nightlife: night

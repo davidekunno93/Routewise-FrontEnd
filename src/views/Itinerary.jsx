@@ -510,8 +510,7 @@ export const Itinerary = () => {
     newPlace["lightbulb_days"] = lightbulb_days
     setLightbulbDays(lightbulb_days)
     setPlaceToConfirm(newPlace)
-    resetSearch()
-    resetPanelSearch()
+    // resetPanelSearch()
   }
   // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
   const [placeToConfirmCardTitleCharLimit, setPlaceToConfirmCardTitleCharLimit] = useState(0);
@@ -617,7 +616,7 @@ export const Itinerary = () => {
   // [map & geography code]
   const [markers, setMarkers] = useState(null);
   const [newPlaceMarker, setNewPlaceMarker] = useState(null);
-  const [bias, setBias] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
+  const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
   const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
   const [searchText, setSearchText] = useState('');
   const [panelSearchText, setPanelSearchText] = useState('');
@@ -1076,7 +1075,7 @@ export const Itinerary = () => {
         let searchQueries = categoryObject.searchQuery.split('%')
         // search both queries to get 5 places each
         for (let i = 0; i < searchQueries.length; i++) {
-          let url = `https://api.geoapify.com/v2/places?&categories=${searchQueries[i]}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
+          let url = `https://api.geoapify.com/v2/places?&categories=${searchQueries[i]}&bias=proximity:${mapCenter[1]},${mapCenter[0]}&limit=${limit}&apiKey=${apiKey}`
           const response = await axios.get(url)
             .then(async (response) => {
               let resultPlaces = response.data.features
@@ -1087,7 +1086,7 @@ export const Itinerary = () => {
             })
         }
       } else {
-        let url = `https://api.geoapify.com/v2/places?&categories=${categoryObject.searchQuery}&bias=proximity:${bias[1]},${bias[0]}&limit=${limit}&apiKey=${apiKey}`
+        let url = `https://api.geoapify.com/v2/places?&categories=${categoryObject.searchQuery}&bias=proximity:${mapCenter[1]},${mapCenter[0]}&limit=${limit}&apiKey=${apiKey}`
         const response = await axios.get(url)
           .then(async (response) => {
             let resultPlaces = response.data.features

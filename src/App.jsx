@@ -24,59 +24,18 @@ import OpenMapBox from './components/OpenMapBox'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
-  const userData = window.localStorage.getItem("userData")
-  const userPref = window.localStorage.getItem("userPref")
+  const userData = window.localStorage.getItem("userData");
+  const userPref = window.localStorage.getItem("userPref");
   const { user, setUser } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
-  // const [currentTrip, setCurrentTrip] = useState({
-  //   tripID: null,
-  //   tripName: "",
-  //   city: null,
-  //   country: "",
-  //   country_2letter: null,
-  //   startDate: "",
-  //   endDate: "",
-  //   tripDuration: "",
-  //   geocode: null,
-  //   imgUrl: null,
-  //   places: [],
-  //   itinerary: null,
-  //   itineraryFirstLoad: false
-  // });
-  // const clearCurrentTrip = () => {
-  //   setCurrentTrip({
-  //     tripID: null,
-  //     tripName: "",
-  //     city: null,
-  //     country: "",
-  //     country_2letter: null,
-  //     startDate: "",
-  //     endDate: "",
-  //     tripDuration: "",
-  //     geocode: null,
-  //     imgUrl: null,
-  //     places: [],
-  //     itinerary: null,
-  //     itineraryFirstLoad: false
-  //   })
-  // }
-  // const [tripID, setTripID] = useState(null);
+  const { currentTrip, mapBoxCategoryKey, suggestedPlaces, setSuggestedPlaces } = useContext(DataContext);
+  const { loadCityImg } = useContext(DataContext);
+
+  // wakeup function
   useEffect(() => {
     wakeUpBackEnd()
     console.log(auth.currentUser)
   }, [])
-
-  const testRedirect = () => {
-    let url = 'https://routewise-backend.onrender.com/places/update-trip/12'
-    const response = axios.post(url, { data: 'test-data' }, {
-      headers: { "Content-Type": "application/json" }
-    }).then((response) => {
-      console.log(response.data)
-    }).catch((error) => {
-      console.log(error)
-    })
-  }
-
   const wakeUpBackEnd = async () => {
     let url = "https://routewise-backend.onrender.com/profile/test"
     let data = "wakeUp"
@@ -87,6 +46,71 @@ function App() {
     console.log('woken up')
     return response.status === 200 ? response.data : null
   }
+
+  // suggested places api call
+  const loadSuggestedPlaces = async () => {
+    let placeSuggestions = [];
+    let userPreferencesCount = 0;
+    for (let userPreference of Object.entries(userPreferences)) {
+      // userPreference = [category: bool]
+      let category = userPreference[0]
+      let selected = userPreference[1]
+      // console.log(userPreference)
+      if (selected) {
+        userPreferencesCount++
+        let resultPlaces = await getSuggestedPlaces2(category);
+        if (resultPlaces.length > 0) {
+
+          for (let place of resultPlaces) {
+            let imgUrl = await loadCityImg(place.properties.name)
+            let placeSuggestion = {
+              placeName: place.properties.name,
+              info: "",
+              address: place.properties.full_address.split(", ").slice(0, -1).join(", "),
+              imgURL: imgUrl,
+              category: place.properties.poi_category.join(", "),
+              categoryTitle: mapBoxCategoryKey[category].categoryTitle,
+              // favorite: false,
+              lat: place.geometry.coordinates[1],
+              long: place.geometry.coordinates[0],
+              geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+              placeId: place.properties.mapbox_id,
+            }
+            if (!placeSuggestions.includes(placeSuggestion)) {
+              placeSuggestions.push(placeSuggestion)
+            }
+          }
+        }
+      }
+    }
+    if (userPreferencesCount === 0) {
+      // no user preferences currently selected
+    } else {
+      console.log(placeSuggestions)
+      if (placeSuggestions.length === 0) {
+        // no places found for the user (even though they have selected preferences)
+      } else {
+        // suggested places found
+        setSuggestedPlaces(placeSuggestions);
+      }
+    }
+  }
+  const getSuggestedPlaces2 = async (category) => {
+    // implement try / catch block for errors
+    const categoryQueries = mapBoxCategoryKey[category].categoryQueries;
+    const apiKey = "pk.eyJ1Ijoicm91dGV3aXNlMTAyMyIsImEiOiJjbHZnMGo4enEwcHMxMmpxZncxMzJ6cXJuIn0.becg64t48O9U4HViiduAGA"
+    const bias = currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776];
+    const lat = bias[0];
+    const lon = bias[1];
+    const limit = 5;
+    const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter : "gb";
+    const url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
+    const response = await axios.get(url)
+    return response.status === 200 ? response.data.features : "error"
+  }
+  useEffect(() => {
+    loadSuggestedPlaces();
+  }, [userPreferences, currentTrip.geocode])
 
 
   // other functions

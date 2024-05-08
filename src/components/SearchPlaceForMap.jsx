@@ -22,7 +22,7 @@ const SearchPlaceForMap = ({ addPlaceToConfirm }) => {
     const getPlaces = async (query) => {
         let lat = geolocation.geocode[0]
         let lon = geolocation.geocode[1]
-        const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?country=${geolocation.country_2letter}&proximity=${lon}%2C${lat}&access_token=${autofill_accessToken}`)
+        const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?country=${geolocation.country_2letter}&proximity=${lon}%2C${lat}&language=en&access_token=${autofill_accessToken}`)
         setSuggestions(response.data.features);
         console.log(response.data.features)
     }

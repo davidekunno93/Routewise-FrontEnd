@@ -1,10 +1,10 @@
 import mapboxgl from 'mapbox-gl';
 import React, { useContext, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react'
-import { Map, Marker, Popup, Source } from 'react-map-gl';
+import { Map, Marker, Popup, Source, useMap } from 'react-map-gl';
 import SearchPlaceForMap from './SearchPlaceForMap';
 import { DataContext } from '../Context/DataProvider';
 
-const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter, geocode, addPlaceToConfirm }) => {
+const OpenMapBox = ({ mapCenter, mapCenterToggle, newPlaceMarker, markers, zoom, country_2letter, geocode, addPlaceToConfirm }) => {
     const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
     // LIBRARIES
     const mapboxOwnedStyles = [
@@ -67,7 +67,7 @@ const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter,
         };
         setShowPopUp(showPopUpCopy);
         // console.log(showPopUpCopy)
-        console.log(markers)
+        // console.log(markers)
     }, [])
     const toggleShowPopUp = (index, newPlace) => {
         let showPopUpCopy = { ...showPopUp };
@@ -88,6 +88,12 @@ const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter,
         longitude: mapCenter ? mapCenter[1] : -74.5,
         zoom: 9
     });
+    const openMapBoxRef = useRef(null);
+    useEffect(() => {
+        if (openMapBoxRef.current) {
+            openMapBoxRef.current.flyTo({center: [mapCenter[1], mapCenter[0]], duration: 800})
+        }
+    }, [mapCenterToggle])
 
     return (
         <>
@@ -96,6 +102,7 @@ const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter,
             {/* <div ref={mapRef} id='map' style={{ width: '100%', height: '100%' }}></div> */}
             <Map
                 {...viewState}
+                ref={openMapBoxRef}
                 onMove={e => setViewState(e.viewState)}
                 mapStyle={mapboxOwnedStyles[1]}
                 mapboxAccessToken={mapboxAccessToken}
@@ -115,7 +122,8 @@ const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter,
                             <Popup
                                 latitude={marker.geocode[0]}
                                 longitude={marker.geocode[1]}
-                                anchor='top'
+                                anchor='bottom'
+                                offset={50}
                                 onClose={() => toggleShowPopUp(i)}
                                 closeOnClick={false}>
                                 <div className="popupBox">
@@ -139,7 +147,8 @@ const OpenMapBox = ({ mapCenter, newPlaceMarker, markers, zoom, country_2letter,
                             <Popup
                                 latitude={newPlaceMarker.geocode[0]}
                                 longitude={newPlaceMarker.geocode[1]}
-                                anchor='top'
+                                anchor='bottom'
+                                offset={75}
                                 onClose={() => toggleShowPopUp(false, 'newPlace')}
                                 closeOnClick={false}
                             >

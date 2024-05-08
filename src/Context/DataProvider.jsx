@@ -62,24 +62,24 @@ const DataProvider = (props) => {
         places: [],
         itinerary: null,
         itineraryFirstLoad: false
-      });
-      const clearCurrentTrip = () => {
+    });
+    const clearCurrentTrip = () => {
         setCurrentTrip({
-          tripID: null,
-          tripName: "",
-          city: null,
-          country: "",
-          country_2letter: null,
-          startDate: "",
-          endDate: "",
-          tripDuration: "",
-          geocode: null,
-          imgUrl: null,
-          places: [],
-          itinerary: null,
-          itineraryFirstLoad: false
+            tripID: null,
+            tripName: "",
+            city: null,
+            country: "",
+            country_2letter: null,
+            startDate: "",
+            endDate: "",
+            tripDuration: "",
+            geocode: null,
+            imgUrl: null,
+            places: [],
+            itinerary: null,
+            itineraryFirstLoad: false
         })
-      }
+    }
 
 
     // for itinerary page only - decides which list is being displayed - vestigial code
@@ -109,9 +109,9 @@ const DataProvider = (props) => {
         })
         console.log("this btn")
         // signOut(auth).then(() => {
-            // console.log("user signed out")
-            // setUser(null);
-            // setLogoutStandby(true);
+        // console.log("user signed out")
+        // setUser(null);
+        // setLogoutStandby(true);
         // })
     }
     const [logoutStandby, setLogoutStandby] = useState(false);
@@ -155,11 +155,11 @@ const DataProvider = (props) => {
         tripName: function (new_name, trip_id) {
             // returns success/failed
             let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
-            let data = { 
+            let data = {
                 tripName: new_name,
                 startDate: null,
                 endDate: null,
-             }
+            }
             const response = axios.patch(url, data, {
                 headers: { "Content-Type": "application/json" }
             }).then((response) => {
@@ -171,15 +171,15 @@ const DataProvider = (props) => {
                 return "failed"
             })
         },
-        tripDates: function(new_start_date, new_end_date, trip_id) {
+        tripDates: function (new_start_date, new_end_date, trip_id) {
             // returns success/failed/itinerary updated
             let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
-            let data = { 
+            let data = {
                 tripName: null,
                 startDate: new_start_date,
                 endDate: new_end_date,
-             }
-             const response = axios.patch(url, data, {
+            }
+            const response = axios.patch(url, data, {
                 headers: { "Content-Type": "application/json" }
             }).then((response) => {
                 console.log(response.data)
@@ -202,54 +202,103 @@ const DataProvider = (props) => {
 
     const timeFunctions = {
         datinormal: function (systemDate) {
-          // system date => mm/dd/yyyy
-          let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
-          let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
-          if (month.toString().length === 1) {
-            month = "0" + month
-          }
-          let fullYear = systemDate.getFullYear()
-          return month + "/" + day + "/" + fullYear
+            // system date => mm/dd/yyyy
+            let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
+            let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
+            if (month.toString().length === 1) {
+                month = "0" + month
+            }
+            let fullYear = systemDate.getFullYear()
+            return month + "/" + day + "/" + fullYear
         },
         datify: function (normalDate) {
-          // mm/dd/yyyy => mmm dd, yy
-          const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-          let day = normalDate.slice(3, 5)
-          let monthNum = normalDate.slice(0, 2)
-          if (monthNum.charAt(0) === "0") {
-            monthNum = monthNum[1]
-          }
-          let fullYear = normalDate.slice(6)
-          const month = months[monthNum - 1]
-          if (day.charAt(0) === "0") {
-            day = day[1]
-          }
-          let twoYear = fullYear.slice(2)
-          return month + " " + day + ", " + twoYear
+            // mm/dd/yyyy => mmm dd, yy
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            let day = normalDate.slice(3, 5)
+            let monthNum = normalDate.slice(0, 2)
+            if (monthNum.charAt(0) === "0") {
+                monthNum = monthNum[1]
+            }
+            let fullYear = normalDate.slice(6)
+            const month = months[monthNum - 1]
+            if (day.charAt(0) === "0") {
+                day = day[1]
+            }
+            let twoYear = fullYear.slice(2)
+            return month + " " + day + ", " + twoYear
         },
         datidash: function (normalDate) {
-          // mm/dd/yyyy => yyyy-mm-dd
-          let year = normalDate.slice(6)
-          let month = normalDate.slice(0, 2)
-          let day = normalDate.slice(3, 5)
-          return year + "-" + month + "-" + day
+            // mm/dd/yyyy => yyyy-mm-dd
+            let year = normalDate.slice(6)
+            let month = normalDate.slice(0, 2)
+            let day = normalDate.slice(3, 5)
+            return year + "-" + month + "-" + day
         },
         datiundash: function (dashDate) {
-          // yyyy-mm-dd => mm/dd/yyyy
-          let fullyear = dashDate.slice(0, 4)
-          let month = dashDate.slice(5, 7)
-          let day = dashDate.slice(8)
-          return month + "/" + day + "/" + fullyear
+            // yyyy-mm-dd => mm/dd/yyyy
+            let fullyear = dashDate.slice(0, 4)
+            let month = dashDate.slice(5, 7)
+            let day = dashDate.slice(8)
+            return month + "/" + day + "/" + fullyear
         }
-      }
+    }
+    const mapBoxCategoryKey = {
+        landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions" },
+        nature: { categoryQueries: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature" },
+        shopping: { categoryQueries: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping" },
+        food: { categoryQueries: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants" },
+        relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation" },
+        entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment" },
+        arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture" },
+        nightlife: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
+    }
+    const [suggestedPlaces, setSuggestedPlaces] = useState([]);
+    
+
+    // load place img
+    const getCityImg = async (imgQuery) => {
+        try {
+            const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
+            return response.status === 200 ? response.data : "error"
+        }
+        catch (error) {
+            console.log("getCityImg error!")
+            return getCityImg2(imgQuery)
+        }
+    }
+    const getCityImg2 = async (imgQuery) => {
+        try {
+            const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M&query=${imgQuery}`)
+            return response.status === 200 ? response.data : "error"
+        }
+        catch (error) {
+            console.log("getCityImg2 error!")
+            return "https://i.imgur.com/QsPqFMb.png"
+        }
+
+    }
+    const loadCityImg = async (imgQuery) => {
+        const data = await getCityImg(imgQuery)
+        // console.log(data);
+        if (typeof data === "string") {
+            return data
+        } else if (data.total === 0) {
+            return "none"
+        } else {
+            return data.results[0].urls.regular
+        }
+    }
 
     return (
-        <DataContext.Provider value={{ 'mobileMode': mobileMode, 'mobileModeNarrow' : mobileModeNarrow, 
-        'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar, 
-        'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex, 
-        'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences, 
-        'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
-        'timeFunctions': timeFunctions, 'tripUpdate': tripUpdate }}>
+        <DataContext.Provider value={{
+            'mobileMode': mobileMode, 'mobileModeNarrow': mobileModeNarrow,
+            'pageOpen': pageOpen, 'setPageOpen': setPageOpen, 'showNavbar': showNavbar, 'setShowNavbar': setShowNavbar,
+            'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex,
+            'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences,
+            'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
+            'timeFunctions': timeFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
+            'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg
+        }}>
             {props.children}
         </DataContext.Provider>
     )
