@@ -6,6 +6,7 @@ import { DataContext } from '../Context/DataProvider';
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
 import SurveyModal from './SurveyModal';
+import PassCodeModal from './PassCodeModal';
 
 export const Navbar = () => {
   const { mobileMode, mobileModeNarrow } = useContext(DataContext);
@@ -162,9 +163,13 @@ export const Navbar = () => {
 
   // open states code
   const [navMenuMobileOpen, setNavMenuMobileOpen] = useState(false);
+  const [passCodeModalOpen, setPassCodeModalOpen] = useState(false);
 
   return (
     <>
+    <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
+    <PassCodeModal open={passCodeModalOpen} onClose={() => setPassCodeModalOpen(false)} />
+    {/* <SurveyModal /> */}
       <div className={`navbar bg-white w-100 flx-r just-sb ${!showNavbar ? "d-none" : null} `}>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         {mobileMode &&
@@ -238,10 +243,18 @@ export const Navbar = () => {
             </div></Link>
             {/* <div className="option">
             <div className="flx-r gap-2">
-              <span className="material-symbols-outlined">
-                explore
+            <span className="material-symbols-outlined">
+            explore
+            </span>
+            <p className="m-0">Discover</p>
+            </div>
+          </div> */}
+          {/* <div onClick={() => setPassCodeModalOpen(true)} className={`option`}>
+            <div className="flx-r gap-2">
+              <span className={`material-symbols-outlined`}>
+                lock
               </span>
-              <p className="m-0">Discover</p>
+              <p className="m-0 bold500">Access</p>
             </div>
           </div> */}
 
@@ -289,8 +302,6 @@ export const Navbar = () => {
           </div>
         }
       </div>
-      <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
-      {/* <SurveyModal /> */}
     </>
   )
 }

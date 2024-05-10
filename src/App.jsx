@@ -85,6 +85,7 @@ function App() {
     }
     if (userPreferencesCount === 0) {
       // no user preferences currently selected
+      setSuggestedPlaces([]);
     } else {
       console.log(placeSuggestions)
       if (placeSuggestions.length === 0) {
@@ -110,6 +111,7 @@ function App() {
   }
   useEffect(() => {
     loadSuggestedPlaces();
+    // console.log("user preferences was updated")
   }, [userPreferences, currentTrip.geocode])
 
 

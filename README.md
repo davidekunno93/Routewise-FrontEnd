@@ -25,7 +25,6 @@ BackEnd (Kate) checkpoints
 <!-- DONE*make more aesthetic scrollbars -->
 *if ninja api doesn't find travel destination there needs to be a catch error feedback loop 
 *add extra destinations to a trip
-*My Trips, My Interests, My Account
 <!-- *suggested places > load from places api > filter categories from categories state, make horizontally scrollable -->
 <!-- *figure out pseudo-class that causes input fields to change color when dropdown suggestion list of old items pop up - img on phone -->
 **show route button on each day
@@ -35,39 +34,40 @@ BackEnd (Kate) checkpoints
 <!-- *click out of suggested places info -->
 *google auth users issue with creating a trip?
 *suggested places panel not coming all the way up on phone device? (Kathleen's apple phone)
+
 **08Jan24 meeting**
 *google sign in create trip issue?
 <!-- *Finish toolTip  -->
-*SAVE FEATURE - save trip, auto-save, edit trip, remove trip, trips on dashboard w/ pop-up
-*how much is google api? how long is it free for?
+<!-- *SAVE FEATURE - save trip, auto-save, edit trip, remove trip, trips on dashboard w/ pop-up -->
+<!-- *how much is google api? how long is it free for? -->
 *STAR FEATURE - ....
 
 **11Jan24 meeting**
 Google gives 6k requests per month for free?
 Google maps API - $200 worth of rq per month - 28,500 maploads
-Save trips
-Load saved trips
+<!-- Save trips -->
+<!-- Load saved trips -->
 <!-- Fix generate itinerary bug that Cheryl found -->
 <!-- Figma stickies from Jenny -->
 get my trips to be responsive
 
 **18Jan24 meeting**
 Will create a modal check that says this place is a duplicate, are you sure you want to add? when adding duplicate places
-Have places updated as well when itinerary is added to or if places are removed
-Max 4 places per day
-Will create a space/folders for places that didn't make it into the itinerary
-*trips on dashboard spacing is weird, give it gap instead of space-between*
-loading circle while my trips are loading
-Removed from places fade out
+<!-- Have places updated as well when itinerary is added to or if places are removed -->
+<!-- Max 4 places per day -->
+<!-- Will create a space/folders for places that didn't make it into the itinerary -->
+<!-- *trips on dashboard spacing is weird, give it gap instead of space-between* -->
+<!-- loading circle while my trips are loading -->
+*Removed from places fade out
 <!-- *'# places' on flow box unless screen width is skinny* -->
-Show if place already added on itinerary map place card
+<!-- Show if place already added on itinerary map place card -->
 <!-- make sidebar sticky -->
 <!-- sidebar only shows in itinerary page -->
 edit trip info in add places page - bring up date range picker and update the date range (update date range of trip_id route needed)
 <!-- fade overlay z-index not on top -->
-update highlight day code - days w many places will never be fully in window
-send kate updated trip duration from add places on generate itinerary
-update start : end date on dashboard
+*update highlight day code - days w many places will never be fully in window
+<!-- send kate updated trip duration from add places on generate itinerary -->
+<!-- update start : end date on dashboard -->
 
 **22Jan24 meeting**
 Making a social space for users to create itinerary
@@ -127,27 +127,20 @@ addPlaces page <-- tripID -- Destination, tripName
 itinerary page <-- tripID, days(places) 
 
 
+TO DO LIST
 
-Xtext input boxes - white text
-sign in error
-Xsign up error
+<!-- User management -->
 catch error for emails already in use
-Xget w/Kate to sort out auth
 >>>>>Kate's db's only allow uids that have already been authenticated
-make placeCard title's scroll on hover to see full title
-update code: centroids need to update each time itinerary places changes
-<!-- map place to confirm card intro animation -->
-ellipsis on place cards in itinerary
-update add place from PTC animation 
 
-
-
-destImg in userTrip boxes get bigger upon hover?
 
 <!-- AddPlaces Page -->
-placesList titles smaller
-placesLists on a slider
-make headers same as myTrip headers for consistency
+Edit trip dates 
+Put trip name at the top of the page?
+
+<!-- Itinerarry Page -->
+*update add place from PTC animation 
+*update code: centroids need to update each time itinerary places changes
 
 
 <!-- Phone responsive -->

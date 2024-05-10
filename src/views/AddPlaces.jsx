@@ -9,7 +9,7 @@ import { Loading } from '../components/Loading'
 import { DataContext } from '../Context/DataProvider'
 import StarPlacesToolTip from '../components/StarPlacesToolTip'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { firestore } from '../firebase'
+import { auth, firestore } from '../firebase'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange, DateRangePicker } from 'react-date-range';
@@ -285,40 +285,40 @@ export const AddPlaces = () => {
 
         // only load image for place if there isn't already an imgUrl defined in the place object
         let imgUrl = ""
+        let imgQuery = ""
         if (!place.imgUrl) {
             // let imgQuery = place.name.replace(/ /g, '-')
-            let imgQuery = place.text.replace(/ /g, '-')
+            try {
+                imgQuery = place.text.replace(/ /g, '-')
+            }
+            catch {
+                imgQuery = place.placeName.replace(/ /g, '-')
+            }
             imgUrl = await loadCityImg(imgQuery)
         } else {
             imgUrl = place.imgUrl
         }
         let placeInfo = "";
-        // let placeInfo = await loadPlaceDetails(place.place_id)
+        let newPlace = {};
+        if (place.place_name) {
 
-        // let newPlace = {
-        //     placeName: place.name,
-        //     info: placeInfo,
-        //     address: place.formatted,
-        //     imgURL: imgUrl,
-        //     category: place.category ? place.category : "none",
-        //     favorite: false,
-        //     lat: place.lat,
-        //     long: place.lon,
-        //     geocode: [place.lat, place.lon],
-        //     placeId: place.place_id
-        // }
-
-        let newPlace = {
-            placeName: place.text,
-            info: placeInfo,
-            address: place.place_name.split(", ").slice(1, -1).join(", "),
-            imgURL: imgUrl,
-            category: place.properties.category,
-            favorite: false,
-            lat: place.geometry.coordinates[1],
-            long: place.geometry.coordinates[0],
-            geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-            placeId: place.id,
+            newPlace = {
+                placeName: place.text,
+                info: placeInfo,
+                address: place.place_name.split(", ").slice(1, -1).join(", "),
+                imgURL: imgUrl,
+                category: place.properties.category,
+                favorite: false,
+                lat: place.geometry.coordinates[1],
+                long: place.geometry.coordinates[0],
+                geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+                placeId: place.id,
+            }
+        } else {
+            newPlace = {
+                ...place,
+                favorite: false,
+            }
         }
         setMapCenter(newPlace.geocode)
         setMapCenterToggle(!mapCenterToggle);
@@ -695,9 +695,9 @@ export const AddPlaces = () => {
     //     relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation" },
     //     entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment" },
     //     arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture" },
-    //     nightlife: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
+    //     nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
     // }
-    const loadSuggestedPlaces = useCallback( async () => {
+    const loadSuggestedPlaces = useCallback(async () => {
         let placeSuggestions = [];
         for (let userPreference of Object.entries(userPreferences)) {
             // userPreference = [category: bool]
@@ -1295,9 +1295,10 @@ export const AddPlaces = () => {
         setMapCenterToggle(!mapCenterToggle);
     }
 
+
     return (
         <>
-            <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} />
+            {/* <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} /> */}
             <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
             <LoadingScreen open={isLoading} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
@@ -1336,7 +1337,7 @@ export const AddPlaces = () => {
                             }
                         </div>
                     </div>
-                    {currentTrip.tripID !== null ?
+                    {currentTrip.tripID !== null || auth.currentUser ?
                         <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
                         :
                         <button onClick={() => { setSignUpIsOpen(true); setAuthIndex(0) }} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
@@ -1581,7 +1582,7 @@ export const AddPlaces = () => {
                                                                 <p className="m-0 purple-text">Added!</p>
                                                             </div>
                                                             <div className="placeCard-img-div flx-3">
-                                                                <img onClick={() => updateMapCenter(suggestedPlace.geocode)} className="placeCard2-img" src={suggestedPlace.imgURL} />
+                                                                <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
                                                             </div>
                                                             <div ref={suggestedCardBodyRef} className="placeCard-body flx-5">
                                                                 {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
@@ -1622,7 +1623,7 @@ export const AddPlaces = () => {
                                                             return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
                                                                 <div className="placeCard-img-div flx-3">
-                                                                    <img onClick={() => updateMapCenter(suggestedPlace.geocode)} className="placeCard2-img" src={suggestedPlace.imgURL} />
+                                                                    <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
                                                                 </div>
                                                                 <div ref={suggestedCardBodyRef} className="placeCard-body flx-5">
                                                                     {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}

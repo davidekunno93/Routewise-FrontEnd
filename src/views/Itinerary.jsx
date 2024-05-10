@@ -23,6 +23,8 @@ export const Itinerary = () => {
   // if (!currentTrip.tripID) return null ?
   const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
+  const { loadCityImg } = useContext(DataContext);
+  const { suggestedPlaces, mapBoxCategoryKey } = useContext(DataContext);
 
   // ['libraries']
 
@@ -295,24 +297,24 @@ export const Itinerary = () => {
   }
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
   // unsplash api code
-  const getCityImg = async (imgQuery) => {
-    const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
-    return response.status === 200 ? response.data : "error"
-  }
-  const getCityImg2 = async () => {
-    const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M&query=${tripState.cityName}-${tripState.state}-landmarks`)
-    return response.status === 200 ? response.data : "error"
-  }
-  const loadCityImg = async (imgQuery) => {
-    const data = await getCityImg(imgQuery)
-    // console.log(data)
-    if (data.total === 0) {
-      return null
-    } else {
-      // console.log(data.results[0].urls.regular)
-      return data.results[0].urls.regular
-    }
-  }
+  // const getCityImg = async (imgQuery) => {
+  //   const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=S_tkroS3HrDo_0BTx8QtZYvW0IYo0IKh3xNSVrXoDxo&query=${imgQuery}`)
+  //   return response.status === 200 ? response.data : "error"
+  // }
+  // const getCityImg2 = async () => {
+  //   const response = await axios.get(`https://api.unsplash.com/search/photos/?client_id=yNFxfJ53K-d6aJhns-ssAkH1Xc5jMDUPLw3ATqWBn3M&query=${tripState.cityName}-${tripState.state}-landmarks`)
+  //   return response.status === 200 ? response.data : "error"
+  // }
+  // const loadCityImg = async (imgQuery) => {
+  //   const data = await getCityImg(imgQuery)
+  //   // console.log(data)
+  //   if (data.total === 0) {
+  //     return null
+  //   } else {
+  //     // console.log(data.results[0].urls.regular)
+  //     return data.results[0].urls.regular
+  //   }
+  // }
   // geoapify api code
   const getPlaceDetails = async (placeDetailsQuery) => {
     const response = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
@@ -337,6 +339,7 @@ export const Itinerary = () => {
     place['day_id'] = tripStateCopy.days[dayNum].day_id
     place['trip_id'] = tripStateCopy.trip_id
     // console.log(tripStateCopy.trip_id) 
+    console.log(place);
 
     // key made for lightbulb icon purposes only - indicating day w closest activities
     if (place.lightbulb_days) {
@@ -351,6 +354,7 @@ export const Itinerary = () => {
         place: sendPlace,
         day_id: sendPlace.day_id
       }
+      console.log("sendPlace: ", sendPlace)
       const response = await axios.post(`http://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       }).then((response) => {
@@ -506,10 +510,12 @@ export const Itinerary = () => {
         lightbulb_days.push(dayNum)
       }
     }
-    console.log("lightbulb days are = ", lightbulb_days)
-    newPlace["lightbulb_days"] = lightbulb_days
-    setLightbulbDays(lightbulb_days)
-    setPlaceToConfirm(newPlace)
+    console.log("lightbulb days are = ", lightbulb_days);
+    newPlace["lightbulb_days"] = lightbulb_days;
+    setLightbulbDays(lightbulb_days);
+    setPlaceToConfirm(newPlace);
+    setMapCenter(newPlace.geocode);
+    setMapCenterToggle(!mapCenterToggle);
     // resetPanelSearch()
   }
   // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
@@ -617,6 +623,7 @@ export const Itinerary = () => {
   const [markers, setMarkers] = useState(null);
   const [newPlaceMarker, setNewPlaceMarker] = useState(null);
   const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
+  const [mapCenterToggle, setMapCenterToggle] = useState(false);
   const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
   const [searchText, setSearchText] = useState('');
   const [panelSearchText, setPanelSearchText] = useState('');
@@ -961,7 +968,7 @@ export const Itinerary = () => {
     // console.log(currentTrip)
     if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
       console.log("saved places: " + currentTrip.itinerary.saved_places);
-      let savedPlacesCopy = {...savedPlaces};
+      let savedPlacesCopy = { ...savedPlaces };
       savedPlacesCopy.places = currentTrip.itinerary.saved_places;
       setSavedPlaces(savedPlacesCopy);
       // let saved_places = currentTrip.itinerary.saved_places
@@ -1026,7 +1033,7 @@ export const Itinerary = () => {
 
 
   // [suggested places code]
-  const [suggestedPlaces, setSuggestedPlaces] = useState([])
+  // const [suggestedPlaces, setSuggestedPlaces] = useState([])
 
   const categoryKeyConverter = (categoryName) => {
     // returns api category search query and category title for each category key
@@ -1143,14 +1150,14 @@ export const Itinerary = () => {
     } else {
       setSuggestedPlacesFilter(categoryTitle)
     }
-    for (let i = 0; i < userInterestsTEST.length + 1; i++) {
-      let category = document.getElementById(`suggestedCategory-${i + 1}`)
-      if (i + 1 === num) {
-        category.classList.add('selected')
-      } else {
-        category.classList.remove('selected')
-      }
-    }
+    // for (let i = 0; i < userInterestsTEST.length + 1; i++) {
+    //   let category = document.getElementById(`suggestedCategory-${i + 1}`)
+    //   if (i + 1 === num) {
+    //     category.classList.add('selected')
+    //   } else {
+    //     category.classList.remove('selected')
+    //   }
+    // }
   }
   const [blacklist, setBlacklist] = useState([])
   const addToBlacklist = (categoryName) => {
@@ -1173,17 +1180,17 @@ export const Itinerary = () => {
     })
   }
   // suggested place popup code
-  const openSuggestedPlacePopUp = (place_id) => {
-    let popUp = document.getElementById(`suggestedPlace-popUp-${place_id}`)
+  const openSuggestedPlacePopUp = (index) => {
+    let popUp = document.getElementById(`suggestedPlace-popUp-${index}`)
     popUp.classList.remove('hidden-o')
   }
-  const closeSuggestedPlacePopUp = (place_id) => {
-    let popUp = document.getElementById(`suggestedPlace-popUp-${place_id}`)
+  const closeSuggestedPlacePopUp = (index) => {
+    let popUp = document.getElementById(`suggestedPlace-popUp-${index}`)
     popUp.classList.add('hidden-o')
 
   }
-  const toggleSuggestedPlacePopUp = (place_id) => {
-    let popUp = document.getElementById(`suggestedPlace-popUp-${place_id}`)
+  const toggleSuggestedPlacePopUp = (index) => {
+    let popUp = document.getElementById(`suggestedPlace-popUp-${index}`)
     popUp.classList.toggle('hidden-o')
   }
   const hideAllSuggestedPlacePopUps = () => {
@@ -1612,13 +1619,17 @@ export const Itinerary = () => {
               <p onClick={() => printTripObject()} className="page-subsubheading-bold m-0 my-2">Here are some places in <span className="purple-text">*city*</span> that you might like based on your travel preferences</p>
 
               <div className="suggested-header-div sticky z-1">
+                {Object.values(userPreferences).includes(true) ? 
                 <div className="suggestedCategories flx-r gap-2 my-2">
-                  <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className="dateBox-rounder px-2 pointer unselected selected">All</div>
-                  {userInterestsTEST ? userInterestsTEST.map((interest, index) => {
-                    return <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, interest.categoryTitle)} className="dateBox-rounder large px-2 pointer unselected">{interest.categoryTitle}</div>
-                  })
-                    : null}
+                  <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className={`dateBox-rounder px-2 pointer ${suggestedPlacesFilter ? "unselected" : "selected"}`}>All</div>
+                  {Object.entries(userPreferences).map((userPreference, index) => {
+                    let category = userPreference[0];
+                    let selected = userPreference[1];
+                    let categoryTitle = mapBoxCategoryKey[category].categoryTitle
+                    return selected && <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, categoryTitle)} className={`dateBox-rounder large px-2 pointer ${suggestedPlacesFilter === categoryTitle ? "selected" : "unselected"}`}>{categoryTitle}</div>
+                  })}
                 </div>
+                : null}
                 <div className="flx-r">
                   <Link to='/survey-update' className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
                 </div>
@@ -1626,45 +1637,59 @@ export const Itinerary = () => {
 
               <div className="placeCards-itinerary">
 
-                {userInterestsTEST.length === 0 ?
+                {/* {userInterestsTEST.length === 0 ?
                   <div className="add-places-card">
                     <span className="material-symbols-outlined xx-large">
                       map
                     </span>
                     <p className="large bold700 my-1 o-50">0 suggested places</p>
                     <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
-                  </div> : null}
-                {userInterestsTEST.length > 0 && suggestedPlaces.length === 0 &&
+                  </div> : null} */}
+                {!Object.values(userPreferences).includes(true) &&
+                  <div className="add-places-card">
+                    <span className="material-symbols-outlined xx-large">
+                      map
+                    </span>
+                    <p className="large bold700 my-1 o-50">0 suggested places</p>
+                    <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
+                  </div>
+                }
+                {/* {userInterestsTEST.length > 0 && suggestedPlaces.length === 0 &&
                   <>
                     <div className="loadingBox-inline">
                       <Loading noMascot={true} innerText={"Loading..."} />
                     </div>
                   </>
+                } */}
+                {Object.values(userPreferences).includes(true) && suggestedPlaces.length === 0 &&
+                  <div className="loadingBox-inline">
+                    <Loading noMascot={true} innerText={"Loading..."} />
+                  </div>
                 }
                 {suggestedPlaces.length > 0 &&
                   suggestedPlaces.map((suggestedPlace, index) => {
                     let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
-                    let blacklisted = blacklist.includes(suggestedPlace.name) ? true : false
+                    let blacklisted = blacklist.includes(suggestedPlace.placeName) ? true : false
                     let added = false
 
                     if (!suggestedPlacesFilter) {
-                      return suggestedPlace.name && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+                      return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
                         <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
                           <p className="m-0 purple-text">Added!</p>
                         </div>
                         <div className="placeCard-img-div flx-3">
-                          <img className="placeCard2-img" src={suggestedPlace.imgUrl} />
+                          <img className="placeCard2-img" src={suggestedPlace.imgURL} />
                         </div>
                         <div className="placeCard-body flx-5">
                           {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                          <p className="body-title ">{suggestedPlace.name}</p>
+                          <p className="body-title ">{suggestedPlace.placeName}</p>
                           <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                          <p className="body-address">{suggestedPlace.address_line2}</p>
+                          <p className="body-address">{suggestedPlace.address}</p>
                         </div>
                         <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
                           {/* suggested place popup */}
-                          <div id={`suggestedPlace-popUp-${suggestedPlace.place_id}`} className="placeCard-popUp hidden-o">
+                          <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
                             <div onClick={() => addPlaceToConfirm(suggestedPlace)} className="option">
                               <span className="material-symbols-outlined">
                                 map
@@ -1680,7 +1705,7 @@ export const Itinerary = () => {
                           </div>
                           {/* End suggested place popup */}
                           {/* {added ?
-                          <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.formatted)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                          <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
                             <span className="material-symbols-outlined m-auto mt-h medium white-text">
                               done
                             </span>
@@ -1688,13 +1713,13 @@ export const Itinerary = () => {
                           : 
                           }
                           */}
-                          <div onClick={() => { toggleSuggestedPlacePopUp(suggestedPlace.place_id) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
+                          <div onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
                             <span className="material-symbols-outlined m-auto large">
                               add
                             </span>
                           </div>
 
-                          <span onClick={() => addToBlacklist(suggestedPlace.name)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                          <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                             visibility_off
                           </span>
                         </div>
@@ -1702,20 +1727,20 @@ export const Itinerary = () => {
                     } else {
                       if (suggestedPlace.categoryTitle === filter) {
 
-                        return suggestedPlace.name && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+                        return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
                           <div className="placeCard-img-div flx-3">
-                            <img className="placeCard2-img" src={suggestedPlace.imgUrl} />
+                            <img className="placeCard2-img" src={suggestedPlace.imgURL} />
                           </div>
                           <div className="placeCard-body flx-5">
                             {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                            <p className="body-title ">{suggestedPlace.name}</p>
+                            <p className="body-title ">{suggestedPlace.placeName}</p>
                             <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                            <p className="body-address">{suggestedPlace.address_line2}</p>
+                            <p className="body-address">{suggestedPlace.address}</p>
                           </div>
                           <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
                             {/* filtered suggested place popup */}
-                            <div id={`suggestedPlace-popUp-${suggestedPlace.place_id}`} className="placeCard-popUp hidden-o">
+                            <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
                               <div onClick={() => addPlaceToConfirm(suggestedPlace)} className="option">
                                 <span className="material-symbols-outlined">
                                   map
@@ -1731,13 +1756,13 @@ export const Itinerary = () => {
                             </div>
                             {/* End filtered suggested place popup */}
                             {added ?
-                              <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.formatted)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                              <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
                                 <span className="material-symbols-outlined m-auto mt-h medium white-text">
                                   done
                                 </span>
                               </div>
                               :
-                              <div onClick={() => { toggleSuggestedPlacePopUp(suggestedPlace.place_id) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
+                              <div onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
                                 <span className="material-symbols-outlined m-auto medium">
                                   add
                                 </span>
@@ -1872,7 +1897,7 @@ export const Itinerary = () => {
 
               {/* pop up map (in panel) */}
               {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
-              <OpenMapBox mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
+              <OpenMapBox mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
             </div>
           </div>
 
@@ -2019,7 +2044,7 @@ export const Itinerary = () => {
 
 
               {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
-              <OpenMapBox mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
+              <OpenMapBox mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
             </div>
 
 

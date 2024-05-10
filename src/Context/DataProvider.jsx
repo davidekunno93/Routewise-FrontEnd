@@ -164,6 +164,7 @@ const DataProvider = (props) => {
                 headers: { "Content-Type": "application/json" }
             }).then((response) => {
                 console.log(response.data)
+                currentTrip.tripName = new_name
                 return "success"
             }).catch((error) => {
                 console.log(error)
@@ -250,7 +251,7 @@ const DataProvider = (props) => {
         relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation" },
         entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment" },
         arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture" },
-        nightlife: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
+        nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
     }
     const [suggestedPlaces, setSuggestedPlaces] = useState([]);
     
@@ -283,7 +284,8 @@ const DataProvider = (props) => {
         if (typeof data === "string") {
             return data
         } else if (data.total === 0) {
-            return "none"
+            // backup image (gray routewise logo)
+            return "https://i.imgur.com/QsPqFMb.png"
         } else {
             return data.results[0].urls.regular
         }

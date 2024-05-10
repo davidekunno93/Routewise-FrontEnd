@@ -12,47 +12,7 @@ import { DataContext } from '../Context/DataProvider';
 
 const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }) => {
     if (!open) return null
-
-    // date conversion functions
-    const datinormal = (systemDate) => {
-        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
-        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
-        if (month.toString().length === 1) {
-            month = "0" + month
-        }
-        // console.log(month)
-        let fullYear = systemDate.getFullYear()
-        // console.log(systemDate)
-        // console.log(month+"/"+day+"/"+fullYear)
-        return month + "/" + day + "/" + fullYear
-    }
-    const datify = (normalDate) => {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        let day = normalDate.slice(3, 5)
-        let monthNum = normalDate.slice(0, 2)
-        if (monthNum.charAt(0) === "0") {
-            monthNum = monthNum[1]
-        }
-        let fullYear = normalDate.slice(6)
-        const month = months[monthNum - 1]
-        if (day.charAt(0) === "0") {
-            day = day[1]
-        }
-        let twoYear = fullYear.slice(2)
-        return month + " " + day + ", " + twoYear
-    }
-    const datidash = (mmddyyyy) => {
-        let year = mmddyyyy.slice(6)
-        let month = mmddyyyy.slice(0, 2)
-        let day = mmddyyyy.slice(3, 5)
-        return year + "-" + month + "-" + day
-    }
-    const datiundash = (dashDate) => {
-        let fullyear = dashDate.slice(0, 4)
-        let month = dashDate.slice(5, 7)
-        let day = dashDate.slice(8)
-        return month + "/" + day + "/" + fullyear
-    }
+    const { currentTrip, timeFunctions } = useContext(DataContext);
     const { mobileMode, mobileModeNarrow } = useContext(DataContext);
 
     // calendar code
@@ -65,16 +25,16 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
     }
     const [range, setRange] = useState([
         {
-            startDate: trip ? new Date(datiundash(trip.start_date)) : null,
-            endDate: trip ? new Date(datiundash(trip.end_date)) : null,
+            startDate: trip ? new Date(timeFunctions.datiundash(trip.start_date)) : null,
+            endDate: trip ? new Date(timeFunctions.datiundash(trip.end_date)) : null,
             key: 'selection'
         }
     ])
     useEffect(() => {
         // console.log(trip.start_date)
-        // console.log(datidash(datiundash(trip.start_date)))
+        // console.log(datidash(timeFunctions.datiundash(trip.start_date)))
         // console.log(new Date(trip.start_date))
-        // console.log(new Date(datiundash(trip.start_date)))
+        // console.log(new Date(timeFunctions.datiundash(trip.start_date)))
         window.addEventListener('click', hideOnClickOutsideCalendar, true)
     }, [])
 
@@ -86,8 +46,8 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
     const [newStartDate, setNewStartDate] = useState(trip ? trip.start_date : null)
     const [newEndDate, setNewEndDate] = useState(trip ? trip.end_date : null)
     useEffect(() => {
-        setNewStartDate(datinormal(range[0].startDate))
-        setNewEndDate(datinormal(range[0].endDate))
+        setNewStartDate(timeFunctions.datinormal(range[0].startDate))
+        setNewEndDate(timeFunctions.datinormal(range[0].endDate))
     }, [range])
 
     const loadTripName = () => {
@@ -102,7 +62,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
         setNewTripName(e.target.value)
     }
 
-    const updateTrip = {
+    const tripUpdate = {
         tripName: function (new_name, trip_id) {
             // returns success/failed
             let url = `https://routewise-backend.onrender.com/places/update-trip/${trip_id}`
@@ -115,6 +75,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
                 headers: { "Content-Type": "application/json" }
             }).then((response) => {
                 console.log(response.data)
+                currentTrip.tripName = new_name
                 return "success"
             }).catch((error) => {
                 console.log(error)
@@ -165,13 +126,13 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
             sendData.tripName = newTripName
         }
         // compare new start date to old one, if different un-nullify startDate & endDate in sendData
-        if (datiundash(trip.start_date) !== newStartDate) {
+        if (timeFunctions.datiundash(trip.start_date) !== newStartDate) {
             // console.log(trip.start_date)
             sendData.startDate = newStartDate
             sendData.endDate = newEndDate
         }
         // compare new end date to old one, if different un-nullify startDate & endDate in sendData
-        if (datiundash(trip.end_date) !== newEndDate) {
+        if (timeFunctions.datiundash(trip.end_date) !== newEndDate) {
             // console.log(trip.end_date)
             sendData.startDate = newStartDate
             sendData.endDate = newEndDate
@@ -265,12 +226,12 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
                             <div onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)} className="calendarInput pointer">
                                 <div className="startDateInput flx-1">
                                     <span className="material-symbols-outlined purple-text">date_range</span>
-                                    <p className="m-0 black-text small-375">{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                    <p className="m-0 black-text small-375">{range[0].startDate ? timeFunctions.datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
                                 </div>
                                 <hr className='h-40' />
                                 <div className="endDateInput flx-1">
                                     <span className="material-symbols-outlined purple-text">date_range</span>
-                                    <p className="m-0 black-text small-375">{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                    <p className="m-0 black-text small-375">{range[0].startDate ? timeFunctions.datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
                                 </div>
                             </div>
                             <div>

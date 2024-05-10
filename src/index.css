@@ -2634,6 +2634,14 @@ p {
   transition: 0.2s;
   cursor: pointer;
 }
+.onHover-darken {
+  opacity: 0.5;
+  transition: 0.2s;
+}
+.onHover-darken:hover {
+  opacity: 0.75;
+  transition: 0.2s;
+}
 
 .onHover-fade:hover {
   opacity: 0.35;
@@ -4795,6 +4803,9 @@ p {
 .suggestedCategories .unselected {
   color: gray;
 }
+.suggestedCategories .unselected:hover {
+  color: rgb(90, 90, 90);
+}
 .suggestedCategories .selected {
   color: white;
   /* font-weight: 500; */
@@ -5628,8 +5639,44 @@ p {
   white-space: nowrap;
 }
 
-
-
+.passcode-modal {
+  width: 600px;
+  height: 500px;
+  background-color: white;
+  border-radius: 8px;
+  margin: auto;
+  padding: 60px;
+  box-sizing: border-box;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+.passcode {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  
+}
+.passcode .digit-input {
+  font-size: 24px;
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 600;
+  border: 1px solid gray;
+  background-color: white;
+  border-radius: 8px;
+  width: 42px;
+  height: 54px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.passcode .digit-input:focus {
+  outline: none;
+  border: 1px solid rgb(0, 100, 255);
+}
 
 
 

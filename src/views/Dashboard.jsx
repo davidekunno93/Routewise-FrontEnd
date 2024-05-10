@@ -17,6 +17,7 @@ import { DataContext } from '../Context/DataProvider';
 import { Link, useNavigate, useRouteError } from 'react-router-dom';
 import { LoadingScreen } from '../components/LoadingScreen';
 import EditTripModal from '../components/EditTripModal';
+import PassCodeModal from '../components/PassCodeModal';
 
 
 
@@ -672,6 +673,8 @@ export const Dashboard = () => {
     const [tripToEdit, setTripToEdit] = useState(null);
 
 
+    
+
     // other functions
     const datify = (normalDate) => {
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -846,10 +849,6 @@ export const Dashboard = () => {
 
     return (
         <>
-            {/* <div className=''>
-                <DatePicker selected={departDate} onChange={(departDate) => setDepartDate(departDate)} />
-            </div>
-             */}
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
             <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={closeEditTripModal} />
