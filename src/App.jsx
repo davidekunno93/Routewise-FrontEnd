@@ -49,6 +49,7 @@ function App() {
 
   // suggested places api call
   const loadSuggestedPlaces = async () => {
+    setSuggestedPlaces([]);
     let placeSuggestions = [];
     let userPreferencesCount = 0;
     for (let userPreference of Object.entries(userPreferences)) {
@@ -104,7 +105,9 @@ function App() {
     const lat = bias[0];
     const lon = bias[1];
     const limit = 5;
-    const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter : "gb";
+    const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter.toLowerCase() : "gb";
+    console.log("new country code: "+country_2letter.toLowerCase());
+    console.log("new geocode: "+bias);
     const url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
     const response = await axios.get(url)
     return response.status === 200 ? response.data.features : "error"

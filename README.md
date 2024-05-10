@@ -94,7 +94,14 @@ updated add place to day card and lightbulb icon
 updated datebox design on figma
 CHANGE add userpreferences list of preferences to object so you can map it!
 
-userTrips saves to central user object for quick load after first load
+userTrips saves to central user object for quick load after first load?
+
+**09May24 meeting**
+Certain trip destinations not generating new suggested places - Japan
+Intermediate step in suggested places loading before switching to new destination's suggested places
+country jp
+lat = 35.6828387
+long = 139.7594549
 
 Questions?
 Will saved places have an 'in itinerary' indication?
