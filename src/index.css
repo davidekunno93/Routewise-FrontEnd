@@ -3065,9 +3065,11 @@ p {
   border-right: 2px solid gainsboro;
   transition: 0.3s;
 }
-
+.itinerary-c2 {
+  flex: 2;
+}
 .itinerary-c3 {
-  flex: 1;
+  flex: 3;
   transition: 0.5s;
 }
 

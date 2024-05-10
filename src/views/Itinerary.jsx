@@ -1482,7 +1482,7 @@ export const Itinerary = () => {
 
         {/* Itinerary Display */}
         {placeListDisplay === "Itinerary" &&
-          <div className="itinerary-c2 flx-1">
+          <div className="itinerary-c2">
             <div className="page-container96">
               <p onClick={() => printSavedPlaces()} className="m-0 page-subheading-bold">Itinerary</p>
               <div className="tripFlow flx-r">
