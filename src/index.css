@@ -1917,6 +1917,7 @@ input {
   border: 2px solid red;
 }
 
+
 .closeBtn {
   position: absolute;
   top: 16px;
@@ -5132,9 +5133,13 @@ p {
 }
 .trip-information-div {
   background-color: white;
-  padding: 12px 12px 12px 0px;
-  border-bottom: 1px solid rgb(180, 180, 180);
+  padding: 8px 8px 8px 0px;
+  /* border-bottom: 1px solid rgb(180, 180, 180); */
   /* border-top: 2px solid white; */
+}
+.trip-days {
+  flex: 1;
+  overflow: hidden;
 }
 .suggested-header-div {
   background-color: white;
@@ -5145,11 +5150,14 @@ p {
   width: 20px;
   object-fit: contain;
 }
+.border-bottom-lightgray {
+  border-bottom: 1px solid rgb(180, 180, 180);
+}
 .border-bottom-gray {
   border-bottom: 2px solid gray;
 }
 .border-bottom-gains {
-  border-bottom: 2px solid gainsboro;
+  border-bottom: 1px solid gainsboro;
 }
 .placeCard-popUp {
   background-color: white;

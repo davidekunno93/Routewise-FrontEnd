@@ -151,7 +151,7 @@ Put trip name at the top of the page?
 <!-- Itinerary Page -->
 *update add place from PTC animation 
 *update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
-
+*re-do day scroll to boxes code
 
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)

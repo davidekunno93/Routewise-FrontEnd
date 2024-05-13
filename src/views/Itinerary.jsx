@@ -1361,23 +1361,24 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                   <div className="align-all-items my-1 gap-2">
                     {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
                     <div ref={tripNameWrapperRef} className="tripName-wrapper flx align-c gap-2">
-                      <span ref={tripNameSpanRef} onClick={() => setTripNameIsUpdating(true)} className={`page-subheading input-text ${tripNameIsUpdating && "hidden-away"}`}>{tripName}</span>
-                      <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
+                      <span ref={tripNameSpanRef} onClick={() => setTripNameIsUpdating(true)} className={`page-subheading-bold input-text ${tripNameIsUpdating && "hidden-away"}`}>{tripName}</span>
+                      <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
                       <span onClick={() => setTripNameIsUpdating(true)} className={`material-symbols-outlined large gains-text pointer ${tripNameIsUpdating && "d-none"}`}>edit</span>
                     </div>
                   </div>
                   {/* calendar edit */}
-                  <div className="calendar-edit flx-r mb-2 align-c gap-2">
+                  <div className="calendar-edit border-bottom-gains flx-r mb-2 pb-2 align-c gap-2">
                     <span className="material-symbols-outlined o-50">
                       calendar_month
                     </span>
-                    <div className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
-                    <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
+                    <div className="font-jakarta">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
+                    <p className="m-0">&bull;</p>
+                    <div className="font-jakarta"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
                     {/* <p className="m-0 purple-text">Edit</p> */}
                   </div>
                   {/* calendar edit end */}
                   {/* trip flow */}
-                  <div className="tripFlow flx-r">
+                  {/* <div className="tripFlow flx-r">
                     <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
                     <span className="material-symbols-outlined">
                       arrow_right
@@ -1387,20 +1388,17 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                       arrow_right
                     </span>
                     <p className="m-0 purple-text bold700">Itinerary</p>
-                  </div>
+                  </div> */}
                   {/* trip flow end */}
                   <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
 
                   {/* trip days */}
                   <div className="trip-information-div z-1 sticky">
-
-                    <div className="flx-r flx-wrap gap-2">
+                    <div className="trip-days flx-r flx-wrap gap-2">
 
                       {tripState.day_order.map((dayNum, id) => {
                         const day = tripState.days[dayNum]
-
                         return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-rounder px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>{day.day_short} {day.date_short}</div>
-
                       })}
 
                     </div>
