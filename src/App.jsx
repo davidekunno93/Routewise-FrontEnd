@@ -46,10 +46,38 @@ function App() {
     console.log('woken up')
     return response.status === 200 ? response.data : null
   }
+  const suggestedPlacesFunctions = {
+    empty: function () {
+      let suggestedPlacesCopy = { ...suggestedPlaces };
+      suggestedPlacesCopy.places = [];
+      suggestedPlacesCopy.loaded = false;
+      setSuggestedPlaces(suggestedPlacesCopy);
+    },
+    reset: function () {
+      // currently the same as empty
+      setSuggestedPlaces({
+        loaded: false,
+        places: [],
+      });
+    },
+    returnNone: function() {
+      let suggestedPlacesCopy = { ...suggestedPlaces };
+      suggestedPlacesCopy.places = [];
+      suggestedPlacesCopy.loaded = true;
+      setSuggestedPlaces(suggestedPlacesCopy);
+    },
+    setPlaces: function(placeSuggestions) {
+      setSuggestedPlaces({
+        loaded: true,
+        places: placeSuggestions,
+      });
+    }
+  }
 
   // suggested places api call
   const loadSuggestedPlaces = async () => {
-    setSuggestedPlaces([]);
+    suggestedPlacesFunctions.empty()
+
     let placeSuggestions = [];
     let userPreferencesCount = 0;
     for (let userPreference of Object.entries(userPreferences)) {
@@ -59,7 +87,7 @@ function App() {
       // console.log(userPreference)
       if (selected) {
         userPreferencesCount++
-        let resultPlaces = await getSuggestedPlaces2(category);
+        // let resultPlaces = await getSuggestedPlaces(category);
         if (resultPlaces.length > 0) {
 
           for (let place of resultPlaces) {
@@ -86,18 +114,19 @@ function App() {
     }
     if (userPreferencesCount === 0) {
       // no user preferences currently selected
-      setSuggestedPlaces([]);
+      suggestedPlacesFunctions.returnNone()
     } else {
       console.log(placeSuggestions)
       if (placeSuggestions.length === 0) {
         // no places found for the user (even though they have selected preferences)
+        suggestedPlacesFunctions.returnNone()
       } else {
         // suggested places found
-        setSuggestedPlaces(placeSuggestions);
+        suggestedPlacesFunctions.setPlaces(placeSuggestions);
       }
     }
   }
-  const getSuggestedPlaces2 = async (category) => {
+  const getSuggestedPlaces = async (category) => {
     // implement try / catch block for errors
     const categoryQueries = mapBoxCategoryKey[category].categoryQueries;
     const apiKey = "pk.eyJ1Ijoicm91dGV3aXNlMTAyMyIsImEiOiJjbHZnMGo4enEwcHMxMmpxZncxMzJ6cXJuIn0.becg64t48O9U4HViiduAGA"
@@ -106,8 +135,8 @@ function App() {
     const lon = bias[1];
     const limit = 5;
     const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter.toLowerCase() : "gb";
-    console.log("new country code: "+country_2letter.toLowerCase());
-    console.log("new geocode: "+bias);
+    console.log("new country code: " + country_2letter.toLowerCase());
+    console.log("new geocode: " + bias);
     const url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
     const response = await axios.get(url)
     return response.status === 200 ? response.data.features : "error"
@@ -138,6 +167,7 @@ function App() {
           <Route children path='/dashboard' element={<Dashboard />} />
           <Route children path='/add-places' element={<AddPlaces />} />
           <Route children path='/itinerary' element={<Itinerary />} />
+          <Route children path='/itinerary/suggested-places' element={<Itinerary placesListOnLoad={"Suggested Places"} />} />
           <Route children path='/mytrips' element={<MyTrips />} />
           <Route children path='/test' element={<Test />} />
           <Route children path='/map' element={<OpenMap />} />

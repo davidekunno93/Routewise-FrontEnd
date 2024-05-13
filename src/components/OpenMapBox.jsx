@@ -112,6 +112,7 @@ const OpenMapBox = ({ mapCenter, mapCenterToggle, newPlaceMarker, markers, zoom,
                 {markers && markers.map((marker, i) => {
                     return <>
                         <Marker
+                            key={i}
                             onClick={() => toggleShowPopUp(i)}
                             latitude={marker.geocode[0]}
                             longitude={marker.geocode[1]}

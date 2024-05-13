@@ -1,11 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { DataContext } from '../Context/DataProvider';
 import { auth, firestore } from '../firebase';
 import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { Fade, Slide } from 'react-awesome-reveal';
 
 export const SurveyUpdate = () => {
+    const location = useLocation();
+    const state = location.state;
+    const returnPage = state.returnPage;
     const { user, setUser } = useContext(DataContext);
     const { userPreferences, setUserPreferences } = useContext(DataContext);
     const [categories, setCategories] = useState(
@@ -17,7 +20,8 @@ export const SurveyUpdate = () => {
         //     food: false,
         //     relaxation: false,
         //     entertainment: false,
-        //     arts: false
+        //     arts: false,
+        //     nightclub: false,
         // }
     );
 
@@ -44,15 +48,18 @@ export const SurveyUpdate = () => {
         //     // toggleSelection(true_indices[i])
         // }
 
-        console.log(render)
-
+        // console.log(render)
     }, [])
 
 
 
     const navigate = useNavigate()
     const goBack = () => {
-        navigate(-1)
+        if (returnPage) {
+            navigate(returnPage);
+        } else {
+            navigate(-1);
+        }
     }
 
     const cards2 = [
@@ -198,7 +205,6 @@ export const SurveyUpdate = () => {
 
     return (
         <>
-
             <div id='updatedOverlay' className="overlay-white flx td-3 d-none">
                 <Slide duration={400} className='m-auto' direction='up' triggerOnce>
                     <Fade triggerOnce>

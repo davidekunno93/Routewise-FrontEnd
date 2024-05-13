@@ -249,14 +249,14 @@ export const Navbar = () => {
             <p className="m-0">Discover</p>
             </div>
           </div> */}
-          <div onClick={() => setPassCodeModalOpen(true)} className={`option`}>
+          {/* <div onClick={() => setPassCodeModalOpen(true)} className={`option`}>
             <div className="flx-r gap-2">
               <span className={`material-symbols-outlined`}>
                 lock
               </span>
               <p className="m-0 bold500">Access</p>
             </div>
-          </div>
+          </div> */}
 
 
           </div>

@@ -16,11 +16,13 @@ import { DateRange, DateRangePicker } from 'react-date-range';
 import ItineraryUpdatedModal from '../components/ItineraryUpdatedModal'
 import OpenMapBox from '../components/OpenMapBox'
 import { Fade, Slide } from 'react-awesome-reveal'
+import ConfirmationModal from '../components/ConfirmationModal'
 
 
 export const AddPlaces = () => {
     // Send Kate Data
     const { user, setUser } = useContext(DataContext);
+    const { userPreferences } = useContext(DataContext);
     const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
     const { setSignUpIsOpen, setAuthIndex } = useContext(DataContext);
     const { loadCityImg, mapBoxCategoryKey } = useContext(DataContext);
@@ -473,427 +475,78 @@ export const AddPlaces = () => {
             console.log(error)
         })
     }
-
+    const placeCardRefs = useRef([]);
+    useEffect(() => {
+        console.log(placeCardRefs.current)
+        console.log(cardBodyRef)
+        // if (placeCardRefs.current) {
+        //     placeCardRefs.current = placeCardRefs.current.slice(0, places.length);
+        // } 
+    }, [places])
     const removePlace = async (index) => {
-        let placesCopy = [...places]
-        let currentTripCopy = { ...currentTrip }
-
-        if (places[index].place_id) {
-            let place_id = places[index].place_id
-            // console.log(place_id)
-            let url = `https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`
-            const response = await axios.delete(url)
-                .then((response) => {
-                    console.log(response.data)
-                    placesCopy.splice(index, 1)
-                    setPlaces(placesCopy)
-                    currentTripCopy.places.splice(index, 1)
-                    setCurrentTrip(currentTripCopy)
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
+        console.log(placeCardRefs.current[index])
+        placeCardRefs.current[index].classList.remove("shown")
+        let placeholder = ""
+        if (index === 0) {
+            placeholder = document.getElementById(`placeholderBefore-${index + 1}`)
         } else {
-            // places being updated without user sign in
-            placesCopy.splice(index, 1)
-            currentTripCopy.places = placesCopy
-            setPlaces(placesCopy)
-            setCurrentTrip(currentTripCopy)
+            placeholder = document.getElementById(`placeholderAfter-${index - 1}`)
         }
 
-    }
+        wait(300).then(async () => {
 
+            let placesCopy = [...places]
+            let currentTripCopy = { ...currentTrip }
 
-    // const updateLazy = () => {
-    //     console.log("I'm lazy")
-    // }
-    const [currentTimeout, setCurrentTimeout] = useState(null);
-    useEffect(() => {
-        if (currentTimeout) {
-            clearTimeout(currentTimeout)
-        }
-        if (searchText) {
-            if (searchText.length > 2) {
-                setCurrentTimeout(setTimeout(loadSearchData, 1000))
-            }
-        }
-    }, [searchText])
+            if (places[index].place_id) {
+                let place_id = places[index].place_id
+                // console.log(place_id)
+                let url = `https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`
+                const response = await axios.delete(url)
+                    .then((response) => {
+                        console.log(response.data)
+                        placesCopy.splice(index, 1)
+                        setPlaces(placesCopy)
+                        currentTripCopy.places.splice(index, 1)
+                        setCurrentTrip(currentTripCopy)
+                        // try {
+                        //     placeCardRefs.current[index].classList.add("shown")
+                        //     placeholder.classList.remove("hidden")
+                        //     wait(100).then(() => {
+                        //         placeholder.classList.add("hidden")
+                        //     })
+                        // }
+                        // catch {
 
-    const quickGetSuggestedPlaces = async (category, categoryTitle, limit, mergeData) => {
-        const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-        let response = ""
-        // if category includes % there are two competing types in the same category and I want them to be searched separately
-        if (category.includes("%")) {
-            let data = null
-            // split category into individual search queries
-            category = category.split("%")
-            // limit of results divided by the amount of diff search queries so overall total is the same
-            limit = Math.ceil(limit / category.length)
-            // search query terms one by one
-            for (let i = 0; i < category.length; i++) {
-                // mergeData is data that needs to be stored locally and merged with new data to be returned
-                if (!mergeData) {
-                    mergeData = []
-                    // console.log('no merge data')
-                }
-                // console.log(mergeData)
-                // returned data is the list of places
-                data = await quickGetSuggestedPlaces(category[i], categoryTitle, limit, mergeData)
-                for (let j = 0; j < data.length; j++) {
-                    data[j].properties['categoryTitle'] = categoryTitle
-                    if (category[i].includes('nightclub')) {
-                        data[j].properties['categoryTag'] = "Nightclub"
-                    }
-                }
-                mergeData = mergeData.concat(data)
-            }
-            console.log(mergeData)
-            return mergeData
-        } else {
-            response = await axios.get(`https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${mapCenter[1]},${mapCenter[0]}&limit=${limit}&apiKey=${apiKey}`)
-            let data = response.data.features
-            for (let j = 0; j < data.length; j++) {
-                data[j].properties['categoryTitle'] = categoryTitle
-            }
-            console.log(response.data.features)
-            return response.status === 200 ? response.data.features : null
-        }
-
-    }
-
-    const getSuggestedPlaces = async (category, categoryTitle, limit, delay) => {
-        const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-        // if category contains % sign this means I want to search the category terms separately on the api - like 
-        // Food & NightClub because the merged results don't have many nightclubs in them
-        if (category.includes('%')) {
-            category = category.split('%')
-            limit = Math.ceil(limit / category.length)
-            let data = ""
-            let dataLoads = []
-            for (let i = 0; i < category.length; i++) {
-                data = await quickGetSuggestedPlaces(category[i], categoryTitle, limit)
-                // category tag so I can add the specific category type to the search query
-                if (i === 0) {
-                    // for (let j = 0; j < data.length; j++) {
-                    //     data[j].properties["categoryTag"] = 'dining'
-                    // }
-                } else if (i === 1) {
-                    for (let j = 0; j < data.length; j++) {
-                        data[j].properties["categoryTag"] = 'Nightclub'
-                    }
-                }
-                // add data to data load
-                dataLoads.push(data)
-            }
-            // console.log(dataLoads)
-            for (let i = 0; i < category.length - 1; i++) {
-                dataLoads[0] = dataLoads[0].concat(dataLoads[1])
-            }
-            dataLoads = dataLoads[0]
-            console.log(dataLoads)
-            updateSuggestedPlaces(dataLoads, categoryTitle)
-            // if (delay) {
-            //     return "done"
-            // }
-        } else {
-            let url = `https://api.geoapify.com/v2/places?&categories=${category}&bias=proximity:${mapCenter[1]},${mapCenter[0]}&limit=${limit}&apiKey=${apiKey}`
-            const response = await axios.get(url)
-                // return response.status === 200 ? response.data : null
-                .then(async (response) => {
-                    let data = response.data.features
-                    console.log(data)
-                    updateSuggestedPlaces(data, categoryTitle)
-                    // if (delay) {
-                    //     return "done"
-                    // }
-                })
-                .catch((error) => {
-                    console.log(error)
-                    alert("Something went wrong with suggested places")
-                })
-        }
-    }
-
-    const updateSuggestedPlaces = async (data, categoryTitle) => {
-        for (let i = 0; i < data.length; i++) {
-            let place = data[i].properties
-            if (!place.categoryTitle) {
-                place.categoryTitle = categoryTitle
+                        // }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
             } else {
-                categoryTitle = place.categoryTitle
+                // places being updated without user sign in
+                placesCopy.splice(index, 1)
+                currentTripCopy.places = placesCopy
+                setPlaces(placesCopy)
+                setCurrentTrip(currentTripCopy)
+                // try {
+                //     placeCardRefs.current[index].classList.add("shown")
+                //     placeholder.classList.remove("hidden")
+                //     wait(100).then(() => {
+                //         placeholder.classList.add("hidden")
+                //     })
+                // }
+                // catch {
+
+                // }
             }
-            if (place.name) {
-                // console.log(place.name)
-                let addressLine2Short = place.address_line2.split(',')[0].replace(/ /g, "-")
-                // console.log(addressLine2Short)
-                let imgQuery = ""
-                // categoryTag is only for nightlife so far - to help the img query be more specific
-                if (place.categoryTag) {
-                    imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + place.categoryTag
-                } else if (categoryTitle === "Shopping" || categoryTitle === "Nature") {
-                    // use category name to make img more appropriate
-                    imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + categoryTitle
-                    // console.log('if')
-                    // console.log(categoryTitle)
-                } else if (place.name.split(' ').length === 1) {
-                    // one word names combine w address to be more appropriate
-                    imgQuery = place.name.replace(/ /g, "-").split(',').join('') + "-" + addressLine2Short
-                    // console.log('else if')
-                } else {
-                    imgQuery = place.name.replace(/ /g, "-").split(',').join('')
-                    // console.log('else')
-                }
-                // console.log(imgQuery)
-                if (imgQuery.includes('.') || imgQuery.includes(',')) {
-                    imgQuery = place.categoryTitle.split(' ')[0]
-                    let imgUrl = await loadCityImg(imgQuery)
-                    place.imgUrl = imgUrl
-                    console.log(categoryTitle)
-                } else {
-                    let imgUrl = await loadCityImg(imgQuery)
-                    if (imgUrl === "none") {
-                        imgQuery = place.categoryTitle.split(' ')[0]
-                        let imgUrl = await loadCityImg(imgQuery)
-                        place.imgUrl = imgUrl
-                    } else {
-                        place.imgUrl = imgUrl
-                    }
-                }
-            }
+            placeCardRefs.current[index].classList.add("shown")
 
-        }
-        // console.log(response)
-        let suggestedPlacesCopy = [...suggestedPlaces]
-        suggestedPlacesCopy = suggestedPlacesCopy.concat(data)
-        // console.log(data)
-        // data.sort((a, b) => a.properties.distance - b.properties.distance)
-        console.log(suggestedPlacesCopy)
-        setSuggestedPlaces(suggestedPlacesCopy)
-    }
-
-    const clearSuggestedPlaces = () => {
-        setSuggestedPlaces([]);
-    }
-    const { userPreferences, setUserPreferences } = useContext(DataContext);
-    // const [userPreferences, setUserPreferences] = useState(
-    //     {
-    //         landmarks: false,
-    //         nature: false,
-    //         shopping: false,
-    //         food: false,
-    //         relaxation: false,
-    //         entertainment: false,
-    //         arts: false
-    //     });
-    const [userInterests, setUserInterests] = useState([])
-
-    // const mapBoxCategoryKey = {
-    //     landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions" },
-    //     nature: { categoryQueries: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature" },
-    //     shopping: { categoryQueries: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping" },
-    //     food: { categoryQueries: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants" },
-    //     relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation" },
-    //     entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment" },
-    //     arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture" },
-    //     nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
-    // }
-    const loadSuggestedPlaces = useCallback(async () => {
-        let placeSuggestions = [];
-        for (let userPreference of Object.entries(userPreferences)) {
-            // userPreference = [category: bool]
-            let category = userPreference[0]
-            let selected = userPreference[1]
-            // console.log(userPreference)
-            if (selected) {
-                // let resultPlaces = await getSuggestedPlaces2(category);
-                let resultPlaces = []
-                if (resultPlaces.length > 0) {
-
-                    for (let place of resultPlaces) {
-                        let imgUrl = await loadCityImg(place.properties.name)
-                        let placeSuggestion = {
-                            placeName: place.properties.name,
-                            info: "",
-                            address: place.properties.full_address.split(", ").slice(0, -1).join(", "),
-                            imgURL: imgUrl,
-                            category: place.properties.poi_category.join(", "),
-                            categoryTitle: mapBoxCategoryKey[category].categoryTitle,
-                            // favorite: false,
-                            lat: place.geometry.coordinates[1],
-                            long: place.geometry.coordinates[0],
-                            geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-                            placeId: place.properties.mapbox_id,
-                        }
-                        if (!placeSuggestions.includes(placeSuggestion)) {
-                            placeSuggestions.push(placeSuggestion)
-                        }
-                    }
-                }
-            }
-        }
-        // console.log(placeSuggestions)
-        // setSuggestedPlaces(placeSuggestions);
-    }, [])
-
-    useEffect(() => {
-        loadSuggestedPlaces()
-    }, [])
-    const getSuggestedPlaces2 = async (category) => {
-        const categoryQueries = mapBoxCategoryKey[category].categoryQueries;
-        const apiKey = "pk.eyJ1Ijoicm91dGV3aXNlMTAyMyIsImEiOiJjbHZnMGo4enEwcHMxMmpxZncxMzJ6cXJuIn0.becg64t48O9U4HViiduAGA"
-        const bias = currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776];
-        const lat = bias[0];
-        const lon = bias[1];
-        const limit = 5;
-        const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter : "gb";
-        let types = "place, poi" // ?
-        let url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
-        const response = await axios.get(url)
-        return response.status === 200 ? response.data.features : "error"
-    }
-
-
-    useEffect(() => {
-        // key for converting travel preference to place category
-        const categoryKey = {
-            landmarks: { category: "tourism.attraction,tourism.sights", categoryTitle: "Landmarks & Attractions" },
-            nature: { category: "natural,entertainment.zoo,entertainment.aquarium", categoryTitle: "Nature" },
-            shopping: { category: "commercial.shopping_mall,commercial.clothing,commercial.gift_and_souvenir", categoryTitle: "Shopping" },
-            food: { category: "catering%adult.nightclub", categoryTitle: "Food & Nightlife" },
-            relaxation: { category: "service.beauty.spa,service.beauty.massage", categoryTitle: "Spa & Relaxation" },
-            entertainment: { category: "entertainment.cinema,entertainment.amusement_arcade,entertainment.escape_game,entertainment.miniature_golf,entertainment.bowling_alley,entertainment.theme_park,entertainment.activity_park", categoryTitle: "Music & Entertainment" },
-            arts: { category: "entertainment.culture,entertainment.museum", categoryTitle: "Arts & Culture" }
-        }
-        // no user ? render a few landmarks
-        // getSuggestedPlaces('tourism.attraction', "Landmarks & Attractions", 12)
-        // getSuggestedPlaces('catering%adult.nightclub', "Food & Nightlife", 12)
-        let userPreferencesArr = Object.entries(userPreferences)
-        // console.log(userPreferences)
-        // console.log(userPreferencesArr)
-        let userInterestsList = []
-        for (let [key, value] of userPreferencesArr) {
-            if (value === true) {
-                userInterestsList.push(mapBoxCategoryKey[key])
-                // console.log(key)
-            }
-        }
-        // console.log(userInterestsList)
-        setUserInterests(userInterestsList)
-
-        // let conclusion = delayGetSuggestedPlaces(userInterestsList)
-        // console.log(conclusion)
-
-        // user ? continue
-        // 0 preferences ? *RENDERED* render button that asks you to update preferences that links to survey page
-        // 1 preference ? load 12 suggestions for that one preference
-        // if (userInterestsList.length === 1) {
-        //     getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12)
-        // }
-        // // 2 preferences ? load 6 suggestions per preference
-        // else if (userInterestsList.length === 2) {
-        //     delayGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
-        //     delayGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
-        // }
-        // // 3 preferences ? load 4 suggestions per preference
-        // else if (userInterestsList.length === 3) {
-        //     getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 4)
-        //     getSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 4)
-        //     getSuggestedPlaces(userInterestsList[2].category, userInterestsList[2].categoryTitle, 4)
-        // }
-
-    }, [])
-
-    const delayGetSuggestedPlaces = async (userInterestsList) => {
-        // bool true selected for delay parameter
-        let data = []
-        let first = ""
-        let second = ""
-        let third = ""
-        if (userInterestsList.length === 1) {
-            // 1 preference ? load 12 suggestions for that one preference
-            data = await getSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 12, true)
-        } else if (userInterestsList.length === 2) {
-            // 2 preferences ? load 6 suggestions per preference
-            first = await quickGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 6)
-            second = await quickGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 6)
-            // data = first.concat(second)
-
-            // getting rid of repeated place objects from different categories
-            let lists = [first, second]
-            let placeAddresses = []
-            data = []
-            for (let i = 0; i < lists.length; i++) {
-                for (let j = 0; j < lists[i].length; j++) {
-                    if (!placeAddresses.includes(lists[i][j].properties.formatted)) {
-                        data.push(lists[i][j])
-                    }
-                    placeAddresses.push(lists[i][j].properties.formatted)
-                }
-            }
-
-        } else if (userInterestsList.length === 3) {
-            // 3 preferences ? load 4 suggestions per preference
-            first = await quickGetSuggestedPlaces(userInterestsList[0].category, userInterestsList[0].categoryTitle, 4)
-            second = await quickGetSuggestedPlaces(userInterestsList[1].category, userInterestsList[1].categoryTitle, 4)
-            third = await quickGetSuggestedPlaces(userInterestsList[2].category, userInterestsList[2].categoryTitle, 4)
-            // console.log(first)
-            // data = first.concat(second)
-            // data = data.concat(third)
-
-
-            // getting rid of repeated place objects from different categories
-            let lists = [first, second, third]
-            let placeAddresses = []
-            data = []
-            for (let i = 0; i < lists.length; i++) {
-                for (let j = 0; j < lists[i].length; j++) {
-                    if (!placeAddresses.includes(lists[i][j].properties.formatted)) {
-                        data.push(lists[i][j])
-                    }
-                    placeAddresses.push(lists[i][j].properties.formatted)
-                }
-            }
-
-
-        }
-
-        // data is list of all compiled places
-        console.log(data)
-        // console.log(userInterests)
-        data.sort((a, b) => a.properties.distance - b.properties.distance)
-        updateSuggestedPlaces(data)
-
-        return "done"
+        })
     }
 
 
 
-    const getSearchData = async () => {
-        if (searchText.length < 2) {
-            if (searchText.length === 0) {
-                resetSearch()
-            }
-            // console.log('')
-        } else {
-            let searchQuery = searchText.slice(0, -1)
-            // let searchQuery = searchText.replace(/ /g, "%20")
-            // console.log(searchQuery)
-            const apiKey = "3e9f6f51c89c4d3985be8ab9257924fe"
-            let url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${searchQuery}&bias=countrycode:${country.toLowerCase()}&limit=5&format=json&filter=countrycode:${country.toLowerCase()}&apiKey=${apiKey}`
-            // console.log(url)
-            const response = await axios.get(url)
-            return response.status === 200 ? response.data : null
-            // proximity:
-        }
-    }
-    const loadSearchData = async () => {
-        let data = await getSearchData()
-        console.log(data)
-        setAuto(data.results)
-        // open search box
-        let autoComplete = document.getElementById('autocomplete-container')
-        autoComplete.classList.remove('d-none')
-    }
 
     const updateSearchText = (e) => {
         setSearchText(e.target.value)
@@ -1050,7 +703,7 @@ export const AddPlaces = () => {
     }
 
 
-    // PLACEs LIST SELECTION CODE
+    // [places lists code]
     const [selectedPlacesList, setSelectedPlacesList] = useState("Added")
     const beamRef = useRef(null);
 
@@ -1062,21 +715,14 @@ export const AddPlaces = () => {
         } else {
             setSuggestedPlacesFilter(categoryTitle)
         }
-        for (let i = 0; i < userInterests.length + 1; i++) {
-            let category = document.getElementById(`suggestedCategory-${i + 1}`)
-            if (i + 1 === num) {
-                category.classList.add('selected')
-            } else {
-                category.classList.remove('selected')
-            }
-        }
+
     }
     const [blacklist, setBlacklist] = useState([])
-    const addToBlacklist = (categoryName) => {
+    const addToBlacklist = (placeName) => {
         let blacklistCopy = [...blacklist]
-        blacklistCopy.push(categoryName)
+        blacklistCopy.push(placeName)
         setBlacklist(blacklistCopy)
-        // console.log(blacklist)
+        console.log(blacklist)
     }
     const undoHidePlace = () => {
         let blacklistCopy = [...blacklist]
@@ -1295,10 +941,12 @@ export const AddPlaces = () => {
         setMapCenterToggle(!mapCenterToggle);
     }
 
+    const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
     return (
         <>
             {/* <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} /> */}
+            <ConfirmationModal open={confirmationModalOpen} questionText={"Are you sure you want to Clear list?"} descText={"This action is irreversible."} confirmAction={() => clearAllPlaces()} onClose={() => setConfirmationModalOpen(false)} />
             <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
             <LoadingScreen open={isLoading} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
@@ -1460,8 +1108,10 @@ export const AddPlaces = () => {
 
                             {selectedPlacesList === "Added" &&
                                 <>
-                                    <div className="flx">
-                                        <p onClick={() => clearAllPlaces()} className="my-2 purple-text pointer z-1 position-right bold500 mr-1">Clear list</p>
+                                    <div className="flx" style={{ height: 44 }}>
+                                        {places.length > 0 &&
+                                            <p onClick={() => setConfirmationModalOpen(true)} className="my-2 purple-text pointer z-1 position-right bold500 mr-1">Clear list</p>
+                                        }
                                     </div>
                                     <div className={`placeCards ${places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
@@ -1470,38 +1120,43 @@ export const AddPlaces = () => {
                                                 let firstCategory = place.category.split(",")[0]
                                                 firstCategory = firstCategory.charAt(0).toUpperCase() + firstCategory.slice(1)
 
-                                                return <Fade duration={300} triggerOnce><div key={index} className="placeCard2 position-relative flx-r my-2">
+                                                return <Fade duration={300} triggerOnce><div className="div-to-create-space-from-fade-for-ref">
+                                                    <div id={`placeholderBefore-${index}`} className="placeCard2-placeholder hidden"></div>
+                                                    <div ref={e => placeCardRefs.current[index] = e} key={index} className={`placeCard2 position-relative flx-r o-none shown`}>
 
-                                                    <div className="placeCard-img-div flx-3">
-                                                        <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
-                                                    </div>
-                                                    <div ref={cardBodyRef} className="placeCard-body flx-5">
-                                                        <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
-                                                        <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}>
-                                                            <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p>
-                                                            <div className="scroller" data-animated="true">
-                                                                <div className="scroller-inner">
-                                                                    <p className="scroll-text body-title">{place.placeName}</p>
-                                                                    <p className="scroll-text body-title">{place.placeName}</p>
+                                                        <div className="placeCard-img-div flx-3">
+                                                            <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
+                                                        </div>
+                                                        <div ref={cardBodyRef} className="placeCard-body flx-5">
+                                                            <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
+                                                            <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}>
+                                                                <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p>
+                                                                <div className="scroller" data-animated="true">
+                                                                    <div className="scroller-inner">
+                                                                        <p className="scroll-text body-title">{place.placeName}</p>
+                                                                        <p className="scroll-text body-title">{place.placeName}</p>
+                                                                    </div>
                                                                 </div>
                                                             </div>
+                                                            {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
+                                                            <p className="body-info">{firstCategory}</p>
+                                                            <p className="m-0 body-address">{place.address}</p>
                                                         </div>
-                                                        {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
-                                                        <p className="body-info">{firstCategory}</p>
-                                                        <p className="m-0 body-address">{place.address}</p>
-                                                    </div>
-                                                    <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                                                        <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
-                                                        {place.favorite !== true ?
-                                                            <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />
-                                                            :
-                                                            <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/M5Yj2Nu.png" alt="" className="star-full my-2" />
-                                                        }
-                                                        <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                            delete
-                                                        </span>
+                                                            {place.favorite !== true ?
+                                                                <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />
+                                                                :
+                                                                <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/M5Yj2Nu.png" alt="" className="star-full my-2" />
+                                                            }
+                                                            <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                                delete
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div></Fade>
+                                                </div>
+                                                    <div id={`placeholderAfter-${index}`} className="placeCard2-placeholder hidden"></div>
+                                                </Fade>
                                             })
                                                 :
                                                 <div className="add-places-card">
@@ -1525,12 +1180,15 @@ export const AddPlaces = () => {
 
                             {selectedPlacesList === "Suggested" &&
                                 <>
-                                    {userInterests.length > 0 &&
+                                    {Object.values(userPreferences).includes(true) &&
                                         <div className="suggestedCategories flx-r gap-2 my-2">
                                             <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className="dateBox-rounder px-2 pointer unselected selected">All</div>
-                                            {userInterests ? userInterests.map((interest, index) => {
-                                                return <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, interest.categoryTitle)} className="dateBox-rounder px-2 pointer unselected">{interest.categoryTitle}</div>
-                                            }) : null}
+                                            {Object.entries(userPreferences).map((userPreference, index) => {
+                                                let category = userPreference[0];
+                                                let selected = userPreference[1];
+                                                let categoryTitle = mapBoxCategoryKey[category].categoryTitle
+                                                return selected && <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, categoryTitle)} className="dateBox-rounder px-2 pointer unselected">{categoryTitle}</div>
+                                            })}
 
                                         </div>
                                     }
@@ -1546,9 +1204,9 @@ export const AddPlaces = () => {
 
                                         <Link to='/survey-update' className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
                                     </div>
-                                    <div className={`placeCards ${suggestedPlaces.length > 0 ? "h482" : null}`}>
+                                    <div className={`placeCards ${suggestedPlaces.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
-                                            {userInterests.length === 0 ?
+                                            {!Object.values(userPreferences).includes(true) || suggestedPlaces.loaded && suggestedPlaces.places.length === 0 ?
                                                 <div className="add-places-card">
                                                     <span className="material-symbols-outlined xx-large">
                                                         map
@@ -1556,7 +1214,7 @@ export const AddPlaces = () => {
                                                     <p className="large bold700 my-1 o-50">0 suggested places</p>
                                                     <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
                                                 </div> : null}
-                                            {userInterests.length > 0 && suggestedPlaces.length === 0 &&
+                                            {Object.values(userPreferences).includes(true) && !suggestedPlaces.loaded &&
                                                 <>
                                                     <div className="loadingBox-inline">
                                                         <Loading noMascot={true} innerText={"Loading..."} />
@@ -1565,16 +1223,16 @@ export const AddPlaces = () => {
                                             }
 
 
-                                            {suggestedPlaces.length > 0 &&
-                                                suggestedPlaces.map((suggestedPlace, index) => {
+                                            {suggestedPlaces.places.length > 0 &&
+                                                suggestedPlaces.places.map((suggestedPlace, index) => {
                                                     // let suggestedPlace = place.properties
                                                     let id = 'suggested-' + index
                                                     let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
-                                                    let blacklisted = false
+                                                    let blacklisted = blacklist.includes(suggestedPlace.placeName)
                                                     let added = addedPlaceAddresses.includes(suggestedPlace.address)
-                                                    if (blacklist.includes(suggestedPlace.placeName)) {
-                                                        blacklisted = true
-                                                    }
+                                                    // if (blacklist.includes(suggestedPlace.placeName)) {
+                                                    //     blacklisted = true
+                                                    // }
                                                     if (!suggestedPlacesFilter) {
                                                         return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
@@ -1654,7 +1312,7 @@ export const AddPlaces = () => {
                                                                             </span>
                                                                         </div>}
 
-                                                                    <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                                    <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                                                         visibility_off
                                                                     </span>
                                                                 </div>

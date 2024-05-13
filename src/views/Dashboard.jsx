@@ -542,6 +542,27 @@ export const Dashboard = () => {
 
     const navigate = useNavigate()
 
+    const tripFunctions = {
+        clearTrips: function() {
+            clearCurrentTrip()
+        },
+        deleteTrip: function(trip) {
+            
+        },
+        editDetails: function(trip) {
+            
+        },
+        viewAnalytics: function(trip) {
+            
+        },
+        viewPlaces: function(trip) {
+
+        },
+        viewTrip: function(trip) {
+
+        },
+    };
+
     const viewTrip = async (trip, navigation) => {
         clearCurrentTrip()
         setIsLoading(true)
@@ -855,7 +876,7 @@ export const Dashboard = () => {
             <SpecifyCity open={specifyCityOpen} cities={cityOptions} tripData={tripData} setTripData={setTripData} getCountryName={getCountryName} openNameTripModal={openNameTripModal} onClose={() => closeSpecifyCity()} />
             <NameTripModal open={openTripModal} tripData={tripData} changeCity={() => changeCity()} currentTrip={currentTrip} setCurrentTrip={setCurrentTrip} clearCurrentTrip={clearCurrentTrip} onClose={() => closeNameTripModal()} />
             <div className="page-container90 mt-4">
-                <h1 className="page-subsubheading-bold inline-block mb-5">Hi {auth.currentUser ? auth.currentUser.displayName : "Josh"} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="xsmall-pic ml-2" />
+                <h1 className="page-subsubheading-bold inline-block mb-5">Hi {auth.currentUser && auth.currentUser.displayName} </h1><img src="https://i.imgur.com/4i6xYjB.png" alt="" className="xsmall-pic ml-2" />
                 {/* <button onClick={() => testItinerary()} className="btn-primaryflex">Test Itinerary</button> */}
                 {/* start trip selection box */}
                 <div className={`selection-box ${mobileMode && "mobile"} flx-c`}>

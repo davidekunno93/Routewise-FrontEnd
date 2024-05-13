@@ -98,10 +98,12 @@ userTrips saves to central user object for quick load after first load?
 
 **09May24 meeting**
 Certain trip destinations not generating new suggested places - Japan
-Intermediate step in suggested places loading before switching to new destination's suggested places
+<!-- Intermediate step in suggested places loading before switching to new destination's suggested places -->
+apikey = 
 country jp
 lat = 35.6828387
 long = 139.7594549
+<!-- when go Back from user preferences go back to itinerary tab --> 
 
 Questions?
 Will saved places have an 'in itinerary' indication?
@@ -144,10 +146,11 @@ catch error for emails already in use
 <!-- AddPlaces Page -->
 Edit trip dates 
 Put trip name at the top of the page?
+<!-- Clear list - are you sure? modal -->
 
-<!-- Itinerarry Page -->
+<!-- Itinerary Page -->
 *update add place from PTC animation 
-*update code: centroids need to update each time itinerary places changes
+*update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
 
 
 <!-- Phone responsive -->

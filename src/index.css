@@ -765,7 +765,6 @@ w-0 {
   border-radius: 24px;
   overflow: hidden;
   background-color: white;
-
 }
 .carousel-window-auth {
   /* width: 476px; */
@@ -797,6 +796,13 @@ w-0 {
   display: flex;
   flex-direction: row;
 }
+.inner-wide {
+  white-space: nowrap;
+  transition: 0.5s;
+  /* transform: translateX(-464px); */
+  display: flex;
+  flex-direction: row;
+}
 
 .inner-no-flex {
   white-space: nowrap;
@@ -810,10 +816,20 @@ w-0 {
   transition: 4.0s ease;
   /* transform: translateX(-100%); */
 }
+.overflow-h {
+  overflow: hidden;
+}
 
 .carousel-item {
   display: inline-flex;
   width: 100%;
+  height: 100%;
+  /* background-color: #007ACC;
+  border: 5px solid green; */
+}
+.carousel-item-pagewide {
+  display: inline-flex;
+  width: 100vw;
   height: 100%;
   /* background-color: #007ACC;
   border: 5px solid green; */
@@ -1269,9 +1285,9 @@ input:-webkit-autofill {
 .input-edit {
   /* width: 150px; */
   background-color: white;
-  font-size: 24px;
+  /* font-size: 24px;
   font-weight: 700;
-  font-family: 'Plus Jakarta Sans';
+  font-family: 'Plus Jakarta Sans'; */
   border: none;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -1645,7 +1661,7 @@ input:-webkit-autofill {
   padding: 0.6em, 1.2em;
   /* height: 55px; */
   color: #6663FC;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 2px solid #6663FC;
   transition: 0.3s;
   white-space: nowrap;
@@ -2516,12 +2532,34 @@ p {
   overflow: hidden;
   transition: 0.3s;
   padding: 12px 12px;
+  margin-bottom: 12px;
 }
 .placeCard2-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.placeCard2.shown {
+  opacity: 1;
+  transition-duration: 0s;
+}
+.placeCard2.collapse {
+  height: 0;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  /* display: none; */
+  border-bottom: none;
+}
+.placeCard2-placeholder {
+  height: 167.6px;
+  width: 100%;
+  transition-duration: 0s;
+}
+.placeCard2-placeholder.hidden {
+  height: 0px;
 }
 .placeCard {
   /* width: 100%; */
@@ -3066,7 +3104,7 @@ p {
   transition: 0.3s;
 }
 .itinerary-c2 {
-  flex: 2;
+  /* flex: 2; */
 }
 .itinerary-c3 {
   flex: 3;
@@ -3448,6 +3486,9 @@ p {
 
 .ws-nowrap {
   white-space: nowrap;
+}
+.ws-normal {
+  white-space: normal;
 }
 
 .inflex {
@@ -5091,7 +5132,7 @@ p {
 }
 .trip-information-div {
   background-color: white;
-  padding: 12px;
+  padding: 12px 12px 12px 0px;
   border-bottom: 1px solid rgb(180, 180, 180);
   /* border-top: 2px solid white; */
 }
@@ -5679,12 +5720,51 @@ p {
   outline: none;
   border: 1px solid rgb(0, 100, 255);
 }
+.suggestedCategories .option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  /* width: 100px; */
+  text-align: center;
+  font-weight: 500;
+}
+.suggestedCategories .option .option-img {
+  height: 40px;
+  /* width: 40px; */
+  object-fit: contain;
+}
 
-
-
-
-
-
+.mapview-btn {
+  background-color: #6663FC;
+  position: fixed;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: 24px;
+  font-size: small;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 24px;
+}
+.mapview-btn.light {
+  background-color: whitesmoke;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.12);
+}
+.confirmation-modal {
+  height: 240px;
+  width: 480px;
+  padding: 24px;
+  box-sizing: border-box;
+  background-color: white;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: space-between;
+  margin: auto;
+}
 
 
 

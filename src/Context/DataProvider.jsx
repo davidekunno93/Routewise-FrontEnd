@@ -244,16 +244,19 @@ const DataProvider = (props) => {
         }
     }
     const mapBoxCategoryKey = {
-        landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions" },
-        nature: { categoryQueries: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature" },
-        shopping: { categoryQueries: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping" },
-        food: { categoryQueries: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants" },
-        relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation" },
-        entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment" },
-        arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture" },
-        nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife" },
+        landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions", imgUrl: 'https://i.imgur.com/nixatab.png'},
+        nature: { categoryQueries: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature", imgUrl: 'https://i.imgur.com/kmZtRbp.png'},
+        shopping: { categoryQueries: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping", imgUrl: 'https://i.imgur.com/Fo8WLyJ.png'},
+        food: { categoryQueries: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants", imgUrl: 'https://i.imgur.com/K6ADmfR.png'},
+        relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation", imgUrl: 'https://i.imgur.com/o8PJDZ5.png'},
+        entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment", imgUrl: 'https://i.imgur.com/A8Impx2.png'},
+        arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture", imgUrl: 'https://i.imgur.com/ExY7HDK.png'},
+        nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife", imgUrl: 'https://i.imgur.com/9fVucq9.png'},
     }
-    const [suggestedPlaces, setSuggestedPlaces] = useState([]);
+    const [suggestedPlaces, setSuggestedPlaces] = useState({
+        loaded: false,
+        places: [],
+    });
     
 
     // load place img

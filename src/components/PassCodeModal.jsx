@@ -3,6 +3,10 @@ import { Fade, Slide } from 'react-awesome-reveal';
 
 const PassCodeModal = ({ open, onClose }) => {
     if (!open) return null;
+    // [onload code]
+    useEffect(() => {
+        passcodeRef.current.firstChild.focus()
+    }, [])
 
     // [passcode element code]
     const passcodeRef = useRef(null);
@@ -12,9 +16,9 @@ const PassCodeModal = ({ open, onClose }) => {
         const nextSibling = element.nextSibling
         const previousSibling = element.previousSibling
         if (element.value.length > 0) {
+            element.blur()
             if (nextSibling) {
                 if (nextSibling.tagName === "INPUT") {
-                    console.log("input!")
                     nextSibling.focus()
                 } else {
                     nextSibling.nextSibling.focus()
