@@ -8,7 +8,7 @@ import { Fade, Slide } from 'react-awesome-reveal';
 export const SurveyUpdate = () => {
     const location = useLocation();
     const state = location.state;
-    const returnPage = state.returnPage;
+    const returnPage = state ? state.returnPage : null;
     const { user, setUser } = useContext(DataContext);
     const { userPreferences, setUserPreferences } = useContext(DataContext);
     const [categories, setCategories] = useState(
