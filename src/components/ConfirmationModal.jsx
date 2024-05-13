@@ -14,7 +14,7 @@ const ConfirmationModal = ({ open, confirmAction, questionText, descText, confir
                                 <p className="">{descText ?? "Please selection an option below."}</p>
                             </div>
                             <div className="buttons flx-r gap-2 position-right">
-                                <button onClick={() => confirmAction()} className="btn-primaryflex">{confirmOption ?? "Yes"}</button>
+                                <button onClick={() => {confirmAction(); onClose()}} className="btn-primaryflex">{confirmOption ?? "Yes"}</button>
                                 <button onClick={() => onClose()} className="btn-outlineflex">{rejectOption ?? "No"}</button>
                             </div>
                         </div>
