@@ -166,8 +166,9 @@ function App() {
           <Route children path='/survey-update' element={<SurveyUpdate />} />
           <Route children path='/dashboard' element={<Dashboard />} />
           <Route children path='/add-places' element={<AddPlaces />} />
+          <Route children path='/add-places/suggested-places' element={<AddPlaces selectedPlacesListOnLoad={"Suggested Places"} />} />
           <Route children path='/itinerary' element={<Itinerary />} />
-          <Route children path='/itinerary/suggested-places' element={<Itinerary placesListOnLoad={"Suggested Places"} />} />
+          <Route children path='/itinerary/suggested-places' element={<Itinerary selectedPlacesListOnLoad={"Suggested Places"} />} />
           <Route children path='/mytrips' element={<MyTrips />} />
           <Route children path='/test' element={<Test />} />
           <Route children path='/map' element={<OpenMap />} />

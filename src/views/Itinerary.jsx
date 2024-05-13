@@ -19,7 +19,7 @@ import OpenMapBox from '../components/OpenMapBox'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 
-export const Itinerary = ({ placesListOnLoad }) => {
+export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // if (!currentTrip.tripID) return null ?
   const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
@@ -30,7 +30,7 @@ export const Itinerary = ({ placesListOnLoad }) => {
   // ['libraries']
 
   // ['onload functions code']
-  const [placesListDisplay, setPlacesListDisplay] = useState(placesListOnLoad ? placesListOnLoad : 'Itinerary') // Itinerary, Suggested Places, Saved Places
+  const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ? selectedPlacesListOnLoad : 'Itinerary') // Itinerary, Suggested Places, Saved Places
 
 
   // ['other functions code']
@@ -128,7 +128,7 @@ export const Itinerary = ({ placesListOnLoad }) => {
   }
   useEffect(() => {
     loadTripName()
-  }, [placesListDisplay])
+  }, [selectedPlacesList])
   useEffect(() => {
     // console.log(tripNameSpanRef.current.offsetWidth)
     if (tripNameInputRef.current) {
@@ -934,7 +934,7 @@ export const Itinerary = ({ placesListOnLoad }) => {
       })
       observer.observe(cardBodyRef.current)
     }
-  }, [tripState, placesListDisplay])
+  }, [tripState, selectedPlacesList])
 
 
 
@@ -1342,8 +1342,8 @@ export const Itinerary = ({ placesListOnLoad }) => {
                 </div>
 
                 {sidebarOptions.map((option, index) => {
-                  let selected = placesListDisplay === option.title ? true : false
-                  return <div key={index} onClick={() => setPlacesListDisplay(option.title)} className={`${selected ? "option-selected" : "option"}`}>
+                  let selected = selectedPlacesList === option.title ? true : false
+                  return <div key={index} onClick={() => setSelectedPlacesList(option.title)} className={`${selected ? "option-selected" : "option"}`}>
                     <img src={option.iconUrl} alt="" className="icon" />
                     <p className="m-0 darkpurple-text sb-expanded">{option.title}</p>
                   </div>
@@ -1355,7 +1355,7 @@ export const Itinerary = ({ placesListOnLoad }) => {
 
 
             {/* Itinerary Display */}
-            {placesListDisplay === "Itinerary" &&
+            {selectedPlacesList === "Itinerary" &&
               <div className="itinerary-c2 flx-2 ws-normal">
                 <div className="page-container96">
                   <div className="align-all-items my-1 gap-2">
@@ -1433,7 +1433,7 @@ export const Itinerary = ({ placesListOnLoad }) => {
             {/* End Itinerary Display */}
 
             {/* Saved Places Display */}
-            {placesListDisplay === "Saved Places" &&
+            {selectedPlacesList === "Saved Places" &&
               <div className="itinerary-c2 flx-2 ws-normal">
                 <div className="page-container96">
                   <p className="m-0 page-subheading-bold">Saved Places</p>
@@ -1480,7 +1480,7 @@ export const Itinerary = ({ placesListOnLoad }) => {
             {/* End Saved Places Display */}
 
             {/* Suggested Places Display */}
-            {placesListDisplay === "Suggested Places" &&
+            {selectedPlacesList === "Suggested Places" &&
               <div className="itinerary-c2 flx-2 ws-normal">
                 <div className="page-container96">
                   <p className="m-0 page-subheading-bold">Suggested Places</p>

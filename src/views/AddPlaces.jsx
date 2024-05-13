@@ -19,7 +19,7 @@ import { Fade, Slide } from 'react-awesome-reveal'
 import ConfirmationModal from '../components/ConfirmationModal'
 
 
-export const AddPlaces = () => {
+export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     // Send Kate Data
     const { user, setUser } = useContext(DataContext);
     const { userPreferences } = useContext(DataContext);
@@ -704,7 +704,7 @@ export const AddPlaces = () => {
 
 
     // [places lists code]
-    const [selectedPlacesList, setSelectedPlacesList] = useState("Added")
+    const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Added Places")
     const beamRef = useRef(null);
 
     const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null)
@@ -1099,14 +1099,14 @@ export const AddPlaces = () => {
 
                         <div className="places-section mt-4-respond1024">
                             <div className="placesList flx-r gap-6">
-                                <p onClick={() => setSelectedPlacesList("Added")} className={`${selectedPlacesList === "Added" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Added places ({places.length})</p>
-                                <p onClick={() => setSelectedPlacesList("Suggested")} className={`${selectedPlacesList === "Suggested" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Suggested places</p>
+                                <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Added places ({places.length})</p>
+                                <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Suggested places</p>
                             </div>
                             <div className="box-bar">
-                                <div ref={beamRef} className={`beam ${selectedPlacesList === "Added" && "addedPlaces"} ${selectedPlacesList === "Suggested" && "suggestedPlaces"}`}></div>
+                                <div ref={beamRef} className={`beam ${selectedPlacesList === "Added Places" && "addedPlaces"} ${selectedPlacesList === "Suggested Places" && "suggestedPlaces"}`}></div>
                             </div>
 
-                            {selectedPlacesList === "Added" &&
+                            {selectedPlacesList === "Added Places" &&
                                 <>
                                     <div className="flx" style={{ height: 44 }}>
                                         {places.length > 0 &&
@@ -1178,7 +1178,7 @@ export const AddPlaces = () => {
                                 </>
                             }
 
-                            {selectedPlacesList === "Suggested" &&
+                            {selectedPlacesList === "Suggested Places" &&
                                 <>
                                     {Object.values(userPreferences).includes(true) &&
                                         <div className="suggestedCategories flx-r gap-2 my-2">
@@ -1202,7 +1202,7 @@ export const AddPlaces = () => {
                                             </div>
                                         }
 
-                                        <Link to='/survey-update' className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
+                                        <Link to='/survey-update' state={{ returnPage: "/add-places/suggested-places" }} className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
                                     </div>
                                     <div className={`placeCards ${suggestedPlaces.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
