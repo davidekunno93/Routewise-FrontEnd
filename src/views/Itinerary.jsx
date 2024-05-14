@@ -321,10 +321,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     let tripStateCopy = { ...tripState }
     let place = placeToConfirm
     // add day_id to place object
-    place['day_id'] = tripStateCopy.days[dayNum].day_id
+    if (tripStateCopy.days[dayNum].day_id) {
+      // not sure if day_id key is used anymore
+      place['day_id'] = tripStateCopy.days[dayNum].day_id
+    } else {
+      place['day_id'] = tripStateCopy.days[dayNum].db_id
+    }
     place['trip_id'] = tripStateCopy.trip_id
     // console.log(tripStateCopy.trip_id) 
-    console.log(place);
+    // console.log(tripStateCopy.days[dayNum]);
 
     // key made for lightbulb icon purposes only - indicating day w closest activities
     if (place.lightbulb_days) {
@@ -340,7 +345,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         day_id: sendPlace.day_id
       }
       console.log("sendPlace: ", sendPlace)
-      const response = await axios.post(`http://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
+      const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       }).then((response) => {
         console.log(response.status)
