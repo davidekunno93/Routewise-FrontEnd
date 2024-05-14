@@ -542,6 +542,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             }
             placeCardRefs.current[index].classList.add("shown")
 
+
         })
     }
 
@@ -1122,7 +1123,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                                                 return <Fade duration={300} triggerOnce><div className="div-to-create-space-from-fade-for-ref">
                                                     <div id={`placeholderBefore-${index}`} className="placeCard2-placeholder hidden"></div>
-                                                    <div ref={e => placeCardRefs.current[index] = e} key={index} className={`placeCard2 position-relative flx-r o-none shown`}>
+                                                    <div ref={e => placeCardRefs.current[index] = e} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
 
                                                         <div className="placeCard-img-div flx-3">
                                                             <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />

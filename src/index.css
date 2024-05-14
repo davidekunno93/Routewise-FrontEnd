@@ -2541,8 +2541,19 @@ p {
   object-fit: cover;
   border-radius: 8px;
 }
+.placeCard2.gone {
+  opacity: 0;
+  height: 0;
+  margin-bottom: 0;
+  padding: 0px 12px;
+  border-bottom: none;
+}
 
 .placeCard2.shown {
+  height: 130px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border-bottom: 2px solid gainsboro;
   opacity: 1;
   transition-duration: 0s;
 }

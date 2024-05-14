@@ -1371,9 +1371,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     <span className="material-symbols-outlined o-50">
                       calendar_month
                     </span>
-                    <div className="font-jakarta">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
+                    <div className="dark-text font-jakarta">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
                     <p className="m-0">&bull;</p>
-                    <div className="font-jakarta"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
+                    <div className="dark-text font-jakarta"><span className="dark-text">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
                     {/* <p className="m-0 purple-text">Edit</p> */}
                   </div>
                   {/* calendar edit end */}
