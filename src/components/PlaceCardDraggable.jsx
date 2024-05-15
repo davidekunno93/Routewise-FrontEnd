@@ -24,6 +24,14 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
     // }, [])
 
 
+    const isDraggingStyle = {
+        borderColor: "#6663FC",
+        boxShadow: "0 0 20px rgba(0, 0, 0, 0.1)",
+    }
+    const isNotDraggingStyle = {
+        borderColor: "gainsboro",
+        boxShadow: "0 0 0px rgba(0, 0, 0, 0.1)",
+    }
     return (
         <div className="placeCard-box flx-r grabber">
             <div className="drag-icon flx">
@@ -33,7 +41,8 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
             </div>
 
 
-            <div className="placeCard2 w-100 position-relative flx-r my-2" style={{ borderColor: `${draggableSnapshot.isDragging ? "#6663FC" : "gainsboro"}`, boxShadow: `${draggableSnapshot.isDragging ? "0 0 20px rgba(0, 0, 0, 0.1)" : "0 0 0px rgba(0, 0, 0, 0.1)"}` }}>
+            {/* <div className="placeCard2 w-100 position-relative flx-r my-2" style={{ borderColor: `${draggableSnapshot.isDragging ? "#6663FC" : "gainsboro"}`, boxShadow: `${draggableSnapshot.isDragging ? "0 0 20px rgba(0, 0, 0, 0.1)" : "0 0 0px rgba(0, 0, 0, 0.1)"}` }}> */}
+            <div className="placeCard2 w-100 position-relative flx-r my-2" style={draggableSnapshot.isDragging ? isDraggingStyle : isNotDraggingStyle}>
 
                 <div className="placeCard-img-div flx-2">
                     <div className={`overlay-star-place ${place.favorite ? null : "hidden"}`}>

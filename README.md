@@ -142,6 +142,11 @@ TO DO LIST
 catch error for emails already in use
 >>>>>Kate's db's only allow uids that have already been authenticated
 
+<!-- Dashboard -->
+Welcome back {name}
+Next trip is in __ days
+Trip stats: # of trips completed, # of places been to etc.
+
 
 <!-- AddPlaces Page -->
 Edit trip dates 

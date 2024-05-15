@@ -1291,7 +1291,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         </button>
       }
       <div className={`itinerary-page ${mobileMode && "overflow-h"}`}>
-        <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`} style={{ transform: `translateX(-${mobileMode ? mapView ? 1 * 50 : 0 * 50 : 0}%)` }}>
+        <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`}>
           <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-r flx-4"}`}>
 
             {/* itinerary sidebar */}
