@@ -1183,12 +1183,12 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                 <>
                                     {Object.values(userPreferences).includes(true) &&
                                         <div className="suggestedCategories flx-r gap-2 my-2">
-                                            <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className="dateBox-rounder px-2 pointer unselected selected">All</div>
+                                            <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className={`dateBox-rounder px-2 pointer ${!suggestedPlacesFilter || suggestedPlacesFilter === "All" ? "selected" : "unselected"}`}>All</div>
                                             {Object.entries(userPreferences).map((userPreference, index) => {
                                                 let category = userPreference[0];
                                                 let selected = userPreference[1];
                                                 let categoryTitle = mapBoxCategoryKey[category].categoryTitle
-                                                return selected && <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, categoryTitle)} className="dateBox-rounder px-2 pointer unselected">{categoryTitle}</div>
+                                                return selected && <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, categoryTitle)} className={`dateBox-rounder px-2 pointer ${suggestedPlacesFilter === categoryTitle ? "selected" : "unselected"}`}>{categoryTitle}</div>
                                             })}
 
                                         </div>
