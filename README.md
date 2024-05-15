@@ -151,6 +151,8 @@ Trip stats: # of trips completed, # of places been to etc.
 <!-- AddPlaces Page -->
 Edit trip dates 
 Put trip name at the top of the page?
+Add from suggested list not working
+favorite a place tool top needs to chill
 <!-- Clear list - are you sure? modal -->
 
 <!-- Itinerary Page -->

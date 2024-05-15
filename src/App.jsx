@@ -65,6 +65,7 @@ function App() {
       suggestedPlacesCopy.places = [];
       suggestedPlacesCopy.loaded = true;
       setSuggestedPlaces(suggestedPlacesCopy);
+      // setSuggestedPlaces({...suggestedPlaces, places: [], loaded: true});
     },
     setPlaces: function(placeSuggestions) {
       setSuggestedPlaces({
@@ -87,7 +88,7 @@ function App() {
       // console.log(userPreference)
       if (selected) {
         userPreferencesCount++
-        let resultPlaces = await getSuggestedPlaces(category);
+        // let resultPlaces = await getSuggestedPlaces(category);
         if (resultPlaces.length > 0) {
 
           for (let place of resultPlaces) {

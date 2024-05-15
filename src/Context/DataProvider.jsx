@@ -257,6 +257,14 @@ const DataProvider = (props) => {
         loaded: false,
         places: [],
     });
+
+    const repeatItems = (num) => {
+        let arr = [];
+        for (let i=0; i<num; i++) {
+            arr.push("")
+        }
+        return arr
+    }
     
 
     // load place img
@@ -302,7 +310,8 @@ const DataProvider = (props) => {
             'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences,
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
-            'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg
+            'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
+            'repeatItems': repeatItems
         }}>
             {props.children}
         </DataContext.Provider>

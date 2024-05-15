@@ -1532,7 +1532,7 @@ input:-webkit-autofill {
   background-color: #0F0680;
 }
 
-.btn-primaryflex-disabled {
+.btn-primaryflex-disabled, .btn-primaryflex.disabled, .btn-primaryflex.disabled:hover {
   padding: 12px 20px;
   color: #8E8E8E;
   border-radius: 8px;
@@ -1543,9 +1543,10 @@ input:-webkit-autofill {
   white-space: nowrap;
 }
 
-.btn-primaryflex-disabled span {
+.btn-primaryflex-disabled span, .btn-primaryflex.disabled span {
   color: gray;
 }
+
 
 .btn-carousel-special {
   padding: 12px 20px;

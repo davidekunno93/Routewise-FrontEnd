@@ -163,12 +163,19 @@ export const Navbar = () => {
 
   // open states code
   const [navMenuMobileOpen, setNavMenuMobileOpen] = useState(false);
-  const [passCodeModalOpen, setPassCodeModalOpen] = useState(false);
+  const [passcodeModalOpen, setPasscodeModalOpen] = useState(false);
+  const openPasscodeModal = () => {
+    if (auth.currentUser) {
+      setPasscodeModalOpen(true);
+    } else {
+      alert("Please sign in to get Website access")
+    }
+  }
 
   return (
     <>
     <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
-    <PassCodeModal open={passCodeModalOpen} onClose={() => setPassCodeModalOpen(false)} />
+    <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
     {/* <SurveyModal /> */}
       <div className={`navbar bg-white w-100 flx-r just-sb ${!showNavbar ? "d-none" : null} `}>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
@@ -249,14 +256,14 @@ export const Navbar = () => {
             <p className="m-0">Discover</p>
             </div>
           </div> */}
-          {/* <div onClick={() => setPassCodeModalOpen(true)} className={`option`}>
+          <div onClick={() => openPasscodeModal(true)} className={`option`}>
             <div className="flx-r gap-2">
               <span className={`material-symbols-outlined`}>
                 lock
               </span>
               <p className="m-0 bold500">Access</p>
             </div>
-          </div> */}
+          </div>
 
 
           </div>

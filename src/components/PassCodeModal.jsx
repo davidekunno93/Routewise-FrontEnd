@@ -1,15 +1,21 @@
-import React, { useDebugValue, useEffect, useRef } from 'react'
+import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
 import { Fade, Slide } from 'react-awesome-reveal';
+import { DataContext } from '../Context/DataProvider';
+import { auth } from '../firebase';
 
 const PassCodeModal = ({ open, onClose }) => {
     if (!open) return null;
+    const { repeatItems } = useContext(DataContext);
+
     // [onload code]
     useEffect(() => {
         passcodeRef.current.firstChild.focus()
     }, [])
 
     // [passcode element code]
+    const [passcodeInputArr, setPasscodeInputArr] = useState([]);
     const passcodeRef = useRef(null);
+    const digitInputRefs = useRef([]);
     const focusNextInput = (e) => {
         // console.log(e.target)
         const element = e.target;
@@ -24,20 +30,41 @@ const PassCodeModal = ({ open, onClose }) => {
                     nextSibling.nextSibling.focus()
                 }
             }
-        } else {
-            // if (previousSibling) {
-            //     if (previousSibling.tagName === "INPUT") {
-            //         previousSibling.focus()
-            //     } else {
-            //         previousSibling.previousSibling.focus()
-            //     }
-            // }
         }
+    }
+    const updatePasscodeInputArr = () => {
+        let passcodeInputArrCopy = [];
+        for (let i = 0; i < 6; i++) {
+            passcodeInputArrCopy.push(digitInputRefs.current[i].value)
+        }
+        // console.log(passcodeInputArrCopy);
+        // console.log(passcodeInputArrCopy.join(""), passcodeInputArrCopy.join("").length)
+        setPasscodeInputArr(passcodeInputArrCopy)
     }
 
     // [send data code]
     const sendData = () => {
 
+    }
+    const checkPasscode = async () => {
+        const passcodeInput = passcodeInputArr.join("")
+        if (passcodeInput.length === 6) {
+            if (auth.currentUser) {
+                let data = {
+                    passcode: passcodeInput,
+                }
+                // send data to Kate
+                console.log(data)
+            } else {
+                alert("Please sign in to get submit access code")
+            }
+        }
+    }
+    const checkAccessFirebase = () => {
+
+    }
+    const grantAccessFirebase = () => {
+        
     }
 
     return (
@@ -56,15 +83,22 @@ const PassCodeModal = ({ open, onClose }) => {
                                     If you have a passcode, please enter it below and keep this code confidential for now.
                                     Thank you for understanding.</p>
                                 <div ref={passcodeRef} className="passcode mb-2">
-                                    <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
+                                    {repeatItems(6).map((item, index) => {
+                                        return <><input key={index} ref={e => digitInputRefs.current[index] = e} onChange={() => updatePasscodeInputArr()} type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
+                                            {index === 2 &&
+                                                <p className="m-0 page-subsubheading-bold">-</p>
+                                            }
+                                        </>
+                                    })}
+                                    {/* <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
                                     <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
                                     <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
                                     <p className="m-0 page-subsubheading-bold">-</p>
                                     <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
                                     <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
-                                    <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} />
+                                    <input type="text" onKeyUp={(e) => focusNextInput(e)} className="digit-input" maxLength={1} /> */}
                                 </div>
-                                <button className="btn-primaryflex large">Enter</button>
+                                <button onClick={() => checkPasscode()} className={`btn-primaryflex large ${passcodeInputArr.join("").length < 6 && "disabled"}`}>Enter</button>
                             </div>
                         </Slide>
                     </Fade>

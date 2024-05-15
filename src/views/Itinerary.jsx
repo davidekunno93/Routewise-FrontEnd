@@ -732,7 +732,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       long: place.geometry.coordinates[0],
       geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
       placeId: place.id,
-      day_id: tripStateCopy.days[dayNum].day_id,
+      day_id: tripStateCopy.days[dayNum].day_id ?? tripStateCopy.days[dayNum].db_id,
       trip_id: tripStateCopy.trip_id
     }
 
@@ -1291,6 +1291,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         </button>
       }
       <div className={`itinerary-page ${mobileMode && "overflow-h"}`}>
+        {/* <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`} style={{ transform: `translateX(-${mobileMode ? mapView ? 1 * 50 : 0 * 50 : 0}%)` }}> */}
         <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`}>
           <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-r flx-4"}`}>
 
