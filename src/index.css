@@ -736,6 +736,15 @@ w-0 {
   padding: 12px;
   transition: 0.2s;
   border-bottom: 1px solid gainsboro;
+  font-weight: 500;
+}
+.user-menu .option-cold {
+  display: flex;
+  padding: 12px;
+  transition: 0.2s;
+  border-bottom: 1px solid gainsboro;
+  font-weight: 500;
+  background-color: whitesmoke;
 }
 .user-menu .option:hover {
   background-color: rgb(240, 240, 240);

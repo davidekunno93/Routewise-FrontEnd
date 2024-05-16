@@ -190,6 +190,9 @@ export const Navbar = () => {
         <div className={`nav-menu-mobile ${!navMenuMobileOpen && "hide"}`}>
           <Link onClick={() => setNavMenuMobileOpen(false)} to='/dashboard'><div className="option">
             <img src="https://i.imgur.com/N6JGq3D.png" alt="" className="navbar-icon ml-h" />
+            {/* <span className="material-symbols-outlined gray-tex">
+              cottage
+            </span> */}
             <p className="m-0 gray-text">Dashboard</p>
           </div></Link>
           <Link onClick={() => setNavMenuMobileOpen(false)} to='/mytrips'><div className="option">
@@ -281,6 +284,15 @@ export const Navbar = () => {
 
             </div>
             <div id='userMenu' className="user-menu flx-c position-absolute hide">
+              <div className="option-cold">
+                <span className="material-symbols-outlined">
+                  account_circle
+                </span>
+                <div className="">
+                  <p className="m-0 ml-2">{auth.currentUser ? auth.currentUser.displayName : "*Username*"}</p>
+                  <p className="m-0 ml-2 gray-text x-small">Logged in</p>
+                  </div>
+                  </div>
               <Link onClick={() => closeUserMenu()} to='/survey-update'><div className="option">
                 <span className="material-symbols-outlined">
                   favorite
