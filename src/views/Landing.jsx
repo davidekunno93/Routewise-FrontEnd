@@ -161,6 +161,7 @@ export const Landing = () => {
             let cityInput = document.getElementById('cityInput')
             cityInput.classList.add('entry-error')
             console.log("no city")
+            alert("Please enter a travel destination")
         } else if (!range[0].startDate || !range[0].endDate) {
             alert("Please enter a start and end date for your trip")
         } else {

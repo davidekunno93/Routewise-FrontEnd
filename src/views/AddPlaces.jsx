@@ -418,6 +418,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             ...place,
             favorite: false,
         };
+        console.log(newPlace)
 
 
         // add place in database

@@ -778,9 +778,17 @@ w-0 {
   border: 1px solid salmon; */
 }
 .carousel-window-auth.mobile {
-  width: 95vw;
+  /* width: 100vw; */
   height: 90vh;
-  border-radius: 24px;
+  /* border-radius: 24px; */
+}
+.carousel-window-auth.mobileNarrow {
+  /* width: 95vw; */
+  width: 100vw;
+  /* height: 90vh; */
+  height: 100vh;
+  border-radius: none;
+  /* border-radius: 24px; */
 }
 
 .carousel2-window {
@@ -808,6 +816,7 @@ w-0 {
   white-space: nowrap;
   transition: 0.3s;
   width: 100%;
+  /* display: inline-flex; */
   /* transform: translateX(-350px); */
 }
 
@@ -824,6 +833,15 @@ w-0 {
   display: inline-flex;
   width: 100%;
   height: 100%;
+  /* background-color: #007ACC;
+  border: 5px solid green; */
+}
+.carousel-item-centered {
+  display: inline-flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
   /* background-color: #007ACC;
   border: 5px solid green; */
 }
@@ -894,6 +912,7 @@ w-0 {
   width: 500px;
   width: 100%;
   height: 550px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -906,6 +925,7 @@ w-0 {
 .sign-up-box.mobile, .sign-in-box.mobile, .create-password.mobile {
   width: 95vw;
   height: 90vh;
+  height: 100%;
   padding: 12px 24px;
   box-sizing: border-box;
 }
@@ -1010,8 +1030,9 @@ w-0 {
   padding: 24px 0px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
 }
-.auth-modal.mobile {
-  padding: 12px 0px;
+.auth-modal.mobileNarrow {
+  /* padding: 12px 0px; */
+  border-radius: 0px;
 }
 
 .modalTop {
@@ -1929,11 +1950,15 @@ input {
 }
 .closeBtn-auth {
   position: absolute;
-  top: 0;
-  right: 18px;
+  top: 0px;
+  right: 20px;
   z-index: 100000;
   cursor: pointer;
   transition: 0.2s;
+}
+.closeBtn-auth.mobileNarrow {
+  top: 8px;
+  right: 8px;
 }
 
 .closeBtn:hover, .closeBtn-auth:hover {
@@ -3024,6 +3049,7 @@ p {
   flex-direction: column;
 }
 .selection-box.mobile, selection-box-landing.mobile {
+  padding: 2% 4%;
   margin-top: 24px;
   margin-bottom: 0px;
 }
@@ -3590,10 +3616,11 @@ p {
 
 .calendarElement {
   position: absolute;
-  left: 0%;
-  /* transform: translateX(-50%); */
+  left: 50%;
+  transform: translateX(-50%);
   top: 40px;
   border-radius: 8px;
+  overflow: hidden;
   /* border: 1px solid blue; */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.07);
   z-index: 20000;

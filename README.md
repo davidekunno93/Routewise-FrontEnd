@@ -141,24 +141,27 @@ TO DO LIST
 <!-- User management -->
 catch error for emails already in use
 >>>>>Kate's db's only allow uids that have already been authenticated
+**Pass code (Kate)
 
 <!-- Dashboard -->
-Welcome back {name}
-Next trip is in __ days
-Trip stats: # of trips completed, # of places been to etc.
+?Welcome back {name}?
+?Next trip is in __ days?
+?Trip stats: # of trips completed, # of places been to etc.?
 
 
 <!-- AddPlaces Page -->
 Edit trip dates 
-Put trip name at the top of the page?
-Add from suggested list not working
-favorite a place tool top needs to chill
+?Put trip name at the top of the page?
+Add from suggested list anim for categorical suggested places
+favorite a place tool tip needs to chill
 <!-- Clear list - are you sure? modal -->
 
 <!-- Itinerary Page -->
-*update add place from PTC animation 
+<!-- *update add place from PTC animation  -->
 *update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
 *re-do day scroll to boxes code
+**generate itinerary object has place['local_id']s instead of place['id']s (Kate)
+**saved places need to be returned in itinerary object when viewing already made trip (Kate)
 
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)

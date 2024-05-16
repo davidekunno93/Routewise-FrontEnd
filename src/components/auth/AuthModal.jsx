@@ -222,7 +222,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
 
                 <Fade duration={200} className='z-99999' triggerOnce>
                     <div className="overlay"></div>
-                    <div className="auth-modal flx-r">
+                    <div className={`auth-modal flx-r ${mobileModeNarrow && "mobileNarrow"}`}>
                         {!mobileMode &&
                         <div className="auth-modal-imgDiv">
                             <div className="caption">
@@ -235,15 +235,15 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                         </div>
                         }
                         <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />
-                        <div className={`carousel-window-auth ${mobileModeNarrow && "mobile"} m-auto flx-r position-relative ${createPasswordOpen && "d-none"}`}>
+                        <div className={`carousel-window-auth ${mobileMode && "mobile"} ${mobileModeNarrow && "mobileNarrow"} m-auto flx-r position-relative ${createPasswordOpen && "d-none"}`}>
                             <div id='loadingBox' className={`loadingBox-2 z-1000000 w-100 h-100 ${isLoading ? null : "hidden-o"}`}>
                                 <Loading />
                             </div>
-                            <span onClick={onClose} className="closeBtn-auth material-symbols-outlined position-absolute xx-large color-gains">
+                            <span onClick={onClose} className={`closeBtn-auth ${mobileModeNarrow && "mobileNarrow"} material-symbols-outlined position-absolute xx-large color-gains`}>
                                 close
                             </span>
                             <div id='inner' className="inner-no-flex" style={{ transform: `translateX(-${activeIndex * 100}%)` }}>
-                                <div className="carousel-item">
+                                <div className="carousel-item-centered">
                                 <div className={`sign-up-box ${mobileModeNarrow && "mobile"} position-relative ${activeIndex !== 0 && "hidden-o"}`}>
 
                                     <h1 className={`mt-4 ${mobileModeNarrow && "xx-large"}`}>Sign Up</h1>
@@ -268,7 +268,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                                     <div className='m-0 small mt-3 font-jakarta dark-text'>Already have an account? <Link onClick={() => updateIndex(1)} className='link-text'><strong>Log In</strong></Link></div>
                                 </div>
                                 </div>
-                                <div className="carousel-item">
+                                <div className="carousel-item-centered">
                                 <div className={`sign-in-box ${mobileModeNarrow && "mobile"} ${activeIndex !== 1 && "hidden-o"}`}>
                                     <h1 className={`mt-4 ${mobileModeNarrow && "xx-large"}`}>Log In</h1>
                                     <button onClick={() => googleSignIn()} className={`btn-outline ${mobileModeNarrow && "mobile"} bg-white purple-text position-relative my-1 font-jakarta`}><img src="https://i.imgur.com/JN3RsNN.png" alt="" className={`btn-icon-left ${mobileModeNarrow && "mobile"}`} /> Log in with Google</button>

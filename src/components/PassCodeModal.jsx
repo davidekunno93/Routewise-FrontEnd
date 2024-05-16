@@ -64,7 +64,7 @@ const PassCodeModal = ({ open, onClose }) => {
 
     }
     const grantAccessFirebase = () => {
-        
+
     }
 
     return (
@@ -77,7 +77,7 @@ const PassCodeModal = ({ open, onClose }) => {
                                 <div className="closeBtn onHover-darken">
                                     <span onClick={() => onClose()} className="material-symbols-outlined">close</span>
                                 </div>
-                                <div className="page-subheading-bold">Enter Password</div>
+                                <div className="page-subheading-bold">Enter Access Code</div>
                                 <p className="center-text bold500">We've upgraded our map API to enhance your experience.
                                     However, to safeguard our site from bots or misuse of the API, we've added a passcode.
                                     If you have a passcode, please enter it below and keep this code confidential for now.
