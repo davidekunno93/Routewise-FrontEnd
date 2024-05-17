@@ -26,6 +26,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
     const { setSignUpIsOpen, setAuthIndex } = useContext(DataContext);
     const { loadCityImg, mapBoxCategoryKey } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
@@ -61,68 +62,6 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     // const [suggestedPlaces, setSuggestedPlaces] = useState([]);
     const { suggestedPlaces } = useContext(DataContext);
     const [auto, setAuto] = useState([]);
-    // const [places, setPlaces] = useState([
-    //     {
-    //         placeName: 'Trafalgar Square',
-    //         info: 'Open 24 hours',
-    //         address: "Trafalgar Sq, London WC2N 5DS, UK",
-    //         imgURL: 'https://i.imgur.com/xwY6Bdd.jpg',
-    //         category: "my creation",
-    //         favorite: false,
-    //         lat: 51.50806,
-    //         long: -0.12806,
-    //         geocode: [51.50806, -0.12806],
-    //         placeId: "1",
-    //     },
-    //     {
-    //         placeName: "Tate Modern",
-    //         info: "Mon-Sun 10 AM-6 PM",
-    //         address: "Bankside, London SE1 9TG, UK",
-    //         imgURL: "https://i.imgur.com/FYc6OB3.jpg",
-    //         category: "my creation",
-    //         favorite: false,
-    //         lat: 51.507748,
-    //         long: -0.099469,
-    //         geocode: [51.507748, -0.099469],
-    //         placeId: "2",
-    //     },
-    //     {
-    //         placeName: "Hyde Park",
-    //         info: "Mon-Sun 5 AM-12 AM",
-    //         address: "Hyde Park, London W2 2UH, UK",
-    //         imgURL: "https://i.imgur.com/tZBnXz4.jpg",
-    //         category: "my creation",
-    //         favorite: false,
-    //         lat: 51.502777, 
-    //         long: -0.151250,
-    //         geocode: [51.502777, -0.151250],
-    //         placeId: "3",
-    //     },
-    //     {
-    //         placeName: "Buckingham Palace",
-    //         info: "Tours Start at 9am",
-    //         address: "Buckingham Palace, London SW1A 1AA, UK",
-    //         imgURL: "https://i.imgur.com/lw40mp9.jpg",
-    //         category: "my creation",
-    //         favorite: false,
-    //         lat: 51.501476, 
-    //         long: -0.140634,
-    //         geocode: [51.501476, -0.140634],
-    //         placeId: "4",
-    //     },
-    //     {
-    //         placeName: "Borough Market",
-    //         info: "Closed Mondays, Tues-Sun 10 AM-5 PM",
-    //         address: "Borough Market, London SE1 9AL, UK",
-    //         imgURL: "https://i.imgur.com/9KiBKqI.jpg",
-    //         category: "my creation",
-    //         favorite: false,
-    //         lat: 51.50544, 
-    //         long: -0.091249,
-    //         geocode: [51.50544, -0.091249],
-    //         placeId: "5",
-    //     }
-    // ])
 
     // date functions
     const datinormal = (systemDate) => {
@@ -1000,9 +939,10 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>
-                <div className="body-section flx-r-respond">
+                
+                <div className={`body-section ${mobileMode ? "flx-c" : "flx-r-reverse"}`}>
                     <div className="add-places-c1 map-section flx-5">
-                        <div className="gray-box-respond position-relative flx">
+                        <div className={`gray-box fullHeight ${mobileMode && "fullWidth"} position-relative flx`}>
 
                             <div className="searchBar position-absolute w-100 z-10000 d-none">
                                 <div className="position-relative w-100 h-100">

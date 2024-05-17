@@ -1207,7 +1207,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     mapPanel.style.height = "0vh"
     panelBtns.style.transform = "translateY(0px)"
   }
-  
+
 
   // added places render 'added to places' button ?
   const [addedPlaceAddresses, setAddedPlaceAddresses] = useState([])
@@ -1371,6 +1371,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                       <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
                       <span onClick={() => setTripNameIsUpdating(true)} className={`material-symbols-outlined large gains-text pointer ${tripNameIsUpdating && "d-none"}`}>edit</span>
                     </div>
+                    <button className="btn-primary-small align-all-items gap-2 position-right">
+                      <span className="material-symbols-outlined white-text small">share</span>
+                      Share
+                    </button>
                   </div>
                   {/* calendar edit */}
                   <div className="calendar-edit border-bottom-gains flx-r mb-2 pb-2 align-c gap-2">
@@ -1681,7 +1685,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
 
 
-          
+
 
           <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-5"}`}>
             {/* Side Map display */}
@@ -1866,7 +1870,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
           {/* Completion buttons */}
           < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
-            <button className="btn-outlineflex large center-text mx-2">Back to Dashboard</button>
+            <Link to='/dashboard'><button className="btn-outlineflex large center-text mx-2">Back to Dashboard</button></Link>
             <button className="btn-primaryflex w-2h large center-text mx-2">Share Itinerary</button>
           </div >
           {/* End Completion buttons */}

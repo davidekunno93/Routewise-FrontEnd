@@ -21,6 +21,7 @@ import { DataContext } from './Context/DataProvider'
 import { auth } from './firebase'
 import MyTrips from './views/MyTrips'
 import OpenMapBox from './components/OpenMapBox'
+import PrintItineraryPage from './views/PrintItineraryPage'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -175,6 +176,7 @@ function App() {
           <Route children path='/map' element={<OpenMap />} />
           <Route children path='/map2' element={<OpenMapBox />} />
           <Route children path='/hero' element={<HeroFade />} />
+          <Route children path='/print-itinerary' element={<PrintItineraryPage />} />
         </Routes>
         {/* <h1 className='empty-3'></h1> */}
         {/* <h1 className='empty-6'></h1> */}
