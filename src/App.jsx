@@ -18,10 +18,11 @@ import { HeroFade } from './components/HeroFade'
 import { SurveyUpdate } from './views/SurveyUpdate'
 import axios from 'axios'
 import { DataContext } from './Context/DataProvider'
-import { auth } from './firebase'
+import { auth, firestore } from './firebase'
 import MyTrips from './views/MyTrips'
 import OpenMapBox from './components/OpenMapBox'
 import PrintItineraryPage from './views/PrintItineraryPage'
+import { doc, getDoc } from 'firebase/firestore'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -47,6 +48,32 @@ function App() {
     console.log('woken up')
     return response.status === 200 ? response.data : null
   }
+
+  // [user preferences code]
+  useEffect(() => {
+    if (auth.currentUser) {
+      setPreferences()
+    }
+  }, [auth])
+  const setPreferences = async () => {
+    let prefs = await getDoc(doc(firestore, `userPreferences/${auth.currentUser.uid}`))
+    // console.log(prefs.data())
+    prefs = prefs.data()
+    let userPref = {
+      landmarks: prefs ? prefs.landmarks : false,
+      nature: prefs ? prefs.nature : false,
+      shopping: prefs ? prefs.shopping : false,
+      food: prefs ? prefs.food : false,
+      nightclub: prefs ? prefs.nightclub ? prefs.nightclub : false : false,
+      relaxation: prefs ? prefs.relaxation : false,
+      entertainment: prefs ? prefs.entertainment : false,
+      arts: prefs ? prefs.arts : false
+    }
+    console.log("userPref =", userPref)
+    setUserPreferences(userPref)
+  }
+
+  // [suggested places code]
   const suggestedPlacesFunctions = {
     empty: function () {
       let suggestedPlacesCopy = { ...suggestedPlaces };
@@ -61,14 +88,14 @@ function App() {
         places: [],
       });
     },
-    returnNone: function() {
+    returnNone: function () {
       let suggestedPlacesCopy = { ...suggestedPlaces };
       suggestedPlacesCopy.places = [];
       suggestedPlacesCopy.loaded = true;
       setSuggestedPlaces(suggestedPlacesCopy);
       // setSuggestedPlaces({...suggestedPlaces, places: [], loaded: true});
     },
-    setPlaces: function(placeSuggestions) {
+    setPlaces: function (placeSuggestions) {
       setSuggestedPlaces({
         loaded: true,
         places: placeSuggestions,

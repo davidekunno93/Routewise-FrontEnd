@@ -19,11 +19,11 @@ const DataProvider = (props) => {
         entertainment: false,
         arts: false
     });
-    useEffect(() => {
-        if (auth.currentUser) {
-            setPreferences()
-        }
-    }, [auth])
+    // useEffect(() => {
+    //     if (auth.currentUser) {
+    //         setPreferences()
+    //     }
+    // }, [auth])
     const setPreferences = async () => {
         let prefs = await getDoc(doc(firestore, `userPreferences/${auth.currentUser.uid}`))
         // console.log(prefs.data())
