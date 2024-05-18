@@ -241,7 +241,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             </div>
                             {mobileModeNarrow ?
                                 <div onClick={onClose} className="closeBtn-circle abs-vcenter abs-bottom-30">
-                                    <spa className="material-symbols-outlined gains-text larger">close</spa>
+                                    <spa className="material-symbols-outlined gains-text x-larger">close</spa>
                                 </div>
                                 :
                                 <span onClick={onClose} className={`closeBtn-auth material-symbols-outlined position-absolute xx-large color-gains`}>
