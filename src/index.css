@@ -2167,8 +2167,8 @@ input {
 
 .closeBtn-circle {
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   border: 2px solid gainsboro;
   box-sizing: border-box;
   border-radius: 50%;
