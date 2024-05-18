@@ -10,6 +10,7 @@ export const SurveyUpdate = () => {
     const state = location.state;
     const returnPage = state ? state.returnPage : null;
     const { user, setUser } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     const { userPreferences, setUserPreferences } = useContext(DataContext);
     const [categories, setCategories] = useState(
         { ...userPreferences }
@@ -112,11 +113,11 @@ export const SurveyUpdate = () => {
     const toggleSelection = (id) => {
         const card = document.getElementById(`${id}-card2`)
         const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        if (card.classList.contains('card2')) {
+        if (!card.classList.contains('selected')) {
             // card.classList.replace('card2', 'card2-selected')
             // greenCheck.classList.remove('d-none')
             addToCategories(id)
-        } else if (card.classList.contains('card2-selected')) {
+        } else if (card.classList.contains('selected')) {
             card.classList.replace('card2-selected', 'card2')
             greenCheck.classList.add('d-none')
             removeFromCategories(id)
@@ -229,13 +230,13 @@ export const SurveyUpdate = () => {
                     </div>
                 </div>
                 <h1 onClick={() => openUpdatedOverlay()} className="page-title mt-2">Update your travel preferences</h1>
-                <p className="page-text">How do you prefer to explore?</p>
-                <p className="page-text">Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
+                <p className={`${mobileModeNarrow ? "medium" : "page-text"}`}>How do you prefer to explore?</p>
+                <p className={`${mobileModeNarrow ? "smedium" : "page-text"}`}>Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
                     error
                 </span></span></p>
                 <div className="cards flx-r flx-wrap just-ce">
                     {cards2.map((card2, index) => {
-                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className={`${render[index] ? "card2-selected" : "card2"} mx2 my-3 position-relative`}>
+                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className={`card2 ${mobileModeNarrow && "flex"} ${render[index] ? "selected" : ""} mx2 my-3 position-relative`}>
                             <div id={`${index}-green-checkbox`} className={`green-checkbox ${render[index] ? null : "d-none"}`}>
                                 <span className="material-symbols-outlined white-text m-auto">
                                     check

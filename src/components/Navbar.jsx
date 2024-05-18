@@ -93,7 +93,7 @@ export const Navbar = () => {
   }
 
 
-  // User (profile icon click) menu
+  // [User (profile icon click) menu]
   const toggleUserMenu = () => {
     const userMenu = document.getElementById('userMenu')
     userMenu.classList.toggle('hide')
@@ -115,7 +115,21 @@ export const Navbar = () => {
   }
 
 
-  // Prototype Menu
+  // [nav menu mobile]
+  const hamburgerRef = useRef(null);
+  const navMenuMobileRef = useRef(null);
+  useEffect(() => {
+    document.addEventListener('click', hideOnClickOutsideMobileMenu, true);
+    return () => document.removeEventListener('click', hideOnClickOutsideMobileMenu, true)
+  }, [])
+  const hideOnClickOutsideMobileMenu = (e) => {
+    if (navMenuMobileRef.current && !navMenuMobileRef.current.contains(e.target) && !hamburgerRef.current.contains(e.target)) {
+      setNavMenuMobileOpen(false);
+    }
+  }
+
+
+  // [Prototype Menu]
   const openPrototypeMenu = () => {
     let prototypeMenu = document.getElementById('prototype-menu')
     prototypeMenu.classList.remove('d-none')
@@ -180,14 +194,14 @@ export const Navbar = () => {
       <div className={`navbar bg-white w-100 flx-r just-sb ${!showNavbar ? "d-none" : null} `}>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         {mobileMode &&
-          <div onClick={() => setNavMenuMobileOpen((navMenuMobileOpen) => !navMenuMobileOpen)} className="hamburger-icon ml-2">
+          <div ref={hamburgerRef} onClick={() => setNavMenuMobileOpen((navMenuMobileOpen) => !navMenuMobileOpen)} className="hamburger-icon ml-2">
             <span className="line-1"></span>
             <span className="line-2"></span>
             <span className="line-3"></span>
           </div>
         }
         {/* nav menu mobile */}
-        <div className={`nav-menu-mobile ${!navMenuMobileOpen && "hide"}`}>
+        <div ref={navMenuMobileRef} className={`nav-menu-mobile ${!navMenuMobileOpen && "hide"}`}>
           <Link onClick={() => setNavMenuMobileOpen(false)} to='/dashboard'><div className="option">
             <img src="https://i.imgur.com/N6JGq3D.png" alt="" className="navbar-icon ml-h" />
             {/* <span className="material-symbols-outlined gray-tex">

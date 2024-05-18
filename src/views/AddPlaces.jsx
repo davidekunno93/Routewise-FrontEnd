@@ -909,7 +909,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                     <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                     <div className={`tripInfo flx-r align-c ${mobileModeNarrow ? "gap-1" : "gap-2"} position-relative`}>
-                        <span className={`material-symbols-outlined o-50 ${mobileModeNarrow && "medium-large"}`}>
+                        <span className={`material-symbols-outlined o-50 ${mobileModeNarrow && "larger"}`}>
                             calendar_month
                         </span>
                         <div onClick={() => printAddedPlaceAddresses()} className={`dateBox my-1 font-jakarta px-2 ${mobileModeNarrow && "smedium"}`}>{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">{datify(datinormal(selectionRange[0].startDate))} &nbsp; - &nbsp;{datify(datinormal(selectionRange[0].endDate))}</p>}</div>
@@ -1045,7 +1045,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                         </div>
                     </div>
 
-                    <div className={`add-places-c2 flx-c ${mobileMode ? "flx-6" : "flx-4"}`}>
+                    <div className={`add-places-c2 flx-c ${mobileMode ? "flx-8" : "flx-4"}`}>
 
                         <div className={`places-section ${mobileMode && "mt-4"}`}>
                             <div className="placesList flx-r gap-6">

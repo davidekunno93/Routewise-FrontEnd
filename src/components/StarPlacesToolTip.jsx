@@ -7,6 +7,7 @@ import { DataContext } from '../Context/DataProvider';
 const StarPlacesToolTip = ({ open, currentTrip, onClose }) => {
     if (!open) return null
     const { user, setUser } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
 
     useEffect(() => {
         console.log(user)
@@ -41,13 +42,13 @@ const StarPlacesToolTip = ({ open, currentTrip, onClose }) => {
         <div className="overlay-placeholder">
             <Fade className='z-99999' duration={200} triggerOnce>
                 <div className="overlay">
-                    <div className="toolTip-modal">
-                        <p className="m-0 page-subheading-bold">Tip: Prioritize your must-go places</p>
-                        <p className="m-0 page-text bold500">Star <i>must-go</i> places so we can make sure these are included in your itinerary</p>
-                        <img src="https://i.imgur.com/DLgJ5sS.png" alt="" className='' />
+                    <div className="toolTip-modal" style={{ width: mobileModeNarrow ? "90vw" : "" }}>
+                        <p className={`m-0 ${mobileModeNarrow ? "larger bold700" : "page-subheading-bold"}`}>Tip: Prioritize your must-go places</p>
+                        <p className={`m-0 ${mobileModeNarrow ? "smedium" : "page-text"} bold500`}>Star <i>must-go</i> places so we can make sure these are included in your itinerary</p>
+                        <img src="https://i.imgur.com/DLgJ5sS.png" alt="" className='' style={{ width: mobileModeNarrow ? "90%" : "" }}/>
                         <div className="flx-r gap-3 aligns-l ml15">
                             <input id='dontShowCheckbox' onClick={() => updateFirstPlaceAdded()} type="checkbox" className='checkbox-medium' />
-                            <p className="m-0 page-text">Don't show this again</p>
+                            <p className={`m-0 ${mobileModeNarrow ? "smedium" : "page-text"}`}>Don't show this again</p>
                         </div>
 
                         <button onClick={() => onClose()} className="btn-primaryflex">Got it!</button>

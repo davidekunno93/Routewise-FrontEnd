@@ -360,11 +360,14 @@ button:focus-visible {
   font-size: medium;
 }
 .medium-large {
-  font-size: 20px;
+  font-size: 17px;
 }
 
 .large {
   font-size: large;
+}
+.larger {
+  font-size: 20px;
 }
 
 .large-respond {
@@ -2484,6 +2487,7 @@ p {
   position: relative;
 }
 
+
 .card2 {
   display: flex;
   flex-direction: column;
@@ -2492,26 +2496,16 @@ p {
   padding: 0;
   align-items: center;
   border: 3px solid gainsboro;
+  box-sizing: border-box;
   border-radius: 8px;
   background-color: white;
   cursor: pointer;
   transition: 0.2s;
   position: relative;
 }
-
-.card2-selected {
-  display: flex;
-  flex-direction: column;
-  width: 167px;
-  height: 200px;
-  padding: 0;
-  align-items: center;
+.card2.selected {
   border: 3px solid #D1CDF0;
-  border-radius: 8px;
   background-color: #F0EFFF;
-  cursor: pointer;
-  transition: 0.2s;
-  position: relative;
 }
 
 .card2:hover {
@@ -2523,12 +2517,12 @@ p {
   filter: brightness(85%);
 }
 
-.card2-imgDiv {
+.card2 .card2-imgDiv {
   display: flex;
   flex: 1;
 }
 
-.card2-img {
+.card2 .card2-img {
   /* width: 60%; */
   height: 64px;
   width: 64px;
@@ -2537,6 +2531,39 @@ p {
   /* border-radius: 12px; */
 }
 
+.card2.flex {
+  width: 40vw;
+  height:  calc(1.2*40vw);
+
+}
+/* .card2-flex.selected {
+  border: 3px solid #D1CDF0;
+  background-color: #F0EFFF;
+} */
+.card2.flex .card2-imgDiv {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  justify-content: center;
+}
+.card2.flex .card2-img {
+  height: 100%;
+  width: 38%;
+  object-fit: contain;
+  margin: auto 0 0 0;
+}
+/* .card2-flex:hover {
+  filter: brightness(95%);
+  transition: 0.2s;
+}
+
+.card2-flex:active {
+  filter: brightness(85%);
+} */
+.card2.flex .card2-title {
+  font-size: 4vw;
+  text-align: center;
+}
 .card2-smaller-img {
   /* width: 60%; */
   height: 50px;
@@ -2557,7 +2584,7 @@ p {
   color: #242424;
 }
 
-.card2-title {
+.card2 .card2-title {
   font-size: 18px;
   text-align: center;
 }

@@ -143,26 +143,36 @@ catch error for emails already in use
 >>>>>Kate's db's only allow uids that have already been authenticated
 **Pass code (Kate)
 
+<!-- Landing Page -->
+<!-- RESPONSIVE -->
+
 <!-- Dashboard -->
+<!-- RESPONSIVE -->
 ?Welcome back {name}?
 ?Next trip is in __ days?
 ?Trip stats: # of trips completed, # of places been to etc.?
 
 
 <!-- AddPlaces Page -->
+<!-- RESPONSIVE -->
 Edit trip dates 
 ?Put trip name at the top of the page?
 Add from suggested list anim for categorical suggested places
 favorite a place tool tip needs to chill
+map loads funny sometimes when in mobile mode
 <!-- Clear list - are you sure? modal -->
 
 <!-- Itinerary Page -->
+RESPONSIVE
 <!-- *update add place from PTC animation  -->
 *update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
 *re-do day scroll to boxes code
 **generate itinerary object has place['local_id']s instead of place['id']s (Kate)
 **saved places need to be returned in itinerary object when viewing already made trip (Kate)
 re-center map on click of itinerary place
+
+<!-- Survey & Survey Update page page -->
+RESPONSIVE
 
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)

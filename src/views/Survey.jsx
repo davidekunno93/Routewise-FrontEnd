@@ -10,6 +10,7 @@ export const Survey = () => {
     // login require
     const { user, setUser } = useContext(DataContext);
     const { userPreferences, setUserPreferences } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     const [categories, setCategories] = useState(
         {
             landmarks: false,
@@ -182,12 +183,14 @@ export const Survey = () => {
     const toggleSelection = (id) => {
         const card = document.getElementById(`${id}-card2`)
         const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        if (card.classList.contains('card2')) {
+        console.log(card.classList)
+        if (!card.classList.contains('selected')) {
             // card.classList.replace('card2', 'card2-selected')
             // greenCheck.classList.remove('d-none')
             addToCategories(id)
-        } else if (card.classList.contains('card2-selected')) {
-            card.classList.replace('card2-selected', 'card2')
+        } else if (card.classList.contains('selected')) {
+            console.log("removing styles")
+            card.classList.remove('selected')
             greenCheck.classList.add('d-none')
             removeFromCategories(id)
         }
@@ -206,7 +209,7 @@ export const Survey = () => {
             maxCategoryError.classList.remove('d-none')
             console.log('max interests reached')
         } else {
-            card.classList.replace('card2', 'card2-selected')
+            card.classList.add('selected')
             greenCheck.classList.remove('d-none')
             categoriesCopy[category_list[id]] = true;
             setCategories(categoriesCopy);
@@ -266,7 +269,7 @@ export const Survey = () => {
                                 check
                             </span>
                         </div>
-                        <p className="sign-up m-0 mt-1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign Up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                        <p className={`sign-up m-0 mt-1 ${mobileMode && "small"}`}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign Up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
                     </div>
                     <div className="point">
                         <div className="progress-bar-node-empty node-frame center position-relative">
@@ -277,13 +280,13 @@ export const Survey = () => {
                                 </span>
                             </div>
                         </div>
-                        <p className="sign-up m-0 mt-1">Travel Preferences</p>
+                        <p className={`sign-up m-0 mt-1 ${mobileMode && "small"}`}>Travel Preferences</p>
                     </div>
                     <div className="point">
                         <div className="progress-bar-node-empty node-frame center position-relative">
                             <div id='node2-flex' className="progress-bar-node-flex"></div>
                         </div>
-                        <p className="sign-up m-0 mt-1">Start Planning!</p>
+                        <p className={`sign-up m-0 mt-1 ${mobileMode && "small"}`}>Start Planning!</p>
                     </div>
                     <div id='progress-bar-full' className="progress-bar-full"></div>
                     <div className="progress-bar-empty"></div>
@@ -293,13 +296,26 @@ export const Survey = () => {
                 {/* <h1 className="page-title">Personalize your recommendations</h1> */}
                 {/* <p className="page-text">Routewise suggests places and activities based on your interests and preferences.</p> */}
                 <h1 className="page-title">Set up your traveler profile</h1>
-                <p className="page-text">Adventure awaits! How do you prefer to explore the world?</p>
-                <p className="page-text">Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
+                <p className={`${mobileModeNarrow ? "medium" : "page-text"}`}>Adventure awaits! How do you prefer to explore the world?</p>
+                <p className={`${mobileModeNarrow ? "smedium" : "page-text"}`}>Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(max 3 categories) <span className={`material-symbols-outlined red-text v-ttop ${mobileModeNarrow && "large"}`}>
                     error
                 </span></span></p>
                 <div className="cards flx-r flx-wrap just-ce">
+                {/* <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className="card2 mx2 my-3 position-relative">
+                            <div id={`${index}-green-checkbox`} className="green-checkbox d-none">
+                                <span className="material-symbols-outlined white-text m-auto">
+                                    check
+                                </span>
+                            </div>
+                            <div className="card2-imgDiv flx-1">
+                                <img src={card2.imgUrl} alt="" className="card2-img" />
+                            </div>
+                            <div className="card2-text flx-1">
+                                <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
+                            </div>
+                        </div> */}
                     {cards2.map((card2, index) => {
-                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className="card2 mx2 my-3 position-relative">
+                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className={`card2 ${mobileModeNarrow && "flex"} mx2 my-3 position-relative`}>
                             <div id={`${index}-green-checkbox`} className="green-checkbox d-none">
                                 <span className="material-symbols-outlined white-text m-auto">
                                     check
