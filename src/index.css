@@ -5241,15 +5241,19 @@ selection-box-landing.mobile {
   left: 0px;
   width: 134px;
 }
+.places-section .box-bar .beam.mobileModeNarrow.addedPlaces {
+  left: 0px;
+  width: 116px;
+}
 
 .places-section .box-bar .beam.suggestedPlaces {
   left: 155px;
   width: 144px;
 }
 
-.places-section .box-bar .beam.suggestedPlaces {
-  left: 155px;
-  width: 144px;
+.places-section .box-bar .beam.mobileModeNarrow.suggestedPlaces {
+  left: 138px;
+  width: 128px;
 }
 
 .trip-options .box-bar .beam.upcoming {

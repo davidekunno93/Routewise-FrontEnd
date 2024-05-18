@@ -1049,16 +1049,16 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                         <div className={`places-section ${mobileMode && "mt-4"}`}>
                             <div className="placesList flx-r gap-6">
-                                <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Added places ({places.length})</p>
-                                <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Suggested places</p>
+                                <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Added places ({places.length})</p>
+                                <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Suggested places</p>
                             </div>
                             <div className="box-bar">
-                                <div ref={beamRef} className={`beam ${selectedPlacesList === "Added Places" && "addedPlaces"} ${selectedPlacesList === "Suggested Places" && "suggestedPlaces"}`}></div>
+                                <div ref={beamRef} className={`beam ${mobileModeNarrow && "mobileModeNarrow"} ${selectedPlacesList === "Added Places" && "addedPlaces"} ${selectedPlacesList === "Suggested Places" && "suggestedPlaces"}`}></div>
                             </div>
 
                             {selectedPlacesList === "Added Places" &&
                                 <>
-                                    <div className="flx" style={{ height: 44 }}>
+                                    <div className="flx" style={{ height: mobileModeNarrow ? 41 : 44 }}>
                                         {places.length > 0 &&
                                             <p onClick={() => setConfirmationModalOpen(true)} className={`my-2 purple-text pointer z-1 position-right bold500 mr-1 ${mobileModeNarrow && "smedium"}`}>Clear list</p>
                                         }

@@ -154,7 +154,7 @@ catch error for emails already in use
 
 
 <!-- AddPlaces Page -->
-<!-- RESPONSIVE -->
+<!-- RESPONSIVE --> >> userPrefs navigation tabs and tripinfo dates in 320 frame width
 Edit trip dates 
 ?Put trip name at the top of the page?
 Add from suggested list anim for categorical suggested places
@@ -172,7 +172,7 @@ RESPONSIVE
 re-center map on click of itinerary place
 
 <!-- Survey & Survey Update page page -->
-RESPONSIVE
+<!-- RESPONSIVE -->
 
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)
