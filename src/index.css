@@ -951,6 +951,10 @@ w-0 {
   bottom: 10px;
 }
 
+.abs-bottom-20 {
+  bottom: 20px;
+}
+
 .abs-bottom-30 {
   bottom: 30px;
 }
@@ -2160,6 +2164,20 @@ input {
   filter: brightness(85%);
   transition: 0.2s;
 }
+
+.closeBtn-circle {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 2px solid gainsboro;
+  box-sizing: border-box;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
 
 .remove-btn {
   width: 30px;
