@@ -162,6 +162,7 @@ favorite a place tool tip needs to chill
 *re-do day scroll to boxes code
 **generate itinerary object has place['local_id']s instead of place['id']s (Kate)
 **saved places need to be returned in itinerary object when viewing already made trip (Kate)
+re-center map on click of itinerary place
 
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)

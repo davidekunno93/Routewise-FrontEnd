@@ -900,21 +900,22 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                     </span>
                     <p className="m-0 purple-text bold700">Add Places</p>
 
+
                 </div>
             </div>
 
-            <div className="page-container90 vh-100 flx-c">
-                <div className="add-places-title-row flx-r align-c gap-8">
+            <div className={`page-container90 ${!mobileMode && "vh-100"} flx-c`}>
+                <div className={`add-places-title-row ${mobileMode ? "flx-c mobile" : "flx-r align-c gap-8"}`}>
 
                     <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
-                    <div className="tripInfo flx-r align-c gap-2 position-relative">
-                        <span className="material-symbols-outlined o-50">
+                    <div className={`tripInfo flx-r align-c ${mobileModeNarrow ? "gap-1" : "gap-2"} position-relative`}>
+                        <span className={`material-symbols-outlined o-50 ${mobileModeNarrow && "medium-large"}`}>
                             calendar_month
                         </span>
-                        <div onClick={() => printAddedPlaceAddresses()} className="dateBox my-1 font-jakarta px-2">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">{datify(datinormal(selectionRange[0].startDate))} &nbsp; - &nbsp;{datify(datinormal(selectionRange[0].endDate))}</p>}</div>
-                        <div className="dateBox my-1 font-jakarta px-2 mx-1"><span className="">{currentTrip.tripDuration ? currentTrip.tripDuration : (selectionRange[0].endDate.getTime() - selectionRange[0].startDate.getTime()) / (1000 * 3600 * 24) + 1}</span>&nbsp;days</div>
+                        <div onClick={() => printAddedPlaceAddresses()} className={`dateBox my-1 font-jakarta px-2 ${mobileModeNarrow && "smedium"}`}>{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">{datify(datinormal(selectionRange[0].startDate))} &nbsp; - &nbsp;{datify(datinormal(selectionRange[0].endDate))}</p>}</div>
+                        <div className={`dateBox my-1 font-jakarta px-2 mx-1 ${mobileModeNarrow && "smedium"}`}><span>{currentTrip.tripDuration ? currentTrip.tripDuration : (selectionRange[0].endDate.getTime() - selectionRange[0].startDate.getTime()) / (1000 * 3600 * 24) + 1}</span>&nbsp;days</div>
                         <div ref={refCalendar} className="calendarContainer">
-                            <p onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)} className="m-0 purple-text pointer">Edit</p>
+                            <p onClick={() => setCalendarOpen(calendarOpen => !calendarOpen)} className={`m-0 purple-text pointer ${mobileModeNarrow && "smedium"}`}>Edit</p>
 
                             {calendarOpen &&
                                 <DateRange
@@ -925,12 +926,19 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                 />
                             }
                         </div>
+                        {/* {mobileMode ? currentTrip.tripID !== null || auth.currentUser ?
+                            <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
+                            :
+                            <button onClick={() => { setSignUpIsOpen(true); setAuthIndex(0) }} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
+                            : null} */}
+
+
                     </div>
-                    {currentTrip.tripID !== null || auth.currentUser ?
+                    {!mobileMode ? currentTrip.tripID !== null || auth.currentUser ?
                         <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
                         :
                         <button onClick={() => { setSignUpIsOpen(true); setAuthIndex(0) }} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
-                    }
+                        : null}
 
                 </div>
 
@@ -939,9 +947,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                         add
                     </span>Add hotel or other accommodation***</p>
                 </div>
-                
-                <div className={`body-section ${mobileMode ? "flx-c" : "flx-r-reverse"}`}>
-                    <div className="add-places-c1 map-section flx-5">
+
+                <div className={`body-section ${mobileMode ? "flx-c mobile" : "flx-r-reverse"}`}>
+                    <div className={`add-places-c1 map-section flx-5`}>
                         <div className={`gray-box fullHeight ${mobileMode && "fullWidth"} position-relative flx`}>
 
                             <div className="searchBar position-absolute w-100 z-10000 d-none">
@@ -982,7 +990,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                                 <div className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
                                     <div className="placeCard-PTC w-97 position-relative flx-r my-2">
-                                        <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                                        <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute ${!mobileMode && "showOnHover"} x-large color-gains`}>
                                             close
                                         </span>
 
@@ -999,13 +1007,13 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                             {addedPlaceAddresses.includes(placeToConfirm.address) ?
                                                 <div className="flx-r position-bottom">
                                                     <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
-                                                        <div className="addIcon-filled-green-smaller flx mx-2">
-                                                            <span className="material-symbols-outlined m-auto medium white-text">
+                                                        <div className={`${mobileModeNarrow ? "addIcon-filled-green-smallest" : "addIcon-filled-green-smaller"} flx mx-2`}>
+                                                            <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} white-text`}>
                                                                 done
                                                             </span>
                                                         </div>
                                                         <div className="flx">
-                                                            <p className="green-text page-text-smaller m-auto">Added to places</p>
+                                                            <p className={`green-text m-auto ${mobileModeNarrow ? "smedium" : "page-text-smaller"}`}>Added to places</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1014,12 +1022,12 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                     <div onClick={() => addPlace()} className="add-place-btn position-relative">
                                                         {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
                                                         <div className="flx pointer mx-2">
-                                                            <span className="material-symbols-outlined m-auto medium purple-text">
+                                                            <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
                                                                 add
                                                             </span>
                                                         </div>
                                                         <div className="flx">
-                                                            <p className="purple-text page-text-smaller m-auto">Add to places</p>
+                                                            <p className={`purple-text m-auto ${mobileModeNarrow ? "smedium" : "page-text-smaller"}`}>Add to places</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1037,9 +1045,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                         </div>
                     </div>
 
-                    <div className="add-places-c2 flx-c flx-4">
+                    <div className={`add-places-c2 flx-c ${mobileMode ? "flx-6" : "flx-4"}`}>
 
-                        <div className="places-section mt-4-respond1024">
+                        <div className={`places-section ${mobileMode && "mt-4"}`}>
                             <div className="placesList flx-r gap-6">
                                 <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Added places ({places.length})</p>
                                 <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title page-subsubheading-bol bold600 m-0`}>Suggested places</p>
@@ -1052,7 +1060,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                 <>
                                     <div className="flx" style={{ height: 44 }}>
                                         {places.length > 0 &&
-                                            <p onClick={() => setConfirmationModalOpen(true)} className="my-2 purple-text pointer z-1 position-right bold500 mr-1">Clear list</p>
+                                            <p onClick={() => setConfirmationModalOpen(true)} className={`my-2 purple-text pointer z-1 position-right bold500 mr-1 ${mobileModeNarrow && "smedium"}`}>Clear list</p>
                                         }
                                     </div>
                                     <div className={`placeCards ${places.length > 0 ? "h482" : null}`}>
@@ -1117,6 +1125,11 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                     <div className="generate-btn-space w-100">
                                         {/* <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} right-respond1024`}>Generate Itinerary</button> */}
                                     </div>
+                                    {mobileMode ? currentTrip.tripID !== null || auth.currentUser ?
+                                        <button onClick={() => sendPlaces()} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Generate Itinerary</button>
+                                        :
+                                        <button onClick={() => { setSignUpIsOpen(true); setAuthIndex(0) }} className={`${places.length > 0 ? "btn-primaryflex" : "btn-primaryflex-disabled"} position-right`}>Sign up to save</button>
+                                        : null}
                                 </>
                             }
 
@@ -1144,7 +1157,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                             </div>
                                         }
 
-                                        <Link to='/survey-update' state={{ returnPage: "/add-places/suggested-places" }} className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
+                                        <Link to='/survey-update' state={{ returnPage: "/add-places/suggested-places" }} className='position-right'><p className={`m-0 purple-text pointer my-2 ${mobileModeNarrow && "smedium"}`}>Update Travel Preferences</p></Link>
                                     </div>
                                     <div className={`placeCards ${suggestedPlaces.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
