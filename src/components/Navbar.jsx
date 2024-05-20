@@ -220,7 +220,7 @@ export const Navbar = () => {
         <div className="flx-c just-ce">
           <Link onClick={() => togglePrototypeMenu()} className=''>
 
-            <img src={`${mobileMode ? "https://i.imgur.com/Eu8Uf2u.png" : "https://i.imgur.com/VvcOzlX.png"}`} alt="Routewise" className={`routewise-logo ${mobileMode ? "m-auto mobile mt-1" : "ml15-disappear768"}`} />
+            <img src={`${mobileMode ? "https://i.imgur.com/Eu8Uf2u.png" : "https://i.imgur.com/VvcOzlX.png"}`} alt="Routewise" className={`routewise-logo ${mobileMode ? "m-aut mobile mt-  position-absolute abs-center" : "ml15-disappear768"}`} />
 
           </Link>
           {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
@@ -327,7 +327,11 @@ export const Navbar = () => {
           :
           <div className="right-btns flx-c just-ce">
             <div className="flx-r just-se">
+              {!mobileMode ? 
               <button onClick={() => openSignUp()} className={`signUp ${mobileMode ? "btn-outline-narrow" : "btn-outlineflex"} small mx10`}>Sign Up</button>
+            :
+            <p onClick={() => openSignUp()} className="m-0 purple-text">Sign Up</p>
+            }
               {!mobileMode &&
                 <button onClick={() => openSignIn()} className="signIn btn-primaryflex small">Log in</button>
               }

@@ -118,7 +118,7 @@ export const SurveyUpdate = () => {
             // greenCheck.classList.remove('d-none')
             addToCategories(id)
         } else if (card.classList.contains('selected')) {
-            card.classList.replace('card2-selected', 'card2')
+            card.classList.remove('selected')
             greenCheck.classList.add('d-none')
             removeFromCategories(id)
         }
@@ -142,7 +142,7 @@ export const SurveyUpdate = () => {
             maxCategoryError.classList.remove('d-none')
             // console.log('max interests reached')
         } else {
-            card.classList.replace('card2', 'card2-selected')
+            card.classList.add('selected')
             greenCheck.classList.remove('d-none')
             categoriesCopy[category_list[id]] = true;
             setCategories(categoriesCopy);

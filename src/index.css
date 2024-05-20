@@ -668,6 +668,7 @@ w-0 {
   border-bottom: 1px solid gainsboro;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .navbar.purple {
@@ -4766,6 +4767,9 @@ selection-box-landing.mobile {
 
 .o-90 {
   opacity: 0.9;
+}
+.o-100 {
+  opacity: 1;
 }
 
 

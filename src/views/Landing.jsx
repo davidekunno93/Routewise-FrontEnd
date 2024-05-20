@@ -18,7 +18,7 @@ export const Landing = () => {
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { showNavbar, setShowNavbar } = useContext(DataContext);
     const { authIndex, setAuthIndex } = useContext(DataContext);
-    const { mobileMode } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     const { logOut } = useContext(DataContext);
     // navigate function
     const navigate = useNavigate()
@@ -283,7 +283,9 @@ export const Landing = () => {
                         :
                         <div className="flx-r align-c gap-6 mr5">
                             <button onClick={() => goToDashboard()} className="btn-primaryflex">Go to dashboard</button>
-                            <p onClick={() => logOut()} className="m-0 pointer onHover-fade">Log out</p>
+                            {!mobileModeNarrow &&
+                                <p onClick={() => logOut()} className="m-0 pointer onHover-fade">Log out</p>
+                            }
                         </div>
                     }
                 </div>

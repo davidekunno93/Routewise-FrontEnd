@@ -239,15 +239,11 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             <div id='loadingBox' className={`loadingBox-2 z-1000000 w-100 h-100 ${isLoading ? null : "hidden-o"}`}>
                                 <Loading />
                             </div>
-                            {mobileModeNarrow ?
-                                <div onClick={onClose} className="closeBtn-circle abs-vcenter abs-bottom-30">
-                                    <spa className="material-symbols-outlined gains-text x-larger">close</spa>
-                                </div>
-                                :
-                                <span onClick={onClose} className={`closeBtn-auth material-symbols-outlined position-absolute xx-large color-gains`}>
-                                    close
-                                </span>
-                            }
+
+                            <span onClick={onClose} className={`closeBtn-auth ${mobileModeNarrow ? "mt-4 lightgray-text" : "color-gains"} material-symbols-outlined position-absolute xx-large`}>
+                                close
+                            </span>
+
                             <div id='inner' className="inner-no-flex" style={{ transform: `translateX(-${activeIndex * 100}%)` }}>
                                 <div className="carousel-item-centered">
                                     <div className={`sign-up-box ${mobileModeNarrow && "mobile"} position-relative ${activeIndex !== 0 && "hidden-o"}`}>

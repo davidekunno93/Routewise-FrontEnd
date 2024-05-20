@@ -160,6 +160,7 @@ Edit trip dates
 Add from suggested list anim for categorical suggested places
 favorite a place tool tip needs to chill
 map loads funny sometimes when in mobile mode
+"..."s on suggested places 
 <!-- Clear list - are you sure? modal -->
 
 <!-- Itinerary Page -->

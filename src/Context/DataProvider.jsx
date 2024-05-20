@@ -132,6 +132,7 @@ const DataProvider = (props) => {
         return window.removeEventListener('resize', handleResize);
     }, [])
     const handleResize = () => {
+        console.log("resizing function triggered")
         if (window.innerWidth <= 1024) {
             if (!mobileMode) {
                 // console.log("mobile mode: on")
@@ -311,7 +312,7 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems
+            'repeatItems': repeatItems, 'handleResize' : handleResize
         }}>
             {props.children}
         </DataContext.Provider>
