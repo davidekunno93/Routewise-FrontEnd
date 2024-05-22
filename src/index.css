@@ -2539,12 +2539,12 @@ p {
   filter: brightness(85%);
 }
 
-.card2 .card2-imgDiv {
+.card2 .card2-imgDiv, .card2-frozen .card2-imgDiv {
   display: flex;
   flex: 1;
 }
 
-.card2 .card2-img {
+.card2 .card2-img, .card2-frozen .card2-img {
   /* width: 60%; */
   height: 64px;
   width: 64px;
@@ -2606,7 +2606,7 @@ p {
   color: #242424;
 }
 
-.card2 .card2-title {
+.card2 .card2-title, .card2-frozen .card2-title {
   font-size: 18px;
   text-align: center;
 }
@@ -6365,12 +6365,13 @@ selection-box-landing.mobile {
   margin: auto;
 }
 
-.page-banner {
+.printItinerary-banner {
+  margin-top: 24px;
   width: 100%;
   height: 100px;
-  background-color: beige;
+  /* background-color: beige; */
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
 }
 
@@ -6400,66 +6401,78 @@ selection-box-landing.mobile {
 }
 
 .dayBoxes {
-  margin: 40px 0px;
+  margin: 32px 0px;
+  /* margin: 40px 0px;
   display: grid;
   gap: 24px 0px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); */
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
   justify-items: center;
 }
 
 .dayBox {
-  width: 600px;
-  background-color: beige;
+  width: 100%;
+  /* background-color: beige; */
 }
 
 .title-row {
   display: flex;
   flex-direction: row;
-  height: 32px;
+  gap: 24px;
+  height: 60px;
 }
 
 .day-number {
-  background-color: #3F3899;
+  background-color: #F0EFFF;
   display: flex;
+  border-radius: 12px;
 }
 
 .day-number p {
-  color: white;
+  /* color: white; */
+  font-size: large;
+  font-weight: 600;
   text-align: center;
   margin: auto;
 }
 
 .day-name {
   display: flex;
-  background-color: rgb(243, 236, 180);
+  background-color:#F0EFFF;
+  border-radius: 12px;
 }
 
 .day-name p {
-  margin: auto;
+  font-size: large;
+  /* margin: auto; */
+  padding-left: 24px;
   text-align: center;
-  color: #3F3899;
+  /* color: #3F3899; */
   font-weight: 600;
 }
 
 .activity-row {
   flex-direction: row;
-  height: 72px;
+  height: 112px;
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid white;
+  margin: 12px 0px;
+  gap: 24px;
 }
 
 .activity-imgDiv {
   overflow: hidden;
+  border-radius: 12px;
   /* padding: 4px; */
 }
 
 .activity-img {
-  width: calc(100% - 4px);
-  height: calc(100% - 8px);
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
-  padding: 4px 0px 4px 4px;
   opacity: 0.9;
 }
 
@@ -6479,6 +6492,12 @@ selection-box-landing.mobile {
   margin: 0;
   margin-left: 12px;
 }
+.activity-name .place-name {
+  font-size: x-large;
+}
+.activity-name .address {
+  font-size: large;
+}
 
 .activity-checkbox {
   display: flex;
@@ -6487,7 +6506,7 @@ selection-box-landing.mobile {
 }
 
 .activity-checkbox .material-symbols-outlined {
-  color: #3F3899;
+  font-size: xx-large;
 }
 
 

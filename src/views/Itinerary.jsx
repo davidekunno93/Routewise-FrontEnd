@@ -951,19 +951,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     popUp.classList.toggle('d-none')
   }
   // catch saved places from itinerary generated
-  useEffect(() => {
+  // useEffect(() => {
     // console.log(currentTrip)
-    if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
-      console.log("saved places: " + currentTrip.itinerary.saved_places);
-      let savedPlacesCopy = { ...savedPlaces };
-      savedPlacesCopy.places = currentTrip.itinerary.saved_places;
-      setSavedPlaces(savedPlacesCopy);
-      // let saved_places = currentTrip.itinerary.saved_places
-      // for (let i = 0; i < saved_places.length; i++) {
-
-      // }
-    }
-  }, [])
+    // if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
+    //   console.log("saved places: " + currentTrip.itinerary.saved_places);
+    //   let savedPlacesCopy = { ...savedPlaces };
+    //   savedPlacesCopy.places = currentTrip.itinerary.saved_places;
+    //   setSavedPlaces(savedPlacesCopy);
+    // }
+  // }, [])
   // switch savedplaces to currentTrip.itinerary.saved_places
   const [savedPlaces, setSavedPlaces] = useState({
     places: [],
@@ -1448,8 +1444,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                   <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
                   <div className="placeCards-itinerary">
-                    {savedPlaces.places.length > 0 ?
-                      savedPlaces.places.map((savedPlace, index) => {
+                    {tripState.saved_places.length > 0 ?
+                      tripState.saved_places.map((placeId, index) => {
+                        let savedPlace = tripState.places[placeId]
                         return <div key={index} className="placeCard2 flx-r position-relative">
                           <div className="placeCard-img-div flx-3">
                             <img className="placeCard2-img" src={savedPlace.imgURL} />

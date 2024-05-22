@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { DataContext } from '../Context/DataProvider';
 
 const PrintItineraryPage = () => {
-  const { repeatItems } = useContext(DataContext);
+  const { repeatItems, timeFunctions } = useContext(DataContext);
   const tripTestData = {
     tripID: "",
     places_last: 8,
@@ -151,32 +151,21 @@ const PrintItineraryPage = () => {
   }
 
   const itineraryDetails = {
-    Destination: "London",
-    Duration: "4",
-    Arrival: "06/12/2024",
-    Departure: "06/15/2024",
+    destination: "London",
+    duration: "4",
+    arrival: "06/12/2024",
+    departure: "06/15/2024",
   }
   return (
-    <div className="page-container96">
-      <div className="page-banner">
-        <p className="m-0">Travel Itinerary</p>
-      </div>
-
-      <div className="itinerary-details">
-        {Object.entries(itineraryDetails).map((item, index) => {
-          let itemKey = item[0]
-          let itemValue = item[1]
-          return <div key={index} className="detail">
-            <p className="m-0 bold600">{itemKey.toUpperCase()}:</p>
-            <p className="m-0 position-absolute abs-center">{itemValue}</p>
-          </div>
-        })}
-        {/* <div className="detail">
-          <p className="m-0">Duration</p>
+    <div className="page-container90">
+      <div className="printItinerary-banner">
+        <div className="title-imgDiv">
+          <img src="" alt="*country-flag*" className="title-img" />
         </div>
-        <p className="m-0">destination</p>
-        <p className="m-0">departure</p>
-        <p className="m-0">arrival</p> */}
+        <div className="title-text flx-c">
+        <p className="m-0 page-subheading-bold">"Name of Trip" Travel Itinerary</p>
+        <p className="m-0 large gray-text">{timeFunctions.datify(itineraryDetails.arrival)} - {timeFunctions.datify(itineraryDetails.departure)} &nbsp; &bull; &nbsp; {itineraryDetails.duration} days</p>
+        </div>
       </div>
 
       <div className="dayBoxes">
@@ -185,8 +174,8 @@ const PrintItineraryPage = () => {
           let dayNumber = day.id.split("-")[1]
           return <div className="dayBox">
             <div className="title-row">
-              <div className="day-number flx-1"><p className="">DAY {dayNumber.length === 1 && "0"}{dayNumber}</p></div>
-              <div className="day-name flx-3"><p className="">{day.dayName.toUpperCase()}</p></div>
+              <div className="day-number flx-1"><p className="">DAY {dayNumber}</p></div>
+              <div className="day-name flx-3"><p className="">{day.date_converted.toUpperCase()} - {day.dayName.toUpperCase()}</p></div>
             </div>
             {day.placeIds.map((placeId, index) => {
               return <div className="activity-row">

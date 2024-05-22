@@ -159,17 +159,16 @@ Edit trip dates
 ?Put trip name at the top of the page?
 Add from suggested list anim for categorical suggested places
 favorite a place tool tip needs to chill
-map loads funny sometimes when in mobile mode
+map loads funny sometimes when in mobile mode (mobileMode not kicking in on tripInfo dates, and map sometimes ??)
 "..."s on suggested places 
 <!-- Clear list - are you sure? modal -->
 
 <!-- Itinerary Page -->
 RESPONSIVE
 <!-- *update add place from PTC animation  -->
+*catch saved places from the back-end
 *update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
 *re-do day scroll to boxes code
-**generate itinerary object has place['local_id']s instead of place['id']s (Kate)
-**saved places need to be returned in itinerary object when viewing already made trip (Kate)
 re-center map on click of itinerary place
 
 <!-- Survey & Survey Update page page -->
@@ -178,6 +177,12 @@ re-center map on click of itinerary place
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)
 
+<!-- With Kate -->
+<!-- **generate itinerary object has place['local_id']s instead of place['id']s (Kate) -->
+**saved places need to be returned in itinerary object when viewing already made trip (Kate).. 
+Adjust FE code to receive saved_places as list of placeIds!
+**Pass code code
+Build test environment page for Kate's functions
+saved_places route
 
-
-
+serialized_places[given_id].in_itinerary = True
