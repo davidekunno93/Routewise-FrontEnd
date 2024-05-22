@@ -2236,6 +2236,21 @@ input {
   transition: 0.2s;
 }
 
+.dateBox-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+.dateBox-column p {
+  font-weight: 500;
+  color: gray;
+  font-size: 14px;
+}
+.dateBox-column.selected p {
+  color: #3F3899;
+}
+
 h1 {
   font-family: 'Plus Jakarta Sans';
   color: #242424;
@@ -5653,8 +5668,14 @@ selection-box-landing.mobile {
 }
 
 .trip-days {
-  flex: 1;
-  overflow: hidden;
+  /* flex: 1; */
+  overflow-x: scroll;
+  width: 500px;
+  /* min-width: 500px;
+  max-width: 500px; */
+}
+.trip-days::-webkit-scrollbar {
+  width: 0;
 }
 
 .suggested-header-div {

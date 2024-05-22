@@ -693,7 +693,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     // console.log('scrolling')
     // console.log(refs)
     window.scrollTo({
-      top: refs.current[refID].offsetTop - 100,
+      top: refs.current[refID].offsetTop - 60,
       behavior: "smooth"
     })
   }
@@ -1373,7 +1373,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     </button>
                   </div>
                   {/* calendar edit */}
-                  <div className="calendar-edit border-bottom-gains flx-r mb-2 pb-2 align-c gap-2">
+                  <div className="calendar-edit border-bottom-gains flx-r pb-2 align-c gap-2">
                     <span className="material-symbols-outlined o-50">
                       calendar_month
                     </span>
@@ -1396,20 +1396,28 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     <p className="m-0 purple-text bold700">Itinerary</p>
                   </div> */}
                   {/* trip flow end */}
-                  <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
 
                   {/* trip days */}
                   <div className="trip-information-div z-1 sticky">
-                    <div className="trip-days flx-r flx-wrap gap-2">
+                    <div className="trip-days flx-r gap-2">
 
-                      {tripState.day_order.map((dayNum, id) => {
+                      {/* {tripState.day_order.map((dayNum, id) => {
                         const day = tripState.days[dayNum]
                         return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-rounder px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>{day.day_short} {day.date_short}</div>
+                      })} */}
+                      {tripState.day_order.map((dayNum, id) => {
+                        const day = tripState.days[dayNum]
+                        return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-column px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>
+                          <p className="m-0">{day.day_short.toUpperCase()}</p>
+                          <p className="m-0">{day.date_short}</p> 
+                          </div>
                       })}
+                      
 
                     </div>
                   </div>
                   {/* trip days end */}
+                      <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
 
                   <div className="itinerary-flow mt-3">
 
