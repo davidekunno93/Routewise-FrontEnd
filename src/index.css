@@ -5131,11 +5131,24 @@ selection-box-landing.mobile {
   color: gainsboro;
 }
 
-.userTrip-box .destImg {
+.userTrip-box .destImgDiv {
   width: 100%;
   height: 65%;
-  object-fit: cover;
   border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
+.userTrip-box .destImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: 0.2s;
+}
+.userTrip-box .destImg:hover {
+  transform: translate(-2.5%, -2.5%);
+  width: 105%;
+  height: 105%;
+  transition: 0.2s;
 }
 
 .userTrip-box .box-text-container {

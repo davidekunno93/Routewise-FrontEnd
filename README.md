@@ -151,6 +151,7 @@ catch error for emails already in use
 ?Welcome back {name}?
 ?Next trip is in __ days?
 ?Trip stats: # of trips completed, # of places been to etc.?
+***hover over trip in personal dashboard enlarges img
 
 
 <!-- AddPlaces Page -->
@@ -169,6 +170,7 @@ RESPONSIVE
 *catch saved places from the back-end
 *update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
 *re-do day scroll to boxes code
+***scroll days in tripinfo horizontally (make dates)
 re-center map on click of itinerary place
 
 <!-- Survey & Survey Update page page -->

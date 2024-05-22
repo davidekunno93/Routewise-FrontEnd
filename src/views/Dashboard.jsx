@@ -543,22 +543,22 @@ export const Dashboard = () => {
     const navigate = useNavigate()
 
     const tripFunctions = {
-        clearTrips: function() {
+        clearTrips: function () {
             clearCurrentTrip()
         },
-        deleteTrip: function(trip) {
-            
-        },
-        editDetails: function(trip) {
-            
-        },
-        viewAnalytics: function(trip) {
-            
-        },
-        viewPlaces: function(trip) {
+        deleteTrip: function (trip) {
 
         },
-        viewTrip: function(trip) {
+        editDetails: function (trip) {
+
+        },
+        viewAnalytics: function (trip) {
+
+        },
+        viewPlaces: function (trip) {
+
+        },
+        viewTrip: function (trip) {
 
         },
     };
@@ -694,7 +694,7 @@ export const Dashboard = () => {
     const [tripToEdit, setTripToEdit] = useState(null);
 
 
-    
+
 
     // other functions
     const datify = (normalDate) => {
@@ -1000,7 +1000,9 @@ export const Dashboard = () => {
                                                 more_vert
                                             </span>
                                         </div>
-                                        <img onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} src={trip.dest_img} alt="" className="destImg pointer" />
+                                        <div className="destImgDiv">
+                                            <img onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} src={trip.dest_img} alt="" className="destImg pointer" />
+                                        </div>
                                         <div className="box-text-container">
                                             <p className="m-0 box-title">{trip.trip_name}</p>
                                             <div className="flx-r">
