@@ -123,8 +123,10 @@ export const Navbar = () => {
     return () => document.removeEventListener('click', hideOnClickOutsideMobileMenu, true)
   }, [])
   const hideOnClickOutsideMobileMenu = (e) => {
-    if (navMenuMobileRef.current && !navMenuMobileRef.current.contains(e.target) && !hamburgerRef.current.contains(e.target)) {
-      setNavMenuMobileOpen(false);
+    if (navMenuMobileRef.current && hamburgerRef.current) {
+      if (navMenuMobileRef.current && !navMenuMobileRef.current.contains(e.target) && !hamburgerRef.current.contains(e.target)) {
+        setNavMenuMobileOpen(false);
+      }
     }
   }
 
@@ -188,9 +190,9 @@ export const Navbar = () => {
 
   return (
     <>
-    <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
-    <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
-    {/* <SurveyModal /> */}
+      <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
+      <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
+      {/* <SurveyModal /> */}
       <div className={`navbar bg-white w-100 flx-r just-sb ${!showNavbar ? "d-none" : null} `}>
         {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
         {mobileMode &&
@@ -273,14 +275,14 @@ export const Navbar = () => {
             <p className="m-0">Discover</p>
             </div>
           </div> */}
-          <div onClick={() => openPasscodeModal(true)} className={`option`}>
-            <div className="flx-r gap-2">
-              <span className={`material-symbols-outlined`}>
-                lock
-              </span>
-              <p className="m-0 bold500">Access</p>
+            <div onClick={() => openPasscodeModal(true)} className={`option`}>
+              <div className="flx-r gap-2">
+                <span className={`material-symbols-outlined`}>
+                  lock
+                </span>
+                <p className="m-0 bold500">Access</p>
+              </div>
             </div>
-          </div>
 
 
           </div>
@@ -305,8 +307,8 @@ export const Navbar = () => {
                 <div className="">
                   <p className="m-0 ml-2">{auth.currentUser ? auth.currentUser.displayName : "*Username*"}</p>
                   <p className="m-0 ml-2 gray-text x-small">Logged in</p>
-                  </div>
-                  </div>
+                </div>
+              </div>
               <Link onClick={() => closeUserMenu()} to='/survey-update'><div className="option">
                 <span className="material-symbols-outlined">
                   favorite
@@ -327,11 +329,11 @@ export const Navbar = () => {
           :
           <div className="right-btns flx-c just-ce">
             <div className="flx-r just-se">
-              {!mobileMode ? 
-              <button onClick={() => openSignUp()} className={`signUp ${mobileMode ? "btn-outline-narrow" : "btn-outlineflex"} small mx10`}>Sign Up</button>
-            :
-            <p onClick={() => openSignUp()} className="m-0 purple-text">Sign Up</p>
-            }
+              {!mobileMode ?
+                <button onClick={() => openSignUp()} className={`signUp ${mobileMode ? "btn-outline-narrow" : "btn-outlineflex"} small mx10`}>Sign Up</button>
+                :
+                <p onClick={() => openSignUp()} className="m-0 purple-text">Sign Up</p>
+              }
               {!mobileMode &&
                 <button onClick={() => openSignIn()} className="signIn btn-primaryflex small">Log in</button>
               }

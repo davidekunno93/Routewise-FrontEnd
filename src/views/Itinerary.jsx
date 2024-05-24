@@ -498,8 +498,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     newPlace["lightbulb_days"] = lightbulb_days;
     setLightbulbDays(lightbulb_days);
     setPlaceToConfirm(newPlace);
-    setMapCenter(newPlace.geocode);
-    setMapCenterToggle(!mapCenterToggle);
+    updateMapCenter(newPlace.geocode)
+    // setMapCenter(newPlace.geocode);
+    // setMapCenterToggle(!mapCenterToggle);
     // resetPanelSearch()
   }
   // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
@@ -613,6 +614,11 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const [panelSearchText, setPanelSearchText] = useState('');
   const [auto, setAuto] = useState([]);
   const [mapView, setMapView] = useState(false);
+  const updateMapCenter = (geocode) => {
+    // console.log(geocode);
+    setMapCenter(geocode);
+    setMapCenterToggle(!mapCenterToggle)
+  }
 
 
 
@@ -824,6 +830,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   const onDragEndItinerary = (result) => {
     const { destination, source } = result
+    console.log(result)
     // if user tries to drop outside scope
     if (!destination) return;
 
@@ -1429,7 +1436,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                         return <Suspense fallback={<LoadBox />} >
                           <div ref={e => refs.current[id] = e} key={id} className="">
-                            <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} addPlaceFromFlowBox={addPlaceFromFlowBox} country={country} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} />
+                            <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} addPlaceFromFlowBox={addPlaceFromFlowBox} country={country} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} recenterMap={updateMapCenter} />
                           </div>
                         </Suspense>
                       })}
@@ -1795,7 +1802,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
 
                   {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
-                  <OpenMapBox mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
+                  <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
                 </div>
 
 

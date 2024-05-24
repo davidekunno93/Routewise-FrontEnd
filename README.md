@@ -152,10 +152,12 @@ catch error for emails already in use
 ?Next trip is in __ days?
 ?Trip stats: # of trips completed, # of places been to etc.?
 <!-- ***hover over trip in personal dashboard enlarges img -->
+UPDATE TRIP NAME SHOWING ERROR EVEN THOUGH ITS UPDATING IN DATABASE? - works on my browser
+Trip name on trip card in dashboard ellipsis and scrollable
 
 
 <!-- AddPlaces Page -->
-<!-- RESPONSIVE --> >> userPrefs navigation tabs and tripinfo dates in 320 frame width
+<!-- RESPONSIVE --> >> userPrefs navigation tabs and tripinfo dates in 320 frame width?
 Edit trip dates 
 ?Put trip name at the top of the page?
 Add from suggested list anim for categorical suggested places
@@ -169,9 +171,11 @@ RESPONSIVE
 <!-- *update add place from PTC animation  -->
 *catch saved places from the back-end
 *update code: centroids need to update each time itinerary places changes ? currently updates everytime PTC added
-*re-do day scroll to boxes code
+*re-do day scroll to flowboxes observer code
 ***scroll days in tripinfo horizontally (make dates)
-re-center map on click of itinerary place
+<!-- re-center map on click of itinerary place -->
+CANNOT DRAG N DROP PLACES IN NEW DAYS - NOT UPDATING
+***l'musee locations working??? (Waiting for meetup w/ Kate)
 
 <!-- Survey & Survey Update page page -->
 <!-- RESPONSIVE -->
@@ -186,5 +190,6 @@ Adjust FE code to receive saved_places as list of placeIds!
 **Pass code code
 Build test environment page for Kate's functions
 saved_places route
+CHANGING TRIP FROM MYTRIPS UPDATES ITINERARY?
 
 serialized_places[given_id].in_itinerary = True

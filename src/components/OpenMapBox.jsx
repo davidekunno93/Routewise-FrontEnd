@@ -91,8 +91,9 @@ const OpenMapBox = ({ mapCenter, mapCenterToggle, newPlaceMarker, markers, zoom,
     const openMapBoxRef = useRef(null);
     useEffect(() => {
         if (openMapBoxRef.current) {
+            // console.log("mapbox mapcenter: ", mapCenter)
             openMapBoxRef.current.flyTo({center: [mapCenter[1], mapCenter[0]], duration: 800})
-        }
+        };
     }, [mapCenterToggle])
 
     return (

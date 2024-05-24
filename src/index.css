@@ -5676,6 +5676,7 @@ selection-box-landing.mobile {
 }
 .trip-days::-webkit-scrollbar {
   width: 0;
+  height: 0;
 }
 
 .suggested-header-div {

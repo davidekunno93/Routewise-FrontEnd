@@ -160,6 +160,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
         const response = axios.patch(url, data, {
             headers: { "Content-Type": "application/json" }
         }).then((response) => {
+            console.log("successful route")
             console.log(response.data)
             setIsLoading(false)
             if (loadUserTripsData) {
@@ -175,6 +176,7 @@ const EditTripModal = ({ open, trip, loadItinerary, loadUserTripsData, onClose }
                 onClose()
             }
         }).catch((error) => {
+            console.log("failed route")
             setIsLoading(false)
             // console.log(error)
             console.log("error caught")
