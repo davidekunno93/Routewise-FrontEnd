@@ -6496,6 +6496,9 @@ selection-box-landing.mobile {
   margin: 12px 0px;
   gap: 24px;
 }
+.activity-row.noPhoto {
+  height: 56px;
+}
 
 .activity-imgDiv {
   overflow: hidden;
@@ -6515,6 +6518,9 @@ selection-box-landing.mobile {
   display: flex;
   flex-direction: row;
 }
+.activity-body.noPhoto {
+  flex-direction: row-reverse;
+}
 
 .activity-name {
   display: flex;
@@ -6528,10 +6534,10 @@ selection-box-landing.mobile {
   margin-left: 12px;
 }
 .activity-name .place-name {
-  font-size: x-large;
+  font-size: 22px;
 }
 .activity-name .address {
-  font-size: large;
+  font-size: 16px;
 }
 
 .activity-checkbox {

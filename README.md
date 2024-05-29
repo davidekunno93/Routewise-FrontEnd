@@ -183,6 +183,9 @@ CANNOT DRAG N DROP PLACES IN NEW DAYS - NOT UPDATING
 <!-- Phone responsive -->
 Name tripmodal and loading screen and specify city (not working on dashboard?)
 
+<!-- Print Itinerary page -->
+toggle pics on/off mode
+
 <!-- With Kate -->
 <!-- **generate itinerary object has place['local_id']s instead of place['id']s (Kate) -->
 **saved places need to be returned in itinerary object when viewing already made trip (Kate).. 

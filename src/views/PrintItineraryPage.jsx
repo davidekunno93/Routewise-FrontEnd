@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
 
 const PrintItineraryPage = () => {
@@ -156,6 +156,9 @@ const PrintItineraryPage = () => {
     arrival: "06/12/2024",
     departure: "06/15/2024",
   }
+
+  const [noPhotoMode, setNoPhotoMode] = useState(false);
+
   return (
     <div className="page-container90">
       <div className="printItinerary-banner">
@@ -163,8 +166,11 @@ const PrintItineraryPage = () => {
           <img src="" alt="*country-flag*" className="title-img" />
         </div>
         <div className="title-text flx-c">
-        <p className="m-0 page-subheading-bold">"Name of Trip" Travel Itinerary</p>
-        <p className="m-0 large gray-text">{timeFunctions.datify(itineraryDetails.arrival)} - {timeFunctions.datify(itineraryDetails.departure)} &nbsp; &bull; &nbsp; {itineraryDetails.duration} days</p>
+          <p className="m-0 page-subheading-bold">"Name of Trip" Travel Itinerary</p>
+          <p className="m-0 large gray-text">{timeFunctions.datify(itineraryDetails.arrival)} - {timeFunctions.datify(itineraryDetails.departure)} &nbsp; &bull; &nbsp; {itineraryDetails.duration} days</p>
+        </div>
+        <div className="toggleNoPhoto position-right">
+          <button onClick={() => setNoPhotoMode(noPhotoMode => !noPhotoMode)} className="btn-primaryflex">Toggle no photo</button>
         </div>
       </div>
 
@@ -173,16 +179,24 @@ const PrintItineraryPage = () => {
         {Object.values(tripTestData.days).map((day, id) => {
           let dayNumber = day.id.split("-")[1]
           return <div className="dayBox">
-            <div className="title-row">
-              <div className="day-number flx-1"><p className="">DAY {dayNumber}</p></div>
-              <div className="day-name flx-3"><p className="">{day.date_converted.toUpperCase()} - {day.dayName.toUpperCase()}</p></div>
-            </div>
+            {noPhotoMode ?
+              <div className="title-row">
+                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()} - {day.dayName.toUpperCase()}</p></div>
+              </div>
+              :
+              <div className="title-row">
+                <div className="day-number flx-1"><p className="">DAY {dayNumber}</p></div>
+                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()} - {day.dayName.toUpperCase()}</p></div>
+              </div>
+            }
             {day.placeIds.map((placeId, index) => {
-              return <div className="activity-row">
+              return <div key={index} className={`activity-row ${noPhotoMode && "noPhoto"}`}>
+                {!noPhotoMode &&
                 <div className="activity-imgDiv flx-1">
                   <img src={tripTestData.places[placeId].imgURL} alt="" className="activity-img" />
                 </div>
-                <div className="activity-body flx-3">
+                }
+                <div className={`activity-body ${noPhotoMode && "noPhoto"} flx-3`}>
                   <div className="activity-name flx-8">
                     <p className="place-name bold500">{tripTestData.places[placeId].placeName}</p>
                     <p className="address gray-text small">{tripTestData.places[placeId].address}</p>
