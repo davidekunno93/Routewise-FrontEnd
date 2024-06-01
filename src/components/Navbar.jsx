@@ -217,6 +217,12 @@ export const Navbar = () => {
             </span>
             <p className="m-0 gray-text">My Trips</p>
           </div></Link>
+          <Link onClick={() => {openPasscodeModal(); setNavMenuMobileOpen(false)}}><div className="option">
+            <span className="material-symbols-outlined gray-text">
+              lock
+            </span>
+            <p className="m-0 gray-text">Access</p>
+          </div></Link>
         </div>
         {/* end nav menu mobile */}
         <div className="flx-c just-ce">
@@ -275,7 +281,7 @@ export const Navbar = () => {
             <p className="m-0">Discover</p>
             </div>
           </div> */}
-            <div onClick={() => openPasscodeModal(true)} className={`option`}>
+            <div onClick={() => openPasscodeModal()} className={`option`}>
               <div className="flx-r gap-2">
                 <span className={`material-symbols-outlined`}>
                   lock

@@ -1,10 +1,11 @@
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { auth } from '../firebase';
+import { auth, firestore } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { Loading } from '../components/Loading';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import EditTripModal from '../components/EditTripModal';
+import { doc, getDoc } from 'firebase/firestore';
 
 const MyTrips = () => {
     const { user } = useContext(DataContext);
@@ -174,18 +175,28 @@ const MyTrips = () => {
 
 
     const viewTrip = async (trip, navigation) => {
-        clearCurrentTrip()
-        setIsLoading(true)
-        if (navigation === "itinerary") {
-            let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
-            const response = await axios.get(url)
-            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-            return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
-        } else if (navigation === "places") {
-            let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
-            const response = await axios.get(url)
-            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-            return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
+        // check hasAccess
+        let uid = auth.currentUser ? auth.currentUser.uid : "no_uid";
+        let docModel = await getDoc(doc(firestore, `itineraryAccess/${uid}`));
+        let docData = docModel.data();
+        if (docData && docData.hasAccess) {
+            // no blockage of access
+            clearCurrentTrip()
+            setIsLoading(true)
+            if (navigation === "itinerary") {
+                let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
+                const response = await axios.get(url)
+                // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+                return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
+            } else if (navigation === "places") {
+                let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
+                const response = await axios.get(url)
+                // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+                return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
+            }
+        } else {
+            let accessDeniedMessage = `You need an account with access to create a trip. Please ${auth.currentUser ? "" : "login and "}navigate to the access option in the navbar to gain access.`
+            alert(accessDeniedMessage);
         }
     }
     const loadPlaces = (place_list, trip) => {

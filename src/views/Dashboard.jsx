@@ -12,12 +12,14 @@ import { addDays, isWithinInterval, set } from 'date-fns'
 import { SpecifyCity } from './SpecifyCity';
 import { Loading } from '../components/Loading';
 import { LoadingModal } from '../components/LoadingModal';
-import { auth } from '../firebase';
+import { auth, firestore } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { Link, useNavigate, useRouteError } from 'react-router-dom';
 import { LoadingScreen } from '../components/LoadingScreen';
 import EditTripModal from '../components/EditTripModal';
 import PassCodeModal from '../components/PassCodeModal';
+import { doc, getDoc } from 'firebase/firestore';
+import PageBlock from '../components/Privatizer/PageBlock';
 
 
 
@@ -370,6 +372,7 @@ export const Dashboard = () => {
                 let cityInput = document.getElementById('cityInput')
                 cityInput.classList.add('entry-error')
                 console.log("no city")
+                alert("Please enter a city destination")
             } else if (!range[0].startDate || !range[0].endDate) {
                 alert("Please enter a start and end date for your trip")
             } else {
@@ -564,18 +567,28 @@ export const Dashboard = () => {
     };
 
     const viewTrip = async (trip, navigation) => {
-        clearCurrentTrip()
-        setIsLoading(true)
-        if (navigation === "itinerary") {
-            let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
-            const response = await axios.get(url)
-            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-            return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
-        } else if (navigation === "places") {
-            let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
-            const response = await axios.get(url)
-            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-            return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
+        // check hasAccess
+        let uid = auth.currentUser ? auth.currentUser.uid : "no_uid";
+        let docModel = await getDoc(doc(firestore, `itineraryAccess/${uid}`));
+        let docData = docModel.data();
+        if (docData && docData.hasAccess) {
+            // no blockage of access
+            clearCurrentTrip()
+            setIsLoading(true)
+            if (navigation === "itinerary") {
+                let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
+                const response = await axios.get(url)
+                // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+                return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
+            } else if (navigation === "places") {
+                let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
+                const response = await axios.get(url)
+                // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+                return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
+            }
+        } else {
+            let accessDeniedMessage = `You need an account with access to create a trip. Please ${auth.currentUser ? "" : "login and "}navigate to the access option in the navbar to gain access.`
+            alert(accessDeniedMessage);
         }
     }
     const loadPlaces = (place_list, trip) => {
@@ -870,6 +883,7 @@ export const Dashboard = () => {
 
     return (
         <>
+        <PageBlock />
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
             <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={closeEditTripModal} />

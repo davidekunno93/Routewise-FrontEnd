@@ -261,6 +261,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                 favorite: false,
             }
         }
+        
         updateMapCenter(newPlace.geocode);
         // setMapCenter(newPlace.geocode)
         // setMapCenterToggle(!mapCenterToggle);

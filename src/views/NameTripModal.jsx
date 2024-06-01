@@ -1,12 +1,13 @@
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { auth } from '../firebase'
+import { auth, firestore } from '../firebase'
 import { Loading } from '../components/Loading'
 import { LoadingModal } from '../components/LoadingModal'
 import { LoadingBox } from '../components/LoadingBox'
 import { set } from 'date-fns'
 import { DataContext } from '../Context/DataProvider'
+import { doc, getDoc } from 'firebase/firestore'
 
 export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, clearCurrentTrip, changeCity, onClose }) => {
     // send Kate Data
@@ -116,18 +117,35 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
     // }
 
     const startPlanningWithName = async () => {
-        let tripNameInput = document.getElementById('tripNameInput')
-        if (tripName.length > 0) {
-            // updateCurrentTrip()
-            if (auth.currentUser) {
-                sendData()
+        // check hasAccess
+        let uid = auth.currentUser ? auth.currentUser.uid : "no_uid"
+        let docModel = await getDoc(doc(firestore, `itineraryAccess/${uid}`))
+        let docData = docModel.data()
+        let accessDeniedMessage = `You need an account with access to create a trip. Please ${auth.currentUser ? "" : "login and "}navigate to the access option in the navbar to gain access.`
+        console.log(docData);
+        if (docData) {
+            if (docData.hasAccess) {
+                // no blockage of access
+
+                let tripNameInput = document.getElementById('tripNameInput')
+                if (tripName.length > 0) {
+                    // updateCurrentTrip()
+                    if (auth.currentUser) {
+                        sendData()
+                    } else {
+                        processData()
+                    }
+                    // navigate('/add-places')
+                } else {
+                    tripNameInput.classList.add('entry-error')
+                }
             } else {
-                processData()
+                alert(accessDeniedMessage);
             }
-            // navigate('/add-places')
         } else {
-            tripNameInput.classList.add('entry-error')
+            alert(accessDeniedMessage);
         }
+        
     }
 
     const startPlanningWithoutName = async () => {
@@ -202,24 +220,24 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
                 <span onClick={onClose} class="closeBtn material-symbols-outlined position-absolute xx-large color-gains">
                     close
                 </span>
-                
-                    <div className="my-3">
-                        <p className={`m-0 ${mobileModeNarrow ? "page-subsubheading-bold" : "page-subheading-bold"}`}>Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span></p>
-                        <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link onClick={changeCity}>here</Link> to find the right one</p>
-                    </div>
 
-                    <div className="input-and-image">
+                <div className="my-3">
+                    <p className={`m-0 ${mobileModeNarrow ? "page-subsubheading-bold" : "page-subheading-bold"}`}>Name your trip to <br /><span className="purple-text">{tripData.cityName}, {tripData.country}</span></p>
+                    <p className="m-0 small bold500 o-70">Wrong <strong>{tripData.cityName}</strong>? Click <Link onClick={changeCity}>here</Link> to find the right one</p>
+                </div>
+
+                <div className="input-and-image">
                     <input onChange={(e) => updateTripName(e)} id='tripNameInput' className={`input-model ${mobileModeNarrow && "mobile"}`} placeholder='Enter a name for your trip' autoComplete='off' required />
                     {/* <img src="https://i.imgur.com/sCT1BpF.jpg" alt="" className="tripModal-img my-3" /> */}
                     {cityImg &&
                         <img src={cityImg} alt="" className={`tripModal-img ${mobileModeNarrow && "mobile"} my-3`} />
                     }
-                    </div>
-
-                    <button onClick={() => startPlanningWithName()} className="btn-primaryflex">Start Planning!</button>
-                    {/* <Link onClick={() => startPlanningWithoutName()} className='font-jakarta mt-1'>Skip</Link> */}
                 </div>
-            
+
+                <button onClick={() => startPlanningWithName()} className="btn-primaryflex">Start Planning!</button>
+                {/* <Link onClick={() => startPlanningWithoutName()} className='font-jakarta mt-1'>Skip</Link> */}
+            </div>
+
         </>
     )
 }

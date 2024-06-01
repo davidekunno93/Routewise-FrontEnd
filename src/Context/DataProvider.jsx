@@ -203,15 +203,25 @@ const DataProvider = (props) => {
     }
 
     const timeFunctions = {
-        datinormal: function (systemDate) {
+        datinormal: function (systemDate, dateOrTime) {
             // system date => mm/dd/yyyy
             let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
             let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
             if (month.toString().length === 1) {
                 month = "0" + month
             }
-            let fullYear = systemDate.getFullYear()
-            return month + "/" + day + "/" + fullYear
+            let fullYear = systemDate.getFullYear();
+            let hour = systemDate.getHours().toString().length === 1 ? "0" + systemDate.getHours() : systemDate.getHours();
+            let minutes = systemDate.getMinutes().toString().length === 1 ? "0" + systemDate.getMinutes() : systemDate.getMinutes();
+            let timeConverted = hour+":"+minutes;
+            let dateConverted = month + "/" + day + "/" + fullYear
+            if (!dateOrTime || dateOrTime === "date") {
+                return dateConverted
+            } else if (dateOrTime === "time") {
+                return timeConverted
+            } else if (dateOrTime === "dateAndTime" || dateOrTime === "timeAndDate") {
+                return dateConverted+", "+timeConverted
+            }
         },
         datify: function (normalDate) {
             // mm/dd/yyyy => mmm dd, yy

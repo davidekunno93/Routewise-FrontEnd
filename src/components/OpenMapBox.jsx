@@ -128,7 +128,7 @@ const OpenMapBox = ({ mapCenter, mapCenterToggle, newPlaceMarker, markers, zoom,
                                 offset={50}
                                 onClose={() => toggleShowPopUp(i)}
                                 closeOnClick={false}>
-                                <div className="popupBox">
+                                <div className="popupBox dark-text">
                                     {marker.placeName}
                                 </div>
                             </Popup>
@@ -154,7 +154,7 @@ const OpenMapBox = ({ mapCenter, mapCenterToggle, newPlaceMarker, markers, zoom,
                                 onClose={() => toggleShowPopUp(false, 'newPlace')}
                                 closeOnClick={false}
                             >
-                                <div className="popupBox">
+                                <div className="popupBox dark-text">
                                     {newPlaceMarker.placeName}
                                 </div>
                             </Popup>

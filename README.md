@@ -174,8 +174,10 @@ RESPONSIVE
 *re-do day scroll to flowboxes observer code
 ***scroll days in tripinfo horizontally (make dates)
 <!-- re-center map on click of itinerary place -->
-CANNOT DRAG N DROP PLACES IN NEW DAYS - NOT UPDATING
+<!-- CANNOT DRAG N DROP PLACES IN NEW DAYS - NOT UPDATING -->
 ***l'musee locations working??? (Waiting for meetup w/ Kate)
+<!-- ***"no category" on itinerary place cards - categories weren't saved, only place info, new places added should have categories now -->
+<!-- center routewise bird on navbar -->
 
 <!-- Survey & Survey Update page page -->
 <!-- RESPONSIVE -->
@@ -184,13 +186,17 @@ CANNOT DRAG N DROP PLACES IN NEW DAYS - NOT UPDATING
 Name tripmodal and loading screen and specify city (not working on dashboard?)
 
 <!-- Print Itinerary page -->
-toggle pics on/off mode
+<!-- toggle pics on/off mode -->
+
+<!-- Optimization -->
+Create state that controls suggestedplaces code running - update state in survey page, keep current.geocode dep
+nametripmodal make loadcityimg function come from context api
 
 <!-- With Kate -->
 <!-- **generate itinerary object has place['local_id']s instead of place['id']s (Kate) -->
 **saved places need to be returned in itinerary object when viewing already made trip (Kate).. 
 Adjust FE code to receive saved_places as list of placeIds!
-**Pass code code
+<!-- **Pass code code -->
 Build test environment page for Kate's functions
 saved_places route
 CHANGING TRIP FROM MYTRIPS UPDATES ITINERARY?

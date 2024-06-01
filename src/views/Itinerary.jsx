@@ -959,22 +959,23 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   // catch saved places from itinerary generated
   // useEffect(() => {
-    // console.log(currentTrip)
-    // if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
-    //   console.log("saved places: " + currentTrip.itinerary.saved_places);
-    //   let savedPlacesCopy = { ...savedPlaces };
-    //   savedPlacesCopy.places = currentTrip.itinerary.saved_places;
-    //   setSavedPlaces(savedPlacesCopy);
-    // }
+  // console.log(currentTrip)
+  // if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
+  //   console.log("saved places: " + currentTrip.itinerary.saved_places);
+  //   let savedPlacesCopy = { ...savedPlaces };
+  //   savedPlacesCopy.places = currentTrip.itinerary.saved_places;
+  //   setSavedPlaces(savedPlacesCopy);
+  // }
   // }, [])
   // switch savedplaces to currentTrip.itinerary.saved_places
-  const [savedPlaces, setSavedPlaces] = useState({
-    places: [],
-    addresses: []
-  })
+  // const [savedPlaces, setSavedPlaces] = useState({
+  //   places: [],
+  //   addresses: []
+  // })
   // saved places operations
   const addToSavedPlaces = (place, convertFrom) => {
     let savedPlacesCopy = { ...savedPlaces }
+    let places = { ...tripState.itinerary.places }
     // if (convertFrom === "suggestedPlace") {
     //   let placeConverted = {
     //     address: place.formatted,
@@ -1106,14 +1107,19 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // [sidebar code] - needs to hide on mobile screens
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const expandSidebar = () => {
-    let logo = document.getElementById('sb-logoSpace')
+    // let logo = document.getElementById('sb-logoSpace')
+    let arrow = document.getElementById('arrow-icon');
+    let logoSpace = document.getElementById('sb-logoSpace');
     const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
     const sidebar = document.getElementById('itinerarySidebar')
-    sidebar.style.width = "300px"
-    sidebarPlaceholder.style.width = "300px"
-
+    sidebar.style.width = "260px"
+    sidebarPlaceholder.style.width = "260px"
+    
     wait(200).then(() => {
-      logo.style.width = "252px"
+      // logo.style.width = "252px"
+      arrow.classList.add("rotate-180");
+      // logoSpace.style.alignSelf = "flex-end";
+      logoSpace.style.marginRight = "0px";
       let expandItems = document.getElementsByClassName('sb-expanded')
       for (let i = 0; i < expandItems.length; i++) {
         expandItems[i].style.display = "block"
@@ -1122,16 +1128,21 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         })
       }
     })
-
+    
     setSidebarExpanded(true)
   }
   const collapseSidebar = () => {
-    let logo = document.getElementById('sb-logoSpace')
+    // let logo = document.getElementById('sb-logoSpace')
+    let arrow = document.getElementById('arrow-icon');
+    let logoSpace = document.getElementById('sb-logoSpace');
     let expandItems = document.getElementsByClassName('sb-expanded')
     const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
     const sidebar = document.getElementById('itinerarySidebar')
-    logo.style.width = "34px"
-
+    // logo.style.width = "34px"
+    arrow.classList.remove("rotate-180");
+    // logoSpace.style.alignSelf = "center";
+    logoSpace.style.marginRight = "10px";
+    
     for (let i = 0; i < expandItems.length; i++) {
       expandItems[i].classList.remove('show')
       wait(200).then(() => {
@@ -1139,8 +1150,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       })
     }
     wait(200).then(() => {
-      sidebar.style.width = "92px"
-      sidebarPlaceholder.style.width = "92px"
+      sidebar.style.width = "84px"
+      sidebarPlaceholder.style.width = "84px"
     })
     setSidebarExpanded(false)
   }
@@ -1342,11 +1353,16 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                 </div>
 
                 <div id='sb-logoSpace' className="logo-space">
-                  <div className="icon-cold">
+                  <div onClick={() => toggleSidebarExpanded()} className="open-arrow-icon pointer">
+                    <span id='arrow-icon' className="material-symbols-outlined darkpurple-text">
+                      arrow_forward
+                    </span>
+                  </div>
+                  {/* <div className="icon-cold">
                     <img onClick={() => toggleSidebarExpanded()} src="https://i.imgur.com/d2FMf3s.png" alt="" className="logo-icon" />
                   </div>
 
-                  <img src="https://i.imgur.com/Eu8Uf2u.png" alt="" className="text-logo-icon" />
+                  <img src="https://i.imgur.com/Eu8Uf2u.png" alt="" className="text-logo-icon" /> */}
 
                 </div>
 
@@ -1416,15 +1432,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                         const day = tripState.days[dayNum]
                         return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-column px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>
                           <p className="m-0">{day.day_short.toUpperCase()}</p>
-                          <p className="m-0">{day.date_short}</p> 
-                          </div>
+                          <p className="m-0">{day.date_short}</p>
+                        </div>
                       })}
-                      
+
 
                     </div>
                   </div>
                   {/* trip days end */}
-                      <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
+                  <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
 
                   <div className="itinerary-flow mt-3">
 

@@ -23,6 +23,7 @@ import MyTrips from './views/MyTrips'
 import OpenMapBox from './components/OpenMapBox'
 import PrintItineraryPage from './views/PrintItineraryPage'
 import { doc, getDoc } from 'firebase/firestore'
+import ProtectedRoute from './components/Privatizer/ProtectedRoute'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -50,11 +51,11 @@ function App() {
   }
 
   // [user preferences code]
-  useEffect(() => {
-    if (auth.currentUser) {
-      setPreferences()
-    }
-  }, [auth])
+  // useEffect(() => {
+  //   if (auth.currentUser) {
+  //     setPreferences()
+  //   }
+  // }, [auth])
   const setPreferences = async () => {
     let prefs = await getDoc(doc(firestore, `userPreferences/${auth.currentUser.uid}`))
     // console.log(prefs.data())
@@ -116,7 +117,7 @@ function App() {
       // console.log(userPreference)
       if (selected) {
         userPreferencesCount++
-        let resultPlaces = await getSuggestedPlaces(category);
+        // let resultPlaces = await getSuggestedPlaces(category);
         if (resultPlaces.length > 0) {
 
           for (let place of resultPlaces) {
@@ -194,10 +195,12 @@ function App() {
           <Route children path='/survey' element={<Survey />} />
           <Route children path='/survey-update' element={<SurveyUpdate />} />
           <Route children path='/dashboard' element={<Dashboard />} />
-          <Route children path='/add-places' element={<AddPlaces />} />
-          <Route children path='/add-places/suggested-places' element={<AddPlaces selectedPlacesListOnLoad={"Suggested Places"} />} />
-          <Route children path='/itinerary' element={<Itinerary />} />
-          <Route children path='/itinerary/suggested-places' element={<Itinerary selectedPlacesListOnLoad={"Suggested Places"} />} />
+
+          <Route children path='/add-places' element={<ProtectedRoute><AddPlaces /></ProtectedRoute>} />
+          <Route children path='/add-places/suggested-places' element={<ProtectedRoute><AddPlaces selectedPlacesListOnLoad={"Suggested Places"} /></ProtectedRoute>} />
+          <Route children path='/itinerary' element={<ProtectedRoute><Itinerary /></ProtectedRoute>} />
+          <Route children path='/itinerary/suggested-places' element={<ProtectedRoute><Itinerary selectedPlacesListOnLoad={"Suggested Places"} /></ProtectedRoute>} />
+          
           <Route children path='/mytrips' element={<MyTrips />} />
           <Route children path='/test' element={<Test />} />
           <Route children path='/map' element={<OpenMap />} />
