@@ -144,18 +144,18 @@ export const Dashboard = () => {
     ]);
     const [userTrips, setUserTrips] = useState(null)
     const resetPageOpen = () => {
-        setPageOpen(null)
+        setPageOpen(null);
     }
 
     useLayoutEffect(() => {
-        console.log(Object.entries(userPreferences))
-        console.log(auth.currentUser)
-        setPreferences()
-        setPageOpen('dashboard')
+        console.log(Object.entries(userPreferences));
+        console.log(auth.currentUser);
+        setPreferences();
+        setPageOpen('dashboard');
         return resetPageOpen;
     }, [])
     useEffect(() => {
-        console.log(userPreferences)
+        console.log(userPreferences);
     }, [userPreferences])
 
 
@@ -167,10 +167,10 @@ export const Dashboard = () => {
     }
 
     const loadUserTripsData = async () => {
-        setIsLoadingTrips(true)
-        let data = await getUserTripsData()
-        setUserTrips(data)
-        // console.log(data)
+        setIsLoadingTrips(true);
+        let data = await getUserTripsData();
+        setUserTrips(data);
+        // console.log(data);
         setIsLoadingTrips(false);
     }
 
@@ -178,22 +178,22 @@ export const Dashboard = () => {
     const [userPreferencesEmpty, setUserPreferencesEmpty] = useState(true);
     useEffect(() => {
         if (auth.currentUser) {
-            loadUserTripsData()
+            loadUserTripsData();
             // console.log(auth.currentUser.uid)
         }
-        console.log(userTrips)
-        console.log(userPreferences)
-        let userPreferencesBooleans = Object.values(userPreferences)
-        // console.log(userPreferencesBooleans)
-        let count = 0
+        console.log(userTrips);
+        console.log(userPreferences);
+        let userPreferencesBooleans = Object.values(userPreferences);
+        // console.log(userPreferencesBooleans);
+        let count = 0;
         for (let i = 0; i < userPreferencesBooleans.length; i++) {
-            console.log(userPreferencesBooleans[i])
+            console.log(userPreferencesBooleans[i]);
             if (userPreferencesBooleans[i] === true) {
                 count++
             }
         }
         setUserPreferencesCount(count);
-        console.log(count)
+        console.log(count);
     }, [])
     useEffect(() => {
         console.log("pref count = " + userPreferencesCount)

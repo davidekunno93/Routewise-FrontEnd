@@ -3457,6 +3457,7 @@ selection-box-landing.mobile {
 
 .itinerary-c2 {
   /* flex: 2; */
+  width: 508px;
 }
 
 .itinerary-c3 {
@@ -5400,12 +5401,11 @@ selection-box-landing.mobile {
 }
 
 .itinerary-sidebar-expanded {
-  width: 92px;
+  /* width: 92px; */
   width: 84px;
   padding: 16px 12px;
   box-sizing: border-box;
   background-color: #F0EFFF;
-  /* background-color: beige; */
   /* position: -webkit-sticky; */
   position: sticky;
   align-self: flex-start;
@@ -5413,7 +5413,7 @@ selection-box-landing.mobile {
   /* border-right: 1px solid white; */
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: center; */
   gap: 18px;
   font-weight: 500;
   transition: 0.4s;
@@ -5595,15 +5595,17 @@ selection-box-landing.mobile {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
+  justify-content: flex-end;
   gap: 12px;
   /* width: 252px;*/
-  width: 34px; 
+  width: 100%; 
   /* width: 84px; */
   /* margin-left: 14px; */
-  margin-right: 10px;
+  /* margin-right: 10px; */
   overflow: hidden;
   transition: 0.4s;
+  box-sizing: border-box;
   /* align-self: center; */
   transition-duration: 0.3s;
 }

@@ -214,13 +214,13 @@ const DataProvider = (props) => {
             let hour = systemDate.getHours().toString().length === 1 ? "0" + systemDate.getHours() : systemDate.getHours();
             let minutes = systemDate.getMinutes().toString().length === 1 ? "0" + systemDate.getMinutes() : systemDate.getMinutes();
             let timeConverted = hour+":"+minutes;
-            let dateConverted = month + "/" + day + "/" + fullYear
+            let dateConverted = month + "/" + day + "/" + fullYear;
             if (!dateOrTime || dateOrTime === "date") {
-                return dateConverted
+                return dateConverted;
             } else if (dateOrTime === "time") {
                 return timeConverted
             } else if (dateOrTime === "dateAndTime" || dateOrTime === "timeAndDate") {
-                return dateConverted+", "+timeConverted
+                return dateConverted+", "+timeConverted;
             }
         },
         datify: function (normalDate) {

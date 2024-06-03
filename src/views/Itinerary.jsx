@@ -968,13 +968,13 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // }
   // }, [])
   // switch savedplaces to currentTrip.itinerary.saved_places
-  // const [savedPlaces, setSavedPlaces] = useState({
-  //   places: [],
-  //   addresses: []
-  // })
+  const [savedPlaces, setSavedPlaces] = useState({
+    places: [],
+    addresses: []
+  })
   // saved places operations
   const addToSavedPlaces = (place, convertFrom) => {
-    let savedPlacesCopy = { ...savedPlaces }
+    let savedPlacesCopy = { ...savedPlaces };
     let places = { ...tripState.itinerary.places }
     // if (convertFrom === "suggestedPlace") {
     //   let placeConverted = {
@@ -1008,7 +1008,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     }
   }
   const printSavedPlaces = () => {
-    console.log(savedPlaces)
+    console.log(currentTrip.saved_places);
   }
   const removeFromSavedPlaces = (place) => {
     let savedPlacesCopy = { ...savedPlaces }
@@ -1120,6 +1120,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       arrow.classList.add("rotate-180");
       // logoSpace.style.alignSelf = "flex-end";
       logoSpace.style.marginRight = "0px";
+      // logoSpace.style.alignSelf = "center";
+      logoSpace.style.paddingRight = "0px";
+
       let expandItems = document.getElementsByClassName('sb-expanded')
       for (let i = 0; i < expandItems.length; i++) {
         expandItems[i].style.display = "block"
@@ -1141,7 +1144,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     // logo.style.width = "34px"
     arrow.classList.remove("rotate-180");
     // logoSpace.style.alignSelf = "center";
-    logoSpace.style.marginRight = "10px";
+    logoSpace.style.paddingRight = "16px";
     
     for (let i = 0; i < expandItems.length; i++) {
       expandItems[i].classList.remove('show')
@@ -1475,7 +1478,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                   <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
                   <div className="placeCards-itinerary">
-                    {tripState.saved_places.length > 0 ?
+                    {tripState.saved_places && tripState.saved_places.length > 0 ?
                       tripState.saved_places.map((placeId, index) => {
                         let savedPlace = tripState.places[placeId]
                         return <div key={index} className="placeCard2 flx-r position-relative">
