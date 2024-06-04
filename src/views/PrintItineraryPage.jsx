@@ -205,8 +205,8 @@ const PrintItineraryPage = () => {
                 }
                 <div className={`activity-body ${noPhotoMode && "noPhoto"} flx-3`}>
                   <div className="activity-name flx-8">
-                    <p className="place-name bold500">{tripTestData.places[placeId].placeName}</p>
-                    <p className="address gray-text small">{tripTestData.places[placeId].address}</p>
+                    <p className="place-name bold500">{tripState.places[placeId].placeName}</p>
+                    <p className="address gray-text small">{tripState.places[placeId].address}</p>
                   </div>
                   <div className="activity-checkbox flx-1">
                     <div className="span material-symbols-outlined">

@@ -248,7 +248,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                 info: placeInfo,
                 address: place.place_name.split(", ").slice(1, -1).join(", "),
                 imgURL: imgUrl,
-                category: place.properties.category,
+                category: place.properties.category.length > 32 ? place.properties.category.split(", ")[0] : place.properties.category,
                 favorite: false,
                 lat: place.geometry.coordinates[1],
                 long: place.geometry.coordinates[0],
