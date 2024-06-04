@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
+import { Link } from 'react-router-dom';
 
 const PrintItineraryPage = () => {
-  const { repeatItems, timeFunctions } = useContext(DataContext);
+  const { repeatItems, timeFunctions, currentTrip } = useContext(DataContext);
   const tripTestData = {
     tripID: "",
     places_last: 8,
@@ -149,25 +150,31 @@ const PrintItineraryPage = () => {
     },
     "day_order": ["day-1", "day-2", "day-3", "day-4"]
   }
+  const tripState = currentTrip.itinerary ?? tripTestData;
 
   const itineraryDetails = {
     destination: "London",
     duration: "4",
-    arrival: "06/12/2024",
-    departure: "06/15/2024",
+    arrival: "2024-06-12",
+    departure: "2024-06-15",
   }
 
+
   const [noPhotoMode, setNoPhotoMode] = useState(false);
+
+  const printCurrentTrip = () => {
+    console.log(currentTrip);
+  }
 
   return (
     <div className="page-container90">
       <div className="printItinerary-banner">
-        <div className="title-imgDiv">
-          <img src="" alt="*country-flag*" className="title-img" />
+        <div className="title-imgDiv mr-3">
+          <img src={currentTrip.imgUrl ?? ""} alt="*country-flag*" className="img-smedium" style={{ borderRadius: "4px" }}/>
         </div>
-        <div className="title-text flx-c">
-          <p className="m-0 page-subheading-bold">"Name of Trip" Travel Itinerary</p>
-          <p className="m-0 large gray-text">{timeFunctions.datify(itineraryDetails.arrival)} - {timeFunctions.datify(itineraryDetails.departure)} &nbsp; &bull; &nbsp; {itineraryDetails.duration} days</p>
+        <div onClick={() => printCurrentTrip()} className="title-text flx-c">
+          <p className="m-0 page-subheading-bold">{currentTrip.tripName ?? "-Name of Trip-"} Travel Itinerary</p>
+          <p className="m-0 large gray-text">{timeFunctions.datify(timeFunctions.datiundash(currentTrip.startDate ?? itineraryDetails.arrival))} - {timeFunctions.datify(timeFunctions.datiundash(currentTrip.endDate ?? itineraryDetails.arrival))} &nbsp; &bull; &nbsp; {currentTrip.tripDuration ?? "5"} days</p>
         </div>
         <div className="toggleNoPhoto position-right">
           <button onClick={() => setNoPhotoMode(noPhotoMode => !noPhotoMode)} className="btn-primaryflex">Toggle no photo</button>
@@ -176,25 +183,25 @@ const PrintItineraryPage = () => {
 
       <div className="dayBoxes">
 
-        {Object.values(tripTestData.days).map((day, id) => {
+        {Object.values(tripState.days).map((day, id) => {
           let dayNumber = day.id.split("-")[1]
           return <div className="dayBox">
             {noPhotoMode ?
               <div className="title-row">
-                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()} - {day.dayName.toUpperCase()}</p></div>
+                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()}{ day.dayName && " - "+day.dayName.toUpperCase()}</p></div>
               </div>
               :
               <div className="title-row">
                 <div className="day-number flx-1"><p className="">DAY {dayNumber}</p></div>
-                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()} - {day.dayName.toUpperCase()}</p></div>
+                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()}{ day.dayName && " - "+day.dayName.toUpperCase()}</p></div>
               </div>
             }
             {day.placeIds.map((placeId, index) => {
               return <div key={index} className={`activity-row ${noPhotoMode && "noPhoto"}`}>
                 {!noPhotoMode &&
-                <div className="activity-imgDiv flx-1">
-                  <img src={tripTestData.places[placeId].imgURL} alt="" className="activity-img" />
-                </div>
+                  <div className="activity-imgDiv flx-1">
+                    <img src={tripState.places[placeId].imgURL} alt="" className="activity-img" />
+                  </div>
                 }
                 <div className={`activity-body ${noPhotoMode && "noPhoto"} flx-3`}>
                   <div className="activity-name flx-8">
@@ -209,29 +216,12 @@ const PrintItineraryPage = () => {
                 </div>
               </div>
             })}
-            {/* <div className="activity-row">
-              <div className="activity-img flx-1">*IMG*</div>
-              <div className="activity-name flx-3">
-                <p className="place-name">Destination Name</p>
-                <p className="address gray-text small">Destination Address</p>
-                </div>
-            </div> */}
+
           </div>
         })}
-
-
-        {/* <div className="dayBox">
-          <div className="title-row">
-            <div className="day-number flx-1"><p className="">DAY 01</p></div>
-            <div className="day-name flx-3"><p className="">CHILL DAY</p></div>
-          </div>
-          <div className="activity-row">
-            <div className="activity-img flx-1">*IMG*</div>
-            <div className="activity-name flx-3"><p className="">Destination Name</p></div>
-          </div>
-        </div> */}
-
-
+        <div className="page-footer mt-6">
+          <Link to='/itinerary'><button className="btn-primaryflex">Back to Itinerary</button></Link>
+        </div>
 
       </div>
     </div>

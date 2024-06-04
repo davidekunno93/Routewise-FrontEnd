@@ -5602,7 +5602,7 @@ selection-box-landing.mobile {
   width: 100%; 
   /* width: 84px; */
   /* margin-left: 14px; */
-  /* margin-right: 10px; */
+  padding-right: 16px;
   overflow: hidden;
   transition: 0.4s;
   box-sizing: border-box;

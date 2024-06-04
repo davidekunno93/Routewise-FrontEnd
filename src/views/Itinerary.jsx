@@ -1118,9 +1118,6 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     wait(200).then(() => {
       // logo.style.width = "252px"
       arrow.classList.add("rotate-180");
-      // logoSpace.style.alignSelf = "flex-end";
-      logoSpace.style.marginRight = "0px";
-      // logoSpace.style.alignSelf = "center";
       logoSpace.style.paddingRight = "0px";
 
       let expandItems = document.getElementsByClassName('sb-expanded')
@@ -1143,7 +1140,6 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     const sidebar = document.getElementById('itinerarySidebar')
     // logo.style.width = "34px"
     arrow.classList.remove("rotate-180");
-    // logoSpace.style.alignSelf = "center";
     logoSpace.style.paddingRight = "16px";
     
     for (let i = 0; i < expandItems.length; i++) {
@@ -1393,10 +1389,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                       <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
                       <span onClick={() => setTripNameIsUpdating(true)} className={`material-symbols-outlined large gains-text pointer ${tripNameIsUpdating && "d-none"}`}>edit</span>
                     </div>
-                    <button className="btn-primary-small align-all-items gap-2 position-right">
+                    <Link to='/print-itinerary' className='position-right'><button className="btn-primary-small align-all-items gap-2">
                       <span className="material-symbols-outlined white-text small">share</span>
                       Share
-                    </button>
+                    </button></Link>
                   </div>
                   {/* calendar edit */}
                   <div className="calendar-edit border-bottom-gains flx-r pb-2 align-c gap-2">
@@ -1902,7 +1898,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
           {/* Completion buttons */}
           < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
             <Link to='/dashboard'><button className="btn-outlineflex large center-text mx-2">Back to Dashboard</button></Link>
-            <button className="btn-primaryflex w-2h large center-text mx-2">Share Itinerary</button>
+            <Link to='/print-itinerary'><button className="btn-primaryflex w-2h large center-text mx-2">Share Itinerary</button></Link>
           </div >
           {/* End Completion buttons */}
 
