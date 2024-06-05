@@ -176,7 +176,7 @@ RESPONSIVE
 ***scroll days in tripinfo horizontally (make dates)
 <!-- re-center map on click of itinerary place -->
 <!-- CANNOT DRAG N DROP PLACES IN NEW DAYS - NOT UPDATING -->
-***l'musee locations working??? (Waiting for meetup w/ Kate)
+<!-- ***l'musee locations working??? (Waiting for meetup w/ Kate) -->
 <!-- ***"no category" on itinerary place cards - categories weren't saved, only place info, new places added should have categories now -->
 <!-- center routewise bird on navbar -->
 
@@ -196,7 +196,7 @@ nametripmodal make loadcityimg function come from context api
 <!-- With Kate -->
 <!-- **generate itinerary object has place['local_id']s instead of place['id']s (Kate) -->
 **saved places need to be returned in itinerary object when viewing already made trip (Kate).. 
-***l'musee locations working??? (Waiting for meetup w/ Kate)
+<!-- ***l'musee locations working??? (Waiting for meetup w/ Kate) -->
 Adjust FE code to receive saved_places as list of placeIds!
 <!-- **Pass code code -->
 Build test environment page for Kate's functions
@@ -207,7 +207,7 @@ serialized_places[given_id].in_itinerary = True
 
 
 03Jun24 Team Meeting
-***l'musee locations working??? (Waiting for meetup w/ Kate) (e.g. Palais-Royal [Art museums??])
+<!-- ***l'musee locations working??? (Waiting for meetup w/ Kate) (e.g. Palais-Royal [Art museums??]) -->
 ***trips in order of activity OR most upcoming trips, then past trips
 ***delete trip on mytrips and dashboard?
-***print itinerary navigation causes error "placeName" key?
+<!-- ***print itinerary navigation causes error "placeName" key? -->

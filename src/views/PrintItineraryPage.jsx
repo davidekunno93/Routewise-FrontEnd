@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
 import { Link } from 'react-router-dom';
 
@@ -166,18 +166,36 @@ const PrintItineraryPage = () => {
     console.log(currentTrip);
   }
 
+  useEffect(() => {
+    window.addEventListener('scroll', checkScrollY, true);
+    return () => window.removeEventListener('scroll', checkScrollY, true);
+  }, []);
+  const BtnrowRef = useRef(null);
+  const checkScrollY = () => {
+    if (window.scrollY >= 100) {
+      // console.log("you have reached your destination");
+      if (BtnrowRef.current) {
+        // console.log(BtnrowRef.current.classList);
+        BtnrowRef.current.classList.add("hidden");
+      } 
+    } else {
+        BtnrowRef.current.classList.remove("hidden");
+      }
+  };
+
   return (
-    <div className="page-container90">
+    <div className="printItinerary-page-container">
+      <div ref={BtnrowRef} className="btn-row flx-r gap-3 mt-4">
+        <Link to='/itinerary'><button className="btn-primaryflex small">Back to Itinerary</button></Link>
+        <button onClick={() => setNoPhotoMode(noPhotoMode => !noPhotoMode)} className="btn-outlineflex small">Toggle no photo</button>
+      </div>
       <div className="printItinerary-banner">
         <div className="title-imgDiv mr-3">
-          <img src={currentTrip.imgUrl ?? ""} alt="*country-flag*" className="img-smedium" style={{ borderRadius: "4px" }}/>
+          <img src={currentTrip.imgUrl ?? ""} alt="*country-flag*" className="img-smedium" style={{ borderRadius: "4px" }} />
         </div>
         <div onClick={() => printCurrentTrip()} className="title-text flx-c">
-          <p className="m-0 page-subheading-bold">{currentTrip.tripName ?? "-Name of Trip-"} Travel Itinerary</p>
+          <p className="m-0 page-subsubheading-bold">{currentTrip.tripName ?? "-Name of Trip-"} Travel Itinerary</p>
           <p className="m-0 large gray-text">{timeFunctions.datify(timeFunctions.datiundash(currentTrip.startDate ?? itineraryDetails.arrival))} - {timeFunctions.datify(timeFunctions.datiundash(currentTrip.endDate ?? itineraryDetails.arrival))} &nbsp; &bull; &nbsp; {currentTrip.tripDuration ?? "5"} days</p>
-        </div>
-        <div className="toggleNoPhoto position-right">
-          <button onClick={() => setNoPhotoMode(noPhotoMode => !noPhotoMode)} className="btn-primaryflex">Toggle no photo</button>
         </div>
       </div>
 
@@ -186,20 +204,15 @@ const PrintItineraryPage = () => {
         {Object.values(tripState.days).map((day, id) => {
           let dayNumber = day.id.split("-")[1]
           return <div className="dayBox">
-            {noPhotoMode ?
-              <div className="title-row">
-                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()}{ day.dayName && " - "+day.dayName.toUpperCase()}</p></div>
-              </div>
-              :
-              <div className="title-row">
-                <div className="day-number flx-1"><p className="">DAY {dayNumber}</p></div>
-                <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()}{ day.dayName && " - "+day.dayName.toUpperCase()}</p></div>
-              </div>
-            }
+
+            <div className="title-row">
+              <div className="day-name flx-3"><p className="">DAY {dayNumber}: {day.date_converted.toUpperCase()}{day.dayName && " - " + day.dayName.toUpperCase()}</p></div>
+            </div>
+
             {day.placeIds.map((placeId, index) => {
               return <div key={index} className={`activity-row ${noPhotoMode && "noPhoto"}`}>
                 {!noPhotoMode &&
-                  <div className="activity-imgDiv flx-1">
+                  <div className="activity-imgDiv">
                     <img src={tripState.places[placeId].imgURL} alt="" className="activity-img" />
                   </div>
                 }
@@ -220,7 +233,7 @@ const PrintItineraryPage = () => {
           </div>
         })}
         <div className="page-footer mt-6">
-          <Link to='/itinerary'><button className="btn-primaryflex">Back to Itinerary</button></Link>
+          <Link to='/itinerary'><button className="btn-primaryflex small">Back to Itinerary</button></Link>
         </div>
 
       </div>

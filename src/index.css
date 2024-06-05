@@ -6546,7 +6546,11 @@ selection-box-landing.mobile {
 .itinerary-details .detail p {
   color: white;
 }
-
+.printItinerary-page-container {
+  width: 90%;
+  margin: auto;
+  max-width: 600px;
+}
 .dayBoxes {
   margin: 32px 0px;
   /* margin: 40px 0px;
@@ -6569,6 +6573,7 @@ selection-box-landing.mobile {
   flex-direction: row;
   gap: 24px;
   height: 60px;
+  height: 46px;
 }
 
 .day-number {
@@ -6593,6 +6598,7 @@ selection-box-landing.mobile {
 
 .day-name p {
   font-size: large;
+  font-size: 14px;
   /* margin: auto; */
   padding-left: 24px;
   text-align: center;
@@ -6602,7 +6608,8 @@ selection-box-landing.mobile {
 
 .activity-row {
   flex-direction: row;
-  height: 112px;
+  height: 120px;
+  height: 57.5px;
   display: flex;
   flex-direction: row;
   margin: 12px 0px;
@@ -6610,13 +6617,15 @@ selection-box-landing.mobile {
 }
 
 .activity-row.noPhoto {
-  height: 56px;
+  /* height: 56px; */
 }
 
 .activity-imgDiv {
   overflow: hidden;
   border-radius: 12px;
   /* padding: 4px; */
+  width: 160px;
+  width: 78px;
 }
 
 .activity-img {
@@ -6650,10 +6659,12 @@ selection-box-landing.mobile {
 
 .activity-name .place-name {
   font-size: 22px;
+  font-size: 14px;
 }
 
 .activity-name .address {
   font-size: 16px;
+  font-size: 12px;
 }
 
 .activity-checkbox {
@@ -6663,7 +6674,8 @@ selection-box-landing.mobile {
 }
 
 .activity-checkbox .material-symbols-outlined {
-  font-size: xx-large;
+  font-size: 36px;
+  color: gray;
 }
 
 
