@@ -200,7 +200,7 @@ nametripmodal make loadcityimg function come from context api
 Adjust FE code to receive saved_places as list of placeIds!
 <!-- **Pass code code -->
 Build test environment page for Kate's functions
-saved_places route
+<!-- saved_places route -->
 CHANGING TRIP FROM MYTRIPS UPDATES ITINERARY?
 
 serialized_places[given_id].in_itinerary = True
@@ -208,6 +208,11 @@ serialized_places[given_id].in_itinerary = True
 
 03Jun24 Team Meeting
 <!-- ***l'musee locations working??? (Waiting for meetup w/ Kate) (e.g. Palais-Royal [Art museums??]) -->
-***trips in order of activity OR most upcoming trips, then past trips
-***delete trip on mytrips and dashboard?
+<!-- ***trips in order of activity OR most upcoming trips, then past trips -->
+<!-- ***delete trip on mytrips and dashboard? -->
 <!-- ***print itinerary navigation causes error "placeName" key? -->
+
+updates
+delete trip from mytrips page
+trips in order of upcoming on dashboard
+saved places displayed after generating itinerary or viewing old itinerary

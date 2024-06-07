@@ -116,6 +116,7 @@ export const Dashboard = () => {
     const { userPreferences, setPreferences } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
+    const { timeFunctions } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
@@ -169,8 +170,40 @@ export const Dashboard = () => {
     const loadUserTripsData = async () => {
         setIsLoadingTrips(true);
         let data = await getUserTripsData();
-        setUserTrips(data);
+        // setUserTrips(data);
         // console.log(data);
+
+        let upcomingTripsArr = []
+            let pastTripsArr = []
+            // sort trips into past and upcoming
+            if (data && data.length > 0) {
+                for (let i = 0; i < data.length; i++) {
+                    // let endDate = data[i].end_date
+                    // let yday = new Date(new Date().valueOf() - 1000*60*60*24)
+                    // console.log("trip end date:", new Date(datiundash(endDate)))
+                    if (new Date(timeFunctions.datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
+                        upcomingTripsArr.push(data[i])
+                    } else {
+                        pastTripsArr.push(data[i])
+                    }
+                }
+                
+                upcomingTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(a.start_date)) - new Date(timeFunctions.datiundash(b.start_date)))
+                pastTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(b.start_date)) - new Date(timeFunctions.datiundash(a.start_date)))
+                const allTripsArr = upcomingTripsArr.concat(pastTripsArr);
+                // console.log(allTripsArr)
+                setUserTrips(allTripsArr);
+                // sort upcoming trips from old to future
+                // add past trips ordered from new to old
+                // the page will grab the first ~5 trips
+
+
+                // console.log("past Trips", pastTripsArr)
+                // console.log("upcoming Trips", upcomingTripsArr)
+            }
+
+
+
         setIsLoadingTrips(false);
     }
 

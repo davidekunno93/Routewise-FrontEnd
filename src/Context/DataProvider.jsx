@@ -252,7 +252,88 @@ const DataProvider = (props) => {
             let month = dashDate.slice(5, 7)
             let day = dashDate.slice(8)
             return month + "/" + day + "/" + fullyear
-        }
+        },
+        daytoDate: function (days) {
+            const year = new Date().getFullYear();
+            const isLeapYear = year % 4 === 0;
+            const totalDays = isLeapYear ? 366 : 365;
+            if (days > totalDays) {
+                return "Too many days"
+            } else if (days < 0) {
+                return "Number of days must be positive"
+            }
+            const months = {
+                "01": 31,
+                "02": isLeapYear ? 29 : 28,
+                "03": 31,
+                "04": 30,
+                "05": 31,
+                "06": 30,
+                "07": 31,
+                "08": 31,
+                "09": 30,
+                "10": 31,
+                "11": 30,
+                "12": 31,
+            };
+            // if days is less than or equal to month days then stop 
+            const monthArr = Object.entries(months).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+            for (let i=0; i<monthArr.length; i++) {
+                const monthNum = monthArr[i][0];
+                const monthDays = monthArr[i][1];
+                if (days > monthDays) {
+                    days -= monthDays;
+                } else {
+                    const dayOfTheMonth = days.toString().length === 2 ? days.toString() : "0"+days.toString();
+                    const monthOfTheYear = monthNum;
+                    return dayOfTheMonth+"/"+monthOfTheYear+"/"+year.toString();
+                }
+            }
+            return "Function should never reach this point"
+        },
+        dateToDay: function (date) {
+            // this func doesn't validate the date exists i.e. 01/32/2024 would take
+            const year = new Date().getFullYear();
+            const isLeapYear = year % 4 === 0;
+            const dateMonth = date.slice(3, 5);
+            const dateDays = parseInt(date.slice(0, 2));
+            let days = 0;
+            const months = {
+                "01": 31,
+                "02": isLeapYear ? 29 : 28,
+                "03": 31,
+                "04": 30,
+                "05": 31,
+                "06": 30,
+                "07": 31,
+                "08": 31,
+                "09": 30,
+                "10": 31,
+                "11": 30,
+                "12": 31,
+            };
+            const monthArr = Object.entries(months).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+            for (let i=0; i<monthArr.length; i++) {
+                const monthNum = monthArr[i][0];
+                const monthDays = monthArr[i][1];
+                if (dateMonth === monthNum) {
+                    // add days from date
+                    days += dateDays;
+                    // stop
+                    break;
+                } else {
+                    // add monthDays
+                    days += monthDays;
+                };
+            };
+            return days;
+        },
+        addDays: function (date, days) {
+            let yearDay = dateToDay(date);
+            yearDay += days; 
+            date = dayToDate(yearDay);
+            return date;
+        },
     }
     const mapBoxCategoryKey = {
         landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions", imgUrl: 'https://i.imgur.com/nixatab.png'},

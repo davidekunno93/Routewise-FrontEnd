@@ -12,53 +12,14 @@ const MyTrips = () => {
     const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
     const { mobileMode } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
+    const { timeFunctions } = useContext(DataContext);
     const [userTrips, setUserTrips] = useState([])
     const [upcomingTrips, setUpcomingTrips] = useState(null);
     const [pastTrips, setPastTrips] = useState(null);
     const [publishedTrips, setPublishedTrips] = useState(null);
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     const navigate = useNavigate()
-    // date functions
-    const datinormal = (systemDate) => {
-        let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
-        let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
-        if (month.toString().length === 1) {
-            month = "0" + month
-        }
-        // console.log(month)
-        let fullYear = systemDate.getFullYear()
-        // console.log(month+"/"+day+"/"+fullYear)
-        return month + "/" + day + "/" + fullYear
-    }
-    const datify = (normalDate) => {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        let day = normalDate.slice(3, 5)
-        let monthNum = normalDate.slice(0, 2)
-        if (monthNum.charAt(0) === "0") {
-            monthNum = monthNum[1]
-        }
-        let fullYear = normalDate.slice(6)
-        const month = months[monthNum - 1]
-        if (day.charAt(0) === "0") {
-            day = day[1]
-        }
-        let twoYear = fullYear.slice(2)
-        return month + " " + day + ", " + twoYear
-    }
-    // from slash or normal date to dash date
-    const datidash = (mmddyyyy) => {
-        let year = mmddyyyy.slice(6)
-        let month = mmddyyyy.slice(0, 2)
-        let day = mmddyyyy.slice(3, 5)
-        return year + "-" + month + "-" + day
-    }
-    // from dash date to slash or normal date
-    const datiundash = (dashDate) => {
-        let fullyear = dashDate.slice(0, 4)
-        let month = dashDate.slice(5, 7)
-        let day = dashDate.slice(8)
-        return month + "/" + day + "/" + fullyear
-    }
+    
     const resetPageOpen = () => {
         setPageOpen(null)
     }
@@ -97,7 +58,7 @@ const MyTrips = () => {
                     // let endDate = data[i].end_date
                     // let yday = new Date(new Date().valueOf() - 1000*60*60*24)
                     // console.log("trip end date:", new Date(datiundash(endDate)))
-                    if (new Date(datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
+                    if (new Date(timeFunctions.datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
                         upcomingTripsArr.push(data[i])
                     } else {
                         pastTripsArr.push(data[i])
@@ -288,6 +249,19 @@ const MyTrips = () => {
         popUp.classList.toggle('hidden-o')
     }
 
+    const deleteTrip = (trip) => {
+        let url = `https://routewise-backend.onrender.com/places/delete-trip/${trip.trip_id}`
+        const response = axios.delete(url)
+            .then((response) => {
+                console.log(response.data)
+                loadUserTripsData()
+                closeUserTripPopup()
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+    
 
 
     // date change code

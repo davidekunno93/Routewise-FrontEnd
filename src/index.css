@@ -3152,6 +3152,16 @@ p {
   margin-top: 0px;
 }
 
+.body-category {
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 400;
+  font-size: 12px;
+  color: rgb(180, 180, 180);
+  overflow: hidden;
+  margin: 0;
+  margin-bottom: 12px;
+  padding: 0;
+}
 .body-address {
   font-family: 'Plus Jakarta Sans';
   font-weight: 400;
@@ -4669,6 +4679,14 @@ selection-box-landing.mobile {
   padding-right: 10px;
 }
 
+.py-2 {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.py-2h {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
 .py-3 {
   padding-top: 15px;
   padding-bottom: 15px;

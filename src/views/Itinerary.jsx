@@ -974,8 +974,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   })
   // saved places operations
   const addToSavedPlaces = (place, convertFrom) => {
-    let savedPlacesCopy = { ...savedPlaces };
-    let places = { ...tripState.itinerary.places }
+    let tripStateCopy = { ...tripState }
+    let placesLast = tripStateCopy.itinerary.placesLast;
     // if (convertFrom === "suggestedPlace") {
     //   let placeConverted = {
     //     address: place.formatted,
@@ -991,13 +991,19 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     //   }
     //   place = placeConverted
     // }
-    place = { ...place, favorite: false }
+    place = { ...place, favorite: false, id: placesLast + 1, day_id: null };
+    tripStateCopy.itinerary.places[placesLast + 1] = place;
+    tripStateCopy.itinerary.saved_places.placesIds.append(place.id)
+    tripStateCopy.itinerary.saved_places.addresses.append(place.address)
+    // send added place change to db - need add to saved places route
 
-    if (!savedPlaces.addresses.includes(place.address)) {
-      savedPlacesCopy.places.push(place)
-      savedPlacesCopy.addresses.push(place.address)
-    }
-    setSavedPlaces(savedPlacesCopy)
+    setTripState(tripStateCopy);
+
+    // if (!savedPlaces.addresses.includes(place.address)) {
+    //   savedPlacesCopy.places.push(place)
+    //   savedPlacesCopy.addresses.push(place.address)
+    // }
+    // setSavedPlaces(savedPlacesCopy)
   }
   const toggleSavedPlaces = (place) => {
     let savedPlacesCopy = { ...savedPlaces }
@@ -1474,8 +1480,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                   <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
                   <div className="placeCards-itinerary">
-                    {tripState.saved_places && tripState.saved_places.length > 0 ?
-                      tripState.saved_places.map((placeId, index) => {
+                    {tripState.saved_places && tripState.saved_places.placesIds.length > 0 ?
+                      tripState.saved_places.placesIds.map((placeId, index) => {
                         let savedPlace = tripState.places[placeId]
                         return <div key={index} className="placeCard2 flx-r position-relative">
                           <div className="placeCard-img-div flx-3">
@@ -1485,9 +1491,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                             {/* <div className="popUp d-none">{savedPlace.info}</div> */}
                             <p className="body-title ">{savedPlace.placeName}</p>
                             {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{savedPlace.info}</p> */}
+                            <p className="body-category">{savedPlace.category ?? "No category"}</p>
                             <p className="body-address">{savedPlace.address}</p>
                           </div>
-                          <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                          <div className="placeCard-starOrDelete py-2h flx-c just-sb align-c">
                             <span className="material-symbols-outlined gray-text">
                               more_vert
                             </span>
