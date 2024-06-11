@@ -598,7 +598,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       // let placeInfo = await loadPlaceDetails(place.place_id)
       let placeInfo = "";
 
-      let placeCategory = place.properties.category ?? "No Category";
+      let placeCategory = placeObj.properties.category ?? "No Category";
 
       newPlace = {
         placeName: placeObj.text,
