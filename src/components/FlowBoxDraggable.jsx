@@ -6,7 +6,7 @@ import { SearchPlace } from './SearchPlace';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 
 
-const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, recenterMap: updateMapCenter }) => {
+const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
 
     const [dayTitle, setDayTitle] = useState('')
 
@@ -83,7 +83,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                                     <Draggable key={place.id} draggableId={`${place.id}`} index={i} >
                                         {(draggableProvided, draggableSnapshot) => (
                                             <div ref={draggableProvided.innerRef} {...draggableProvided.draggableProps} {...draggableProvided.dragHandleProps} key={i}>
-                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} recenterMap={updateMapCenter} />
+                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} updateMapCenter={updateMapCenter} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved}  isSavedPlace={isSavedPlace} />
                                             </div>
                                         )}
 

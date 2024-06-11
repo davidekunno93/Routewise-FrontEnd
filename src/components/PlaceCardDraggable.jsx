@@ -1,6 +1,6 @@
 import React, { useDebugValue, useEffect, useRef, useState } from 'react'
 
-export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, recenterMap: updateMapCenter }) => {
+export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
     // PLACE CARD TITLE ELLIPSIS RE-RENDER CODE
     // const cardBodyRef = useRef(null);
     // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
@@ -23,6 +23,26 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
     //     }
     // }, [])
 
+    const openDropdown = (dayId, id) => {
+        const dropdown = document.getElementById(`itineraryPlaceCardDropdown-${dayId + "-" + id}`);
+        const btn = document.getElementById(`itineraryPlaceCardDropper-${dayId + "-" + id}`)
+        btn.classList.add("pressed");
+        dropdown.classList.replace("hidden", "shown");
+    }
+    const closeDropdown = (dayId, id) => {
+        const dropdown = document.getElementById(`itineraryPlaceCardDropdown-${dayId + "-" + id}`);
+        const btn = document.getElementById(`itineraryPlaceCardDropper-${dayId + "-" + id}`)
+        btn.classList.remove("pressed");
+        dropdown.classList.replace("shown", "hidden");
+    }
+    const toggleDropdown = (dayId, id) => {
+        const btn = document.getElementById(`itineraryPlaceCardDropper-${dayId + "-" + id}`)
+        if (btn.classList.contains("pressed")) {
+            closeDropdown(dayId, id);
+        } else {
+            openDropdown(dayId, id);
+        }
+    }
 
     const isDraggingStyle = {
         borderColor: "#6663FC",
@@ -57,13 +77,34 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     <p className="body-info">{place.category ? place.category.split(",")[0].charAt(0).toUpperCase() + place.category.split(",")[0].slice(1) : "No category"}</p>
                     <p className="body-address">{place.address}</p>
                 </div>
-                <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                <div className="placeCard-options flx-c just-sb align-c">
                     {/* <img src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" /> */}
                     {/* <img src="https://i.imgur.com/HkwkRjn.png" alt="" className={`star-full my-2 ${place.favorite ? null : "hidden"}`} /> */}
-                    <span className="material-symbols-outlined my-2 o-50">
+                    <div id={`itineraryPlaceCardDropdown-${dayId + "-" + id}`} className="placeCard-menu itinerary hidden">
+                        <div onClick={() => { addPlaceToConfirm(place); closeDropdown(dayId, id) }} className="option">
+                            <div className="material-symbols-outlined icon">location_on</div>
+                            <p className="m-0 text">View on map</p>
+                        </div>
+                        {isSavedPlace(place.address) ?
+                            <div className="option-cold">
+                                <div className="material-symbols-outlined icon lightgray-text">bookmark</div>
+                                <p className="m-0 text lightgray-text">Already in Saved Places</p>
+                            </div>
+                            :
+                            <div onClick={() => itineraryToSaved(dayId, place.id)} className="option">
+                                <div className="material-symbols-outlined icon">bookmark</div>
+                                <p className="m-0 text">Move to Saved Places</p>
+                            </div>
+                        }
+                        <div onClick={() => removePlace(dayId, place.id)} className="option">
+                            <div className="material-symbols-outlined icon red-text">delete</div>
+                            <p className="m-0 text red-text">Remove place</p>
+                        </div>
+                    </div>
+                    <span id={`itineraryPlaceCardDropper-${dayId + "-" + id}`} onClick={() => toggleDropdown(dayId, id)} className="material-symbols-outlined mt-2 o-50 pointer more_vert">
                         more_vert
                     </span>
-                    <span onClick={() => removePlace(dayId, place.id)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer position-bottom">
+                    <span onClick={() => removePlace(dayId, place.id)} className="material-symbols-outlined mx- mb-2 onHover-50 pointer position-bottom">
                         delete
                     </span>
                 </div>

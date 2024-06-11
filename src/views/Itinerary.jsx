@@ -15,6 +15,7 @@ import DaySelected from '../components/DaySelected'
 import { DataContext } from '../Context/DataProvider'
 import { Loading } from '../components/Loading'
 import OpenMapBox from '../components/OpenMapBox'
+import DaySelector from '../components/DaySelector'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -294,26 +295,159 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       }
 
     },
+    saved_places: {
+      placesIds: [],
+      addresses: []
+    },
     "day_order": ["day-1", "day-2", "day-3", "day-4"]
   }
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
 
   const placeFuntions = {
-    addPlace: function (dayNum, place) {
+    addPlace: async function (dayNum, placeObj) {
+      let tripStateCopy = { ...tripState };
+      // add local id
+      let place = { ...placeObj, id: parseInt(tripStateCopy.places_last) + 1 }
+
+      if (tripStateCopy.trip_id) {
+        // send place details to Kate for db update - return db place_id
+        let data = {
+          place: place,
+          day_id: place.day_id
+        }
+        console.log("sendPlace: ", place)
+        const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${tripStateCopy.trip_id}`, JSON.stringify(data), {
+          headers: { "Content-Type": "application/json" }
+        }).then((response) => {
+          // console.log(response.status)
+          let db_place_id = response.data
+
+          // remove lightbulb key
+          if (place.lightbulb_days) {
+            delete place.lightbulb_days
+          }
+
+          // add db place id
+          tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
+            ...place,
+            place_id: db_place_id //
+          }
+
+
+          tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
+          tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
+          setTripState(tripStateCopy)
+          // confirmPlaceAdded(modifier)
+        }).catch((error) => {
+          console.log(error)
+        })
+      } else {
+        // we're in playground mode i.e. using test place objects on default itinerary page
+
+        // key made for lightbulb icon purposes only - indicating day w closest activities, can delete now
+        if (place.lightbulb_days) {
+          delete place.lightbulb_days
+        }
+
+        tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = place;
+
+        tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
+        tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
+        setTripState(tripStateCopy)
+        // confirmPlaceAdded(modifier)
+      }
+    },
+    addPlaceToConfirm: function (placeObj) {
 
     },
-    addPlaceToConfirm: function (place) {
+    addToSavedPlaces: function (placeObj) {
+      let tripStateCopy = { ...tripState }
+      let placesLast = tripStateCopy.places_last;
+
+      placeObj = { ...placeObj, favorite: false, id: placesLast + 1, day_id: null };
+      tripStateCopy.places[placesLast + 1] = placeObj;
+      tripStateCopy.places_last = placesLast + 1;
+      tripStateCopy.saved_places.placesIds.push(placeObj.id)
+      tripStateCopy.saved_places.addresses.push(placeObj.address)
+      // send added place change to db - need add to saved places route
+
+      setTripState(tripStateCopy);
+    },
+    deletePlace: function (placeObj) {
 
     },
-    addToSavedPlaces: function (place) {
+    updatePlaceDay: function (dayNum, placeObj) {
 
     },
-    deletePlace: function (place) {
-
+    toggleSavedPlaces: function (placeObj) {
+      let tripStateCopy = { ...tripState };
+      if (isSavedPlace(placeObj.address)) {
+        for (let tripPlace of Object.values(tripStateCopy.places)) {
+          if (placeObj.address === tripPlace.address) {
+            placeObj = tripPlace;
+          }
+        }
+        let index = tripStateCopy.saved_places.addresses.indexOf(placeObj.address);
+        let placeId = tripStateCopy.saved_places.placesIds[index];
+        removeFromSavedPlaces(placeObj.id);
+      } else {
+        addToSavedPlaces(placeObj);
+      }
     },
-    updatePlaceDay: function (dayNum, place) {
+    isSavedPlace: function (placeOrAddress) {
+      let address = "";
+      if (typeof placeOrAddress === "object") {
+        address = placeOrAddress.address;
+      } else if (typeof placeOrAddress === "string") {
+        address = placeOrAddress;
+      }
 
+      if (tripState.saved_places.addresses.length > 0 && tripState.saved_places.addresses.includes(address)) {
+        return true;
+      } else {
+        return false;
+      }
     },
+    savedToItinerary: function (dayNum, placeId) {
+      // remove id and from saved_places placesIds
+      let tripStateCopy = { ...tripState };
+      let place = tripStateCopy.places[placeId];
+      let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
+      let indexOfAddress = tripStateCopy.saved_places.placesIds.indexOf(place.address);
+      tripStateCopy.saved_places.placesIds.splice(indexOfPlaceId, 1);
+      tripStateCopy.saved_places.addresses.splice(indexOfAddress, 1);
+
+
+      // places[placeId].day_id = days[dayNum].day_id
+      tripStateCopy.places[placeId].day_id = tripStateCopy.days[dayNum].day_id;
+
+      // add placeId to days[dayNum].placeIds
+      tripStateCopy.days[dayNum].placeIds.push(placeId);
+
+      // set state
+      setTripState(tripStateCopy);
+
+      // send to database
+    },
+    itineraryToSaved: function (dayNum, placeId) {
+      // remove placeId from days[dayNum][placeIds]
+      let tripStateCopy = { ...tripState };
+      let place = tripStateCopy.places[placeId];
+      let indexOfPlaceId = tripStateCopy.days[dayNum].indexOf(placeId);
+      tripStateCopy.days[dayNum].placeIds.splice(indexOfPlaceId, 1);
+
+      // remove day_id key
+      tripStateCopy.places[placeId].day_id = null;
+
+      // add placeId and address to saved_places
+      tripStateCopy.saved_places.placesIds.push(placeId);
+      tripStateCopy.saved_places.addresses.push(place.address);
+
+      // set state
+      setTripState(tripStateCopy);
+
+      // tell Kate - update database
+    }
   };
 
   // add place from map and suggeseted places
@@ -378,7 +512,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       setTripState(tripStateCopy)
       confirmPlaceAdded(modifier)
     }
-  }
+  };
   // Sending Kate added place code
   const sendAddPlace = async (place, day_id) => {
     let data = {
@@ -404,12 +538,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         console.log(error)
       })
   }
-  // update place in database
-  const updatePlaceInDatabase = (place_id, day_id) => {
-    console.log(place_id)
-    console.log(day_id)
-    let url = `https://routewise-backend.onrender.com/itinerary/update-place/${place_id}`
-    const response = axios.patch(url, { "day_id": day_id }, {
+  // update place in database ($test$)
+  const updatePlaceInDatabase = (db_place_id, db_day_id) => {
+    let url = `https://routewise-backend.onrender.com/itinerary/update-place/${db_place_id}`
+    const response = axios.patch(url, { "day_id": db_day_id, "in_itinerary": db_day_id ? true : false }, {
       headers: { "Content-Type": "application/json" }
     }).then((response) => {
       console.log(response.data)
@@ -419,15 +551,23 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   const removePlace = (dayNum, placeId) => {
     // tripState > days[dayNum] > remove placeIds[placeId]
-    deletePlaceFromDatabase(placeId)
+    deletePlaceFromDatabase(placeId);
 
-    const tripStateCopy = { ...tripState }
-    let index = tripStateCopy.days[dayNum].placeIds.indexOf(placeId)
-    tripStateCopy.days[dayNum].placeIds.splice(index, 1)
-    delete tripStateCopy.places[placeId]
-    setTripState(tripStateCopy)
+    const tripStateCopy = { ...tripState };
+    let index = tripStateCopy.days[dayNum].placeIds.indexOf(placeId);
+    tripStateCopy.days[dayNum].placeIds.splice(index, 1);
+    delete tripStateCopy.places[placeId];
+
+    // decrement places_last if possible
+    if (tripStateCopy.places_last === placeId) {
+      tripStateCopy.places_last = tripState.places_last - 1;
+    };
+
+    setTripState(tripStateCopy);
     console.log(tripStateCopy)
-  }
+  };
+
+
 
 
 
@@ -448,30 +588,33 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const clearPlaceToConfirm = () => {
     setPlaceToConfirm(null)
   }
-  const addPlaceToConfirm = async (place) => {
+  const addPlaceToConfirm = async (placeObj) => {
     let newPlace = {}
-    if (place.placeName) {
-      newPlace = { ...place, favorite: false };
+    if (placeObj.placeName) {
+      newPlace = { ...placeObj, favorite: false };
     } else {
-      let imgQuery = place.text.replace(/ /g, '-');
+      let imgQuery = placeObj.text.replace(/ /g, '-');
       let imgUrl = await loadCityImg(imgQuery);
       // let placeInfo = await loadPlaceDetails(place.place_id)
       let placeInfo = "";
 
+      let placeCategory = place.properties.category ?? "No Category";
+
       newPlace = {
-        placeName: place.text,
+        placeName: placeObj.text,
         info: placeInfo,
-        address: place.place_name.split(", ").slice(1, -1).join(", "),
+        address: placeObj.place_name.split(", ").slice(1, -1).join(", "),
         imgURL: imgUrl,
-        category: place.properties.category.length > 32 ? place.properties.category.split(", ")[0] : place.properties.category,
+        category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
         favorite: false,
-        lat: place.geometry.coordinates[1],
-        long: place.geometry.coordinates[0],
-        geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-        placeId: place.id,
+        lat: placeObj.geometry.coordinates[1],
+        long: placeObj.geometry.coordinates[0],
+        geocode: [placeObj.geometry.coordinates[1], placeObj.geometry.coordinates[0]],
+        placeId: placeObj.id,
       }
     }
 
+    // lightbulb
     let days = {}
     for (let dayNum of tripState.day_order) {
       let day = tripState.days[dayNum]
@@ -480,7 +623,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     }
     let min_dist = 99999999999
     let dist_list = Object.values(days)
-    console.log(dist_list)
+    // console.log(dist_list)
     for (let i = 0; i < dist_list.length; i++) {
       // console.log(parseFloat(dist_list[i]))
       if (min_dist > parseFloat(dist_list[i])) {
@@ -586,7 +729,12 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const [placeConfirmationAnimation, setPlaceConfirmationAnimation] = useState(false);
   // update map markers upon adding new place from PTC to trip
   useEffect(() => {
-    let markersArr = Object.values(tripState.places)
+    let placesCopy = { ...tripState.places };
+    for (let placeId of tripState.saved_places.placesIds) {
+      delete placesCopy[placeId];
+    }
+    let markersArr = Object.values(placesCopy);
+
     if (placeToConfirm && !placeConfirmationAnimation) {
       // markersArr.push(placeToConfirm)
       setNewPlaceMarker(placeToConfirm);
@@ -727,12 +875,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     //   day_id: tripStateCopy.days[dayNum].day_id,
     //   trip_id: tripStateCopy.trip_id
     // }
+
+    let placeCategory = place.properties.category ?? "No Category";
+
     let newPlace = {
       placeName: place.text,
       info: placeInfo,
       address: place.place_name.split(", ").slice(1, -1).join(", "),
       imgURL: imgUrl,
-      category: place.properties.category.length > 32 ? place.properties.category.split(", ")[0] : place.properties.category,
+      category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
       favorite: false,
       lat: place.geometry.coordinates[1],
       long: place.geometry.coordinates[0],
@@ -930,7 +1081,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   useEffect(() => {
     window.addEventListener('scroll', observeFlowBoxes)
     return window.removeEventListener('scroll', observeFlowBoxes)
-  }, [])
+  }, []);
   // place card title char limit code
   const cardBodyRef = useRef();
   const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
@@ -946,7 +1097,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       })
       observer.observe(cardBodyRef.current)
     }
-  }, [tripState, selectedPlacesList])
+  }, [tripState, selectedPlacesList]);
 
 
 
@@ -957,81 +1108,194 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     let popUp = document.getElementById(`popUp-${index}`)
     popUp.classList.toggle('d-none')
   }
-  // catch saved places from itinerary generated
-  // useEffect(() => {
-  // console.log(currentTrip)
-  // if (currentTrip.itinerary && Object.keys(currentTrip.itinerary).includes("saved_places")) {
-  //   console.log("saved places: " + currentTrip.itinerary.saved_places);
-  //   let savedPlacesCopy = { ...savedPlaces };
-  //   savedPlacesCopy.places = currentTrip.itinerary.saved_places;
-  //   setSavedPlaces(savedPlacesCopy);
-  // }
-  // }, [])
+
   // switch savedplaces to currentTrip.itinerary.saved_places
   const [savedPlaces, setSavedPlaces] = useState({
     places: [],
     addresses: []
-  })
+  });
   // saved places operations
-  const addToSavedPlaces = (place, convertFrom) => {
+  const addToSavedPlaces = async (place) => {
     let tripStateCopy = { ...tripState }
-    let placesLast = tripStateCopy.itinerary.placesLast;
-    // if (convertFrom === "suggestedPlace") {
-    //   let placeConverted = {
-    //     address: place.formatted,
-    //     category: place.categories,
-    //     favorite: false,
-    //     geocode: [place.lat, place.lon],
-    //     imgURL: place.imgUrl,
-    //     info: "To be updated",
-    //     lat: place.lat,
-    //     long: place.lon,
-    //     placeId: place.place_id,
-    //     placeName: place.name
-    //   }
-    //   place = placeConverted
-    // }
-    place = { ...place, favorite: false, id: placesLast + 1, day_id: null };
-    tripStateCopy.itinerary.places[placesLast + 1] = place;
-    tripStateCopy.itinerary.saved_places.placesIds.append(place.id)
-    tripStateCopy.itinerary.saved_places.addresses.append(place.address)
-    // send added place change to db - need add to saved places route
+    let placesLast = tripStateCopy.places_last;
 
+    place = { ...place, favorite: false, id: placesLast + 1, day_id: null };
+
+    // send added place to db ($test$)
+    if (tripStateCopy.trip_id) {
+
+      // send place details to Kate for db update - return db place_id
+      let sendPlace = place
+      let data = {
+        place: sendPlace,
+        day_id: null
+      }
+      // console.log("sendPlace: ", sendPlace)
+      const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${tripStateCopy.trip_id}`, JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" }
+      }).then((response) => {
+        console.log(response.status)
+        let place_id = response.data
+
+        // add db_place_id
+        tripStateCopy.places[placesLast + 1] = {
+          ...place,
+          place_id: place_id
+        }
+
+        tripStateCopy.places_last = placesLast + 1
+        tripStateCopy.saved_places.placesIds.push(place.id)
+        tripStateCopy.saved_places.addresses.push(place.address)
+
+        setTripState(tripStateCopy)
+      }).catch((error) => {
+        console.log(error)
+      })
+    } else {
+      // we're in playground mode i.e. using test place objects on default itinerary page ($test$)
+      
+      tripStateCopy.places[placesLast + 1] = place;
+      tripStateCopy.places_last = placesLast + 1;
+      tripStateCopy.saved_places.placesIds.push(place.id)
+      tripStateCopy.saved_places.addresses.push(place.address)
+      setTripState(tripStateCopy)
+    }
+
+  };
+  const toggleSavedPlaces = (place) => {
+    let tripStateCopy = { ...tripState };
+    if (isSavedPlace(place.address)) {
+      for (let tripPlace of Object.values(tripStateCopy.places)) {
+        if (place.address === tripPlace.address) {
+          place = tripPlace;
+        }
+      }
+      let index = tripStateCopy.saved_places.addresses.indexOf(place.address);
+      let placeId = tripStateCopy.saved_places.placesIds[index];
+      removeFromSavedPlaces(place.id);
+    } else {
+      addToSavedPlaces(place);
+    }
+  };
+  const isSavedPlace = (placeOrAddress) => {
+    let address = "";
+    if (typeof placeOrAddress === "object") {
+      address = placeOrAddress.address;
+    } else if (typeof placeOrAddress === "string") {
+      address = placeOrAddress;
+    }
+
+    if (tripState.saved_places.addresses.length > 0 && tripState.saved_places.addresses.includes(address)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const savedToItinerary = (dayNum, placeId) => {
+    // remove id and from saved_places placesIds
+    let tripStateCopy = { ...tripState };
+    let place = tripStateCopy.places[placeId];
+    let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
+    let indexOfAddress = tripStateCopy.saved_places.placesIds.indexOf(place.address);
+    tripStateCopy.saved_places.placesIds.splice(indexOfPlaceId, 1);
+    tripStateCopy.saved_places.addresses.splice(indexOfAddress, 1);
+
+
+    // places[placeId].day_id = days[dayNum].day_id
+    tripStateCopy.places[placeId].day_id = tripStateCopy.days[dayNum].day_id;
+
+    // add placeId to days[dayNum].placeIds
+    tripStateCopy.days[dayNum].placeIds.push(placeId);
+
+    // tell Kate - send to database ($test$)
+    if (tripStateCopy.trip_id) {
+      updatePlaceInDatabase(place.place_id, place.day_id);
+    }
+
+    // set state
     setTripState(tripStateCopy);
 
-    // if (!savedPlaces.addresses.includes(place.address)) {
-    //   savedPlacesCopy.places.push(place)
-    //   savedPlacesCopy.addresses.push(place.address)
-    // }
-    // setSavedPlaces(savedPlacesCopy)
   }
-  const toggleSavedPlaces = (place) => {
-    let savedPlacesCopy = { ...savedPlaces }
-    if (!savedPlaces.addresses.includes(place.address)) {
-      addToSavedPlaces(place)
-    } else {
-      removeFromSavedPlaces(place)
+  const itineraryToSaved = (dayNum, placeId) => {
+    // remove placeId from days[dayNum][placeIds]
+    let tripStateCopy = { ...tripState };
+    let place = tripStateCopy.places[placeId];
+    let indexOfPlaceId = tripStateCopy.days[dayNum].placeIds.indexOf(placeId);
+    tripStateCopy.days[dayNum].placeIds.splice(indexOfPlaceId, 1);
+
+
+    // remove day_id key
+    tripStateCopy.places[placeId].day_id = null;
+
+    // add placeId and address to saved_places
+    tripStateCopy.saved_places.placesIds.push(placeId);
+    tripStateCopy.saved_places.addresses.push(place.address);
+
+    // tell Kate - update database ($test$) [db_day_id = null]
+    if (tripStateCopy.trip_id) {
+      updatePlaceInDatabase(place.place_id, null);
     }
+
+    // set state
+    setTripState(tripStateCopy);
+
   }
   const printSavedPlaces = () => {
-    console.log(currentTrip.saved_places);
+    console.log(tripState.saved_places);
+  };
+  const printItinerary = () => {
+    console.log(tripState);
+  };
+  const removeFromSavedPlaces = (placeId) => {
+    let tripStateCopy = { ...tripState };
+    let place = tripStateCopy.places[placeId];
+    let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
+    let indexOfAddress = tripStateCopy.saved_places.addresses.indexOf(place.address);
+    // remove placeId and address from saved places
+    tripStateCopy.saved_places.placesIds.splice(indexOfPlaceId, 1);
+    tripStateCopy.saved_places.addresses.splice(indexOfAddress, 1);
+
+    // remove from places
+    delete tripStateCopy.places[placeId];
+
+    // decrement places_last if possible
+    if (tripStateCopy.places_last === placeId) {
+      tripStateCopy.places_last = tripStateCopy.places_last - 1;
+    };
+
+    // tell Kate - update database
+    if (tripStateCopy.trip_id) {
+      deletePlaceFromDatabase(placeId);
+    };
+
+    // set state
+    setTripState(tripStateCopy);
+  };
+
+  const openOptionDropdown = (id) => {
+    let btn = document.getElementById(`optionBtn-${id}`);
+    let dropdown = document.getElementById(`optionDropdown-${id}`);
+    btn.classList.add("pressed");
+    dropdown.classList.replace("hidden", "shown");
+  };
+  const closeOptionDropdown = (id) => {
+    let btn = document.getElementById(`optionBtn-${id}`);
+    let dropdown = document.getElementById(`optionDropdown-${id}`);
+    btn.classList.remove("pressed");
+    dropdown.classList.replace("shown", "hidden");
   }
-  const removeFromSavedPlaces = (place) => {
-    let savedPlacesCopy = { ...savedPlaces }
-    if (savedPlacesCopy.addresses.includes(place.address)) {
-      let placeIndex = savedPlacesCopy.addresses.indexOf(place.address)
-      savedPlacesCopy.places.splice(placeIndex, 1)
-      savedPlacesCopy.addresses.splice(placeIndex, 1)
+  const toggleOptionDropdown = (id) => {
+    let btn = document.getElementById(`optionBtn-${id}`);
+    if (btn.classList.contains("pressed")) {
+      closeOptionDropdown(id);
+    } else {
+      openOptionDropdown(id);
     }
-    setSavedPlaces(savedPlacesCopy)
-  }
-
-
+  };
 
 
 
   // [suggested places code]
-
   const categoryKeyConverter = (categoryName) => {
     // returns api category search query and category title for each category key
     const categoryKey = {
@@ -1085,17 +1349,25 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   // suggested place popup code
   const openSuggestedPlacePopUp = (index) => {
-    let popUp = document.getElementById(`suggestedPlace-popUp-${index}`)
-    popUp.classList.remove('hidden-o')
+    let popUp = document.getElementById(`suggestedPlace-popUp-${index}`);
+    let btn = document.getElementById(`suggestedPlace-btn-${index}`);
+    popUp.classList.replace("hidden", "shown");
+    btn.classList.add("pressed");
+
   }
   const closeSuggestedPlacePopUp = (index) => {
     let popUp = document.getElementById(`suggestedPlace-popUp-${index}`)
-    popUp.classList.add('hidden-o')
-
+    let btn = document.getElementById(`suggestedPlace-btn-${index}`);
+    popUp.classList.replace("shown", "hidden");
+    btn.classList.remove("pressed");
   }
   const toggleSuggestedPlacePopUp = (index) => {
     let popUp = document.getElementById(`suggestedPlace-popUp-${index}`)
-    popUp.classList.toggle('hidden-o')
+    if (popUp.classList.contains("hidden")) {
+      openSuggestedPlacePopUp(index);
+    } else {
+      closeSuggestedPlacePopUp(index)
+    }
   }
   const hideAllSuggestedPlacePopUps = () => {
     let popUps = document.getElementsByClassName('placeCard-popUp')
@@ -1106,7 +1378,39 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   useEffect(() => {
     window.addEventListener('click', hideAllSuggestedPlacePopUps)
-  }, [])
+  }, []);
+
+  const [daySelectorOpen, setDaySelectorOpen] = useState(false);
+  const [placeForDaySelector, setPlaceForDaySelector] = useState({});
+  const [actionForDaySelector, setActionForDaySelector] = useState("");
+  const [daySelectorStateProps, setDaySelectorStateProps] = useState({
+    place: {},
+    action: "",
+    sideEffectFuntion: null,
+    sideEffectVariable: null
+  });
+  const openDaySelector = (placeObj, action, sideEffectFuntion, sideEffectVariable) => {
+    // setPlaceForDaySelector(placeObj);
+    // setActionForDaySelector(action);
+    setDaySelectorStateProps({
+      place: placeObj,
+      action: action,
+      sideEffectFuntion: sideEffectFuntion,
+      sideEffectVariable: sideEffectVariable
+    });
+    setDaySelectorOpen(true);
+  }
+  const closeDaySelector = () => {
+    // setPlaceForDaySelector({});
+    // setActionForDaySelector("");
+    setDaySelectorStateProps({
+      place: {},
+      action: "",
+      sideEffectFuntion: null,
+      sideEffectVariable: null
+    });
+    setDaySelectorOpen(false);
+  }
 
 
 
@@ -1120,7 +1424,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     const sidebar = document.getElementById('itinerarySidebar')
     sidebar.style.width = "260px"
     sidebarPlaceholder.style.width = "260px"
-    
+
     wait(200).then(() => {
       // logo.style.width = "252px"
       arrow.classList.add("rotate-180");
@@ -1134,7 +1438,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         })
       }
     })
-    
+
     setSidebarExpanded(true)
   }
   const collapseSidebar = () => {
@@ -1147,7 +1451,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     // logo.style.width = "34px"
     arrow.classList.remove("rotate-180");
     logoSpace.style.paddingRight = "16px";
-    
+
     for (let i = 0; i < expandItems.length; i++) {
       expandItems[i].classList.remove('show')
       wait(200).then(() => {
@@ -1182,7 +1486,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     },
   ]
   // if saved places in itinerary make initial value = 0, else = null
-  const [toolTipIndex, setToolTipIndex] = useState(0);
+  const [toolTipIndex, setToolTipIndex] = useState(tripState.saved_places.placesIds.length > 0 ? 0 : 1);
   const updateToolTipIndex = (index) => {
     if (index || index === 0) {
       setToolTipIndex(index);
@@ -1301,6 +1605,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
   return (
     <>
+
+      <DaySelector open={daySelectorOpen} tripState={tripState} addPlace={placeFuntions.addPlace} savedToItinerary={savedToItinerary} itineraryToSaved={itineraryToSaved} daySelectorStateProps={daySelectorStateProps} onClose={() => closeDaySelector(false)} />
       {mobileMode &&
         <button onClick={() => setMapView(mapView => !mapView)} className={`mapview-btn ${mapView && "light"}`}>
           <span className={`material-symbols-outlined large ${mapView ? "dark-text" : "white-text"}`}>
@@ -1340,8 +1646,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                 </div>
 
                 {/* tooltip for suggested places */}
-                <div className={`sidebar-tooltip suggested-places  ${toolTipIndex === 1 ? "shown" : "hidden-o"}`}>
-                  <div className="dot-indicators just-ce">
+                <div className={`sidebar-tooltip suggested-places  ${currentTrip.itineraryFirstLoad ? toolTipIndex === 1 ? "shown" : "hidden-o" : "hidden-o"}`}>
+                  <div className={`dot-indicators just-ce ${tripState.saved_places.placesIds.length === 0 && "hidden"}`}>
                     <div onClick={() => updateToolTipIndex(0)} className="dot"></div>
                     <div className="dot selected"></div>
                   </div>
@@ -1457,7 +1763,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                         return <Suspense fallback={<LoadBox />} >
                           <div ref={e => refs.current[id] = e} key={id} className="">
-                            <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} addPlaceFromFlowBox={addPlaceFromFlowBox} country={country} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} recenterMap={updateMapCenter} />
+                            <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} addPlaceFromFlowBox={addPlaceFromFlowBox} country={country} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} updateMapCenter={updateMapCenter} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved} isSavedPlace={isSavedPlace} />
                           </div>
                         </Suspense>
                       })}
@@ -1476,29 +1782,45 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
             {selectedPlacesList === "Saved Places" &&
               <div className="itinerary-c2 flx-2 ws-normal">
                 <div className="page-container96">
-                  <p className="m-0 page-subheading-bold">Saved Places</p>
+                  <p onClick={() => printItinerary()} className="m-0 page-subheading-bold">Saved Places</p>
                   <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
                   <div className="placeCards-itinerary">
                     {tripState.saved_places && tripState.saved_places.placesIds.length > 0 ?
                       tripState.saved_places.placesIds.map((placeId, index) => {
                         let savedPlace = tripState.places[placeId]
+                        let category = savedPlace.category ? savedPlace.category.split(", ")[0].charAt(0).toUpperCase() + savedPlace.category.split(", ")[0].slice(1) : "No Category";
+
                         return <div key={index} className="placeCard2 flx-r position-relative">
                           <div className="placeCard-img-div flx-3">
-                            <img className="placeCard2-img" src={savedPlace.imgURL} />
+                            <img onClick={() => addPlaceToConfirm(savedPlace)} className="placeCard2-img" src={savedPlace.imgURL} />
                           </div>
                           <div className="placeCard-body flx-5">
                             {/* <div className="popUp d-none">{savedPlace.info}</div> */}
                             <p className="body-title ">{savedPlace.placeName}</p>
                             {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{savedPlace.info}</p> */}
-                            <p className="body-category">{savedPlace.category ?? "No category"}</p>
+                            <p className="body-category">{category}</p>
                             <p className="body-address">{savedPlace.address}</p>
                           </div>
-                          <div className="placeCard-starOrDelete py-2h flx-c just-sb align-c">
-                            <span className="material-symbols-outlined gray-text">
+                          <div className="placeCard-options py-2h flx-c just-sb align-c">
+                            <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
+                              <div onClick={() => { addPlaceToConfirm(savedPlace); closeOptionDropdown(index) }} className="option">
+                                <div className="material-symbols-outlined icon">location_on</div>
+                                <p className="m-0 text">View on map</p>
+                              </div>
+                              <div onClick={() => openDaySelector(savedPlace, "savedToItinerary")} className="option">
+                                <div className="material-symbols-outlined icon">map</div>
+                                <p className="m-0 text">Move to Itinerary</p>
+                              </div>
+                              <div onClick={() => removeFromSavedPlaces(savedPlace.id)} className="option">
+                                <div className="material-symbols-outlined icon red-text">delete</div>
+                                <p className="m-0 text red-text">Remove from list</p>
+                              </div>
+                            </div>
+                            <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
                               more_vert
                             </span>
-                            <span onClick={() => removeFromSavedPlaces(savedPlace)} className="material-symbols-outlined gray-text showOnHover-50 pointer">
+                            <span onClick={() => removeFromSavedPlaces(savedPlace.id)} className="material-symbols-outlined gray-text showOnHover-50 pointer">
                               delete
                             </span>
                           </div>
@@ -1621,19 +1943,34 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                             </div>
                             <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
                               {/* suggested place popup */}
-                              <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
-                                <div onClick={() => addPlaceToConfirm(suggestedPlace)} className="option">
-                                  <span className="material-symbols-outlined">
+                              <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden">
+                                <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
+                                  <span className="material-symbols-outlined icon">
+                                    location_on
+                                  </span>
+                                  <p className="m-0 text">View on Map</p>
+                                </div>
+                                <div onClick={() => openDaySelector(suggestedPlace, "addPlace", closeSuggestedPlacePopUp, index)} className="option">
+                                  <span className="material-symbols-outlined icon">
                                     map
                                   </span>
-                                  <p className="m-0">View on Map</p>
+                                  <p className="m-0 text">Add to itinerary</p>
                                 </div>
-                                <div onClick={() => addToSavedPlaces(suggestedPlace, "suggestedPlace")} className="option">
-                                  <span className="material-symbols-outlined">
-                                    bookmark
-                                  </span>
-                                  <p className="m-0">Add to Saved Places</p>
-                                </div>
+                                {isSavedPlace(suggestedPlace.address) ?
+                                  <div onClick={() => { addToSavedPlaces(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
+                                    <span className="material-symbols-outlined icon red-text">
+                                      bookmark
+                                    </span>
+                                    <p className="m-0 text red-text">Remove from Saved Places</p>
+                                  </div>
+                                  :
+                                  <div onClick={() => { addToSavedPlaces(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
+                                    <span className="material-symbols-outlined icon">
+                                      bookmark
+                                    </span>
+                                    <p className="m-0 text">Add to Saved Places</p>
+                                  </div>
+                                }
                               </div>
                               {/* End suggested place popup */}
                               {/* {added ?
@@ -1645,7 +1982,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                           : 
                           }
                           */}
-                              <div onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
+                              <div id={`suggestedPlace-btn-${index}`} onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
                                 <span className="material-symbols-outlined m-auto large">
                                   add
                                 </span>
@@ -1673,7 +2010,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                               <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
                                 {/* filtered suggested place popup */}
                                 <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
-                                  <div onClick={() => addPlaceToConfirm(suggestedPlace)} className="option">
+                                  <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
                                     <span className="material-symbols-outlined">
                                       map
                                     </span>
@@ -1779,7 +2116,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                         </span>
 
                         <div onClick={() => toggleSavedPlaces(placeToConfirm)} className="saveBtn">
-                          <img src={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "https://i.imgur.com/o7IoL2K.png" : "https://i.imgur.com/TcS7RjD.png"}`} alt="" className={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "icon-img-selected" : "icon-img"}`} />
+                          <img src={`${isSavedPlace(placeToConfirm.address) ? "https://i.imgur.com/o7IoL2K.png" : "https://i.imgur.com/TcS7RjD.png"}`} alt="" className={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "icon-img-selected" : "icon-img"}`} />
                           {/* <span className={`material-symbols-outlined white-text ${savedPlaces.addresses.includes(placeToConfirm.address) ? "purple-text" : null}`}>
                         bookmark
                       </span> */}
@@ -1793,7 +2130,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                           <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
                           <p className="body-title-PTC">{placeToConfirm.placeName.length > charLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit) + "..." : placeToConfirm.placeName}</p>
                           {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
-                          <p className="body-info-PTC pointer mb-1">{placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1)}</p>
+                          <p className="body-info-PTC pointer mb-1">{placeToConfirm.category ? placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1) : "No Category"}</p>
                           <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
 
                           <div className="flx-r position-bottom">
@@ -1904,8 +2241,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
           {/* Completion buttons */}
           < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
-            <Link to='/dashboard'><button className="btn-outlineflex large center-text mx-2">Back to Dashboard</button></Link>
-            <Link to='/print-itinerary'><button className="btn-primaryflex w-2h large center-text mx-2">Share Itinerary</button></Link>
+            <Link to='/dashboard'><button className="btn-outlineflex center-text mx-2">Back to Dashboard</button></Link>
+            <Link to='/print-itinerary'><button className="btn-primaryflex w-2h center-text mx-2">Share Itinerary</button></Link>
           </div >
           {/* End Completion buttons */}
 

@@ -179,6 +179,7 @@ RESPONSIVE
 <!-- ***l'musee locations working??? (Waiting for meetup w/ Kate) -->
 <!-- ***"no category" on itinerary place cards - categories weren't saved, only place info, new places added should have categories now -->
 <!-- center routewise bird on navbar -->
+stop from adding suggested places that are already saved to saved places
 
 <!-- Survey & Survey Update page page -->
 <!-- RESPONSIVE -->
@@ -195,15 +196,34 @@ nametripmodal make loadcityimg function come from context api
 
 <!-- With Kate -->
 <!-- **generate itinerary object has place['local_id']s instead of place['id']s (Kate) -->
-**saved places need to be returned in itinerary object when viewing already made trip (Kate).. 
+<!-- **saved places need to be returned in itinerary object when viewing already made trip (Kate)..  -->
 <!-- ***l'musee locations working??? (Waiting for meetup w/ Kate) -->
-Adjust FE code to receive saved_places as list of placeIds!
+<!-- Adjust FE code to receive saved_places as list of placeIds! -->
 <!-- **Pass code code -->
-Build test environment page for Kate's functions
-<!-- saved_places route -->
-CHANGING TRIP FROM MYTRIPS UPDATES ITINERARY?
+Build test environment page for Kate's functions?
+add saved_place route
+CHANGING TRIP DETAILS FROM MYTRIPS PAGE UPDATES ITINERARY? (new itinerary modal pops up)
+New pop up functionalities: itineraryToSaved and savedToItinerary (using update-place route), addToSaved (using add-one-place)
+>update itinerary/update-place function:
+day_id, in_itinerary
+if data['in_itinerary']:
+    place.in_itinerary = True
+else:
+    place.in_itinerary = False
+>update itinerary/add-one-place
+if data['day_id]:
+    day_id = data['day_id]
+    in_itinerary = True
+else:
+    day_id = None (or other value that corresponds to null in database?)
+    in_itinerary = False
 
-serialized_places[given_id].in_itinerary = True
+
+
+Laterbase
+Create components for savedplaces card, suggestplaces card
+bookmark icon on suggested place options filled in if place is already in saved places
+
 
 
 03Jun24 Team Meeting
@@ -212,7 +232,20 @@ serialized_places[given_id].in_itinerary = True
 <!-- ***delete trip on mytrips and dashboard? -->
 <!-- ***print itinerary navigation causes error "placeName" key? -->
 
-updates
-delete trip from mytrips page
-trips in order of upcoming on dashboard
-saved places displayed after generating itinerary or viewing old itinerary
+
+Updates
+<!-- place card options on suggested places and saved places -->
+<!-- toggle on/off saved place on map place card -->
+in itinerary check function - check if a place is in itinerary
+update notification icon showing how many changes have been made to your itinerary or saved places in sidebar
+exlamation icon to show new suggested places? - clears when you navigate to the page
+travel prefs resetting to null while in itinerary??
+itinerary place card options - view on map, move to saved places, remove place
+($test$) code in itinerary page
+make trips on dashboard a carousel of 10 - no flx wrap (btn sliders bottom right, light purple bg rounded squares)
+update selected travel preference card to have purplish text
+
+
+10th June Meeting
+stations not working?
+locations that would require hold day

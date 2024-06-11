@@ -2977,6 +2977,93 @@ p {
   z-index: 1;
 }
 
+.placeCard-options {
+  position: relative;
+  width: 26px;
+}
+
+.placeCard-menu {
+  position: absolute;
+  right: 100%;
+  background-color: white;
+  /* height: 100px; */
+  width: 180px;
+  border-radius: 8px;
+  border: 1px solid gainsboro;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  overflow: hidden;
+}
+.placeCard-menu.itinerary {
+  position: absolute;
+  right: 100%;
+  background-color: white;
+  /* height: 100px; */
+  width: 208px;
+  border-radius: 8px;
+  border: 1px solid gainsboro;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  overflow: hidden;
+}
+.placeCard-menu.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: 0.2s;
+}
+.placeCard-menu.shown {
+  visibility: visible;
+  opacity: 1;
+}
+.placeCard-menu > .option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid gainsboro;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.placeCard-menu > .option-cold {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid gainsboro;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.placeCard-menu > .option:hover {
+  background-color: rgb(240, 240, 240);
+  transition: 0.2s;
+}
+.placeCard-menu > .option > .icon,
+.placeCard-menu > .option-cold > .icon {
+  font-size: 21px;
+}
+.placeCard-menu > .option > .text,
+.placeCard-menu > .option-cold > .text {
+  font-size: 14px;
+}
+.more_vert {
+  border: 1px solid transparent;
+  transition: 0.2s;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  width: 10%;
+}
+.more_vert.pressed {
+  background-color: rgb(240, 240, 240);
+  border: 1px solid gainsboro;
+  width: 70%;
+  transition: 0.2s;
+}
 .overlay-star-place {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.7);
@@ -3155,7 +3242,7 @@ p {
 .body-category {
   font-family: 'Plus Jakarta Sans';
   font-weight: 400;
-  font-size: 12px;
+  font-size: 14px;
   color: rgb(180, 180, 180);
   overflow: hidden;
   margin: 0;
@@ -3816,17 +3903,18 @@ selection-box-landing.mobile {
   transition: 0.2s;
 }
 
-.addIcon-medium:hover {
+.addIcon-medium:hover, .addIcon-medium.pressed {
   border: 6px solid #6663FC;
   background-color: #6663FC;
   /* color: white; */
   transition: 0.2s;
 }
 
-.addIcon-medium:hover span {
+.addIcon-medium:hover span, .addIcon-medium.pressed span {
   color: white;
   transition: 0.2s;
 }
+
 
 .addIcon-smaller {
   /* border: 2px solid #6663FC; */
@@ -4046,6 +4134,19 @@ selection-box-landing.mobile {
   transition: 0.5s;
 }
 
+.daySelection-modal {
+  /* height: 280px; */
+  width: 208px;
+  background-color: white;
+  border-radius: 12px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
 .daySelection {
   /* height: 280px; */
   width: 208px;
@@ -4761,6 +4862,7 @@ selection-box-landing.mobile {
 
 .hidden {
   opacity: 0;
+  visibility: hidden;
   transition: 0.5s
 }
 
@@ -5541,7 +5643,7 @@ selection-box-landing.mobile {
 }
 
 .sidebar-tooltip.saved-places {
-  top: 16px;
+  top: 0px;
 }
 
 .sidebar-tooltip.saved-places::after {
@@ -5567,7 +5669,7 @@ selection-box-landing.mobile {
 }
 
 .sidebar-tooltip.suggested-places {
-  top: 176px;
+  top: 160px;
 }
 
 .sidebar-tooltip.suggested-places::after {
@@ -5758,24 +5860,35 @@ selection-box-landing.mobile {
 
 .placeCard-popUp {
   background-color: white;
-  border-radius: 12px;
+  border-radius: 8px;
   /* height: 100px; */
-  width: 220px;
+  width: 200px;
   position: absolute;
-  right: 28px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+  right: 100%;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+  border: 1px solid gainsboro;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 1;
 }
+.placeCard-popUp.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.2s;
+}
+.placeCard-popUp.shown {
+  opacity: 1;
+  visibility: visible;
+}
 
 .placeCard-popUp .option {
-  padding: 8px 12px;
+  padding: 8px;
   display: flex;
   flex-direction: row;
+  border-bottom: 1px solid gainsboro;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   /* width: 100%; */
   transition: 0.2s;
   cursor: pointer;
@@ -5785,6 +5898,14 @@ selection-box-landing.mobile {
   background-color: rgb(235, 235, 235);
   transition: 0.2s;
 }
+
+.placeCard-popUp .icon {
+  font-size: 21px;
+}
+.placeCard-popUp .text {
+  font-size: 14px;
+}
+
 
 .saveBtn {
   position: absolute;
