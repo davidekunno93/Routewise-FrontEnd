@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { SignUp } from './components/auth/SignUp'
 import { Navbar } from './components/Navbar'
 import { Landing } from './views/Landing'
@@ -37,7 +37,14 @@ function App() {
   // wakeup function
   useEffect(() => {
     wakeUpBackEnd()
-    console.log(auth.currentUser)
+    // console.log(auth.currentUser)
+    // docRef = doc, docSnap = getDoc, if docSnap.exists() --> docSnap.data()
+    // fetch user details
+    auth.onAuthStateChanged((userCred) => 
+    {setUser(userCred)
+  });
+  
+
   }, [])
   const wakeUpBackEnd = async () => {
     let url = "https://routewise-backend.onrender.com/profile/test"
@@ -190,7 +197,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route children path='/register' element={<SignUp />} />
-          <Route children path='/' element={user ? <Dashboard /> : <Landing />} />
+          <Route children path='/' element={user ? <Navigate to="/dashboard" /> : <Landing />} />
           <Route children path='/landing' element={<Landing />} />
           <Route children path='/survey' element={<Survey />} />
           <Route children path='/survey-update' element={<SurveyUpdate />} />

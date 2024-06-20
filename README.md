@@ -123,7 +123,7 @@ trips recorded on dashboard
 
 APIs 
 - api ninjas geocoding API for city names
-- *unsplash api for city images 50req/day*
+- *unsplash api for city images 50req/hr*
 *GEOAPIFY - 3000 req/day*
 - address autocomplete api for adding places
 - place details api to populate place info when adding place
@@ -249,3 +249,35 @@ update selected travel preference card to have purplish text
 10th June Meeting
 stations not working?
 locations that would require hold day
+
+
+<!-- 13Jun24 Team Meeting -->
+Need to transfer to new database
+Big takeaway! - more info about the places (biz hours, ratings?)
+Users want to
+type in category to search places
+explore places on the map, type regions to explore areas
+ppl want to start with suggested places before adding their own places
+
+Upgrade to Google Maps API!!! - reviews/biz hours/places/place imgs/map? costs??
+mapbox map w/ google places?
+<!-- Google API $200 for free -->
+Maps Embed API = free
+Geocoding API ~8k requests = $40?.. 30k requests = $150
+Places API (address, name, geometry, price level [0 to 4], rating [1.0 - 5.0]) ~10k = $85
++ Review (Place Review API)?
++ Photo (Place Photo API) ~5k-10k = $35-$70
+
+Bronco Venture Accelerator (BVA)
+7:30pm
+
+<!-- 17Jun24 Team Meeting -->
+Best time to visit location
+landing page - include demo of product
+different day places have unique markers
+re-word lightbulb days for less confusion
+non-users should be able to access/see user itineraries
+fix log in issue - not logging in until button click
+user should remain logged in after page refresh
+
+report weekly hours (part-time or full-time?)
