@@ -16,6 +16,7 @@ import { DataContext } from '../Context/DataProvider'
 import { Loading } from '../components/Loading'
 import OpenMapBox from '../components/OpenMapBox'
 import DaySelector from '../components/DaySelector'
+import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -24,7 +25,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // if (!currentTrip.tripID) return null ?
   const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
-  const { loadCityImg } = useContext(DataContext);
+  const { loadCityImg, geoToLatLng } = useContext(DataContext);
   const { suggestedPlaces, mapBoxCategoryKey } = useContext(DataContext);
   const { mobileMode, mobileModeNarrow } = useContext(DataContext);
 
@@ -358,7 +359,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       }
     },
     addPlaceToConfirm: function (placeObj) {
-
+      clearPlaceToConfirm();
+      setPlaceToConfirm(placeObj);
+      updateMapCenter(placeObj.geocode);
     },
     addToSavedPlaces: function (placeObj) {
       let tripStateCopy = { ...tripState }
@@ -588,29 +591,32 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const clearPlaceToConfirm = () => {
     setPlaceToConfirm(null)
   }
-  const addPlaceToConfirm = async (placeObj) => {
+  const addPlaceToConfirm = async (place) => {
+
+
+
     let newPlace = {}
-    if (placeObj.placeName) {
-      newPlace = { ...placeObj, favorite: false };
+    if (place.placeName) {
+      newPlace = { ...place, favorite: false };
     } else {
-      let imgQuery = placeObj.text.replace(/ /g, '-');
+      let imgQuery = place.text.replace(/ /g, '-');
       let imgUrl = await loadCityImg(imgQuery);
       // let placeInfo = await loadPlaceDetails(place.place_id)
       let placeInfo = "";
 
-      let placeCategory = placeObj.properties.category ?? "No Category";
+      let placeCategory = place.properties.category ?? "No Category";
 
       newPlace = {
-        placeName: placeObj.text,
+        placeName: place.text,
         info: placeInfo,
-        address: placeObj.place_name.split(", ").slice(1, -1).join(", "),
+        address: place.place_name.split(", ").slice(1, -1).join(", "),
         imgURL: imgUrl,
         category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
         favorite: false,
-        lat: placeObj.geometry.coordinates[1],
-        long: placeObj.geometry.coordinates[0],
-        geocode: [placeObj.geometry.coordinates[1], placeObj.geometry.coordinates[0]],
-        placeId: placeObj.id,
+        lat: place.geometry.coordinates[1],
+        long: place.geometry.coordinates[0],
+        geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+        placeId: place.id,
       }
     }
 
@@ -729,20 +735,48 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const [placeConfirmationAnimation, setPlaceConfirmationAnimation] = useState(false);
   // update map markers upon adding new place from PTC to trip
   useEffect(() => {
-    let placesCopy = { ...tripState.places };
-    for (let placeId of tripState.saved_places.placesIds) {
-      delete placesCopy[placeId];
-    }
-    let markersArr = Object.values(placesCopy);
+    // let placesCopy = { ...tripState.places };
+    // for (let placeId of tripState.saved_places.placesIds) {
+    //   delete placesCopy[placeId];
+    // }
+    // let markersArr = Object.values(placesCopy);
 
-    if (placeToConfirm && !placeConfirmationAnimation) {
-      // markersArr.push(placeToConfirm)
-      setNewPlaceMarker(placeToConfirm);
-    } else if (!placeToConfirm) {
-      setNewPlaceMarker(null);
+    // if (placeToConfirm && !placeConfirmationAnimation) {
+    //   // markersArr.push(placeToConfirm)
+    //   setNewPlaceMarker(placeToConfirm);
+    // } else if (!placeToConfirm) {
+    //   setNewPlaceMarker(null);
+    // }
+    // setMarkers(markersArr)
+    updateMarkers()
+  }, [tripState, placeToConfirm])
+
+  const updateMarkers = () => {
+    let placesCopy = Object.values(currentTrip.itinerary ? currentTrip.itinerary.places : tripState.places);
+    let markersObj = {};
+    for (let i=0; i<placesCopy.length; i++) {
+        let place = placesCopy[i];
+        markersObj[place.id] = {
+            id: place.id,
+            placeName: place.placeName,
+            position: geoToLatLng(place.geocode),
+            isPlaceToConfirm: false,
+            infoWindowOpen: false,
+            dayId: null,
+        }
     }
-    setMarkers(markersArr)
-  }, [tripState, placeToConfirm, placeConfirmationAnimation])
+    if (placeToConfirm) {
+        markersObj[0] = {
+            id: 0,
+            placeName: placeToConfirm.placeName,
+            position: geoToLatLng(placeToConfirm.geocode),
+            isPlaceToConfirm: true,
+            infoWindowOpen: false,
+            dayId: null,
+        }
+    }
+    setMarkers(markersObj);
+}
 
   // date chosen for place to be added to
   const [dateToConfirm, setDateToConfirm] = useState(null);
@@ -755,7 +789,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // [map & geography code]
   const [markers, setMarkers] = useState(null);
   const [newPlaceMarker, setNewPlaceMarker] = useState(null);
-  const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
+  // const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
+  const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : geoToLatLng([51.50735, -0.12776]))
   const [mapCenterToggle, setMapCenterToggle] = useState(false);
   const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
   const [searchText, setSearchText] = useState('');
@@ -764,7 +799,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const [mapView, setMapView] = useState(false);
   const updateMapCenter = (geocode) => {
     // console.log(geocode);
-    setMapCenter(geocode);
+    setMapCenter(geoToLatLng(geocode));
     setMapCenterToggle(!mapCenterToggle)
   }
 
@@ -1153,7 +1188,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       })
     } else {
       // we're in playground mode i.e. using test place objects on default itinerary page ($test$)
-      
+
       tripStateCopy.places[placesLast + 1] = place;
       tripStateCopy.places_last = placesLast + 1;
       tripStateCopy.saved_places.placesIds.push(place.id)
@@ -2161,7 +2196,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
 
                   {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
-                  <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} />
+                  {/* <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} /> */}
+                  <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} />
+                  
                 </div>
 
 

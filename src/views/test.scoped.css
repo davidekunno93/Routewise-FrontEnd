@@ -1,0 +1,15 @@
+button.gm-ui-hover-effect {
+    /* visibility: hidden;
+    display: none; */
+    height: 32px !important;
+    width: 32px !important;
+    padding: 0;
+    
+    top: -10px;
+    right: -10px;
+
+    transform: translateX(-16px);
+}
+div.gm-style-iw-chr {
+    height: 24px;
+}

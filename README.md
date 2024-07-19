@@ -131,6 +131,9 @@ APIs
 - Mapbox api. Mapbox GL JS, used react-map-gl >> 50k free map loads/month
 - Mapbox api. Geocoding API (place search) >> 100k free requests/month
 
+After adding npm google maps package @vis.gl/react-google-mapshttps://www.freeconvert.com/video-compressor/
+There are now - 13 vulnerabilities (10 low, 2 moderate, 1 high)
+Same # of vulnerabilities after uninstall
 
 addPlaces page <-- tripID -- Destination, tripName
 itinerary page <-- tripID, days(places) 
@@ -221,6 +224,7 @@ else:
 
 
 Laterbase
+have mile distance from hotel/destination center to the place in auto complete address list
 Create components for savedplaces card, suggestplaces card
 bookmark icon on suggested place options filled in if place is already in saved places
 
@@ -277,7 +281,44 @@ landing page - include demo of product
 different day places have unique markers
 re-word lightbulb days for less confusion
 non-users should be able to access/see user itineraries
-fix log in issue - not logging in until button click
-user should remain logged in after page refresh
+<!-- user should remain logged in after page refresh -->
 
 report weekly hours (part-time or full-time?)
+
+<!-- 24Jun24 Team Meeting -->
+Demo on landing page
+Changing photos in sign up box?
+Popular places shown upfront before adding their own places
+more info about each place
+
+100 shares when incorporated 40% of shares are split between the team
+CEO should get more shares
+
+<!-- 27Jun24 Team Meeting -->
+print itinerary page doesn't have most updated itinerary from itinerary page
+more information about the places/better suggestion places
+Make the rules of the itinerary generator clear to the user
+Wanting to search the map by categories/terms i.e. pizza restaurant (pickup keywords?)
+Suggested places not on on the add places page?
+Have "added to itinerary" display for places already in the itinerary
+edit dates on add places page
+re-word hover text on lightbulb days
+added to itinerary animation completes too quickly
+confirmation for adding saved places to itinerary
+Dashboard map get rid?
+update travel preferences design consistent with see all trips
+edit details -> change to edit date/name
+
+
+
+<!-- 01Jul24 Team Meeting -->
+Drop down when choosing city to travel to
+Integrate API
+
+<!-- 15Jul24 Team Meeting -->
+Jenny updated added places/suggested places/top sites design
+Jenny will update the place card design
+
+<!-- 18Jul24 Team Meeting -->
+Does Google API have place descriptions?
+Update place card design

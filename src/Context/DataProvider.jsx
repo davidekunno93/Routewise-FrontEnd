@@ -201,7 +201,22 @@ const DataProvider = (props) => {
             })
         }
     }
-
+    // helper functions
+    const textFunctions = {
+        capitalize: function (str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        },
+        titalize: function (str) {
+            const words = str.split(" ")
+            for (let i = 0; i < words.length; i++) {
+                words[i] = textFunctions.capitalize(words[i]);
+            }
+            return words.join(" ");
+        }
+    }
+    function wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    }
     const timeFunctions = {
         datinormal: function (systemDate, dateOrTime) {
             // system date => mm/dd/yyyy
@@ -394,6 +409,10 @@ const DataProvider = (props) => {
         }
     }
 
+    const geoToLatLng = (geocode) => {
+        return { lat: geocode[0], lng: geocode[1] }
+    }
+
     return (
         <DataContext.Provider value={{
             'mobileMode': mobileMode, 'mobileModeNarrow': mobileModeNarrow,
@@ -401,9 +420,9 @@ const DataProvider = (props) => {
             'user': user, 'setUser': setUser, 'signUpIsOpen': signUpIsOpen, 'setSignUpIsOpen': setSignUpIsOpen, 'authIndex': authIndex, 'setAuthIndex': setAuthIndex,
             'userPreferences': userPreferences, 'setUserPreferences': setUserPreferences, 'setPreferences': setPreferences,
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
-            'timeFunctions': timeFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
+            'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize' : handleResize
+            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng
         }}>
             {props.children}
         </DataContext.Provider>

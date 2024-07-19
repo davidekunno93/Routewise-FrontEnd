@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from 'react'
+import React, { useState, lazy, Suspense, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Loading } from '../components/Loading'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
@@ -6,6 +6,13 @@ import { Draggable, Icon } from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { DragDropContext } from 'react-beautiful-dnd';
 import { FlowBox } from '../components/FlowBox';
+import "./test.scoped.css"
+import { GoogleMap, StreetViewService, useJsApiLoader, useLoadScript } from '@react-google-maps/api';
+import { Zoom } from 'react-awesome-reveal';
+import SearchPlaceForMap from '../components/SearchPlaceForMap';
+import GoogleSearch from '../components/GoogleSearch';
+import PlaceToConfirmCard from '../components/PlaceToConfirmCard';
+import GoogleMapBox from '../components/GoogleMap/GoogleMapBox';
 
 
 const Column = lazy(() => import('../components/Column'));
@@ -422,11 +429,179 @@ export const Test = () => {
         setState(newState);
     }
 
+    const london = {
+        geocode: { lat: 51.50735, lng: -0.12776 }
+    }
+
+    const [markerInfoOpen, setMarkerInfoOpen] = useState(false);
+
+    const mapRef = useRef(null);
+    const placeAutoCompleteRef = useRef(null);
+    const gLibrary = ["core", "maps", "places", "marker"];
+    const { isLoaded } = useLoadScript({
+        id: 'google-map-script',
+        googleMapsApiKey: 'AIzaSyD6EGcKbaI-RJrDL0EWbLGOd0XxXAmSxyo',
+        // googleMapsApiKey: process.env.NEXT_PUBLIC_API_KEY,
+        libraries: gLibrary,
+    })
+    
+    // useEffect(() => {
+    //     map.panTo({ lat: latitude, lng: longitude })
+    // }, [latitude, setLongitude])
+    const [map, setMap] = useState(null);
+    const [mapViewCenter, setMapViewCenter] = useState(null);
+    const [mapViewBounds, setMapViewBounds] = useState(null);
+    useEffect(() => {
+        console.log(mapViewBounds)
+    }, [mapViewBounds])
+    // useEffect(() => {
+    //     if (isLoaded) {
+    //         const mapOptions = {
+    //             center: {
+    //                 lat: 51.50735,
+    //                 lng: -0.12776
+    //             },
+    //             zoom: 9,
+    //             mapId: '53a011bc3302095',
+    //             mapTypeControl: false,
+    //             fullscreenControl: false,
+    //         }
+
+    //         // setup the map
+    //         const gMap = new google.maps.Map(mapRef.current, mapOptions);
+
+    //         const marker = new google.maps.marker.AdvancedMarkerElement({
+    //             map: map,
+    //             position: {lat: 51, lng: -0.8},
+    //             title: "testing",
+    //             zIndex: 2,
+    //         });
+
+
+    //         setMap(gMap);
+
+    //     }
+    // }, [isLoaded])
+    const onUnmount = useCallback(() => {
+        setMap(null);
+    }, [])
+    const onLoad = useCallback((map) => {
+        if (isLoaded) {
+            const mapOptions = {
+                center: {
+                    lat: 51.50735,
+                    lng: -0.12776
+                },
+                zoom: 9,
+                mapId: '53a011bc3302095',
+                mapTypeControl: false,
+                fullscreenControl: false,
+            }
+
+            // setup the map
+            // const gMap = new google.maps.Map(map);
+
+            // const marker = new google.maps.marker.AdvancedMarkerElement({
+            //     map: map,
+            //     position: {lat: 51, lng: -0.8},
+            //     title: "testing",
+            //     zIndex: 2,
+            // });
+
+            // const bounds = new window.google.maps.LatLngBounds(london.geocode);
+            // map.fitBounds(bounds);
+
+
+
+            setMap(map);
+
+        }
+    }, [isLoaded])
+    const updateCurrentMapCenter = (e) => {
+        if (map) {
+            console.log(map)
+            let mapGeo = map.getCenter();
+            let LatLng = { lat: mapGeo.lat(), lng: mapGeo.lng() }
+            setMapViewCenter(LatLng)
+            // console.log({lat: mapGeo.lat(), lng: mapGeo.lng()})
+            let latLngBounds = map.getBounds();
+
+            setMapViewBounds(latLngBounds);
+        }
+        // console.log("dragged")
+    }
+
+
+    const testFunc = () => {
+        if (map) {
+            let boundsObj = map.getBounds();
+            let centerObj = map.getCenter();
+            let lat = centerObj.lat();
+            let lng = centerObj.lng();
+            // console.log([lat, lng]);
+            // console.log(boundsObj);
+            // map.panTo({lat: 51, lng: -0.8})
+            // console.log(currentMapCenter)
+        }
+    }
+    const updateMapCenter = (geocode) => {
+        if (map) {
+            map.panTo({
+                lat: geocode[0],
+                lng: geocode[1]
+            })
+        }
+    }
+
+    const printStatement = () => {
+        console.log("center changed!")
+    }
+
+    const [placeToConfirm, setPlaceToConfirm] = useState(null);
+
+    /**
+    * @param  placeObj - see data structures.
+    */
+    const addPlaceToConfirm = (placeObj) => {
+        clearPlaceToConfirm();
+        setPlaceToConfirm(placeObj);
+        updateMapCenter(placeObj.geocode);
+    }
+    const clearPlaceToConfirm = () => {
+        setPlaceToConfirm(null);
+    }
+    useEffect(() => {
+        if (isLoaded) {
+            // cmon()
+
+        }
+    }, [])
+    const cmon = async () => {
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        const markerTest = new AdvancedMarkerElement({
+            map: map,
+            position: { lat: 51, lng: -0.8 },
+            title: "testing",
+            // zIndex: 2,
+        })
+    }
+
+
+    const gMap = useMemo(() => {
+        return (<GoogleMap
+            mapContainerStyle={{ width: "100%", height: "100%" }}
+            center={london.geocode}
+            zoom={9}
+            onLoad={(map) => setMap(map)}
+            onUnmount={() => onUnmount()}
+            options={{ fullscreenControl: false, mapTypeControl: false }}
+        >
+
+        </GoogleMap>)
+    }, [])
     return (
         <>
-            <p className="">Test Page</p>
-
-
+            <p onClick={() => testFunc()} className="">Test Page</p>
 
             <div className="flx-r w-100 five">
                 <div className="flx-c flx-1">
@@ -443,23 +618,32 @@ export const Test = () => {
                     </DragDropContext>
 
                 </div>
-                <div className="flx-1">
 
-                    <DragDropContext onDragEnd={onDragEndItinerary}>
-                        {tripState.dayOrder.map((dayNum, id) => {
-                            const day = tripState.days[dayNum]
-                            const places = day.placeIds.map((placeId) => tripState.places[placeId])
-
-                            return <Suspense fallback={<div>Loading...</div>}>
-                                <FlowBoxDraggable key={day.id} id={id} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} />
-                            </Suspense>
-                        })}
-
-                    </DragDropContext>
-
-
-
+                <div onMouseUp={() => updateCurrentMapCenter()} id='gMap' className="mapBox">
+                    {/* <GoogleSearch isLoaded={isLoaded} mapBounds={mapViewBounds} addPlaceToConfirm={addPlaceToConfirm} /> */}
+                    <PlaceToConfirmCard placeToConfirm={placeToConfirm} clearPlaceToConfirm={() => setPlaceToConfirm(null)} />
+                    <GoogleMapBox mapCenter={london.geocode} />
                 </div>
+
+                {/* <APIProvider apiKey='AIzaSyD6EGcKbaI-RJrDL0EWbLGOd0XxXAmSxyo'>
+                    <div id='gMap' ref={mapRef} className='mapBox'>
+                        <Map
+                            defaultZoom={9}
+                            defaultCenter={{ lat: 51.50735, lng: -0.12776 }}
+                            mapId="53a011bc3302095"
+                            mapTypeControl={false}
+                            fullscreenControl={false}
+                        />
+                        <AdvancedMarker position={london.geocode} onClick={() => setMarkerInfoOpen(!markerInfoOpen)}>
+                            <Pin background="red" />
+                        </AdvancedMarker>
+                        {markerInfoOpen &&
+                            <InfoWindow position={london.geocode} anchor="" pixelOffset={[0, -25]} onCloseClick={() => setMarkerInfoOpen(false)}>
+                                <p className='m-0'>Center of London</p>
+                            </InfoWindow>
+                        }
+                    </div>
+                </APIProvider> */}
             </div>
 
 

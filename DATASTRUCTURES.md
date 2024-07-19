@@ -146,4 +146,26 @@ placeToConfirm = {
     placeName: "",
     placeId: "", - from API
 }
+placeObj = {
+            placeName: string
+            info: "", // biz hours - regularOpeningHours explore
+            address: string
+            imgURL: string
+            favorite: boolean (default false)
+            category: textFunctions.capitalize(autoCompletePlace.types[0].replace(/_/g," ")), // ?? .make better
+            lat: number
+            long: number
+            geocode: [number, number]
+            placeId: string
+            rating: float rounded to tenth
+         }
 
+
+markerObj = {
+    id: number (= local_id of place, or 0 if the place is the placeTo Confirm)
+    placeName: string
+    position: {lat: number, lng: number}
+    isPlaceToConfirm: boolean
+    dayId = number | null 
+    infoWindowOpen: boolean
+}

@@ -17,6 +17,8 @@ import ItineraryUpdatedModal from '../components/ItineraryUpdatedModal'
 import OpenMapBox from '../components/OpenMapBox'
 import { Fade, Slide } from 'react-awesome-reveal'
 import ConfirmationModal from '../components/ConfirmationModal'
+import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
+import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
@@ -27,6 +29,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const { setSignUpIsOpen, setAuthIndex } = useContext(DataContext);
     const { loadCityImg, mapBoxCategoryKey } = useContext(DataContext);
     const { mobileMode, mobileModeNarrow } = useContext(DataContext);
+    const { geoToLatLng } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
@@ -53,10 +56,11 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     //     geocode: [51.507748, -0.099469],
     //     placeId: "2",
     // });
-    const [markers, setMarkers] = useState([]);
+    const [markers, setMarkers] = useState({});
     const [newPlaceMarker, setNewPlaceMarker] = useState(null);
     const [searchText, setSearchText] = useState('');
-    const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]);
+    // const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]);
+    const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? { lat: currentTrip.geocode[0], lng: currentTrip.geocode[1] } : { lat: 51.50735, lng: -0.12776 });
     const [mapCenterToggle, setMapCenterToggle] = useState(false);
     const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
     // const [suggestedPlaces, setSuggestedPlaces] = useState([]);
@@ -118,17 +122,44 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     }, [])
 
     useEffect(() => {
-        let placeCopy = [...places];
-        // console.log(places)
-        // console.log(placeToConfirm)
-        if (placeToConfirm) {
-            // placeCopy.push(placeToConfirm)
-            setNewPlaceMarker(placeToConfirm);
-        } else {
-            setNewPlaceMarker(null);
+        updateMarkers()
+    }, [places, placeToConfirm])
+    const updateMarkers = () => {
+        let placesCopy = [...places];
+        let markersObj = {};
+        for (let i=0; i<placesCopy.length; i++) {
+            let place = placesCopy[i];
+            markersObj[place.id] = {
+                id: place.id,
+                placeName: place.placeName,
+                position: geoToLatLng(place.geocode),
+                isPlaceToConfirm: false,
+                infoWindowOpen: false,
+                dayId: null,
+            }
         }
-        setMarkers(placeCopy)
-    }, [placeToConfirm, places])
+        if (placeToConfirm) {
+            markersObj[0] = {
+                id: 0,
+                placeName: placeToConfirm.placeName,
+                position: geoToLatLng(placeToConfirm.geocode),
+                isPlaceToConfirm: true,
+                infoWindowOpen: false,
+                dayId: null,
+            }
+        }
+        setMarkers(markersObj)
+    }
+
+    // useEffect(() => {
+    //     let placeCopy = [...places];
+    //     if (placeToConfirm) {
+    //         setNewPlaceMarker(placeToConfirm);
+    //     } else {
+    //         setNewPlaceMarker(null);
+    //     }
+    //     setMarkers(placeCopy)
+    // }, [placeToConfirm, places])
 
 
     function wait(ms) {
@@ -220,54 +251,96 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
     const clearPlaceToConfirm = () => {
         setPlaceToConfirm(null)
+        removeMarker(null, true);
+    }
+
+    /** 
+     * @param place placeObj
+     * @param isPlaceToConfirm boolean
+     */
+    const addMarker = (place, isPlaceToConfirm) => {
+        const markerObj = {
+            id: isPlaceToConfirm ? 0 : place.id,
+            placeName: place.placeName,
+            position: geoToLatLng(place.geocode),
+            isPlaceToConfirm: isPlaceToConfirm,
+            infoWindowOpen: false,
+            dayId: null, 
+        }
+        let markersCopy = {...markers};
+        markersCopy[markerObj.id] = markerObj;
+        console.log(markersCopy)
+        setMarkers(markersCopy);
+    }
+    /**
+     * @param place placeObj, you can use null if placeToConfirm
+     * @param isPlaceToConfirm boolean
+     */
+    const removeMarker = (place, isPlaceToConfirm) => {
+        let markersCopy = {...markers};
+        if (isPlaceToConfirm) {
+            delete markersCopy[0]
+
+        } else {
+            delete markersCopy[place.id]
+        }
+        setMarkers(markersCopy);
     }
 
     const addPlaceToConfirm = async (place) => {
-
-        // only load image for place if there isn't already an imgUrl defined in the place object
-        let imgUrl = ""
-        let imgQuery = ""
-        if (!place.imgUrl) {
-            // let imgQuery = place.name.replace(/ /g, '-')
-            try {
-                imgQuery = place.text.replace(/ /g, '-')
-            }
-            catch {
-                imgQuery = place.placeName.replace(/ /g, '-')
-            }
-            imgUrl = await loadCityImg(imgQuery)
-        } else {
-            imgUrl = place.imgUrl
-        }
-        let placeInfo = "";
-        let newPlace = {};
-        if (place.place_name) {
-            let placeCategory = place.properties.category ?? "No Category";
-
-            newPlace = {
-                placeName: place.text,
-                info: placeInfo,
-                address: place.place_name.split(", ").slice(1, -1).join(", "),
-                imgURL: imgUrl,
-                category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
-                favorite: false,
-                lat: place.geometry.coordinates[1],
-                long: place.geometry.coordinates[0],
-                geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-                placeId: place.id,
-            }
-        } else {
-            newPlace = {
-                ...place,
-                favorite: false,
-            }
-        }
+        clearPlaceToConfirm();
+        setPlaceToConfirm(place);
+        // addMarker(place, true)
+        updateMapCenter(place.geocode);
         
-        updateMapCenter(newPlace.geocode);
+        // only load image for place if there isn't already an imgUrl defined in the place object
+        // let imgUrl = ""
+        // let imgQuery = ""
+        // if (!place.imgUrl) {
+        //     // let imgQuery = place.name.replace(/ /g, '-')
+        //     try {
+        //         imgQuery = place.text.replace(/ /g, '-')
+        //     }
+        //     catch {
+        //         imgQuery = place.placeName.replace(/ /g, '-')
+        //     }
+        //     imgUrl = await loadCityImg(imgQuery)
+        // } else {
+        //     imgUrl = place.imgUrl
+        // }
+        // let placeInfo = "";
+        // let newPlace = {};
+        // if (place.place_name) {
+        //     let placeCategory = place.properties.category ?? "No Category";
+
+        //     newPlace = {
+        //         placeName: place.text,
+        //         info: placeInfo,
+        //         address: place.place_name.split(", ").slice(1, -1).join(", "),
+        //         imgURL: imgUrl,
+        //         category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
+        //         favorite: false,
+        //         lat: place.geometry.coordinates[1],
+        //         long: place.geometry.coordinates[0],
+        //         geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
+        //         placeId: place.id,
+        //     }
+        // } else {
+        //     newPlace = {
+        //         ...place,
+        //         favorite: false,
+        //     }
+        // }
+        
+        // updateMapCenter(newPlace.geocode);
+
         // setMapCenter(newPlace.geocode)
         // setMapCenterToggle(!mapCenterToggle);
-        setPlaceToConfirm(newPlace)
-        resetSearch()
+
+        // setPlaceToConfirm(newPlace)
+
+
+        // resetSearch()
     }
 
     const addPlace = async () => {
@@ -449,8 +522,13 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                     .then((response) => {
                         console.log(response.data)
                         placesCopy.splice(index, 1)
+                        for (let i=0; i<placesCopy.length; i++) {
+                            let place = placesCopy[i];
+                            place.id = i+1
+                        }
                         setPlaces(placesCopy)
-                        currentTripCopy.places.splice(index, 1)
+                        currentTripCopy.places = placesCopy;
+                        // currentTripCopy.places.splice(index, 1)
                         setCurrentTrip(currentTripCopy)
                         // try {
                         //     placeCardRefs.current[index].classList.add("shown")
@@ -469,8 +547,12 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             } else {
                 // places being updated without user sign in
                 placesCopy.splice(index, 1)
+                for (let i=0; i<placesCopy.length; i++) {
+                    let place = placesCopy[i];
+                    place.id = i+1
+                }
                 currentTripCopy.places = placesCopy
-                setPlaces(placesCopy)
+                setPlaces(placesCopy);
                 setCurrentTrip(currentTripCopy)
                 // try {
                 //     placeCardRefs.current[index].classList.add("shown")
@@ -696,6 +778,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         } else {
             addedPlaceAddressesCopy = []
         }
+        console.log(addedPlaceAddressesCopy)
         setAddedPlaceAddresses(addedPlaceAddressesCopy)
         // console.log('updated added place addresses')
     }
@@ -881,7 +964,8 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
     // [map code]
     const updateMapCenter = (geocode) => {
-        setMapCenter(geocode);
+        // setMapCenter(geocode);
+        setMapCenter(geoToLatLng(geocode));
         setMapCenterToggle(!mapCenterToggle);
     }
 
@@ -953,7 +1037,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                 <div className={`body-section ${mobileMode ? "flx-c mobile" : "flx-r-reverse"}`}>
                     <div className={`add-places-c1 map-section flx-5`}>
-                        <div className={`gray-box fullHeight ${mobileMode && "fullWidth"} position-relative flx`}>
+                        <div className={`gray-box fullHeight ${placeToConfirm && "mapbtn-transformation"} ${mobileMode && "fullWidth"} position-relative flx`}>
 
                             <div className="searchBar position-absolute w-100 z-10000 d-none">
                                 <div className="position-relative w-100 h-100">
@@ -988,63 +1072,13 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                 </div>
                             </div>
 
-                            {placeToConfirm &&
-                                // <Fade className='z-1' duration={300} fraction={0} triggerOnce>
-
-                                <div className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
-                                    <div className="placeCard-PTC w-97 position-relative flx-r my-2">
-                                        <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute ${!mobileMode && "showOnHover"} x-large color-gains`}>
-                                            close
-                                        </span>
-
-                                        <div className="placeCard-img-div flx-1">
-                                            <img className="placeCard-img" src={placeToConfirm.imgURL} />
-                                        </div>
-                                        <div ref={ptcCardBodyRef} className="placeToConfirmCard-body flx-2">
-                                            <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                                            <p className="body-title-PTC">{placeToConfirm.placeName.length > placeToConfirmCardTitleCharLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit).trim() + "..." : placeToConfirm.placeName}</p>
-                                            {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
-                                            <p className="body-info-PTC pointer mb-1">{placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1)}</p>
-                                            <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-
-                                            {addedPlaceAddresses.includes(placeToConfirm.address) ?
-                                                <div className="flx-r position-bottom">
-                                                    <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
-                                                        <div className={`${mobileModeNarrow ? "addIcon-filled-green-smallest" : "addIcon-filled-green-smaller"} flx mx-2`}>
-                                                            <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} white-text`}>
-                                                                done
-                                                            </span>
-                                                        </div>
-                                                        <div className="flx">
-                                                            <p className={`green-text m-auto ${mobileModeNarrow ? "smedium" : "page-text-smaller"}`}>Added to places</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                :
-                                                <div className="flx-r position-bottom">
-                                                    <div onClick={() => addPlace()} className="add-place-btn position-relative">
-                                                        {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
-                                                        <div className="flx pointer mx-2">
-                                                            <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
-                                                                add
-                                                            </span>
-                                                        </div>
-                                                        <div className="flx">
-                                                            <p className={`purple-text m-auto ${mobileModeNarrow ? "smedium" : "page-text-smaller"}`}>Add to places</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            }
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                                // </Fade>
-                            }
+                            
+                            <PlaceToConfirmCard addPlace={addPlace} removePlace={removePlace} placeToConfirm={placeToConfirm} clearPlaceToConfirm={clearPlaceToConfirm} placesAddressList={addedPlaceAddresses} />
 
                             {/* <OpenMap mapCenter={mapCenter} markers={markers} newPlaceMarker={newPlaceMarker} /> */}
-                            <OpenMapBox addPlaceToConfirm={addPlaceToConfirm} newPlaceMarker={newPlaceMarker} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} markers={markers} />
+                            {/* <OpenMapBox addPlaceToConfirm={addPlaceToConfirm} newPlaceMarker={newPlaceMarker} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} markers={markers} /> */}
+                            <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} />
+
                         </div>
                     </div>
 
