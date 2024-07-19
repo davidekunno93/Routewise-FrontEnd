@@ -61,6 +61,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     // loading the map
     const { isLoaded } = useLoadScript({
         id: 'google-maps-script',
+        googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
         libraries: ["core", "maps", "places", "marker"]
     })
 
@@ -199,7 +200,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                 </button>
             </div>
             {isLoaded ?
-                <APIProvider apiKey=''>
+                <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_API_KEY}>
                     <Map
                         defaultZoom={9}
                         onBoundsChanged={updateMapViewBounds}
