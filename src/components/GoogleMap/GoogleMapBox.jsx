@@ -59,10 +59,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     }
 
     // loading the map
+    const gLibrary = ["core", "maps", "places", "marker"];
     const { isLoaded } = useLoadScript({
         id: 'google-maps-script',
         googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
-        libraries: ["core", "maps", "places", "marker"]
+        libraries: gLibrary
     })
 
 
@@ -194,7 +195,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     <div className="material-symbols-outlined o-80">
                         home_pin
                     </div>
-                    <div className="toolTip">
+                    <div className="toolTip narrow">
                         <p>Recenter map to trip location</p>
                     </div>
                 </button>

@@ -84,6 +84,9 @@ button.gMap-btn .toolTip {
     position: absolute;
     left: calc(100% + 20px);
 }
+button.gMap-btn .toolTip.narrow {
+    width: 180px;
+}
 button.gMap-btn .toolTip::before {
     content: "";
     height: 0;
