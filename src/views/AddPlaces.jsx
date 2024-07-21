@@ -19,6 +19,7 @@ import { Fade, Slide } from 'react-awesome-reveal'
 import ConfirmationModal from '../components/ConfirmationModal'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
+import PlaceCard from '../components/PlaceCard'
 
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
@@ -127,7 +128,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const updateMarkers = () => {
         let placesCopy = [...places];
         let markersObj = {};
-        for (let i=0; i<placesCopy.length; i++) {
+        for (let i = 0; i < placesCopy.length; i++) {
             let place = placesCopy[i];
             markersObj[place.id] = {
                 id: place.id,
@@ -265,9 +266,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             position: geoToLatLng(place.geocode),
             isPlaceToConfirm: isPlaceToConfirm,
             infoWindowOpen: false,
-            dayId: null, 
+            dayId: null,
         }
-        let markersCopy = {...markers};
+        let markersCopy = { ...markers };
         markersCopy[markerObj.id] = markerObj;
         console.log(markersCopy)
         setMarkers(markersCopy);
@@ -277,7 +278,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
      * @param isPlaceToConfirm boolean
      */
     const removeMarker = (place, isPlaceToConfirm) => {
-        let markersCopy = {...markers};
+        let markersCopy = { ...markers };
         if (isPlaceToConfirm) {
             delete markersCopy[0]
 
@@ -292,7 +293,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         setPlaceToConfirm(place);
         // addMarker(place, true)
         updateMapCenter(place.geocode);
-        
+
         // only load image for place if there isn't already an imgUrl defined in the place object
         // let imgUrl = ""
         // let imgQuery = ""
@@ -331,7 +332,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         //         favorite: false,
         //     }
         // }
-        
+
         // updateMapCenter(newPlace.geocode);
 
         // setMapCenter(newPlace.geocode)
@@ -493,8 +494,8 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     }
     const placeCardRefs = useRef([]);
     useEffect(() => {
-        console.log(placeCardRefs.current)
-        console.log(cardBodyRef)
+        // console.log(placeCardRefs.current)
+        // console.log(cardBodyRef)
         // if (placeCardRefs.current) {
         //     placeCardRefs.current = placeCardRefs.current.slice(0, places.length);
         // } 
@@ -522,9 +523,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                     .then((response) => {
                         console.log(response.data)
                         placesCopy.splice(index, 1)
-                        for (let i=0; i<placesCopy.length; i++) {
+                        for (let i = 0; i < placesCopy.length; i++) {
                             let place = placesCopy[i];
-                            place.id = i+1
+                            place.id = i + 1
                         }
                         setPlaces(placesCopy)
                         currentTripCopy.places = placesCopy;
@@ -547,9 +548,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             } else {
                 // places being updated without user sign in
                 placesCopy.splice(index, 1)
-                for (let i=0; i<placesCopy.length; i++) {
+                for (let i = 0; i < placesCopy.length; i++) {
                     let place = placesCopy[i];
-                    place.id = i+1
+                    place.id = i + 1
                 }
                 currentTripCopy.places = placesCopy
                 setPlaces(placesCopy);
@@ -778,7 +779,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         } else {
             addedPlaceAddressesCopy = []
         }
-        console.log(addedPlaceAddressesCopy)
+        // console.log(addedPlaceAddressesCopy)
         setAddedPlaceAddresses(addedPlaceAddressesCopy)
         // console.log('updated added place addresses')
     }
@@ -1072,7 +1073,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                 </div>
                             </div>
 
-                            
+
                             <PlaceToConfirmCard addPlace={addPlace} removePlace={removePlace} placeToConfirm={placeToConfirm} clearPlaceToConfirm={clearPlaceToConfirm} placesAddressList={addedPlaceAddresses} />
 
                             {/* <OpenMap mapCenter={mapCenter} markers={markers} newPlaceMarker={newPlaceMarker} /> */}
@@ -1086,11 +1087,12 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                         <div className={`places-section ${mobileMode && "mt-4"}`}>
                             <div className="placesList flx-r gap-6">
-                                <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Added places ({places.length})</p>
+                                <p onClick={() => setSelectedPlacesList("Top sites")} className={`${selectedPlacesList === "Top sites" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Top Sites</p>
                                 <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Suggested places</p>
+                                <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Added places <span className={`numberBox ${selectedPlacesList === "Added Places" ? "selected" : ""}`}>{places.length}</span></p>
                             </div>
                             <div className="box-bar">
-                                <div ref={beamRef} className={`beam ${mobileModeNarrow && "mobileModeNarrow"} ${selectedPlacesList === "Added Places" && "addedPlaces"} ${selectedPlacesList === "Suggested Places" && "suggestedPlaces"}`}></div>
+                                <div ref={beamRef} className={`beam ${mobileModeNarrow && "mobileModeNarrow"} ${selectedPlacesList === "Top sites" && "topSites"} ${selectedPlacesList === "Added Places" && "addedPlaces"} ${selectedPlacesList === "Suggested Places" && "suggestedPlaces"}`}></div>
                             </div>
 
                             {selectedPlacesList === "Added Places" &&
@@ -1104,46 +1106,62 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                         <Scrollbars autoHide>
 
                                             {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
+                                                
+                                                return <PlaceCard
+                                                    ref={e => placeCardRefs.current[index] = e}
+                                                    place={place}
+                                                    index={index}
+                                                    updateMapCenter={updateMapCenter}
+                                                    addStar={addStar}
+                                                    removeStar={removeStar}
+                                                    removePlace={removePlace}
+                                                />
+
+
+
+
                                                 let firstCategory = place.category.split(",")[0]
                                                 firstCategory = firstCategory.charAt(0).toUpperCase() + firstCategory.slice(1)
 
-                                                return <Fade duration={300} triggerOnce><div className="div-to-create-space-from-fade-for-ref">
-                                                    <div id={`placeholderBefore-${index}`} className="placeCard2-placeholder hidden"></div>
-                                                    <div ref={e => placeCardRefs.current[index] = e} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
+                                                // return <Fade duration={300} triggerOnce><div className="div-to-create-space-from-fade-for-ref">
+                                                //     <div id={`placeholderBefore-${index}`} className="placeCard2-placeholder hidden"></div>
+                                                //     <div ref={e => placeCardRefs.current[index] = e} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
 
-                                                        <div className="placeCard-img-div flx-3">
-                                                            <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
-                                                        </div>
-                                                        <div ref={cardBodyRef} className="placeCard-body flx-5">
-                                                            <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
-                                                            <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}>
-                                                                <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p>
-                                                                <div className="scroller" data-animated="true">
-                                                                    <div className="scroller-inner">
-                                                                        <p className="scroll-text body-title">{place.placeName}</p>
-                                                                        <p className="scroll-text body-title">{place.placeName}</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
-                                                            <p className="body-info">{firstCategory}</p>
-                                                            <p className="m-0 body-address">{place.address}</p>
-                                                        </div>
-                                                        <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                                                //         <div className="placeCard-img-div flx-3">
+                                                //             <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
+                                                //         </div>
+                                                //         <div ref={cardBodyRef} className="placeCard-body flx-5">
+                                                //             <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
+                                                //             <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}>
+                                                //                 <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p>
+                                                //                 <div className="scroller" data-animated="true">
+                                                //                     <div className="scroller-inner">
+                                                //                         <p className="scroll-text body-title">{place.placeName}</p>
+                                                //                         <p className="scroll-text body-title">{place.placeName}</p>
+                                                //                     </div>
+                                                //                 </div>
+                                                //             </div>
+                                                //             {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
+                                                //             <p className="body-info">{firstCategory}</p>
+                                                //             <p className="m-0 body-address">{place.address}</p>
+                                                //         </div>
+                                                //         <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
-                                                            {place.favorite !== true ?
-                                                                <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />
-                                                                :
-                                                                <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/M5Yj2Nu.png" alt="" className="star-full my-2" />
-                                                            }
-                                                            <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                                delete
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                    <div id={`placeholderAfter-${index}`} className="placeCard2-placeholder hidden"></div>
-                                                </Fade>
+                                                //             {place.favorite !== true ?
+                                                //                 <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />
+                                                //                 :
+                                                //                 <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/M5Yj2Nu.png" alt="" className="star-full my-2" />
+                                                //             }
+                                                //             <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                //                 delete
+                                                //             </span>
+                                                //         </div>
+                                                //     </div>
+                                                // </div>
+                                                //     <div id={`placeholderAfter-${index}`} className="placeCard2-placeholder hidden"></div>
+                                                // </Fade>
+
+
                                             })
                                                 :
                                                 <div className="add-places-card">

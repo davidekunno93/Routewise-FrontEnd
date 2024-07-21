@@ -1,10 +1,14 @@
-/* placeToConfirm (PTC) card styles */
 .truncated {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+
+
+/* placeToConfirm (PTC) card styles */
+
 .placeToConfirmCardDiv {
     z-index: 1;
     bottom: 16px;
@@ -35,7 +39,7 @@
 
 .placeCard-PTC {
     width: calc(100% - 14px) !important;
-    height: 150px !important;
+    height: 144px !important;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     background-color: white;
@@ -75,9 +79,9 @@
 
 .placeCard-PTC .body-title {
     font-family: 'Plus Jakarta Sans';
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
-    height: 28px;
+    height: 22px;
     overflow: hidden;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -90,18 +94,18 @@
     height: 20px;
     overflow: hidden;
     /* color: rgb(102, 37, 183); */
-    color: rgb(150, 150, 150);
-    font-size: 14px;
-    margin-top: 0px;
+    color: #7A7A7A;
+    font-size: 12px;
+    margin: 0px;
 }
 
 .placeCard-PTC .body-category {
     font-family: 'Plus Jakarta Sans';
     font-weight: 400;
-    font-size: 14px;
-    color: rgb(180, 180, 180);
+    font-size: 12px;
+    color: #7A7A7A;
     overflow: hidden;
-    margin-bottom: 2px;
+    margin: 0;
     padding: 0;
 }
 
@@ -112,7 +116,8 @@
     font-family: 'Plus Jakarta Sans';
     font-weight: 400;
     font-size: 12px;
-    color: rgb(100, 100, 100);
+    color: #4D4D4D;
+    margin-top: 4px;
     margin-bottom: 4px;
 }
 
@@ -132,11 +137,145 @@
 .rating .score-text {
     margin: 0;
     font-size: 12px;
-    color: #0F0680;
+    color: #7A7A7A;
 }
 
 .rating .star-img {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     object-fit: contain;
+}
+
+.add-place-btn {
+    background-color: #F0EFFF;
+    color: #6663FC;
+    border-radius: 4px;
+    padding: 3px 14px 3px 8px !important;
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    margin: 0 0 0 auto;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.add-place-btn:hover {
+    background-color: #E7E6F2;
+    transition: 0.2s;
+}
+
+.added-place-btn {
+    background-color: #E7F6DD;
+    color: #6663FC;
+    border-radius: 4px;
+    padding: 3px 14px 3px 8px !important;
+    font-weight: 600;
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+    margin: 0 0 0 auto;
+}
+
+
+/* placeCard2 styles */
+.placeCard2 {
+    /* width: 100%; */
+    height: 130px;
+    border-bottom: 2px solid gainsboro;
+    background-color: white;
+    overflow: hidden;
+    transition: 0.3s;
+    padding: 12px 12px;
+    margin-bottom: 12px;
+}
+
+.placeCard2-body {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0px 12px 16px;
+    overflow: hidden;
+}
+
+.placeCard2 .body-title {
+    font-family: 'Plus Jakarta Sans';
+    font-size: 16px;
+    font-weight: 600;
+    height: 22px;
+    overflow: hidden;
+    margin: 0px;
+}
+.placeCard2 .body-category {
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 400;
+    font-size: 12px;
+    color: #7A7A7A;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+.placeCard2 .body-info {
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 400;
+    height: 20px;
+    overflow: hidden;
+    color: #7A7A7A;
+    font-size: 12px;
+    margin: 0px;
+    
+}
+.placeCard2 .body-address {
+    height: 18px;
+    /* border: 1px solid red; */
+    /* overflow: hidden; */
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 400;
+    font-size: 12px;
+    color: #4D4D4D;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+.placeCard2-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.placeCard2.gone {
+    opacity: 0;
+    height: 0;
+    margin-bottom: 0;
+    padding: 0px 12px;
+    border-bottom: none;
+}
+
+.placeCard2.shown {
+    height: 130px;
+    margin-bottom: 12px;
+    padding: 12px;
+    border-bottom: 2px solid gainsboro;
+    opacity: 1;
+    transition-duration: 0s;
+}
+
+.placeCard2.collapse {
+    height: 0;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    /* display: none; */
+    border-bottom: none;
+}
+
+.placeCard2-placeholder {
+    height: 167.6px;
+    width: 100%;
+    transition-duration: 0s;
+}
+
+.placeCard2-placeholder.hidden {
+    height: 0px;
 }

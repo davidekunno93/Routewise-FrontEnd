@@ -412,6 +412,28 @@ const DataProvider = (props) => {
     const geoToLatLng = (geocode) => {
         return { lat: geocode[0], lng: geocode[1] }
     }
+    const renderRating = (num) => {
+        // input = num from 0 to 5, returns array of star fill numbers
+
+        const ratingArr = [];
+        for (let i = 0; i < 5; i++) {
+            if (num >= 1) {
+                ratingArr.push(1);
+                num -= 1;
+                num = (Math.round(num * 10) / 10); // removes awkward recurring numbers
+            } else if (num < 1) {
+                if (num >= 0.8) {
+                    ratingArr.push(1);
+                } else if (num <= 0.2) {
+                    ratingArr.push(0);
+                } else {
+                    ratingArr.push(0.5);
+                }
+                num = 0;
+            }
+        }
+        return ratingArr;
+    }
 
     return (
         <DataContext.Provider value={{
@@ -422,7 +444,7 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng
+            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating
         }}>
             {props.children}
         </DataContext.Provider>

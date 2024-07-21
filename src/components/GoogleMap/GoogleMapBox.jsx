@@ -39,9 +39,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         },
     });
     const [markersState, setMarkersState] = useState(markers ?? testMarkers);
-    useState(() => {
+    useEffect(() => {
+        // console.log(markers)
         setMarkersState(markers)
     }, [markers])
+
 
     const addMarker = () => {
         const markerObj = {
@@ -112,7 +114,6 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             setMarkersState(markersStateCopy);
         },
         toggle: function (id) {
-            console.log(markersState)
             if (markersState[id].infoWindowOpen) {
                 infoWindowFunctions.close(id)
             } else {
@@ -155,6 +156,37 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
 
     const MapPanner = useCallback(({ newMapCenter, mapCenterChanged, setMapCenterChanged }) => {
         const myMap = useMap();
+        // poly coords = NW, SW, SE, NE
+        // const polygonCoords = [
+        //     { lat: 51.774, lng: -0.12 },
+        //     { lat: 51.466, lng: -0.12 },
+        //     { lat: 51.466, lng: -0.8 },
+        //     { lat: 51.774, lng: -0.8 },
+        // ];
+        // const polygon = new google.maps.Polygon({
+        //     paths: polygonCoords,
+        //     strokeColor: "#FF0000",
+        //     strokeOpacity: 0.25,
+        //     strokeWeight: 2,
+        //     fillColor: "#242424",
+        //     fillOpacity: 0.1,
+        // })
+        // polygon.setMap(myMap)
+        // myMap.setOptions() ??
+        // const featureLayer = myMap.getFeatureLayer('LOCALITY');
+        // featureLayer.style = (options) => {
+        //     let place_id = "ChIJdd4hrwug2EcRmSrV3Vo6llI";
+        //     if (options.feature.placeId == place_id) {
+
+        //         return ({
+        //             fillColor: "#242424",
+        //             fillOpacity: 0.15,
+        //             strokeColor: "red",
+        //             strokeOpacity: 0.5,
+        //             strokeWeight: 2,
+        //         })
+        //     }
+        // }
         useEffect(() => {
             if (mapCenterChanged) {
                 myMap.panTo(newMapCenter.position)
@@ -181,6 +213,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     }
     return (
         <>
+            <span className={`material-symbols-outlined boundarySearch onTop white-text ${searchMapViewBounds ? "" : "d-none"}`}>location_searching</span>
             <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapViewBounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
             <div className="gMap-btns">
                 <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className="gMap-btn">
@@ -190,6 +223,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     <div className="toolTip">
                         <p>Toggle <i>Boundary Search {searchMapViewBounds ? "On" : "Off"}</i> - when turned on your place search will only return places within the current map view</p>
                     </div>
+                    {searchMapViewBounds && 
+                    <div className="info o-80">
+                        <p>Searching places within map view only</p>
+                    </div>
+                    }
                 </button>
                 <button id='returnHome' onClick={() => goToTripCenter()} className="gMap-btn">
                     <div className="material-symbols-outlined o-80">
@@ -209,6 +247,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                         mapId="53a011bc3302095"
                         mapTypeControl={false}
                         fullscreenControl={false}
+
                     // onClick={() => addMarker()}
 
                     >

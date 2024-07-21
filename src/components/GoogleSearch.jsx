@@ -20,7 +20,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
     });
     // update search text in input and remove session storage
     useEffect(() => {
-        console.log({ value, status, data });
+        // console.log({ value, status, data });
         if (searchRef.current) {
             searchRef.current.value = value;
         }
@@ -63,38 +63,81 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         // Call fetchFields, passing the desired data fields.
         await place.fetchFields({
             // fields: ["displayName", "formattedAddress", "location", "rating", "regularOpeningHours", "businessStatus"],
-            fields: ["formattedAddress", "location", "rating", "photos"],
+            fields: ["formattedAddress", "location", "rating", "photos", "regularOpeningHours"],
         });
         // const results = await getGeocode({ address: place.formattedAddress });
 
         // Log the result
         // console.log(place.displayName);
         // console.log(place.formattedAddress);
-        // console.log(place.regularOpeningHours)
+        // console.log(place.regularOpeningHours.periods)
+        // console.log(place.regularOpeningHours.weekdayDescriptions)
         // console.log(place.location);
         // console.log(place)
         // console.log(place.photos[0].getURI())
         // setUri(place.photos[0].getURI())
         // console.log(place.rating)
+        // console.log(autoCompletePlace.types)
 
         let newPlace = {
             placeName: autoCompletePlace.structured_formatting.main_text,
-            info: "", // biz hours - regularOpeningHours explore
+            info: place.regularOpeningHours ? place.regularOpeningHours.weekdayDescriptions : "", // biz hours - regularOpeningHours ["Day: 00:00 AM - 00:00 PM",...]
             address: place.formattedAddress,
             imgURL: place.photos[0].getURI(), // photos - getURI
-            category: textFunctions.capitalize(autoCompletePlace.types[0].replace(/_/g, " ")), // ?? .make better
+            category: textFunctions.capitalize(getBestCategory(autoCompletePlace.types).replace(/_/g, " ")), // ?? .make better
             favorite: false,
             lat: place.location.lat(),
             long: place.location.lng(),
             geocode: [place.location.lat(), place.location.lng()],
             placeId: autoCompletePlace.place_id,
-            rating: place.rating.toFixed(1)
+            rating: place.rating ? place.rating.toFixed(1) : null
         }
         console.log(newPlace)
         return newPlace
 
 
     }
+    const getBestCategory = (categoryArr) => {
+        // remove meal delivery, point of interest
+        // negate tourist attraction if museum, park, restaurant
+        // sublocality_level_#, sublocality, locality
+        let bestCategory = "";
+        if (categoryArr.length > 1) {
+            if (categoryArr.includes("meal_delivery")) {
+                categoryArr.splice(categoryArr.indexOf("meal_delivery"), 1);
+            }
+            if (categoryArr.includes("point_of_interest")) {
+                categoryArr.splice(categoryArr.indexOf("point_of_interest"), 1);
+            }
+        }
+
+        bestCategory = categoryArr[0];
+        if (bestCategory === "tourist_attraction" || bestCategory === "establishment") {
+            for (let i = 0; i < categoryArr.length; i++) {
+                if (categoryArr[i] === "museam" || categoryArr[i] === "restaurant" || categoryArr[i] === "park") {
+                    bestCategory = categoryArr[i];
+                }
+            }
+        }
+
+        if (bestCategory.includes("locality")) {
+            bestCategory = "area";
+        }
+        return bestCategory
+    }
+    const getTodaysHours = (openingHoursArr) => {
+        let openingHoursToday = "";
+        for (let i = 0; i < openingHoursArr.length; i++) {
+            let todayAbbr = new Date().toString().split(" ")[0]; // Mon, Tue, Wed.. etc.
+            if (openingHoursArr[i].includes(todayAbbr)) {
+                openingHoursToday = openingHoursArr[i];
+            }
+        }
+        return openingHoursToday
+    }
+    useEffect(() => {
+        // getTodaysHours("hi");
+    }, [])
     const loadPlace = async (autoCompletePlace) => {
         const newPlace = await getPlace(autoCompletePlace);
         addPlaceToConfirm(newPlace);
@@ -130,7 +173,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
                     }
                 }
             }
-        } 
+        }
         // only capture the 'mode' establishment if it comes up more than once in the search
         if (mostDuplications > 1) {
             setEstablishmentOption({
