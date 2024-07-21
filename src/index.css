@@ -5534,8 +5534,9 @@ selection-box-landing.mobile {
 }
 
 .itinerary-sidebar-placeholder {
-  width: 92px;
-  width: 84px;
+  /* width: 92px; */
+  /* width: 84px; */
+  width: 60px;
   background-color: #F0EFFF;
   transition: 0.4s;
   display: flex;
@@ -5544,8 +5545,9 @@ selection-box-landing.mobile {
 
 .itinerary-sidebar-expanded {
   /* width: 92px; */
-  width: 84px;
-  padding: 16px 12px;
+  /* width: 84px; */
+  width: 60px;
+  padding: 16px 8px;
   box-sizing: border-box;
   background-color: #F0EFFF;
   /* position: -webkit-sticky; */
@@ -5566,7 +5568,7 @@ selection-box-landing.mobile {
 
 .itinerary-sidebar-expanded .option-selected {
   width: 100%;
-  height: 68px;
+  height: 48px;
   display: flex;
   /* padding: 8px; */
   box-sizing: border-box;
@@ -5582,7 +5584,7 @@ selection-box-landing.mobile {
 
 .itinerary-sidebar-expanded .option {
   width: 100%;
-  height: 68px;
+  height: 48px;
   display: flex;
   /* padding: 8px; */
   box-sizing: border-box;
@@ -5609,21 +5611,21 @@ selection-box-landing.mobile {
 }
 
 .itinerary-sidebar-expanded .option-selected .icon {
-  width: 44px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   display: flex;
-  padding: 0px 12px;
+  padding: 0px 10px;
   /* margin: auto; */
 }
 
 .itinerary-sidebar-expanded .option .icon,
 .itinerary-sidebar-expanded .option-selected .icon {
-  width: 44px;
-  width: 30px;
-  width: 36px;
-  height: 30px;
-  padding: 0px 12px;
+  /* width: 44px;
+  width: 30px; */
+  width: 24px;
+  height: 24px;
+  padding: 0px 10px;
   object-fit: contain;
   display: flex;
   /* margin: auto; */
@@ -5744,7 +5746,7 @@ selection-box-landing.mobile {
   width: 100%; 
   /* width: 84px; */
   /* margin-left: 14px; */
-  padding-right: 16px;
+  padding-right: 10px;
   overflow: hidden;
   transition: 0.4s;
   box-sizing: border-box;

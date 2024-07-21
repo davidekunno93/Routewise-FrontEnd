@@ -316,9 +316,13 @@ Drop down when choosing city to travel to
 Integrate API
 
 <!-- 15Jul24 Team Meeting -->
-Jenny updated added places/suggested places/top sites design
-Jenny will update the place card design
+<!-- Jenny updated added places/suggested places/top sites design -->
+<!-- Jenny will update the place card design -->
 
 <!-- 18Jul24 Team Meeting -->
 Does Google API have place descriptions?
-Update place card design
+<!-- Update place card design -->
+
+daycolor map btn?
+get day hours
+linked in post

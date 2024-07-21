@@ -753,6 +753,26 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     updateMarkers()
   }, [tripState, placeToConfirm])
 
+  /**
+   * 
+   * @param placeId - use place's local id
+   * @param numberOnly - set true to return just the number of the dayId as a string 
+   * @returns dayId i.e. "day-2" as a string
+   */
+  const dayIdOfPlace = (placeId, numberOnly) => {
+    // loop thru each day
+    for (let dayNum of tripState.day_order) {
+      if (tripState.days[dayNum].placeIds.includes(placeId)) {
+        if (numberOnly) {
+          return tripState.days[dayNum].id.split("-")[1];
+        }
+        return tripState.days[dayNum].id;
+      }
+    }
+    return null;
+  }
+  
+
   const updateMarkers = () => {
     let placesCopy = Object.values(currentTrip.itinerary ? currentTrip.itinerary.places : tripState.places);
     let markersObj = {};
@@ -764,7 +784,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
             position: geoToLatLng(place.geocode),
             isPlaceToConfirm: false,
             infoWindowOpen: false,
-            dayId: null,
+            dayId: dayIdOfPlace(place.id, true),
         }
     }
     if (placeToConfirm) {
@@ -1459,8 +1479,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     let logoSpace = document.getElementById('sb-logoSpace');
     const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
     const sidebar = document.getElementById('itinerarySidebar')
-    sidebar.style.width = "260px"
-    sidebarPlaceholder.style.width = "260px"
+    sidebar.style.width = "240px"
+    sidebarPlaceholder.style.width = "240px"
 
     wait(200).then(() => {
       // logo.style.width = "252px"
@@ -1487,7 +1507,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     const sidebar = document.getElementById('itinerarySidebar')
     // logo.style.width = "34px"
     arrow.classList.remove("rotate-180");
-    logoSpace.style.paddingRight = "16px";
+    logoSpace.style.paddingRight = "10px";
 
     for (let i = 0; i < expandItems.length; i++) {
       expandItems[i].classList.remove('show')
@@ -1496,8 +1516,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       })
     }
     wait(200).then(() => {
-      sidebar.style.width = "84px"
-      sidebarPlaceholder.style.width = "84px"
+      sidebar.style.width = "60px"
+      sidebarPlaceholder.style.width = "60px"
     })
     setSidebarExpanded(false)
   }
@@ -1639,6 +1659,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       showDayPanelBtn.classList.remove('o-none')
     })
   }
+
+
 
   return (
     <>
@@ -2199,7 +2221,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                   {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
                   {/* <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} /> */}
-                  <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} />
+                  <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} markerColors />
                   
                 </div>
 

@@ -10,7 +10,7 @@ import './googlemapbox.scoped.css'
 // currentMapBounds
 // tripMapBounds
 
-const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers }) => {
+const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors }) => {
     // const [testMarkers, setTestMarkers] = useState(markers)
     const [testMarkers, setTestMarkers] = useState({
         "test-1": {
@@ -40,7 +40,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     });
     const [markersState, setMarkersState] = useState(markers ?? testMarkers);
     useEffect(() => {
-        // console.log(markers)
+        console.log(markers)
         setMarkersState(markers)
     }, [markers])
 
@@ -204,13 +204,81 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         if (btn.classList.contains("pressed")) {
             // unlocalize
             setSearchMapViewBounds(false);
-            // btn.classList.remove("pressed");
         } else {
             // localize
             setSearchMapViewBounds(true);
-            // btn.classList.add("pressed");
         }
     }
+    const [markerColorsOn, setMarkerColorsOn] = useState(false);
+    const numberToBgColor = (num) => {
+        let lastDigit = num.slice(-1)
+        if (lastDigit === "1") {
+            return "red"
+        }
+        if (lastDigit === "2") {
+            return "#000bda" // blue
+        }
+        if (lastDigit === "3") {
+            return "#11a531" // green
+        }
+        if (lastDigit === "4") {
+            return "yellow"
+        }
+        if (lastDigit === "5") {
+            return "#ae0dd2" // purple
+        }
+        if (lastDigit === "6") {
+            return "gray"
+        }
+        if (lastDigit === "7") {
+            return "orange"
+        }
+        if (lastDigit === "8") {
+            return "lightblue"
+        }
+        if (lastDigit === "9") {
+            return "pink"
+        }
+        if (lastDigit === "0") {
+            return "pink"
+        }
+        return null;
+    }
+    const numberToBorderColor = (num) => {
+        let lastDigit = num.slice(-1)
+
+        if (lastDigit === "2") {
+            return "navy" // blue
+        }
+        if (lastDigit === "3") {
+            return "green"
+        }
+        if (lastDigit === "4") {
+            return "#cdcd15" // yellow
+        }
+        if (lastDigit === "5") {
+            return "purple"
+        }
+        if (lastDigit === "6") {
+            return "#4D4D4D" // gray
+        }
+        if (lastDigit === "7") {
+            return "#c2820b" // orange
+        }
+        if (lastDigit === "8") {
+            return "#3c79b7" // lightblue
+        }
+        if (lastDigit === "9") {
+            return "#ab7ea8" // pink
+        }
+        if (lastDigit === "0") {
+            return "darkred"
+        }
+        return null;
+    }
+    useEffect(() => {
+        console.log(numberToBgColor("10786"))
+    }, [])
     return (
         <>
             <span className={`material-symbols-outlined boundarySearch onTop white-text ${searchMapViewBounds ? "" : "d-none"}`}>location_searching</span>
@@ -223,20 +291,30 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     <div className="toolTip">
                         <p>Toggle <i>Boundary Search {searchMapViewBounds ? "On" : "Off"}</i> - when turned on your place search will only return places within the current map view</p>
                     </div>
-                    {searchMapViewBounds && 
-                    <div className="info o-80">
-                        <p>Searching places within map view only</p>
-                    </div>
+                    {searchMapViewBounds &&
+                        <div className="info o-80">
+                            <p>Searching places within map view only</p>
+                        </div>
                     }
                 </button>
                 <button id='returnHome' onClick={() => goToTripCenter()} className="gMap-btn">
-                    <div className="material-symbols-outlined o-80">
+                    <span className="material-symbols-outlined o-80">
                         home_pin
-                    </div>
+                    </span>
                     <div className="toolTip narrow">
                         <p>Recenter map to trip location</p>
                     </div>
                 </button>
+                {markerColors &&
+                    <button id='mapColors' onClick={() => setMarkerColorsOn(!markerColorsOn)} className={`gMap-btn ${markerColorsOn && "pressed"}`}>
+                        <span className="material-symbols-outlined o-80">
+                            palette
+                        </span>
+                        <div className="toolTip narrow">
+                            <p>Toggle unique marker colors for each trip day</p>
+                        </div>
+                    </button>
+                }
             </div>
             {isLoaded ?
                 <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_API_KEY}>
@@ -256,11 +334,24 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
 
                             return <>
                                 <AdvancedMarker key={index} position={marker.position} onClick={() => infoWindowFunctions.toggle(marker.id)} zIndex={marker.isPlaceToConfirm ? 1 : null} >
-                                    <Pin
-                                        background={`${marker.isPlaceToConfirm ? "#6663FC" : ""}`}
-                                        borderColor={`${marker.isPlaceToConfirm ? "#5553d7" : ""}`}
-                                        glyphColor={`${marker.isPlaceToConfirm ? "#5553d7" : ""}`}
-                                    />
+                                    {marker.isPlaceToConfirm ?
+                                        <Pin
+                                            background="#6663FC"
+                                            borderColor="#5553d7"
+                                            glyphColor="#5553d7"
+                                        />
+                                        :
+                                        markerColorsOn ?
+                                            <Pin
+                                                background={numberToBgColor(marker.dayId)}
+                                                borderColor={numberToBorderColor(marker.dayId)}
+                                                glyphColor={numberToBorderColor(marker.dayId)}
+                                            />
+                                            :
+                                            <Pin
+
+                                            />
+                                    }
                                 </AdvancedMarker>
                                 {marker.infoWindowOpen &&
                                     <InfoWindow key={index} position={marker.position} pixelOffset={[0, -25]} onCloseClick={() => infoWindowFunctions.close(marker.id)}>
