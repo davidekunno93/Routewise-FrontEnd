@@ -201,16 +201,16 @@
 
 .placeCard2 .body-title {
     font-family: 'Plus Jakarta Sans';
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 600;
-    height: 22px;
+    height: 24px;
     overflow: hidden;
     margin: 0px;
 }
 .placeCard2 .body-category {
     font-family: 'Plus Jakarta Sans';
     font-weight: 400;
-    font-size: 12px;
+    font-size: 14px;
     color: #7A7A7A;
     overflow: hidden;
     margin: 0;
@@ -224,7 +224,7 @@
     color: #7A7A7A;
     font-size: 12px;
     margin: 0px;
-    
+
 }
 .placeCard2 .body-address {
     height: 18px;

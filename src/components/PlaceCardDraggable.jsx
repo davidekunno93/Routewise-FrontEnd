@@ -1,6 +1,8 @@
-import React, { useDebugValue, useEffect, useRef, useState } from 'react'
+import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
+import { DataContext } from '../Context/DataProvider';
 
 export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
+    const { textFunctions, renderRating } = useContext(DataContext);
     // PLACE CARD TITLE ELLIPSIS RE-RENDER CODE
     // const cardBodyRef = useRef(null);
     // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
@@ -74,7 +76,28 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                 <div ref={dayId === "day-1" && id == 0 ? cardBodyRef : null} className="placeCard-body flx-3">
                     {/* <p className="body-title">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit)+"..." : place.placeName}</p> */}
                     <p className="body-title">{place.placeName}</p>
-                    <p className="body-info">{place.category ? place.category.split(",")[0].charAt(0).toUpperCase() + place.category.split(",")[0].slice(1) : "No category"}</p>
+                    <div className="align-all-items">
+                            <p className="body-category">{textFunctions.capitalize(place.category.split(',')[0])}</p>
+                            {place.rating &&
+                                <>
+                                    <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
+                                    <div className="rating">
+                                        <p className='score-text'>{place.rating}</p>
+                                        {renderRating(place.rating).map((star, index) => {
+                                            let noStar = star === 0;
+                                            let fullStar = star === 1;
+                                            let halfStar = star === 0.5;
+                                            return <img key={index} src={`${fullStar ? "https://i.imgur.com/3eEFOjj.png" : noStar ? "https://i.imgur.com/ZhvvgPZ.png" : "https://i.imgur.com/SWExJbv.png"}`} alt="" className="star-img" />
+                                        })}
+
+                                    </div>
+                                </>
+                            }
+
+                        </div>
+                    {place.info &&
+                        <p className="body-info">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
+                    }
                     <p className="body-address">{place.address}</p>
                 </div>
                 <div className="placeCard-options flx-c just-sb align-c">

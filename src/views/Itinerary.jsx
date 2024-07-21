@@ -167,7 +167,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         long: -0.12806,
         geocode: [51.50806, -0.12806],
         favorite: true,
-        place_id: null
+        place_id: null,
+        rating: 4.2
       },
       2: {
         id: 2,
@@ -232,7 +233,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         long: -0.12806,
         geocode: [51.50806, -0.12806],
         favorite: false,
-        place_id: null
+        place_id: null,
+        rating: 4.2
       },
       7: {
         id: 7,

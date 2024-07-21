@@ -6175,7 +6175,7 @@ selection-box-landing.mobile {
 .trip-options .option {
   font-family: 'Plus Jakarta Sans';
   font-size: 16px;
-  color: gainsboro;
+  color: #7A7A7A;
   font-weight: 600;
   margin-bottom: 4px;
   /* border-bottom: 3px solid rgb(240, 240, 240); */
@@ -6184,7 +6184,7 @@ selection-box-landing.mobile {
 }
 
 .trip-options .option:hover {
-  color: rgb(200, 200, 200);
+  color: #5a5a5a;
   transition: 0.2s;
 }
 
@@ -6198,7 +6198,7 @@ selection-box-landing.mobile {
   width: 200px;
 } */
 .trip-options .option.selected {
-  color: #242424;
+  color: #6663FC;
   /* border-bottom: 3px solid #6663FC; */
 }
 
