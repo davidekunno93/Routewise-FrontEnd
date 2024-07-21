@@ -81,7 +81,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
 
         let newPlace = {
             placeName: autoCompletePlace.structured_formatting.main_text,
-            info: place.regularOpeningHours ? place.regularOpeningHours.weekdayDescriptions : "", // biz hours - regularOpeningHours ["Day: 00:00 AM - 00:00 PM",...]
+            info: place.regularOpeningHours ? modifyInfo(place.regularOpeningHours.weekdayDescriptions) : "", // biz hours - regularOpeningHours ["Day: 00:00 AM - 00:00 PM",...]
             address: place.formattedAddress,
             imgURL: place.photos[0].getURI(), // photos - getURI
             category: textFunctions.capitalize(getBestCategory(autoCompletePlace.types).replace(/_/g, " ")), // ?? .make better
@@ -96,6 +96,14 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         return newPlace
 
 
+    }
+    const modifyInfo = (openingHoursArr) => {
+        let result = "";
+        // make string
+        // replace days with short days
+        let openingHoursStr = openingHoursArr.join(", ")
+        result = openingHoursStr.replace("Monday", "Mon").replace("Tuesday", "Tue").replace("Wednesday", "Wed").replace("Thursday", "Thu").replace("Friday", "Fri").replace("Saturday", "Sat").replace("Sunday", "Sun")
+        return result;
     }
     const getBestCategory = (categoryArr) => {
         // remove meal delivery, point of interest

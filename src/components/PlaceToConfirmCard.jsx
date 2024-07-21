@@ -79,7 +79,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
 
                         </div>
                         {placeToConfirm.info &&
-                            <p className="body-info truncated">{placeToConfirm.info.constructor === Array ? placeToConfirm.info.join(", ") : placeToConfirm.info}</p>
+                            <p className="body-info truncated">{placeToConfirm.info}</p>
                         }
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         <p className="body-address truncated m-0">{placeToConfirm.address}</p>

@@ -1,35 +1,25 @@
 import React, { forwardRef, useContext } from 'react'
 import { DataContext } from '../Context/DataProvider'
 import "./placecards.scoped.css"
+import ScrollText from './ScrollText';
 
 export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, removePlace, updateMapCenter }, ref) => {
     const { textFunctions, renderRating } = useContext(DataContext);
 
     let firstCategory = place.category.split(",")[0]
-    
+
     return (
         <>
             <div className="div-to-create-space-from-fade-for-ref">
                 <div id={`placeholderBefore-${index}`} className="placeCard2-placeholder hidden"></div>
                 <div ref={ref} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
 
-                    <div className="placeCard-img-div flx-3">
+                    <div className="placeCard-img-div flx-4">
                         <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
                     </div>
-                    <div className="placeCard2-body flx-5">
+                    <div className="placeCard2-body flx-7">
                         {/* <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div> */}
-                        <div className={`scroll-over-text disabled`}>
-                        {/* <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}> */}
-                            <p className="static-text body-title truncated">{place.placeName}</p>
-                            {/* <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p> */}
-                            <div className="scroller" data-animated="true">
-                                <div className="scroller-inner">
-                                    <p className="scroll-text body-title">{place.placeName}</p>
-                                    <p className="scroll-text body-title">{place.placeName}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
+                        <p className="body-title truncated">{place.placeName}</p>
                         <div className="align-all-items">
                             <p className="body-category">{textFunctions.capitalize(place.category.split(',')[0])}</p>
                             {place.rating &&
@@ -50,11 +40,12 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
 
                         </div>
                         {place.info &&
-                            <p className="body-info truncated">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
+                            <ScrollText text={place.info} height={20} fontSize={12} color="gray" />
+                            // <p className="body-info truncated">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
                         }
-                        <p className="m-0 body-address">{place.address}</p>
+                        <p className="m-0 body-address truncated-2">{place.address}</p>
                     </div>
-                    <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                    <div className="side-options">
 
                         {place.favorite !== true ?
                             <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />

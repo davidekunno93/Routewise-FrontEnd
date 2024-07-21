@@ -73,6 +73,12 @@ button.gMap-btn:hover .toolTip {
     transition-duration: 0.2s;
     transition-delay: 2.0s;
 }
+button.gMap-btn.pressed .toolTip {
+    opacity: 0;
+}
+button.gMap-btn.pressed:hover .toolTip {
+    transition-delay: 0s;
+}
 button.gMap-btn .toolTip {
     visibility: hidden;
     opacity: 0;
@@ -105,7 +111,6 @@ button.gMap-btn .toolTip p {
     font-size: 12px;
     font-weight: 400;
     color: black;
-    
 }
 
 button.gMap-btn .info {

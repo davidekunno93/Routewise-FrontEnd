@@ -96,7 +96,7 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
 
                         </div>
                     {place.info &&
-                        <p className="body-info">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
+                        <p className="body-info">{place.info}</p>
                     }
                     <p className="body-address">{place.address}</p>
                 </div>

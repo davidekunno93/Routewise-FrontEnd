@@ -4,6 +4,12 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+.truncated-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 
 
 
@@ -224,10 +230,9 @@
     color: #7A7A7A;
     font-size: 12px;
     margin: 0px;
-
 }
 .placeCard2 .body-address {
-    height: 18px;
+    height: 36px;
     /* border: 1px solid red; */
     /* overflow: hidden; */
     font-family: 'Plus Jakarta Sans';
@@ -278,4 +283,12 @@
 
 .placeCard2-placeholder.hidden {
     height: 0px;
+}
+
+.placeCard2 .side-options {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 36px;
 }

@@ -204,11 +204,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         if (btn.classList.contains("pressed")) {
             // unlocalize
             setSearchMapViewBounds(false);
-            btn.classList.remove("pressed");
+            // btn.classList.remove("pressed");
         } else {
             // localize
             setSearchMapViewBounds(true);
-            btn.classList.add("pressed");
+            // btn.classList.add("pressed");
         }
     }
     return (
@@ -216,7 +216,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             <span className={`material-symbols-outlined boundarySearch onTop white-text ${searchMapViewBounds ? "" : "d-none"}`}>location_searching</span>
             <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapViewBounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
             <div className="gMap-btns">
-                <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className="gMap-btn">
+                <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className={`gMap-btn ${searchMapViewBounds && "pressed"}`}>
                     <span className="material-symbols-outlined o-80">
                         my_location
                     </span>

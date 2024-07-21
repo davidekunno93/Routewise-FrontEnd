@@ -6669,11 +6669,13 @@ div:has(>.gm-control-active) {
   /* border: 1px solid salmon; */
 }
 
-.scroller[data-animated="true"] {
+.scroller[data-animated="true"],
+.marquee-text[data-animated="true"] {
   mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
 }
 
-.scroller[data-animated="true"] .scroller-inner {
+.scroller[data-animated="true"] .scroller-inner,
+.marquee-text[data-animated="true"] .scroller-inner {
   width: fit-content;
   animation: scroll 6s linear infinite;
   /* animation-delay: 0.5s; */
@@ -6693,6 +6695,21 @@ div:has(>.gm-control-active) {
 .scroller .scroll-text {
   overflow: visible;
   white-space: nowrap;
+}
+.scroll-text-container:hover {
+  cursor: default;
+}
+.scroll-text-container .reference-text {
+  /* position: absolute; */
+  visibility: collapse;
+}
+.scroll-text-container .marquee-text,
+.scroll-text-container.enabled:hover .static-text {
+  display: none;
+}
+.scroll-text-container .static-text,
+.scroll-text-container.enabled:hover .marquee-text {
+  display: -webkit-box;
 }
 
 .passcode-modal {
