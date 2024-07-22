@@ -282,6 +282,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     return (
         <>
             <span className={`material-symbols-outlined boundarySearch onTop white-text ${searchMapViewBounds ? "" : "d-none"}`}>location_searching</span>
+            {searchMapViewBounds &&
+            <div className="boundarySearch-popup">
+                <p>Searching places in the area</p>
+            </div>
+            }
             <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapViewBounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
             <div className="gMap-btns">
                 <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className={`gMap-btn ${searchMapViewBounds && "pressed"}`}>
@@ -291,11 +296,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     <div className="toolTip">
                         <p>Toggle <i>Boundary Search {searchMapViewBounds ? "On" : "Off"}</i> - when turned on your place search will only return places within the current map view</p>
                     </div>
-                    {searchMapViewBounds &&
+                    {/* {searchMapViewBounds &&
                         <div className="info o-80">
                             <p>Searching places within map view only</p>
                         </div>
-                    }
+                    } */}
                 </button>
                 <button id='returnHome' onClick={() => goToTripCenter()} className="gMap-btn">
                     <span className="material-symbols-outlined o-80">

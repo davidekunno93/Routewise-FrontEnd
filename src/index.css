@@ -6381,11 +6381,12 @@ selection-box-landing.mobile {
 
 .searchBar-container {
   height: 90px;
-  width: 100%;
+  width: calc(95% - 40px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  right: 0;
 }
 .searchBar {
   height: 70px;

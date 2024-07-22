@@ -47,12 +47,13 @@ div:has(>.gm-control-active) {
     flex-direction: column;
     gap: 12px;
     left: 5%;
-    top: 90px;
+    /* top: 90px; */
+    top: 24px;
 }
 
 button.gMap-btn {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     padding: 0;
     border-radius: 50%;
     background-color: white;
@@ -130,6 +131,7 @@ button.gMap-btn .info p {
 
 button.gMap-btn.pressed span {
     color: #6663FC;
+    color: rgb(50, 111, 255);
 }
 .onTop {
     position: absolute;
@@ -149,4 +151,20 @@ button.gMap-btn.pressed span {
     font-size: 240px;
     opacity: 0.24;
     color: white;
+}
+.boundarySearch-popup {
+    position: absolute;
+    background-color: white;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 16px;
+    z-index: 1;
+}
+.boundarySearch-popup p {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgb(50, 111, 255);
+    margin: 0;
+    padding: 6px 12px;
 }
