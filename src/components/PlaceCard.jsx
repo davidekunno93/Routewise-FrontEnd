@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext } from 'react'
+import React, { forwardRef, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../Context/DataProvider'
 import "./placecards.scoped.css"
 import ScrollText from './ScrollText';
@@ -7,6 +7,46 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
     const { textFunctions, renderRating } = useContext(DataContext);
 
     let firstCategory = place.category.split(",")[0]
+    let days = {
+        monday: "11:00AM - 7:00PM",
+        tuesday: "11:00AM - 7:00PM",
+        wednesday: "11:00AM - 7:00PM",
+        thursday: "11:00AM - 7:00PM",
+        friday: "11:00AM - 7:00PM",
+        saturday: "9:00AM - 5:00PM",
+        sunday: "9:00 - 1:00PM",
+    }
+    const convertInfo = (openingHoursStr) => {
+        if (openingHoursStr.toLowerCase().includes(":")) {
+
+            let openingHoursArr = openingHoursStr.split(", ");
+            let result = {}
+            // loop thru arr
+            for (let i = 0; i < openingHoursArr.length; i++) {
+                // let day = openingHoursArr[i].slice(0, 3)
+                // get day
+                let day = openingHoursArr[i].split(": ")[0]
+                // get opning hrs
+                let hours = openingHoursArr[i].split(": ")[1]
+                // update result object
+                result[day] = hours;
+            }
+            return result;
+        } else {
+            return openingHoursStr;
+        }
+    }
+    useEffect(() => {
+        console.log(convertInfo(place.info))
+    }, [])
+    const [openingHoursDayIndex, setOpeningHoursDayIndex] = useState(null);
+    const updateOpeningHoursDayIndex = (index) => {
+        if (index !== openingHoursDayIndex) {
+            setOpeningHoursDayIndex(index);
+        } else {
+            setOpeningHoursDayIndex(null);
+        }
+    }
 
     return (
         <>
@@ -39,10 +79,24 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
                             }
 
                         </div>
-                        {place.info &&
+                        {/* {place.info &&
                             <ScrollText text={place.info} height={20} fontSize={12} color="gray" />
                             // <p className="body-info truncated">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
-                        }
+                        } */}
+                        <div className="days">
+
+                            {Object.entries(convertInfo(place.info)).map((day, index) => {
+                                let dayName = day[0];
+                                let dayShort = dayName.slice(0, 2)
+                                let openingHours = day[1];
+                                return <>
+                                    <div key={index} onClick={() => updateOpeningHoursDayIndex(index)} className={`day-circle ${index === openingHoursDayIndex && "selected"}`}>
+                                        <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
+                                    </div>
+                                    <p className={`openingHours x-small ${index !== openingHoursDayIndex && "closed"}`}>{openingHours}</p>
+                                </>
+                            })}
+                        </div>
                         <p className="m-0 body-address truncated-2">{place.summary ?? place.address}</p>
                     </div>
                     <div className="side-options">

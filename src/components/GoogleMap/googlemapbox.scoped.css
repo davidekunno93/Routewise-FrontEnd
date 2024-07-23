@@ -49,6 +49,7 @@ div:has(>.gm-control-active) {
     left: 5%;
     /* top: 90px; */
     top: 24px;
+    z-index: 2;
 }
 
 button.gMap-btn {

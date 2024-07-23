@@ -239,7 +239,10 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
                             let address = place.structured_formatting.secondary_text;
                             let limit = establishmentOption ? 4 : 5;
                             return hasAddress && index < limit && <div key={index} onClick={() => handleSelect(place)} className="option">
-                                <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="img" />
+                                {/* <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="img" /> */}
+                                <div className="img">
+                                    <span className="material-symbols-outlined">location_on</span>
+                                </div>
                                 <div className="flx-c">
                                     <p className="m-0 truncated"><strong>{placeName}</strong></p>
                                     <p className="m-0 small gray-text bold500 truncated">{address}</p>

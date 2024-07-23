@@ -292,3 +292,54 @@
     align-items: center;
     width: 36px;
 }
+
+
+
+
+
+
+
+
+.days {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    margin-top: 2px;
+}
+.days > p {
+    white-space: nowrap;
+    margin: 0px 4px;
+}
+.day-circle {
+    height: 16px;
+    width: 16px;
+    background-color: rgb(235, 235, 235);
+    border-radius: 50%;
+    display: flex;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.day-circle p {
+    margin: auto;
+    color: #7A7A7A;
+}
+.day-circle:hover,
+.day-circle.selected {
+    background-color: rgb(207, 211, 244);
+    transition: 0.2s;
+}
+.day-circle:hover p,
+.day-circle.selected p {
+    color: navy;
+}
+.openingHours {
+    transition: 0.4s;
+    width: 98px;
+    overflow: hidden;
+}
+.openingHours.closed {
+    width: 0;
+    opacity: 0.5;
+    margin: 0;
+}

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
 import './placecards.scoped.css'
+import ScrollText from './ScrollText';
 
 const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceToConfirm, placesAddressList }) => {
     if (!placeToConfirm) return null;
@@ -80,6 +81,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                         </div>
                         {placeToConfirm.info &&
                             <p className="body-info truncated">{placeToConfirm.info}</p>
+                            // <ScrollText text={placeToConfirm.info} width={240} height={20} color="gray" />
                         }
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         <p className="body-address truncated-2 m-0">{placeToConfirm.summary ?? placeToConfirm.address}</p>

@@ -98,7 +98,7 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     {place.info &&
                         <p className="body-info">{place.info}</p>
                     }
-                    <p className="body-address">{place.address}</p>
+                    <p className="body-address">{place.summary ?? place.address}</p>
                 </div>
                 <div className="placeCard-options flx-c just-sb align-c">
                     {/* <img src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" /> */}

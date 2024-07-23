@@ -330,10 +330,12 @@ update trip name
 place website links
 
 <!-- 22Jul24 -->
-New more compact way to display opening hours?
+New more compact way to display opening hours? ..generate an example
 Way to display all of place information? Perhaps a popup modal
 - name, category, rating, opening hours, description?, address, pricing??, website??, typical time spent??
-Am I good to BIP with images from our website? Is anything off limits?
-Marker press on itinerary page scrolls to the place in the itinerary 
-Change re-centering icon 
-location icon for dropdown places
+Am I good to BIP with images from our website? Is anything off limits? - Yes
+*Marker press on itinerary page scrolls to the place in the itinerary 
+<!-- *Changed boundary search icon  -->
+<!-- *update location icon for dropdown places -->
+
+Reach out to ppl working at a prospective company and try to get referrals
