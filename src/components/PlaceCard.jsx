@@ -43,7 +43,7 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
                             <ScrollText text={place.info} height={20} fontSize={12} color="gray" />
                             // <p className="body-info truncated">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
                         }
-                        <p className="m-0 body-address truncated-2">{place.address}</p>
+                        <p className="m-0 body-address truncated-2">{place.summary ?? place.address}</p>
                     </div>
                     <div className="side-options">
 

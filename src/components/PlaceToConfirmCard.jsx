@@ -82,7 +82,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                             <p className="body-info truncated">{placeToConfirm.info}</p>
                         }
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
-                        <p className="body-address truncated m-0">{placeToConfirm.address}</p>
+                        <p className="body-address truncated-2 m-0">{placeToConfirm.summary ?? placeToConfirm.address}</p>
 
                         {placesAddressList.includes(placeToConfirm.address) ?
                             <div className="flx-r position-bottom">

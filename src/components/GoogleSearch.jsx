@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 import { DataContext } from '../Context/DataProvider';
+import { connectStorageEmulator } from 'firebase/storage';
 
 const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchMapViewBounds, isLoaded }) => {
     if (!isLoaded) return null;
@@ -63,9 +64,10 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         // Call fetchFields, passing the desired data fields.
         await place.fetchFields({
             // fields: ["displayName", "formattedAddress", "location", "rating", "regularOpeningHours", "businessStatus"],
-            fields: ["formattedAddress", "location", "rating", "photos", "regularOpeningHours"],
+            fields: ["formattedAddress", "location", "rating", "photos", "regularOpeningHours", "editorialSummary"],
         });
         // const results = await getGeocode({ address: place.formattedAddress });
+        console.log(place.editorialSummary)
 
         // Log the result
         // console.log(place.displayName);
@@ -82,6 +84,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         let newPlace = {
             placeName: autoCompletePlace.structured_formatting.main_text,
             info: place.regularOpeningHours ? modifyInfo(place.regularOpeningHours.weekdayDescriptions) : "", // biz hours - regularOpeningHours ["Day: 00:00 AM - 00:00 PM",...]
+            summary: place.editorialSummary,
             address: place.formattedAddress,
             imgURL: place.photos[0].getURI(), // photos - getURI
             category: textFunctions.capitalize(getBestCategory(autoCompletePlace.types).replace(/_/g, " ")), // ?? .make better

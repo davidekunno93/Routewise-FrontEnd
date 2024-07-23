@@ -320,9 +320,20 @@ Integrate API
 <!-- Jenny will update the place card design -->
 
 <!-- 18Jul24 Team Meeting -->
-Does Google API have place descriptions?
+Does Google API have place descriptions? 
 <!-- Update place card design -->
 
-daycolor map btn?
+<!-- daycolor map btn? -->
 get day hours
 linked in post
+update trip name
+place website links
+
+<!-- 22Jul24 -->
+New more compact way to display opening hours?
+Way to display all of place information? Perhaps a popup modal
+- name, category, rating, opening hours, description?, address, pricing??, website??, typical time spent??
+Am I good to BIP with images from our website? Is anything off limits?
+Marker press on itinerary page scrolls to the place in the itinerary 
+Change re-centering icon 
+location icon for dropdown places

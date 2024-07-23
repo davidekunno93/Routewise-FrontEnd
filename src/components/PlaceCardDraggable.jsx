@@ -77,7 +77,7 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     {/* <p className="body-title">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit)+"..." : place.placeName}</p> */}
                     <p className="body-title">{place.placeName}</p>
                     <div className="align-all-items">
-                            <p className="body-category">{textFunctions.capitalize(place.category.split(',')[0])}</p>
+                            <p className="body-category">{place.category ? textFunctions.capitalize(place.category.split(',')[0]) : "No category"}</p>
                             {place.rating &&
                                 <>
                                     <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
