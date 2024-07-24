@@ -330,7 +330,7 @@ update trip name
 place website links
 
 <!-- 22Jul24 -->
-New more compact way to display opening hours? ..generate an example
+<!-- New more compact way to display opening hours? ..generate an example -->
 Way to display all of place information? Perhaps a popup modal
 - name, category, rating, opening hours, description?, address, pricing??, website??, typical time spent??
 Am I good to BIP with images from our website? Is anything off limits? - Yes

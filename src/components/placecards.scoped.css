@@ -309,7 +309,7 @@
 }
 .days > p {
     white-space: nowrap;
-    margin: 0px 4px;
+    /* margin: 0px 4px; */
 }
 .day-circle {
     height: 16px;
@@ -337,9 +337,9 @@
     transition: 0.4s;
     width: 98px;
     overflow: hidden;
-}
-.openingHours.closed {
     width: 0;
     opacity: 0.5;
     margin: 0;
+}
+.openingHours.closed {
 }

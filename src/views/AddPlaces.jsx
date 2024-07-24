@@ -236,6 +236,10 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const getPlaceDetails = async (placeDetailsQuery) => {
         const response = await axios.get(`https://api.geoapify.com/v2/place-details?&id=${placeDetailsQuery}&apiKey=3e9f6f51c89c4d3985be8ab9257924fe`)
         return response.status === 200 ? response.data : "error"
+        // GET --> get info
+        // POST --> change info (update) on the backend
+        // 404 --- not found
+        // 500 --- internal server 
     }
 
     const loadPlaceDetails = async (placeDetailsQuery) => {
@@ -995,7 +999,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             <div className={`page-container90 ${!mobileMode && "vh-100"} flx-c`}>
                 <div className={`add-places-title-row ${mobileMode ? "flx-c mobile" : "flx-r align-c gap-8"}`}>
 
-                    <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                    <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "Paris"}</span></p>
                     <div className={`tripInfo flx-r align-c ${mobileModeNarrow ? "gap-1" : "gap-2"} position-relative`}>
                         <span className={`material-symbols-outlined o-50 ${mobileModeNarrow && "larger"}`}>
                             calendar_month

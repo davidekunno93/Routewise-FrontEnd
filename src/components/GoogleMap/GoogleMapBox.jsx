@@ -6,7 +6,6 @@ import { createRoot } from 'react-dom/client';
 import { APIProvider, AdvancedMarker, InfoWindow, Map, Pin, useMap } from '@vis.gl/react-google-maps';
 import './googlemapbox.scoped.css'
 
-
 // currentMapBounds
 // tripMapBounds
 

@@ -18,7 +18,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
     //     placeId: "place.id",
     //     rating: 2.5 // rating - num.toFixed(1)
     // });
-    
+
     const placeToConfirmRef = useRef(null);
     useEffect(() => {
         // renderRating(4.8)
@@ -40,6 +40,55 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
         return openingHoursToday
     }
     // get the days opening hours
+
+    // opening hours code
+    const convertInfoToMap = (openingHoursStr) => {
+        if (openingHoursStr.toLowerCase().includes(":")) {
+
+            let openingHoursArr = openingHoursStr.split(", ");
+            let result = {}
+            // loop thru arr
+            for (let i = 0; i < openingHoursArr.length; i++) {
+                // let day = openingHoursArr[i].slice(0, 3)
+                // get day
+                let day = openingHoursArr[i].split(": ")[0]
+                // get opning hrs
+                let hours = openingHoursArr[i].split(": ")[1]
+                // update result object
+                result[day] = hours;
+            }
+            return result;
+        } else {
+            return openingHoursStr;
+        }
+    }
+    const [openingHoursDayId, setOpeningHoursDayId] = useState(null);
+    const hoursTextFunctions = {
+        open: function (id) {
+            let hoursText = document.getElementById(`hours-text-${id}`);
+            if (openingHoursDayId !== null) {
+                hoursTextFunctions.close(openingHoursDayId)
+            }
+            hoursText.style.width = hoursText.scrollWidth.toString() + "px";
+            hoursText.style.margin = "0px 4px";
+            hoursText.style.opacity = 1;
+        },
+        close: function (id) {
+            let hoursText = document.getElementById(`hours-text-${id}`);
+            hoursText.style.width = 0;
+            hoursText.style.margin = "0px";
+            hoursText.style.opacity = 0.5;
+        },
+        toggle: function (id) {
+            if (openingHoursDayId === id) {
+                setOpeningHoursDayId(null);
+                hoursTextFunctions.close(id);
+            } else {
+                setOpeningHoursDayId(id);
+                hoursTextFunctions.open(id);
+            }
+        },
+    }
 
 
     return (
@@ -79,10 +128,23 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                             }
 
                         </div>
-                        {placeToConfirm.info &&
+                        {/* {placeToConfirm.info &&
                             <p className="body-info truncated">{placeToConfirm.info}</p>
-                            // <ScrollText text={placeToConfirm.info} width={240} height={20} color="gray" />
-                        }
+                        } */}
+                        <div className="days">
+
+                            {Object.entries(convertInfoToMap(placeToConfirm.info)).map((day, id) => {
+                                let dayName = day[0];
+                                let dayShort = dayName.slice(0, 2)
+                                let openingHours = day[1];
+                                return <>
+                                    <div key={id} onClick={() => hoursTextFunctions.toggle(id)} className={`day-circle ${id === openingHoursDayId && "selected"}`}>
+                                        <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
+                                    </div>
+                                    <p id={`hours-text-${id}`} className={`openingHours x-small ${id !== openingHoursDayId && "closed"}`}>{openingHours}</p>
+                                </>
+                            })}
+                        </div>
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         <p className="body-address truncated-2 m-0">{placeToConfirm.summary ?? placeToConfirm.address}</p>
 
@@ -95,8 +157,8 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                                         </span>
                                     </div> */}
                                     <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
-                                            done
-                                        </span>
+                                        done
+                                    </span>
                                     <div className="flx">
                                         <p className={`green-text m-auto ${mobileModeNarrow ? "smedium" : "smedium"}`}>Added to places</p>
                                     </div>

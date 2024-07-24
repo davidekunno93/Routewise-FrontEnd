@@ -4,10 +4,11 @@ import "./placecards.scoped.css"
 import ScrollText from './ScrollText';
 
 export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, removePlace, updateMapCenter }, ref) => {
+    // imports
     const { textFunctions, renderRating } = useContext(DataContext);
 
-    let firstCategory = place.category.split(",")[0]
-    let days = {
+    // test data
+    let testdays = {
         monday: "11:00AM - 7:00PM",
         tuesday: "11:00AM - 7:00PM",
         wednesday: "11:00AM - 7:00PM",
@@ -16,7 +17,9 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
         saturday: "9:00AM - 5:00PM",
         sunday: "9:00 - 1:00PM",
     }
-    const convertInfo = (openingHoursStr) => {
+
+    // opening hours code
+    const convertInfoToMap = (openingHoursStr) => {
         if (openingHoursStr.toLowerCase().includes(":")) {
 
             let openingHoursArr = openingHoursStr.split(", ");
@@ -36,17 +39,34 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
             return openingHoursStr;
         }
     }
-    useEffect(() => {
-        console.log(convertInfo(place.info))
-    }, [])
-    const [openingHoursDayIndex, setOpeningHoursDayIndex] = useState(null);
-    const updateOpeningHoursDayIndex = (index) => {
-        if (index !== openingHoursDayIndex) {
-            setOpeningHoursDayIndex(index);
-        } else {
-            setOpeningHoursDayIndex(null);
+    const [openingHoursDayId, setOpeningHoursDayId] = useState(null);
+    const hoursTextFunctions = {
+        open: function (id) {
+            let hoursText = document.getElementById(`hours-text-${id}`);
+        if (openingHoursDayId !== null) {
+            hoursTextFunctions.close(openingHoursDayId)
         }
+        hoursText.style.width = hoursText.scrollWidth.toString()+"px";
+        hoursText.style.margin = "0px 4px";
+        hoursText.style.opacity = 1;
+        },
+        close: function (id) {
+            let hoursText = document.getElementById(`hours-text-${id}`);
+            hoursText.style.width = 0;
+            hoursText.style.margin = "0px";
+            hoursText.style.opacity = 0.5;
+        },
+        toggle: function (id) {
+            if (openingHoursDayId === id) {
+                setOpeningHoursDayId(null);
+                hoursTextFunctions.close(id);
+            } else {
+                setOpeningHoursDayId(id);
+                hoursTextFunctions.open(id);
+            }
+        },
     }
+    
 
     return (
         <>
@@ -85,15 +105,16 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
                         } */}
                         <div className="days">
 
-                            {Object.entries(convertInfo(place.info)).map((day, index) => {
+                            {Object.entries(convertInfoToMap(place.info)).map((day, local_index) => {
+                                let id = index.toString()+"-"+local_index.toString();
                                 let dayName = day[0];
                                 let dayShort = dayName.slice(0, 2)
                                 let openingHours = day[1];
                                 return <>
-                                    <div key={index} onClick={() => updateOpeningHoursDayIndex(index)} className={`day-circle ${index === openingHoursDayIndex && "selected"}`}>
+                                    <div key={id} onClick={() => hoursTextFunctions.toggle(id)} className={`day-circle ${id === openingHoursDayId && "selected"}`}>
                                         <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
                                     </div>
-                                    <p className={`openingHours x-small ${index !== openingHoursDayIndex && "closed"}`}>{openingHours}</p>
+                                    <p id={`hours-text-${id}`} className={`openingHours x-small ${id !== openingHoursDayId && "closed"}`}>{openingHours}</p>
                                 </>
                             })}
                         </div>
