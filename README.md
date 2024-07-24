@@ -337,5 +337,6 @@ Am I good to BIP with images from our website? Is anything off limits? - Yes
 *Marker press on itinerary page scrolls to the place in the itinerary 
 <!-- *Changed boundary search icon  -->
 <!-- *update location icon for dropdown places -->
+Rounded btns might be the way to go?
 
 Reach out to ppl working at a prospective company and try to get referrals

@@ -778,13 +778,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     let markersObj = {};
     for (let i=0; i<placesCopy.length; i++) {
         let place = placesCopy[i];
-        markersObj[place.id] = {
+        if (dayIdOfPlace(place.id, true) !== null) {
+          markersObj[place.id] = {
             id: place.id,
             placeName: place.placeName,
             position: geoToLatLng(place.geocode),
             isPlaceToConfirm: false,
             infoWindowOpen: false,
             dayId: dayIdOfPlace(place.id, true),
+          }
         }
     }
     if (placeToConfirm) {
