@@ -11,7 +11,16 @@ import { bounds } from 'leaflet';
 // tripMapBounds
 
 const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors }) => {
-    // const [testMarkers, setTestMarkers] = useState(markers)
+
+    // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
+    const gLibrary = ["core", "maps", "places", "marker"];
+    const { isLoaded } = useLoadScript({
+        id: 'google-maps-script',
+        googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
+        libraries: gLibrary
+    })
+    
+    // for test page
     const [testMarkers, setTestMarkers] = useState({
         "test-1": {
             id: "test-1",
@@ -38,48 +47,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             infoWindowOpen: false
         },
     });
-    const [markersState, setMarkersState] = useState(markers ?? testMarkers);
-    useEffect(() => {
-        console.log(markers)
-        setMarkersState(markers)
-    }, [markers])
 
-
-    const addMarker = () => {
-        const markerObj = {
-            id: 0,
-            placeName: "this place!",
-            position: { lat: 51, lng: -0.8 },
-            isPlaceToConfirm: true,
-            infoWindowOpen: false,
-            dayId: null,
-        }
-        let markersCopy = { ...testMarkers };
-        markersCopy[markerObj.id] = markerObj;
-        console.log(markersCopy)
-        setTestMarkers(markersCopy);
-    }
-
-    // loading the map
-    const gLibrary = ["core", "maps", "places", "marker"];
-    const { isLoaded } = useLoadScript({
-        id: 'google-maps-script',
-        googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
-        libraries: gLibrary
-    })
-
-
-
-
-
-    // tracking the map view
-    const [tripMapBounds, setTripMapBounds] = useState(null);
-    const [mapViewBounds, setMapViewBounds] = useState(null);
-    const [searchMapViewBounds, setSearchMapViewBounds] = useState(false);
-    const updateMapViewBounds = (map) => {
-        setMapViewBounds(map.detail.bounds);
-    }
+    
+    // [tracking the map]
     // get tripMapBounds - mapBounds of trip destination location at zoom ~ 9, doesn't change after first set
+    const [tripMapBounds, setTripMapBounds] = useState(null); 
     useEffect(() => {
         if (tripMapCenter) {
             let lat = tripMapCenter.lat;
@@ -93,13 +65,6 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             setTripMapBounds(latLngBnds);
         }
     }, [])
-
-
-
-
-
-
-
 
     const [mapMonitor, setMapMonitor] = useState({
         center: {},
@@ -124,12 +89,12 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         }
     }
 
-
-    const [mapCenterChanged, setMapCenterChanged] = useState(false);
+    const [mapCenterChanged, setMapCenterChanged] = useState(false); // use to alert map that it needs to recenter
     const [newMapCenter, setNewMapCenter] = useState({
         position: mapCenter,
         zoom: null
     });
+    // keep local state of mapCenter up to date with any mapCenter state changes in parent component
     useEffect(() => {
         let newMapCenterCopy = { ...newMapCenter };
         newMapCenterCopy.position = mapCenter;
@@ -150,9 +115,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     }
 
 
-
-
-    // child component allowing map actions 
+    // [child component allowing map actions ]
     const MapPanner = useCallback(({ newMapCenter, mapCenterChanged, setMapCenterChanged, mapMonitor }) => {
         const myMap = useMap();
         useEffect(() => {
@@ -169,71 +132,79 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
 
 
 
-    // markers code
+    // [markers code]
+    const [markersState, setMarkersState] = useState(markers ?? testMarkers);
+    useEffect(() => {
+        console.log(markers)
+        setMarkersState(markers)
+    }, [markers])
     const [markerColorsOn, setMarkerColorsOn] = useState(false);
     const numberToBgColor = (num) => {
         let lastDigit = num.slice(-1)
         if (lastDigit === "1") {
-            return "red"
+            return "#FE0014" // RED
         }
         if (lastDigit === "2") {
-            return "#000bda" // blue
+            return "#FFFD38" // YELLOW
         }
         if (lastDigit === "3") {
-            return "#11a531" // green
+            return "#4098FF" // BLUE
         }
         if (lastDigit === "4") {
-            return "yellow"
+            return "#9EFF00" // GREEN
         }
         if (lastDigit === "5") {
-            return "#ae0dd2" // purple
+            return "#FFA500" // ORANGE
         }
         if (lastDigit === "6") {
-            return "gray"
+            return "#FF7EFF" // PINK
         }
         if (lastDigit === "7") {
-            return "orange"
+            return "#7CE7E7" // LIGHT BLUE
         }
         if (lastDigit === "8") {
-            return "lightblue"
+            return "#E674FF" // PURPLE
         }
         if (lastDigit === "9") {
-            return "pink"
+            return "#B0824E" // BROWN
         }
         if (lastDigit === "0") {
-            return "pink"
+            return "#2DF19F" // LIGHT GREEN
         }
         return null;
     }
     const numberToBorderColor = (num) => {
         let lastDigit = num.slice(-1)
 
+        if (lastDigit === "1") {
+            return "#8A0F14" // RED
+        }
         if (lastDigit === "2") {
-            return "navy" // blue
+            return "#565403" // YELLOW
         }
         if (lastDigit === "3") {
-            return "green"
+            return "#000349" // BLUE
         }
         if (lastDigit === "4") {
-            return "#cdcd15" // yellow
+            return "#2B5D26" // GREEN
         }
         if (lastDigit === "5") {
-            return "purple"
+            return "#794812" // ORANGE
         }
         if (lastDigit === "6") {
-            return "#4D4D4D" // gray
+            return "#8D0076" // PINK
         }
         if (lastDigit === "7") {
-            return "#c2820b" // orange
+            return "#275E5E" // LIGHT BLUE
         }
         if (lastDigit === "8") {
-            return "#3c79b7" // lightblue
+            return "#682B85" // PURPLE
         }
         if (lastDigit === "9") {
-            return "#ab7ea8" // pink
+            return "#B0824E" // BROWN
         }
         if (lastDigit === "0") {
-            return "darkred"
+            return "#15563B" // LIGHT GREEN
         }
         return null;
     }
@@ -256,13 +227,28 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             }
         }
     }
+    const addMarker = () => {
+        const markerObj = {
+            id: 0,
+            placeName: "this place!",
+            position: { lat: 51, lng: -0.8 },
+            isPlaceToConfirm: true,
+            infoWindowOpen: false,
+            dayId: null,
+        }
+        let markersCopy = { ...testMarkers };
+        markersCopy[markerObj.id] = markerObj;
+        console.log(markersCopy)
+        setTestMarkers(markersCopy);
+    }
 
-    // map btns
+    // [map btns]
     // recenter to trip
     const goToTripCenter = () => {
         panToNewMapCenter(tripMapCenter, 9);
     }
     // boundary search
+    const [searchMapViewBounds, setSearchMapViewBounds] = useState(false);
     const localizeSearchToggle = () => {
         let btn = document.getElementById('localizeSearchToggle');
         if (btn.classList.contains("pressed")) {
