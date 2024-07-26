@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import GoogleSearch from '../GoogleSearch';
 import { Loading } from '../Loading';
 import { createRoot } from 'react-dom/client';
 import { APIProvider, AdvancedMarker, InfoWindow, Map, Pin, useMap } from '@vis.gl/react-google-maps';
 import './googlemapbox.scoped.css'
+import { bounds } from 'leaflet';
 
 // currentMapBounds
 // tripMapBounds
@@ -100,27 +101,28 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
 
 
 
-
-    const infoWindowFunctions = {
-        open: function (id) {
-            let markersStateCopy = { ...markersState };
-            markersStateCopy[id].infoWindowOpen = true;
-            setMarkers(markersStateCopy);
+    const [mapMonitor, setMapMonitor] = useState({
+        center: {},
+        bounds: {},
+        zoom: 9,
+    })
+    const updateMapMonitor = {
+        center: function (newCenter) {
+            let mapMonitorCopy = { ...mapMonitor };
+            mapMonitorCopy.center = newCenter;
+            setMapMonitor(mapMonitorCopy);
         },
-        close: function (id) {
-            let markersStateCopy = { ...markersState };
-            markersStateCopy[id].infoWindowOpen = false;
-            setMarkersState(markersStateCopy);
+        bounds: function (newBounds) {
+            let mapMonitorCopy = { ...mapMonitor };
+            mapMonitorCopy.bounds = newBounds;
+            setMapMonitor(mapMonitorCopy);
         },
-        toggle: function (id) {
-            if (markersState[id].infoWindowOpen) {
-                infoWindowFunctions.close(id)
-            } else {
-                infoWindowFunctions.open(id)
-            }
+        zoom: function (newZoom) {
+            let mapMonitorCopy = { ...mapMonitor };
+            mapMonitorCopy.zoom = newZoom;
+            setMapMonitor(mapMonitorCopy);
         }
     }
-
 
 
     const [mapCenterChanged, setMapCenterChanged] = useState(false);
@@ -136,9 +138,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     useEffect(() => {
         setMapCenterChanged(true);
     }, [mapCenterToggle])
-    const goToTripCenter = () => {
-        panToNewMapCenter(tripMapCenter, 9);
-    }
+
     const panToNewMapCenter = (latLng, zoom) => {
         let newMapCenterCopy = { ...newMapCenter };
         newMapCenterCopy.position = latLng;
@@ -152,44 +152,13 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
 
 
 
-
-    const MapPanner = useCallback(({ newMapCenter, mapCenterChanged, setMapCenterChanged }) => {
+    // child component allowing map actions 
+    const MapPanner = useCallback(({ newMapCenter, mapCenterChanged, setMapCenterChanged, mapMonitor }) => {
         const myMap = useMap();
-        // poly coords = NW, SW, SE, NE
-        // const polygonCoords = [
-        //     { lat: 51.774, lng: -0.12 },
-        //     { lat: 51.466, lng: -0.12 },
-        //     { lat: 51.466, lng: -0.8 },
-        //     { lat: 51.774, lng: -0.8 },
-        // ];
-        // const polygon = new google.maps.Polygon({
-        //     paths: polygonCoords,
-        //     strokeColor: "#FF0000",
-        //     strokeOpacity: 0.25,
-        //     strokeWeight: 2,
-        //     fillColor: "#242424",
-        //     fillOpacity: 0.1,
-        // })
-        // polygon.setMap(myMap)
-        // myMap.setOptions() ??
-        // const featureLayer = myMap.getFeatureLayer('LOCALITY');
-        // featureLayer.style = (options) => {
-        //     let place_id = "ChIJdd4hrwug2EcRmSrV3Vo6llI";
-        //     if (options.feature.placeId == place_id) {
-
-        //         return ({
-        //             fillColor: "#242424",
-        //             fillOpacity: 0.15,
-        //             strokeColor: "red",
-        //             strokeOpacity: 0.5,
-        //             strokeWeight: 2,
-        //         })
-        //     }
-        // }
         useEffect(() => {
             if (mapCenterChanged) {
                 myMap.panTo(newMapCenter.position)
-                if (newMapCenter.zoom) {
+                if (newMapCenter.zoom && newMapCenter.zoom !== mapMonitor.zoom) {
                     myMap.setZoom(newMapCenter.zoom)
                 }
                 setMapCenterChanged(false);
@@ -198,16 +167,9 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         return <></>
     }, [])
 
-    const localizeSearchToggle = () => {
-        let btn = document.getElementById('localizeSearchToggle');
-        if (btn.classList.contains("pressed")) {
-            // unlocalize
-            setSearchMapViewBounds(false);
-        } else {
-            // localize
-            setSearchMapViewBounds(true);
-        }
-    }
+
+
+    // markers code
     const [markerColorsOn, setMarkerColorsOn] = useState(false);
     const numberToBgColor = (num) => {
         let lastDigit = num.slice(-1)
@@ -275,9 +237,43 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         }
         return null;
     }
-    useEffect(() => {
-        console.log(numberToBgColor("10786"))
-    }, [])
+    const infoWindowFunctions = {
+        open: function (id) {
+            let markersStateCopy = { ...markersState };
+            markersStateCopy[id].infoWindowOpen = true;
+            setMarkers(markersStateCopy);
+        },
+        close: function (id) {
+            let markersStateCopy = { ...markersState };
+            markersStateCopy[id].infoWindowOpen = false;
+            setMarkersState(markersStateCopy);
+        },
+        toggle: function (id) {
+            if (markersState[id].infoWindowOpen) {
+                infoWindowFunctions.close(id)
+            } else {
+                infoWindowFunctions.open(id)
+            }
+        }
+    }
+
+    // map btns
+    // recenter to trip
+    const goToTripCenter = () => {
+        panToNewMapCenter(tripMapCenter, 9);
+    }
+    // boundary search
+    const localizeSearchToggle = () => {
+        let btn = document.getElementById('localizeSearchToggle');
+        if (btn.classList.contains("pressed")) {
+            // unlocalize
+            setSearchMapViewBounds(false);
+        } else {
+            // localize
+            setSearchMapViewBounds(true);
+        }
+    }
+
     return (
         <>
             <span className={`material-symbols-outlined boundarySearch onTop white-text ${searchMapViewBounds ? "" : "d-none"}`}>
@@ -288,7 +284,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     <p>Searching places in the area</p>
                 </div>
             }
-            <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapViewBounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
+            <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapMonitor.bounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
             <div className="gMap-btns">
                 <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className={`gMap-btn ${searchMapViewBounds && "pressed"}`}>
                     <span className="material-symbols-outlined o-80">
@@ -327,16 +323,17 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                 <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_API_KEY}>
                     <Map
                         defaultZoom={9}
-                        onBoundsChanged={updateMapViewBounds}
+                        onBoundsChanged={(map) => updateMapMonitor.bounds(map.detail.bounds)}
                         defaultCenter={{ lat: 51.5, lng: -0.12 }}
                         mapId="53a011bc3302095"
                         mapTypeControl={false}
                         fullscreenControl={false}
-
-                    // onClick={() => addMarker()}
+                        onCenterChanged={(map) => updateMapMonitor.center(map.detail.center)}
+                        onZoomChanged={(map) => updateMapMonitor.zoom(map.detail.zoom)}
+                        onClick={() => console.log(mapMonitor)}
 
                     >
-                        <MapPanner newMapCenter={newMapCenter} mapCenterChanged={mapCenterChanged} setMapCenterChanged={setMapCenterChanged} />
+                        <MapPanner newMapCenter={newMapCenter} mapCenterChanged={mapCenterChanged} setMapCenterChanged={setMapCenterChanged} mapMonitor={mapMonitor} />
                         {Object.values(markers).map((marker, index) => {
 
                             return <>

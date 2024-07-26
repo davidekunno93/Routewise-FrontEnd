@@ -340,3 +340,6 @@ Am I good to BIP with images from our website? Is anything off limits? - Yes
 Rounded btns might be the way to go?
 
 Reach out to ppl working at a prospective company and try to get referrals
+
+<!-- 25Jul24 Team Meeting -->
+check for expected duration at place

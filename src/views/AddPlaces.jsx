@@ -999,7 +999,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             <div className={`page-container90 ${!mobileMode && "vh-100"} flx-c`}>
                 <div className={`add-places-title-row ${mobileMode ? "flx-c mobile" : "flx-r align-c gap-8"}`}>
 
-                    <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "Paris"}</span></p>
+                    <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                     <div className={`tripInfo flx-r align-c ${mobileModeNarrow ? "gap-1" : "gap-2"} position-relative`}>
                         <span className={`material-symbols-outlined o-50 ${mobileModeNarrow && "larger"}`}>
                             calendar_month

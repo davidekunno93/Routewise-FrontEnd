@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
 import './placecards.scoped.css'
 import ScrollText from './ScrollText';
+import { Link } from 'react-router-dom';
 
 const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceToConfirm, placesAddressList }) => {
     if (!placeToConfirm) return null;
@@ -18,6 +19,10 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
     //     placeId: "place.id",
     //     rating: 2.5 // rating - num.toFixed(1)
     // });
+    const simplifyWebsite = (website) => {
+        website = website.split("www.")[1];
+        return website
+    }
 
     const placeToConfirmRef = useRef(null);
     useEffect(() => {
@@ -94,18 +99,12 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
     return (
         <>
             <div ref={placeToConfirmRef} className="placeToConfirmCardDiv position-absolute hide">
-                <div className="placeCard-PTC w-97 position-relative flx-r my-2">
-                    <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute ${!mobileMode && "showOnHover"} large color-gains`}>
+                    <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute x-large`}>
                         close
                     </span>
+                <div className="placeCard-PTC w-97 position-relative flx-r my-2">
 
-                    <div className="placeCard-PTC-imgDiv flx-1">
-                        {placeToConfirm.imgURL ?
-                            <img className="img" src={placeToConfirm.imgURL} />
-                            :
-                            <p>Loading...</p>
-                        }
-                    </div>
+
                     <div ref={ptcCardBodyRef} className="body flx-2">
                         <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
                         <p className="body-title truncated">{textFunctions.capitalize(placeToConfirm.placeName)}</p>
@@ -146,26 +145,70 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                             })}
                         </div>
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
-                        <p className="body-address truncated-2 m-0">{placeToConfirm.summary ?? placeToConfirm.address}</p>
+                        {placeToConfirm.summary &&
+                            <p className="body-summary truncated-2 m-0">{placeToConfirm.summary}</p>
+                        }
+
+                        <div className="body-details">
+                            {placeToConfirm.address &&
+                                <div className="detail address">
+                                    <span className="material-symbols-outlined">location_on</span>
+                                    <p className="m-0">{placeToConfirm.address}</p>
+                                </div>
+                            }
+                            {placeToConfirm.website &&
+                                <div className="detail website">
+                                    <span className="material-symbols-outlined">public</span>
+                                    <Link target='_blank' to={placeToConfirm.website}>
+                                        <p className="m-0 truncated">{simplifyWebsite(placeToConfirm.website)}</p>
+                                    </Link>
+                                </div>
+                            }
+                            {placeToConfirm.phoneNumber &&
+                                <div className="detail phoneNumber">
+                                    <span className="material-symbols-outlined">call</span>
+                                    <p className="m-0">{placeToConfirm.phoneNumber}</p>
+                                </div>
+                            }
+
+                        </div>
+                        <div className="flx position-bottom">
+                            <Link target='_blank' to={`https://www.google.com/maps/place/?q=place_id:${placeToConfirm.placeId}`}>
+                                <button className="open-in-google-maps">
+                                    <img src="https://i.imgur.com/JZj1jWC.png" alt="" className="icon" />
+                                    <p>Open in Google Maps</p>
+                                </button>
+                            </Link>
+                        </div>
+
+                    </div>
+                    <div className="right-panel flx-1">
+                        <div className="imgDiv">
+                            {placeToConfirm.imgURL ?
+                                <img className="img" src={placeToConfirm.imgURL} />
+                                :
+                                <p>Loading...</p>
+                            }
+                        </div>
 
                         {placesAddressList.includes(placeToConfirm.address) ?
-                            <div className="flx-r position-bottom">
+                            <div className="w-100 position-bottom">
                                 <div onClick={() => { removePlace(placesAddressList.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
                                     {/* <div className={`${mobileModeNarrow ? "addIcon-filled-green-smallest" : "addIcon-filled-green-smaller"} flx mx-2`}>
                                         <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} white-text`}>
                                             done
                                         </span>
                                     </div> */}
-                                    <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
+                                    <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
                                         done
                                     </span>
-                                    <div className="flx">
-                                        <p className={`green-text m-auto ${mobileModeNarrow ? "smedium" : "smedium"}`}>Added to places</p>
-                                    </div>
+                                    {/* <div className="flx"> */}
+                                    <p className={`green-text ${mobileModeNarrow ? "small" : "small"}`}>Added to places</p>
+                                    {/* </div> */}
                                 </div>
                             </div>
                             :
-                            <div className="flx-r position-bottom">
+                            <div className="w-100 position-bottom">
                                 <div onClick={() => addPlace()} className="add-place-btn position-relative">
                                     {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
                                     <div className="flx pointer">
@@ -173,13 +216,11 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                                             add
                                         </span>
                                     </div>
-                                    <div className="flx">
-                                        <p className={`purple-text m-auto ${mobileModeNarrow ? "smedium" : "smedium"}`}>Add to places</p>
-                                    </div>
+                                    <p className="purple-text">Add to Places List</p>
                                 </div>
                             </div>
                         }
-
+                        
 
                     </div>
                 </div>

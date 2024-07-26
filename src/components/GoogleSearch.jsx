@@ -64,10 +64,12 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         // Call fetchFields, passing the desired data fields.
         await place.fetchFields({
             // fields: ["displayName", "formattedAddress", "location", "rating", "regularOpeningHours", "businessStatus"],
-            fields: ["formattedAddress", "location", "rating", "photos", "regularOpeningHours", "editorialSummary"],
+            fields: ["formattedAddress", "location", "rating", "photos", "regularOpeningHours", "editorialSummary", "internationalPhoneNumber", "websiteURI"],
         });
         // const results = await getGeocode({ address: place.formattedAddress });
-        console.log(place.editorialSummary)
+        console.log(simplifyWebsite(place.websiteURI))
+        // console.log(place.internationalPhoneNumber)
+        // console.log(place.websiteUri)
 
         // Log the result
         // console.log(place.displayName);
@@ -86,6 +88,8 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
             info: place.regularOpeningHours ? modifyInfo(place.regularOpeningHours.weekdayDescriptions) : "", // biz hours - regularOpeningHours ["Day: 00:00 AM - 00:00 PM",...]
             summary: place.editorialSummary,
             address: place.formattedAddress,
+            phoneNumber: place.internationalPhoneNumber,
+            website: place.websiteURI,
             imgURL: place.photos[0].getURI(), // photos - getURI
             category: textFunctions.capitalize(getBestCategory(autoCompletePlace.types).replace(/_/g, " ")), // ?? .make better
             favorite: false,
@@ -154,6 +158,11 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         addPlaceToConfirm(newPlace);
 
     }
+    const simplifyWebsite = (website) => {
+        website = website.split("www.")[1];
+        return website
+    }
+
 
     // check for establishments in search and show see locations option in dropdown
     useEffect(() => {
