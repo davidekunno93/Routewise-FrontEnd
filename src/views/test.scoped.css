@@ -13,3 +13,12 @@ button.gm-ui-hover-effect {
 div.gm-style-iw-chr {
     height: 24px;
 }
+
+
+
+
+/* test itinerary */
+.test-input-bar {
+    width: 500px;
+    justify-content: space-between;
+}

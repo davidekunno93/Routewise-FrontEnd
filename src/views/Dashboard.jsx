@@ -171,7 +171,7 @@ export const Dashboard = () => {
         setIsLoadingTrips(true);
         let data = await getUserTripsData();
         // setUserTrips(data);
-        // console.log(data);
+        console.log(data);
 
         let upcomingTripsArr = []
             let pastTripsArr = []
@@ -698,7 +698,7 @@ export const Dashboard = () => {
         let url = `https://routewise-backend.onrender.com/places/delete-trip/${trip.trip_id}`
         const response = axios.delete(url)
             .then((response) => {
-                console.log(response.data)
+                // console.log(response.data)
                 loadUserTripsData()
                 closeUserTripPopup()
             })

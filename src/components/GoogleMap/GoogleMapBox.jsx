@@ -10,7 +10,7 @@ import { bounds } from 'leaflet';
 // currentMapBounds
 // tripMapBounds
 
-const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors }) => {
+const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, removeSearch }) => {
 
     // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
     const gLibrary = ["core", "maps", "places", "marker"];
@@ -19,7 +19,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
         libraries: gLibrary
     })
-    
+
     // for test page
     const [testMarkers, setTestMarkers] = useState({
         "test-1": {
@@ -47,11 +47,14 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             infoWindowOpen: false
         },
     });
+    if (!mapCenterToggle) {
+        mapCenterToggle = false
+    }
 
-    
+
     // [tracking the map]
     // get tripMapBounds - mapBounds of trip destination location at zoom ~ 9, doesn't change after first set
-    const [tripMapBounds, setTripMapBounds] = useState(null); 
+    const [tripMapBounds, setTripMapBounds] = useState(null);
     useEffect(() => {
         if (tripMapCenter) {
             let lat = tripMapCenter.lat;
@@ -269,22 +272,26 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     <p>Searching places in the area</p>
                 </div>
             }
-            <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapMonitor.bounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
+            {!removeSearch &&
+                <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapMonitor.bounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
+            }
             <div className="gMap-btns">
-                <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className={`gMap-btn ${searchMapViewBounds && "pressed"}`}>
-                    <span className="material-symbols-outlined o-80">
-                        {/* my_location */}
-                        filter_center_focus
-                    </span>
-                    <div className="toolTip">
-                        <p>Toggle <i>Boundary Search {searchMapViewBounds ? "On" : "Off"}</i> - when turned on your place search will only return places within the current map view</p>
-                    </div>
-                    {/* {searchMapViewBounds &&
+                {!removeSearch &&
+                    <button id='localizeSearchToggle' onClick={() => localizeSearchToggle()} className={`gMap-btn ${searchMapViewBounds && "pressed"}`}>
+                        <span className="material-symbols-outlined o-80">
+                            {/* my_location */}
+                            filter_center_focus
+                        </span>
+                        <div className="toolTip">
+                            <p>Toggle <i>Boundary Search {searchMapViewBounds ? "On" : "Off"}</i> - when turned on your place search will only return places within the current map view</p>
+                        </div>
+                        {/* {searchMapViewBounds &&
                         <div className="info o-80">
-                            <p>Searching places within map view only</p>
+                        <p>Searching places within map view only</p>
                         </div>
                     } */}
-                </button>
+                    </button>
+                }
                 <button id='returnHome' onClick={() => goToTripCenter()} className="gMap-btn">
                     <span className="material-symbols-outlined o-80">
                         home_pin

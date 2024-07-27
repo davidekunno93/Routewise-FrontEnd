@@ -24,6 +24,7 @@ import OpenMapBox from './components/OpenMapBox'
 import PrintItineraryPage from './views/PrintItineraryPage'
 import { doc, getDoc } from 'firebase/firestore'
 import ProtectedRoute from './components/Privatizer/ProtectedRoute'
+import TestItinerary from './views/TestItinerary'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -211,6 +212,7 @@ function App() {
           
           <Route children path='/mytrips' element={<MyTrips />} />
           <Route children path='/test' element={<Test />} />
+          <Route children path='/test-itinerary' element={<TestItinerary />} />
           <Route children path='/map' element={<OpenMap />} />
           <Route children path='/map2' element={<OpenMapBox />} />
           <Route children path='/hero' element={<HeroFade />} />
