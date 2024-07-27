@@ -343,3 +343,68 @@ Reach out to ppl working at a prospective company and try to get referrals
 
 <!-- 25Jul24 Team Meeting -->
 check for expected duration at place
+add places PTC card adjustable height based on content?
+
+
+<!-- Algorithm ideas -->
+1) Identifying outliers
+Build outlier function - takes in array of numbers, calculates the mean, calculates the standard deviation (SD), and returns obj = {
+    mean: #,
+    upper_limit: #,
+    lower_limit is not needed
+}
+trip monitor object = {
+    days: {
+        total: #,
+        non_outlier_days: #,
+        outlier_days: #,
+    },
+    day_captains: {
+        id: day_num
+    },
+    day_monitor: {
+        dc_id: {
+            place_ids: [],
+            total: #,
+            closed: boolean (only true if an outlier place is occupying this day)
+            weakest_link: {
+                id: #,
+                distance: # (from dayCaptain)
+            }
+        }
+    },
+    distance_stats: {
+        distance_range: #,
+        co_captain_threshold: #,
+        distance_sum: {
+            mean: #,
+            upper_limit: #
+        }
+    }
+}
+If place's distances sum is > than upperLimit it is an outlier place
+outlier places are moved straight to saved places?
+**or if total number of non-outlier places is <= 4 x num(days w/o an outlier already occupying it) - 1, give outlier day its own day
+**otherwise if outlier place is starred it is automatically given it's own day, and checked against other outliers to see if close enough to be grouped together in the same day
+
+2) Sorting remaining places
+Create monitor object = {
+    day_captain_place_id: {
+        place_ids: [],
+        total: #,
+        closed: boolean (only true if an outlier place is occupying this day)
+        weakest_link: {
+            id: #,
+            distance: # (from dayCaptain)
+        }
+    }
+}
+Everytime a place is added to a day the monitor object should be updated
+Everytime a place is displaced - the weakest_link needs to be re-evaluated - loop thru place_ids for min place distance to the day_captain, this can be a separate function (input=dc_id, effect=update w_l)
+For remaining places, loop thru days in order of closeness to day captain (sort place dists), then options are:
+    a) Add to that day if there's room
+    b) if there's no room then check against weakestLink and displace if nearer (then re-evaluate w_l)
+    c) if it cannot be added and cannot displace, continue to next day
+After looping thru each day, if it was unable to find a day to be added to, it is moved to saved places
+
+*when day cap is added, add dc_id w/day_num to trip monitor Obj

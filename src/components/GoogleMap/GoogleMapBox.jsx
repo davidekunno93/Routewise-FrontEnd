@@ -135,7 +135,6 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     // [markers code]
     const [markersState, setMarkersState] = useState(markers ?? testMarkers);
     useEffect(() => {
-        console.log(markers)
         setMarkersState(markers)
     }, [markers])
     const [markerColorsOn, setMarkerColorsOn] = useState(false);

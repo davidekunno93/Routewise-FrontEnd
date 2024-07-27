@@ -773,18 +773,18 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     }
 
     // added places render 'added to places' button
-    const [addedPlaceAddresses, setAddedPlaceAddresses] = useState([])
+    const [placesAddressList, setPlacesAddressList] = useState([])
     const updatePlaceAddresses = () => {
-        let addedPlaceAddressesCopy = []
+        let placesAddressListCopy = []
         if (places.length > 0) {
             for (let i = 0; i < places.length; i++) {
-                addedPlaceAddressesCopy.push(places[i].address)
+                placesAddressListCopy.push(places[i].address)
             }
         } else {
-            addedPlaceAddressesCopy = []
+            placesAddressListCopy = []
         }
         // console.log(addedPlaceAddressesCopy)
-        setAddedPlaceAddresses(addedPlaceAddressesCopy)
+        setPlacesAddressList(placesAddressListCopy)
         // console.log('updated added place addresses')
     }
     // const [justAddedIsAnimating, setJustAddedIsAnmimating] = useState(false);
@@ -807,7 +807,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     }, [places])
 
     const printAddedPlaceAddresses = () => {
-        console.log(addedPlaceAddresses)
+        console.log(placesAddressList)
     }
 
     const [selectionRange, setSelectionRange] = useState([{
@@ -1078,7 +1078,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                             </div>
 
 
-                            <PlaceToConfirmCard addPlace={addPlace} removePlace={removePlace} placeToConfirm={placeToConfirm} clearPlaceToConfirm={clearPlaceToConfirm} placesAddressList={addedPlaceAddresses} />
+                            <PlaceToConfirmCard addPlace={addPlace} removePlace={removePlace} placeToConfirm={placeToConfirm} clearPlaceToConfirm={clearPlaceToConfirm} addressList={placesAddressList} forAddPlaces />
 
                             {/* <OpenMap mapCenter={mapCenter} markers={markers} newPlaceMarker={newPlaceMarker} /> */}
                             {/* <OpenMapBox addPlaceToConfirm={addPlaceToConfirm} newPlaceMarker={newPlaceMarker} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} markers={markers} /> */}
@@ -1243,7 +1243,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                     let id = 'suggested-' + index
                                                     let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
                                                     let blacklisted = blacklist.includes(suggestedPlace.placeName)
-                                                    let added = addedPlaceAddresses.includes(suggestedPlace.address)
+                                                    let added = placesAddressList.includes(suggestedPlace.address)
                                                     // if (blacklist.includes(suggestedPlace.placeName)) {
                                                     //     blacklisted = true
                                                     // }
@@ -1272,7 +1272,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                             </div>
                                                             <div className="placeCard-starOrDelete flx-c just-sb align-c">
                                                                 {added ?
-                                                                    <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                                                    <div onClick={() => { removePlace(placesAddressList.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
                                                                         <span className="material-symbols-outlined m-auto mt-h medium white-text">
                                                                             done
                                                                         </span>
@@ -1314,7 +1314,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                                 <div className="placeCard-starOrDelete flx-c just-sb align-c">
 
                                                                     {added ?
-                                                                        <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                                                        <div onClick={() => { removePlace(placesAddressList.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
                                                                             <span className="material-symbols-outlined m-auto mt-h medium white-text">
                                                                                 done
                                                                             </span>

@@ -17,71 +17,28 @@ import { Loading } from '../components/Loading'
 import OpenMapBox from '../components/OpenMapBox'
 import DaySelector from '../components/DaySelector'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
+import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
 
 export const Itinerary = ({ selectedPlacesListOnLoad }) => {
-  // if (!currentTrip.tripID) return null ?
+  // [imports]
   const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
   const { loadCityImg, geoToLatLng } = useContext(DataContext);
   const { suggestedPlaces, mapBoxCategoryKey } = useContext(DataContext);
-  const { mobileMode, mobileModeNarrow } = useContext(DataContext);
+  const { mobileMode, mobileModeNarrow, timeFunctions } = useContext(DataContext);
 
   // ['libraries']
 
-  // ['onload functions code']
+  // ['onload functions code'] - controls which tab is showing
   const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ? selectedPlacesListOnLoad : 'Itinerary') // Itinerary, Suggested Places, Saved Places
 
 
-  // ['other functions code']
+  // ['helper functions code']
   function wait(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms))
-  }
-  // date conversion functions
-  const datinormal = (systemDate) => {
-    // system date => mm/dd/yyyy
-    let day = systemDate.getDate().toString().length === 1 ? "0" + systemDate.getDate() : systemDate.getDate()
-    let month = systemDate.getMonth().toString().length + 1 === 1 ? "0" + (systemDate.getMonth() + 1) : systemDate.getMonth() + 1
-    if (month.toString().length === 1) {
-      month = "0" + month
-    }
-    // console.log(month)
-    let fullYear = systemDate.getFullYear()
-    // console.log(systemDate)
-    // console.log(month+"/"+day+"/"+fullYear)
-    return month + "/" + day + "/" + fullYear
-  }
-  const datify = (normalDate) => {
-    // mm/dd/yyyy => mmm dd, yy
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    let day = normalDate.slice(3, 5)
-    let monthNum = normalDate.slice(0, 2)
-    if (monthNum.charAt(0) === "0") {
-      monthNum = monthNum[1]
-    }
-    let fullYear = normalDate.slice(6)
-    const month = months[monthNum - 1]
-    if (day.charAt(0) === "0") {
-      day = day[1]
-    }
-    let twoYear = fullYear.slice(2)
-    return month + " " + day + ", " + twoYear
-  }
-  const datidash = (mmddyyyy) => {
-    // mm/dd/yyyy => yyyy-mm-dd
-    let year = mmddyyyy.slice(6)
-    let month = mmddyyyy.slice(0, 2)
-    let day = mmddyyyy.slice(3, 5)
-    return year + "-" + month + "-" + day
-  }
-  const datiundash = (dashDate) => {
-    // yyyy-mm-dd => mm/dd/yyyy
-    let fullyear = dashDate.slice(0, 4)
-    let month = dashDate.slice(5, 7)
-    let day = dashDate.slice(8)
-    return month + "/" + day + "/" + fullyear
   }
 
 
@@ -376,6 +333,42 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       tripStateCopy.saved_places.addresses.push(placeObj.address)
       // send added place change to db - need add to saved places route
 
+      setTripState(tripStateCopy);
+    },
+    removeFromSavedPlaces: function (placeId, address) {
+      let tripStateCopy = { ...tripState };
+
+      // if the address is provided instead of placeId
+      if (!placeId && address) {
+        for (let tripPlace of Object.values(tripStateCopy.places)) {
+          if (address === tripPlace.address) {
+            let index = tripStateCopy.saved_places.addresses.indexOf(address);
+            placeId = tripStateCopy.saved_places.placesIds[index];
+          }
+        }
+      }
+
+      let place = tripStateCopy.places[placeId];
+      let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
+      let indexOfAddress = tripStateCopy.saved_places.addresses.indexOf(place.address);
+      // remove placeId and address from saved places
+      tripStateCopy.saved_places.placesIds.splice(indexOfPlaceId, 1);
+      tripStateCopy.saved_places.addresses.splice(indexOfAddress, 1);
+
+      // remove from places
+      delete tripStateCopy.places[placeId];
+
+      // decrement places_last if possible
+      if (tripStateCopy.places_last === placeId) {
+        tripStateCopy.places_last = tripStateCopy.places_last - 1;
+      };
+
+      // tell Kate - update database
+      if (tripStateCopy.trip_id) {
+        deletePlaceFromDatabase(placeId);
+      };
+
+      // set state
       setTripState(tripStateCopy);
     },
     deletePlace: function (placeObj) {
@@ -690,9 +683,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     let daySelection = document.getElementById('daySelection')
     if (modifier) {
       daySelection = document.getElementById(`daySelection-${modifier}`)
-      console.log('bye')
+      // console.log('bye')
     }
-    console.log("hi")
+    // console.log("hi")
     daySelection.classList.remove('d-none')
   }
   const closeDaySelection = (modifier) => {
@@ -771,36 +764,36 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     }
     return null;
   }
-  
+
 
   const updateMarkers = () => {
     let placesCopy = Object.values(currentTrip.itinerary ? currentTrip.itinerary.places : tripState.places);
     let markersObj = {};
-    for (let i=0; i<placesCopy.length; i++) {
-        let place = placesCopy[i];
-        if (dayIdOfPlace(place.id, true) !== null) {
-          markersObj[place.id] = {
-            id: place.id,
-            placeName: place.placeName,
-            position: geoToLatLng(place.geocode),
-            isPlaceToConfirm: false,
-            infoWindowOpen: false,
-            dayId: dayIdOfPlace(place.id, true),
-          }
+    for (let i = 0; i < placesCopy.length; i++) {
+      let place = placesCopy[i];
+      if (dayIdOfPlace(place.id, true) !== null) {
+        markersObj[place.id] = {
+          id: place.id,
+          placeName: place.placeName,
+          position: geoToLatLng(place.geocode),
+          isPlaceToConfirm: false,
+          infoWindowOpen: false,
+          dayId: dayIdOfPlace(place.id, true),
         }
+      }
     }
     if (placeToConfirm) {
-        markersObj[0] = {
-            id: 0,
-            placeName: placeToConfirm.placeName,
-            position: geoToLatLng(placeToConfirm.geocode),
-            isPlaceToConfirm: true,
-            infoWindowOpen: false,
-            dayId: null,
-        }
+      markersObj[0] = {
+        id: 0,
+        placeName: placeToConfirm.placeName,
+        position: geoToLatLng(placeToConfirm.geocode),
+        isPlaceToConfirm: true,
+        infoWindowOpen: false,
+        dayId: null,
+      }
     }
     setMarkers(markersObj);
-}
+  }
 
   // date chosen for place to be added to
   const [dateToConfirm, setDateToConfirm] = useState(null);
@@ -828,6 +821,23 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
 
 
+  // ['itinerary code']
+  const [itineraryAddressList, setItineraryAddressList] = useState([]);
+  const updateItineraryAddressList = () => {
+    let itineraryAddressListCopy = [];
+    let placesArr = Object.values(tripState.places);
+    // loop thru arr 
+    for (let i = 0; i < placesArr.length; i++) {
+      if (placesArr[i].day_id !== null) {
+        itineraryAddressListCopy.push(placesArr[i].address);
+      }
+    }
+    console.log(itineraryAddressListCopy)
+    setItineraryAddressList(itineraryAddressListCopy)
+  }
+  useEffect(() => {
+    updateItineraryAddressList()
+  }, [tripState])
 
   // [flowbox operations code]
   const rotateSymbol = (id, deg) => {
@@ -1305,8 +1315,19 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const printItinerary = () => {
     console.log(tripState);
   };
-  const removeFromSavedPlaces = (placeId) => {
+  const removeFromSavedPlaces = (placeId, address) => {
     let tripStateCopy = { ...tripState };
+
+    // if the address is provided instead of placeId
+    if (!placeId && address) {
+      for (let tripPlace of Object.values(tripStateCopy.places)) {
+        if (address === tripPlace.address) {
+          let index = tripStateCopy.saved_places.addresses.indexOf(address);
+          placeId = tripStateCopy.saved_places.placesIds[index];
+        }
+      }
+    }
+
     let place = tripStateCopy.places[placeId];
     let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
     let indexOfAddress = tripStateCopy.saved_places.addresses.indexOf(place.address);
@@ -1667,7 +1688,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   return (
     <>
 
-      <DaySelector open={daySelectorOpen} tripState={tripState} addPlace={placeFuntions.addPlace} savedToItinerary={savedToItinerary} itineraryToSaved={itineraryToSaved} daySelectorStateProps={daySelectorStateProps} onClose={() => closeDaySelector(false)} />
+      <DaySelector
+        open={daySelectorOpen}
+        tripState={tripState}
+        addPlace={placeFuntions.addPlace}
+        savedToItinerary={savedToItinerary}
+        itineraryToSaved={itineraryToSaved}
+        daySelectorStateProps={daySelectorStateProps}
+        onClose={() => closeDaySelector(false)}
+      />
       {mobileMode &&
         <button onClick={() => setMapView(mapView => !mapView)} className={`mapview-btn ${mapView && "light"}`}>
           <span className={`material-symbols-outlined large ${mapView ? "dark-text" : "white-text"}`}>
@@ -1772,7 +1801,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     <span className="material-symbols-outlined o-50">
                       calendar_month
                     </span>
-                    <div className="dark-text font-jakarta">{currentTrip.startDate ? datify(datiundash(currentTrip.startDate)) + " - " + datify(datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
+                    <div className="dark-text font-jakarta">{currentTrip.startDate ? timeFunctions.datify(timeFunctions.datiundash(currentTrip.startDate)) + " - " + timeFunctions.datify(timeFunctions.datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
                     <p className="m-0">&bull;</p>
                     <div className="dark-text font-jakarta"><span className="dark-text">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
                     {/* <p className="m-0 purple-text">Edit</p> */}
@@ -2169,54 +2198,67 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
 
                   {placeToConfirm &&
-                    <div id='placeToConfirmCard' className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
-                      <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+                    <PlaceToConfirmCard
+                      addToSavedPlaces={placeFuntions.addToSavedPlaces}
+                      removeFromSavedPlaces={removeFromSavedPlaces}
+                      // addToItinerary={addPlace}
+                      openDaySelection={openDaySelection}
+                      removePlace={removePlace}
+                      placeToConfirm={placeToConfirm}
+                      clearPlaceToConfirm={clearPlaceToConfirm}
+                      addressList={itineraryAddressList}
+                      savedAddressList={tripState.saved_places.addresses}
 
-                        <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
-                          close
-                        </span>
+                      forItinerary
+                    />
+                    // <div id='placeToConfirmCard' className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
+                    //   <div className="placeCard-PTC w-97 position-relative flx-r my-2">
 
-                        <div onClick={() => toggleSavedPlaces(placeToConfirm)} className="saveBtn">
-                          <img src={`${isSavedPlace(placeToConfirm.address) ? "https://i.imgur.com/o7IoL2K.png" : "https://i.imgur.com/TcS7RjD.png"}`} alt="" className={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "icon-img-selected" : "icon-img"}`} />
-                          {/* <span className={`material-symbols-outlined white-text ${savedPlaces.addresses.includes(placeToConfirm.address) ? "purple-text" : null}`}>
-                        bookmark
-                      </span> */}
+                    //     <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                    //       close
+                    //     </span>
 
-                        </div>
+                    //     <div onClick={() => toggleSavedPlaces(placeToConfirm)} className="saveBtn">
+                    //       <img src={`${isSavedPlace(placeToConfirm.address) ? "https://i.imgur.com/o7IoL2K.png" : "https://i.imgur.com/TcS7RjD.png"}`} alt="" className={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "icon-img-selected" : "icon-img"}`} />
+                    //       {/* <span className={`material-symbols-outlined white-text ${savedPlaces.addresses.includes(placeToConfirm.address) ? "purple-text" : null}`}>
+                    //     bookmark
+                    //   </span> */}
 
-                        <div className="placeCard-img-div flx-1">
-                          <img className="placeCard-img" src={placeToConfirm.imgURL} />
-                        </div>
-                        <div ref={ptcCardBodyRef} className="placeToConfirmCard-body flx-2">
-                          <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                          <p className="body-title-PTC">{placeToConfirm.placeName.length > charLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit) + "..." : placeToConfirm.placeName}</p>
-                          {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
-                          <p className="body-info-PTC pointer mb-1">{placeToConfirm.category ? placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1) : "No Category"}</p>
-                          <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+                    //     </div>
 
-                          <div className="flx-r position-bottom">
-                            <div onClick={() => openDaySelection()} className="add-place-btn onHover-fadelite">
-                              <div className="flx pointer mx-2">
-                                <span className="material-symbols-outlined m-auto medium purple-text">
-                                  add
-                                </span>
-                              </div>
-                              <p className="m-0 purple-text">Add to itinerary</p>
-                            </div>
-                          </div>
+                    //     <div className="placeCard-img-div flx-1">
+                    //       <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                    //     </div>
+                    //     <div ref={ptcCardBodyRef} className="placeToConfirmCard-body flx-2">
+                    //       <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                    //       <p className="body-title-PTC">{placeToConfirm.placeName.length > charLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit) + "..." : placeToConfirm.placeName}</p>
+                    //       {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
+                    //       <p className="body-info-PTC pointer mb-1">{placeToConfirm.category ? placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1) : "No Category"}</p>
+                    //       <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
 
-                          {/* <div className="flx">
-                        <div className="addTab">
-                          <span className="material-symbols-outlined purple-text large">
-                            add
-                          </span>
-                          <p className="m-0 purple-text">Add to places</p>
-                        </div>
-                      </div> */}
+                    //       <div className="flx-r position-bottom">
+                    //         <div onClick={() => openDaySelection()} className="add-place-btn onHover-fadelite">
+                    //           <div className="flx pointer mx-2">
+                    //             <span className="material-symbols-outlined m-auto medium purple-text">
+                    //               add
+                    //             </span>
+                    //           </div>
+                    //           <p className="m-0 purple-text">Add to itinerary</p>
+                    //         </div>
+                    //       </div>
 
-                        </div>
-                      </div>
-                    </div>
+                    //       {/* <div className="flx">
+                    //     <div className="addTab">
+                    //       <span className="material-symbols-outlined purple-text large">
+                    //         add
+                    //       </span>
+                    //       <p className="m-0 purple-text">Add to places</p>
+                    //     </div>
+                    //   </div> */}
+
+                    //     </div>
+                    //   </div>
+                    // </div>
                   }
 
 
@@ -2224,7 +2266,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                   {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
                   {/* <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} /> */}
                   <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} markerColors />
-                  
+
                 </div>
 
 

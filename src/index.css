@@ -1684,8 +1684,8 @@ input:-webkit-autofill {
   white-space: nowrap;
 
   /* rounded btns */
-  /* font-size: small;
-  border-radius: 23px; */
+  font-size: small;
+  border-radius: 23px;
 }
 .btn-primaryflex2:hover {
   /* filter: brightness(95%); */
@@ -1714,6 +1714,10 @@ input:-webkit-autofill {
   transition: 0.3s;
   cursor: default;
   white-space: nowrap;
+
+  /* rounded btns */
+  font-size: small;
+  border-radius: 21px;
 }
 
 .btn-primaryflex-disabled span,
@@ -1757,8 +1761,8 @@ input:-webkit-autofill {
   white-space: nowrap;
 
   /* rounded btns */
-  /* font-size: small;
-  border-radius: 21px; */
+  font-size: small;
+  border-radius: 21px;
 }
 
 .btn-primaryflex:hover {
@@ -1785,7 +1789,7 @@ input:-webkit-autofill {
   white-space: nowrap;
 
   /* rounded btns */
-  /* border-radius: 21px; */
+  border-radius: 21px;
 }
 
 .btn-primary-small:hover {
@@ -1874,8 +1878,8 @@ input:-webkit-autofill {
   white-space: nowrap;
 
   /* rounded btns */
-  /* font-size: small;
-  border-radius: 21px; */
+  font-size: small;
+  border-radius: 21px;
 }
 
 .btn-outlineflex:hover {
@@ -4053,8 +4057,8 @@ selection-box-landing.mobile {
   font-family: 'Plus Jakarta Sans';
 
   /* rounded btns */
-  /* border-radius: 25px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05); */
+  border-radius: 25px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
 }
 
 .calendarInput:focus {
@@ -4186,8 +4190,8 @@ selection-box-landing.mobile {
   display: flex;
   flex-direction: column;
   align-items: center;
-  bottom: 70px;
-  right: 64px;
+  bottom: 112px;
+  right: calc(5% + 32px);
   overflow: hidden;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   position: absolute;
@@ -4212,7 +4216,7 @@ selection-box-landing.mobile {
 
 .day-selector .title {
   margin: 0;
-  font-weight: 700;
+  font-weight: 600;
   align-self: flex-start;
 }
 
@@ -4247,6 +4251,14 @@ selection-box-landing.mobile {
   border-top: 1px solid gainsboro;
   transition: 0.2s;
   cursor: pointer;
+}
+.day-option .text p {
+  font-size: 12px;
+}
+.day-option .text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .day-option:hover {
@@ -6261,7 +6273,7 @@ selection-box-landing.mobile {
   /* font-family: 'Plus Jakarta Sans'; */
 
   /* rounded btns */
-  /* border-radius: 21px; */
+  border-radius: 21px;
 }
 
 .search-box:focus {

@@ -4,7 +4,7 @@ import './placecards.scoped.css'
 import ScrollText from './ScrollText';
 import { Link } from 'react-router-dom';
 
-const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceToConfirm, placesAddressList }) => {
+const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceToConfirm, addressList, savedAddressList, addToSavedPlaces, removeFromSavedPlaces, openDaySelection, forAddPlaces, forItinerary }) => {
     if (!placeToConfirm) return null;
     const { mobileMode, mobileModeNarrow, textFunctions, renderRating } = useContext(DataContext);
     // const [placeToConfirm, setPlaceToConfirm] = useState({
@@ -95,13 +95,15 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
         },
     }
 
+    
+
 
     return (
         <>
             <div ref={placeToConfirmRef} className="placeToConfirmCardDiv position-absolute hide">
-                    <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute x-large`}>
-                        close
-                    </span>
+                <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute x-large`}>
+                    close
+                </span>
                 <div className="placeCard-PTC w-97 position-relative flx-r my-2">
 
 
@@ -191,36 +193,84 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                             }
                         </div>
 
-                        {placesAddressList.includes(placeToConfirm.address) ?
-                            <div className="w-100 position-bottom">
-                                <div onClick={() => { removePlace(placesAddressList.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
-                                    {/* <div className={`${mobileModeNarrow ? "addIcon-filled-green-smallest" : "addIcon-filled-green-smaller"} flx mx-2`}>
-                                        <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} white-text`}>
-                                            done
-                                        </span>
-                                    </div> */}
-                                    <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
-                                        done
-                                    </span>
-                                    {/* <div className="flx"> */}
-                                    <p className={`green-text ${mobileModeNarrow ? "small" : "small"}`}>Added to places</p>
-                                    {/* </div> */}
-                                </div>
-                            </div>
-                            :
-                            <div className="w-100 position-bottom">
-                                <div onClick={() => addPlace()} className="add-place-btn position-relative">
-                                    {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
-                                    <div className="flx pointer">
-                                        <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
-                                            add
-                                        </span>
+                        {forAddPlaces &&
+                            <>
+                                {addressList.includes(placeToConfirm.address) ?
+                                    <div className="w-100 position-bottom">
+                                        <div onClick={() => { removePlace(addressList.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
+                                            <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
+                                                done
+                                            </span>
+                                            <p className={`green-text ${mobileModeNarrow ? "small" : "small"}`}>Added to Places</p>
+                                        </div>
                                     </div>
-                                    <p className="purple-text">Add to Places List</p>
-                                </div>
-                            </div>
+                                    :
+                                    <div className="w-100 position-bottom">
+                                        <div onClick={() => addPlace()} className="add-place-btn position-relative">
+                                            {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
+                                            <div className="flx pointer">
+                                                <span className={`material-symbols-outlined m-auto ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
+                                                    add
+                                                </span>
+                                            </div>
+                                            <p className="purple-text">Add to Places List</p>
+                                        </div>
+                                    </div>
+                                }
+                            </>
                         }
-                        
+
+                        {forItinerary &&
+                            <>
+                                {addressList.includes(placeToConfirm.address) ?
+                                    <div className="w-100 position-bottom">
+                                        <div onClick={() => { removePlace(addressList.indexOf(placeToConfirm.address)) }} className="added-place-btn pointer">
+                                            <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
+                                                done
+                                            </span>
+                                            <p className={`green-text ${mobileModeNarrow ? "small" : "small"}`}>Added to Itinerary</p>
+                                        </div>
+                                    </div>
+                                    :
+                                    <div className="w-100 position-bottom">
+                                        <div onClick={() => openDaySelection()} className="add-place-btn position-relative">
+                                            {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
+                                            <div className="flx pointer">
+                                                <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
+                                                    add
+                                                </span>
+                                            </div>
+                                            <p className="purple-text">Add to Itinerary</p>
+                                        </div>
+                                    </div>
+                                }
+                                {savedAddressList.includes(placeToConfirm.address) ?
+                                    <div className="w-100 position-bottom">
+                                        <div onClick={() => removeFromSavedPlaces(null, placeToConfirm.address)} className="added-saved-btn pointer">
+                                            <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "large"} green-text`}>
+                                                done
+                                            </span>
+                                            <p className={`green-text ${mobileModeNarrow ? "small" : "small"}`}>Added to Saved Places</p>
+                                        </div>
+                                    </div>
+                                    :
+                                    <div className="w-100 position-bottom">
+                                        <div onClick={() => addToSavedPlaces(placeToConfirm)} className="add-saved-btn position-relative">
+                                            {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
+                                            <div className="flx pointer">
+                                                <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
+                                                    bookmark
+                                                </span>
+                                            </div>
+                                            <p className="purple-text">Add to Saved Places</p>
+                                        </div>
+                                    </div>
+                                }
+
+                            </>
+                        }
+
+
 
                     </div>
                 </div>

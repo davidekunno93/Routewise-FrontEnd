@@ -74,8 +74,8 @@ const DaySelector = ({ open, tripState, daySelectorStateProps, placeToConfirm, d
                                         {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
                                     </div>
                                     <div className="text">
-                                        <p className="m-0 bold500">{day.date_converted.split(",")[0]}</p>
-                                        <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p>
+                                        <p className="m-0 day bold500">{day.date_converted.split(",")[0]}</p>
+                                        <p className="m-0 date bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p>
                                     </div>
                                 </div>
                             })}
