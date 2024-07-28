@@ -9,7 +9,7 @@ export const Loading = ({ innerText, noMascot, noText }) => {
     useEffect(() => {
         let loading = document.getElementById('loading')
         if (loading) {
-            wait(20000).then(() => {
+            wait(10000).then(() => {
                 loading.innerText = innerText ? innerText : "This may take up to a minute..."
             })
         }

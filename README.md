@@ -382,7 +382,7 @@ trip monitor object = {
         }
     }
 }
-If place's distances sum is > than upperLimit it is an outlier place
+If place's distances sum is > than upper_limit it is an outlier place
 outlier places are moved straight to saved places?
 **or if total number of non-outlier places is <= 4 x num(days w/o an outlier already occupying it) - 1, give outlier day its own day
 **otherwise if outlier place is starred it is automatically given it's own day, and checked against other outliers to see if close enough to be grouped together in the same day

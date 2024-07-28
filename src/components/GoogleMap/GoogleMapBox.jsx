@@ -10,7 +10,7 @@ import { bounds } from 'leaflet';
 // currentMapBounds
 // tripMapBounds
 
-const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, removeSearch }) => {
+const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch }) => {
 
     // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
     const gLibrary = ["core", "maps", "places", "marker"];
@@ -140,7 +140,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     useEffect(() => {
         setMarkersState(markers)
     }, [markers])
-    const [markerColorsOn, setMarkerColorsOn] = useState(false);
+    const [markerColorsOn, setMarkerColorsOn] = useState(markerColorsDefaultOn ? true : false);
     const numberToBgColor = (num) => {
         let lastDigit = num.slice(-1)
         if (lastDigit === "1") {
