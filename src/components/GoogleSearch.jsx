@@ -108,6 +108,10 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         let result = "";
         // make string
         // replace days with short days
+        for (let i=0; i<openingHoursArr.length; i++) {
+            openingHoursArr[i] = openingHoursArr[i].replace(",", ";");
+        }
+        console.log(openingHoursArr)
         let openingHoursStr = openingHoursArr.join(", ")
         result = openingHoursStr.replace("Monday", "Mon").replace("Tuesday", "Tue").replace("Wednesday", "Wed").replace("Thursday", "Thu").replace("Friday", "Fri").replace("Saturday", "Sat").replace("Sunday", "Sun")
         return result;

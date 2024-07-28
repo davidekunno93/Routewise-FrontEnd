@@ -1098,13 +1098,13 @@ export const Dashboard = () => {
                 </div>
                 {/* end user preferences selection */}
 
-                {/* map code */}
-                <div className="map my-5 flx">
+                {/* world map code */}
+                {/* <div className="map my-5 flx">
                     <OpenMap mapCenter={mapCenter} zoom={2} />
 
-                </div>
+                </div> */}
 
-                <div className="popular-destinations">
+                <div className="popular-destinations mt-5">
                     <div className="page-subsubheading-bold my-3">Popular destinations</div>
 
                     <div className="carousel2-window">

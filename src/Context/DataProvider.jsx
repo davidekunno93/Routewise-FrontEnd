@@ -132,7 +132,7 @@ const DataProvider = (props) => {
         return window.removeEventListener('resize', handleResize);
     }, [])
     const handleResize = () => {
-        console.log("resizing function triggered")
+        // console.log("resizing function triggered")
         if (window.innerWidth <= 1024) {
             if (!mobileMode) {
                 // console.log("mobile mode: on")
