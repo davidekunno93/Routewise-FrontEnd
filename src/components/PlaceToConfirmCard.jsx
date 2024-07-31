@@ -95,7 +95,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
         },
     }
 
-    
+
 
 
     return (
@@ -111,7 +111,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                         <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
                         <p className="body-title truncated">{textFunctions.capitalize(placeToConfirm.placeName)}</p>
                         <div className="align-all-items">
-                            <p className="body-category">{textFunctions.capitalize(placeToConfirm.category.split(',')[0])}</p>
+                            <p className="body-category">{placeToConfirm.category ? textFunctions.capitalize(placeToConfirm.category.split(',')[0]) : "No Category"}</p>
                             {placeToConfirm.rating &&
                                 <>
                                     <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
@@ -134,17 +134,20 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                         } */}
                         <div className="days">
 
-                            {Object.entries(convertInfoToMap(placeToConfirm.info)).map((day, id) => {
-                                let dayName = day[0];
-                                let dayShort = dayName.slice(0, 2)
-                                let openingHours = day[1];
-                                return <>
-                                    <div key={id} onClick={() => hoursTextFunctions.toggle(id)} className={`day-circle ${id === openingHoursDayId && "selected"}`}>
-                                        <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
-                                    </div>
-                                    <p id={`hours-text-${id}`} className={`openingHours x-small ${id !== openingHoursDayId && "closed"}`}>{openingHours}</p>
-                                </>
-                            })}
+                            {placeToConfirm.info.includes(":") ?
+                                Object.entries(convertInfoToMap(placeToConfirm.info)).map((day, id) => {
+                                    let dayName = day[0];
+                                    let dayShort = dayName.slice(0, 2)
+                                    let openingHours = day[1];
+                                    return <>
+                                        <div key={id} onClick={() => hoursTextFunctions.toggle(id)} className={`day-circle ${id === openingHoursDayId && "selected"}`}>
+                                            <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
+                                        </div>
+                                        <p id={`hours-text-${id}`} className={`openingHours x-small ${id !== openingHoursDayId && "closed"}`}>{openingHours}</p>
+                                    </>
+                                })
+                                :
+                                placeToConfirm.info}
                         </div>
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         {placeToConfirm.summary &&

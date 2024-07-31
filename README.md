@@ -345,6 +345,8 @@ Reach out to ppl working at a prospective company and try to get referrals
 check for expected duration at place
 add places PTC card adjustable height based on content?
 
+<!-- 29Jul24 Team Meeting -->
+Google Maps API restriction/limitation strategies
 
 <!-- Algorithm ideas -->
 1) Identifying outliers
@@ -401,6 +403,64 @@ Create monitor object = {
 }
 Everytime a place is added to a day the monitor object should be updated
 Everytime a place is displaced - the weakest_link needs to be re-evaluated - loop thru place_ids for min place distance to the day_captain, this can be a separate function (input=dc_id, effect=update w_l)
+furtherst_place = {
+    "id": None,
+    "distance": None
+}
+loop thru rem places
+find closest day captain
+loop thru sorted ids of place_distances
+
+<!-- sorting place distances from nearest to furthest -->
+sorted_place_distances = {k: v for k, v in sorted(place['place_distances'].items(), key=lambda item: item[1])}
+
+<!-- when looping thru remaining places, loop thru place['place_distances'].keys()  -->
+for place_id in sorted_place_distances.keys():
+    day_captain_ids = trip_manager['day_captains'].keys()
+    if day_captain_id in day_captain_ids:
+        if day_is_full(day_captain_id):
+            if can_displace(place_id, day_captain_id):
+                break
+            else:
+                continue
+        else:
+            add_place(place_id, day_captain_id)
+            break
+
+<!-- function to displace place -->
+def can_displace(place_id, day_captain_id):
+    place = places['place_id']
+    place_distance_to_cap = place['place_distances'][day_captain_id]
+    weakest_link = trip_manager['day_monitor'][day_captain_id]['weakest_link']
+    if weakest_link['distance'] > place_distance_to_cap:
+        places_list.append(places[weakest_link['id']])
+        trip_manager['day_monitor'][day_captain_id]['place_ids'].remove(weakest_link['id'])
+        trip_manager['day_monitor'][day_captain_id]['place_ids'].append(place_id)
+        <!-- update trip day's place ids -->
+        update_weakest_link(day_captain_id)
+        return True
+    return False
+
+def day_is_full(day_captain_id):
+    return trip_manager['day_monitor'][day_captain_id]['total'] == 4
+
+def add_place(place_id, day_captain_id):
+    trip_manager['day_monitor'][day_captain_id]['place_ids'].append(place_id)
+
+def update_weakest_link(day_captain_id):
+    furthest_place = {
+        "id": None,
+        "distance": None
+    }
+    for place_id in trip_manager['day_monitor'][day_captain_id]['place_ids']:
+        place = places[place_id]
+        if not furthest_place["distance"] or furthest_place["distance"] < place['place_distances'][day_captain_id]:
+            furtherst_place = {
+                "id": place_id,
+                "distance": place['place_distances'][day_captain_id]
+                }   
+    trip_manager['day_monitor'][day_captain_id]['weakest_link'] = furthest_place
+
 For remaining places, loop thru days in order of closeness to day captain (sort place dists), then options are:
     a) Add to that day if there's room
     b) if there's no room then check against weakestLink and displace if nearer (then re-evaluate w_l)
