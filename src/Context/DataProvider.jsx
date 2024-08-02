@@ -444,7 +444,7 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating
+            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating, wait
         }}>
             {props.children}
         </DataContext.Provider>

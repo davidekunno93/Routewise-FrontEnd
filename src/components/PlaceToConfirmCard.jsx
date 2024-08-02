@@ -20,7 +20,9 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
     //     rating: 2.5 // rating - num.toFixed(1)
     // });
     const simplifyWebsite = (website) => {
-        website = website.split("www.")[1];
+        if (website) {
+            website = website.split("www.")[1];
+        }
         return website
     }
 

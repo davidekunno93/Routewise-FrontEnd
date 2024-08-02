@@ -169,3 +169,35 @@ button.gMap-btn.pressed span {
     margin: 0;
     padding: 6px 12px;
 }
+
+.place-added-box {
+    position: absolute;
+    bottom: 24px;
+    height: 36px;
+    border-radius: 4px;
+    padding: 0px 28px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    background-color: #6663FC;
+    z-index: 1;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: 0.2s;
+}
+.place-added-box span {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    cursor: pointer;
+}
+.place-added-box p {
+    font-size: 12px;
+    color: white;
+}
+.place-added-box.hidden {
+    transform: translate(-50%, 12px);
+    transition: 0.2s !important;
+}

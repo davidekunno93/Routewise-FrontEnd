@@ -4301,6 +4301,7 @@ selection-box-landing.mobile {
   align-items: center;
   width: 100%;
   height: 100%;
+  border-radius: 8px;
   z-index: 2;
 }
 

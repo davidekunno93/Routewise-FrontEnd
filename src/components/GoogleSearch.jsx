@@ -67,7 +67,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
             fields: ["formattedAddress", "location", "rating", "photos", "regularOpeningHours", "editorialSummary", "internationalPhoneNumber", "websiteURI"],
         });
         // const results = await getGeocode({ address: place.formattedAddress });
-        console.log(simplifyWebsite(place.websiteURI))
+        // console.log(simplifyWebsite(place.websiteURI))
         // console.log(place.internationalPhoneNumber)
         // console.log(place.websiteUri)
 
@@ -163,7 +163,9 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
 
     }
     const simplifyWebsite = (website) => {
-        website = website.split("www.")[1];
+        if (website) {
+            website = website.split("www.")[1];
+        }
         return website
     }
 

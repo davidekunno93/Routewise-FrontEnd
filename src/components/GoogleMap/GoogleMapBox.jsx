@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import GoogleSearch from '../GoogleSearch';
 import { Loading } from '../Loading';
@@ -6,11 +6,13 @@ import { createRoot } from 'react-dom/client';
 import { APIProvider, AdvancedMarker, InfoWindow, Map, Pin, useMap } from '@vis.gl/react-google-maps';
 import './googlemapbox.scoped.css'
 import { bounds } from 'leaflet';
+import { DataContext } from '../../Context/DataProvider';
 
 // currentMapBounds
 // tripMapBounds
 
-const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch }) => {
+const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch, showPlaceAddedBox, setShowPlaceAddedBox }) => {
+    const { wait } = useContext(DataContext);
 
     // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
     const gLibrary = ["core", "maps", "places", "marker"];
@@ -144,34 +146,34 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     const numberToBgColor = (num) => {
         let lastDigit = num.slice(-1)
         if (lastDigit === "1") {
-            return "#FF7A84" // RED
+            return "#FF4856" // RED
         }
         if (lastDigit === "2") {
-            return "#FFE380" // YELLOW
+            return "#FFD84E" // YELLOW
         }
         if (lastDigit === "3") {
-            return "#80BAFF" // BLUE
+            return "#2185F9" // BLUE
         }
         if (lastDigit === "4") {
-            return "#B3E89A" // GREEN
+            return "#4CDE08" // GREEN
         }
         if (lastDigit === "5") {
-            return "#FFB52D" // ORANGE
+            return "#FFA80A" // ORANGE
         }
         if (lastDigit === "6") {
-            return "#FF9FFF" // PINK
+            return "#FF52FF" // PINK
         }
         if (lastDigit === "7") {
-            return "#AFEBEB" // LIGHT BLUE
+            return "#14DCDC" // LIGHT BLUE
         }
         if (lastDigit === "8") {
-            return "#E674FF" // PURPLE
+            return "#CECDFE" // PURPLE
         }
         if (lastDigit === "9") {
-            return "#C5A582" // BROWN
+            return "#A9743A" // BROWN
         }
         if (lastDigit === "0") {
-            return "#94F5CC" // LIGHT GREEN
+            return "#42F2A8" // LIGHT GREEN
         }
         return null;
     }
@@ -262,11 +264,35 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         }
     }
 
+    const placeAddedBoxRef = useRef(null);
+    const showPlaceAddedBoxSwitch = () => {
+        placeAddedBoxRef.current.classList.remove("hidden");
+        wait(2000).then(() => {
+            placeAddedBoxRef.current.classList.add("hidden");
+        })
+    }
+    const closePlaceAddedBox = () => {
+        placeAddedBoxRef.current.classList.add("hidden");
+    }
+    useEffect(() => {
+        if (showPlaceAddedBox) {
+            setShowPlaceAddedBox(false);
+            showPlaceAddedBoxSwitch();
+        }
+    }, [showPlaceAddedBox])
+
+
     return (
         <>
             <span className={`material-symbols-outlined boundarySearch onTop white-text ${searchMapViewBounds ? "" : "d-none"}`}>
                 filter_center_focus
             </span>
+            <div ref={placeAddedBoxRef} className="place-added-box hidden">
+                <span onClick={() => closePlaceAddedBox()} className="material-symbols-outlined">
+                    close
+                </span>
+                <p>Added to Places List!</p>
+            </div>
             {searchMapViewBounds &&
                 <div className="boundarySearch-popup">
                     <p>Searching places in the area</p>
@@ -332,16 +358,16 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                                 <AdvancedMarker key={index} position={marker.position} onClick={() => infoWindowFunctions.toggle(marker.id)} zIndex={marker.isPlaceToConfirm ? 1 : null} >
                                     {marker.isPlaceToConfirm ?
                                         <Pin
-                                            background="#6663FC"
-                                            borderColor="#5553d7"
-                                            glyphColor="#5553d7"
+                                            background={markerColorsOn ? "#ff0000" : "#6663FC"}
+                                            borderColor={markerColorsOn ? "#000000" : "#5553d7"}
+                                            glyphColor={markerColorsOn ? "#000000" : "#5553d7"}
                                         />
                                         :
                                         markerColorsOn ?
                                             <Pin
                                                 background={numberToBgColor(marker.dayId)}
-                                                borderColor={numberToBorderColor(marker.dayId)}
-                                                glyphColor={numberToBorderColor(marker.dayId)}
+                                                borderColor="#000000"
+                                                glyphColor="#000000"
                                             />
                                             :
                                             <Pin

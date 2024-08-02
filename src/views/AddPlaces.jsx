@@ -364,6 +364,8 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             const response = await axios.post(url, newPlace, {
                 headers: { "Content-Type": "application/json" }
             }).then((response) => {
+                setShowPlaceAddedBox(true);
+
                 console.log("response:", response.data)
                 let place_id = response.data
                 newPlace = { ...newPlace, place_id: place_id }
@@ -387,6 +389,8 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             })
         } else {
             // if just navigating site without login
+            setShowPlaceAddedBox(true);
+
             placesCopy.push(newPlace)
             console.log("new places", placesCopy)
             setPlaces(placesCopy)
@@ -402,8 +406,11 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
     }
 
+    const [showPlaceAddedBox, setShowPlaceAddedBox] = useState(false);
+
     const addPlaceToList = async (place) => {
         let placeInfo = "";
+
         // let placeInfo = await loadPlaceDetails(place.place_id)
         let placesCopy = [...places]
 
@@ -1082,7 +1089,16 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                             {/* <OpenMap mapCenter={mapCenter} markers={markers} newPlaceMarker={newPlaceMarker} /> */}
                             {/* <OpenMapBox addPlaceToConfirm={addPlaceToConfirm} newPlaceMarker={newPlaceMarker} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} markers={markers} /> */}
-                            <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} />
+                            <GoogleMapBox
+                                tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })}
+                                mapCenter={mapCenter}
+                                mapCenterToggle={mapCenterToggle}
+                                addPlaceToConfirm={addPlaceToConfirm}
+                                markers={markers}
+                                setMarkers={setMarkers}
+                                showPlaceAddedBox={showPlaceAddedBox}
+                                setShowPlaceAddedBox={setShowPlaceAddedBox}
+                            />
 
                         </div>
                     </div>
@@ -1110,7 +1126,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                         <Scrollbars autoHide>
 
                                             {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
-                                                
+
                                                 return <PlaceCard
                                                     ref={e => placeCardRefs.current[index] = e}
                                                     place={place}

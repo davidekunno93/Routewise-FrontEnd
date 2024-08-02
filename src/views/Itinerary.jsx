@@ -1686,37 +1686,37 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const numberToBgColor = (num) => {
     let lastDigit = num.slice(-1)
     if (lastDigit === "1") {
-      return "#FF7A84" // RED
+        return "#FF4856" // RED
     }
     if (lastDigit === "2") {
-      return "#FFE380" // YELLOW
+        return "#FFD84E" // YELLOW
     }
     if (lastDigit === "3") {
-      return "#80BAFF" // BLUE
+        return "#2185F9" // BLUE
     }
     if (lastDigit === "4") {
-      return "#B3E89A" // GREEN
+        return "#4CDE08" // GREEN
     }
     if (lastDigit === "5") {
-      return "#FFB52D" // ORANGE
+        return "#FFA80A" // ORANGE
     }
     if (lastDigit === "6") {
-      return "#FF9FFF" // PINK
+        return "#FF52FF" // PINK
     }
     if (lastDigit === "7") {
-      return "#AFEBEB" // LIGHT BLUE
+        return "#14DCDC" // LIGHT BLUE
     }
     if (lastDigit === "8") {
-      return "#E674FF" // PURPLE
+        return "#CECDFE" // PURPLE
     }
     if (lastDigit === "9") {
-      return "#C5A582" // BROWN
+        return "#A9743A" // BROWN
     }
     if (lastDigit === "0") {
-      return "#94F5CC" // LIGHT GREEN
+        return "#42F2A8" // LIGHT GREEN
     }
     return null;
-  }
+}
 
 
   return (
