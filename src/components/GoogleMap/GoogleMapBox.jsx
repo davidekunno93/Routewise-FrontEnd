@@ -144,34 +144,34 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     const numberToBgColor = (num) => {
         let lastDigit = num.slice(-1)
         if (lastDigit === "1") {
-            return "#FE0014" // RED
+            return "#FF7A84" // RED
         }
         if (lastDigit === "2") {
-            return "#FFFD38" // YELLOW
+            return "#FFE380" // YELLOW
         }
         if (lastDigit === "3") {
-            return "#4098FF" // BLUE
+            return "#80BAFF" // BLUE
         }
         if (lastDigit === "4") {
-            return "#9EFF00" // GREEN
+            return "#B3E89A" // GREEN
         }
         if (lastDigit === "5") {
-            return "#FFA500" // ORANGE
+            return "#FFB52D" // ORANGE
         }
         if (lastDigit === "6") {
-            return "#FF7EFF" // PINK
+            return "#FF9FFF" // PINK
         }
         if (lastDigit === "7") {
-            return "#7CE7E7" // LIGHT BLUE
+            return "#AFEBEB" // LIGHT BLUE
         }
         if (lastDigit === "8") {
             return "#E674FF" // PURPLE
         }
         if (lastDigit === "9") {
-            return "#B0824E" // BROWN
+            return "#C5A582" // BROWN
         }
         if (lastDigit === "0") {
-            return "#2DF19F" // LIGHT GREEN
+            return "#94F5CC" // LIGHT GREEN
         }
         return null;
     }
@@ -351,6 +351,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                                 </AdvancedMarker>
                                 {marker.infoWindowOpen &&
                                     <InfoWindow key={index} position={marker.position} pixelOffset={[0, -25]} onCloseClick={() => infoWindowFunctions.close(marker.id)}>
+                                        {/* <p className='m-0'>{marker.id}</p> */}
                                         <p className='m-0'>{marker.placeName}</p>
                                     </InfoWindow>
                                 }

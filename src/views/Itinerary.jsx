@@ -1683,6 +1683,40 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     })
   }
 
+  const numberToBgColor = (num) => {
+    let lastDigit = num.slice(-1)
+    if (lastDigit === "1") {
+      return "#FF7A84" // RED
+    }
+    if (lastDigit === "2") {
+      return "#FFE380" // YELLOW
+    }
+    if (lastDigit === "3") {
+      return "#80BAFF" // BLUE
+    }
+    if (lastDigit === "4") {
+      return "#B3E89A" // GREEN
+    }
+    if (lastDigit === "5") {
+      return "#FFB52D" // ORANGE
+    }
+    if (lastDigit === "6") {
+      return "#FF9FFF" // PINK
+    }
+    if (lastDigit === "7") {
+      return "#AFEBEB" // LIGHT BLUE
+    }
+    if (lastDigit === "8") {
+      return "#E674FF" // PURPLE
+    }
+    if (lastDigit === "9") {
+      return "#C5A582" // BROWN
+    }
+    if (lastDigit === "0") {
+      return "#94F5CC" // LIGHT GREEN
+    }
+    return null;
+  }
 
 
   return (
@@ -2176,16 +2210,18 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                         // const lightbulb = lightbulb_days.includes(dayNum) ? true : false
                         return <div id='day-option' onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="day-option">
                           {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
-                          <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"} tooltip`}>
-                            <div className="tooltiptext">The lightbulb icon indicates the day that has the closest activities</div>
-                            <span class="material-symbols-outlined m-auto gray-text normal-cursor">
-                              emoji_objects
-                            </span>
-                            {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
-                          </div>
+                          <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1])}}></div>
                           <div className="text">
-                            <p className="m-0 bold500">{day.date_converted.split(",")[0]}</p>
-                            <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p>
+                            <p className="m-0 bold500"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
+                            {/* <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p> */}
+                          </div>
+                          <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
+                            <div className="tooltip">This day is recommended because it has the closest activities!</div>
+                            {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
+                            {/* <span class="material-symbols-outlined m-auto gray-text normal-cursor">
+                              emoji_objects
+                            </span> */}
+                            <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
                           </div>
                         </div>
                       })}

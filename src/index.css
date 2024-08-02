@@ -4193,8 +4193,9 @@ selection-box-landing.mobile {
 }
 .daySelection {
   /* height: 280px; */
-  width: 208px;
+  /* width: 208px; */
   background-color: white;
+  padding-bottom: 5px;
   border-radius: 12px;
   z-index: 5000;
   display: flex;
@@ -4202,7 +4203,7 @@ selection-box-landing.mobile {
   align-items: center;
   bottom: 112px;
   right: calc(5% + 32px);
-  overflow: hidden;
+  /* overflow: hidden; */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   position: absolute;
 }
@@ -4276,8 +4277,22 @@ selection-box-landing.mobile {
   transition: 0.2s;
 }
 
+.day-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-self: center;
+}
+
 .day-lightBulb {
   width: 24px;
+  margin: 0 10px;
+  position: relative;
+}
+.day-lightBulb .img {
+  width: 24px;
+  object-fit: contain;
 }
 
 .daySelected {
@@ -4303,31 +4318,43 @@ selection-box-landing.mobile {
   color: #242424;
 }
 
-.tooltip {
-  position: relative;
+.tooltip::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid gainsboro;
+  top: 100%;
+  right: 15.5px;
 }
 
-.tooltip .tooltiptext {
+.tooltip {
   visibility: hidden;
+  opacity: 0;
   width: 160px;
-  background-color: black;
-  color: #fff;
+  background-color: gainsboro;
+  color: black;
   text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  font-size: x-small;
-  transition-delay: 0.5s;
+  border-radius: 12px;
+  padding: 8px;
+  font-size: small;
+  font-family: 'Plus Jakarta Sans';
+  transition-delay: 0s;
 
   /* Position the tooltip */
   position: absolute;
-  top: 0;
-  left: 24px;
-  /* right: 100%; */
+  bottom: 104%;
+  right: -8px;
   z-index: 1;
 }
 
-.tooltip:hover .tooltiptext {
+.day-lightBulb:hover .tooltip {
   visibility: visible;
+  opacity: 1;
+  transition-delay: 2.5s;
+  transition-duration: 0.2s;
 }
 
 
@@ -7043,6 +7070,7 @@ div:has(>.gm-control-active) {
   font-size: 36px;
   color: gray;
 }
+
 
 
 

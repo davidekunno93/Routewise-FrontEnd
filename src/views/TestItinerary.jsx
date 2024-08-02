@@ -58,7 +58,7 @@ const TestItinerary = () => {
         let markersObj = {};
         for (let i = 0; i < placesArr.length; i++) {
             let place = placesArr[i]
-            if (place.day_id) {
+            if (place.day_id && place.in_itinerary === true) {
                 markersObj[place.id] = {
                     id: place.id,
                     placeName: place.placeName,
@@ -102,7 +102,7 @@ const TestItinerary = () => {
                     <div className="flx-c ml-4">
                         <h2 className='black-text my-0'>Saved Places</h2>
                         {tripState && tripState.saved_places.placesIds.map((placeId, index) => {
-                            return <p className='m-0'>&bull; place Name</p>
+                            return <p className='m-0'>&bull; {tripState.places[placeId].placeName}</p>
                         })}
                         {tripState && tripState.saved_places.placesIds.length === 0 &&
                             <p className="m-0">None</p>

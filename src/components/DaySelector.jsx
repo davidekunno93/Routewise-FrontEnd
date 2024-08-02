@@ -68,10 +68,10 @@ const DaySelector = ({ open, tripState, daySelectorStateProps, placeToConfirm, d
                                     {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
                                     <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "hidden"} tooltip`}>
                                         <div className="tooltiptext">The lightbulb icon indicates the day that has the closest activities</div>
+                                        {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
                                         <span class="material-symbols-outlined m-auto gray-text normal-cursor">
                                             emoji_objects
                                         </span>
-                                        {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
                                     </div>
                                     <div className="text">
                                         <p className="m-0 day bold500">{day.date_converted.split(",")[0]}</p>

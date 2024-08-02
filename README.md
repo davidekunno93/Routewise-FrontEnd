@@ -468,3 +468,35 @@ For remaining places, loop thru days in order of closeness to day captain (sort 
 After looping thru each day, if it was unable to find a day to be added to, it is moved to saved places
 
 *when day cap is added, add dc_id w/day_num to trip monitor Obj
+
+
+Kate
+saved places have day_ids in returned trip object? (but in_itinerary key is false)
+
+Jenny's trip after testing!
+'day-1': {'id': 'day-1', 'placeIds': [8, 7, 3, 21]}, 
+'day-2': {'id': 'day-2', 'placeIds': [16, 12, 18, 23]}, 
+'day-3': {'id': 'day-3', 'placeIds': [14, 1, 17, 22]}
+'day-4': {'id': 'day-4', 'placeIds': [19, 2, 9, 15]}
+'saved_places_ids': [10, 20, 6, 11, 13, 5, 4]
+
+#2
+'day-1': {'id': 'day-1', 'placeIds': [8, 9, 19, 7]}, 
+'day-2': {'id': 'day-2', 'placeIds': [16, 6, 5, 2]}, 
+'day-3': {'id': 'day-3', 'placeIds': [14, 1, 4, 21]}, 
+'day-4': {'id': 'day-4', 'placeIds': [23, 3, 12, 15]}
+'saved_places_ids': [10, 20, 11, 13],
+
+#3
+'day-1': {'id': 'day-1', 'placeIds': [8, 9, 19, 2]}, 
+'day-2': {'id': 'day-2', 'placeIds': [16, 6, 5, 13]}, 
+'day-3': {'id': 'day-3', 'placeIds': [14, 1, 4, 21]}, 
+'day-4': {'id': 'day-4', 'placeIds': [23, 3, 7, 12]}
+'saved_places_ids': [10, 20, 11],
+
+Changed threshold dist to 33%
+#4
+'day-1': {'id': 'day-1', 'placeIds': [8, 16, 11, 13]}, 
+'day-2': {'id': 'day-2', 'placeIds': [14, 1, 3, 4]}, 
+'day-3': {'id': 'day-3', 'placeIds': [23, 12, 21, 5]}, 
+'day-4': {'id': 'day-4', 'placeIds': [19, 9, 2, 7]}
