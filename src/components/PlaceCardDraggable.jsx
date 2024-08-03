@@ -66,7 +66,7 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
             {/* <div className="placeCard2 w-100 position-relative flx-r my-2" style={{ borderColor: `${draggableSnapshot.isDragging ? "#6663FC" : "gainsboro"}`, boxShadow: `${draggableSnapshot.isDragging ? "0 0 20px rgba(0, 0, 0, 0.1)" : "0 0 0px rgba(0, 0, 0, 0.1)"}` }}> */}
             <div className="placeCard2 w-100 position-relative flx-r my-2" style={draggableSnapshot.isDragging ? isDraggingStyle : isNotDraggingStyle}>
 
-                <div onClick={() => updateMapCenter(place.geocode)} className="placeCard-img-div flx-2">
+                <div onClick={() => addPlaceToConfirm(place)} className="placeCard-img-div flx-2">
                     <div className={`overlay-star-place ${place.favorite ? null : "hidden"}`}>
                         <img src="https://i.imgur.com/3WDs04Z.png" alt="" className="star-img" />
                         <p className="m-0 small gold-text">Priority Location</p>
