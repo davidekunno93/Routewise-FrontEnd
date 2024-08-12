@@ -58,7 +58,7 @@ const TestItinerary = () => {
         let markersObj = {};
         for (let i = 0; i < placesArr.length; i++) {
             let place = placesArr[i]
-            if (place.day_id && place.in_itinerary === true) {
+            if (place.day_id) {
                 markersObj[place.id] = {
                     id: place.id,
                     placeName: place.placeName,
@@ -66,6 +66,7 @@ const TestItinerary = () => {
                     isPlaceToConfirm: false,
                     infoWindowOpen: false,
                     dayId: getDayId(place.id),
+                    in_itinerary: place.in_itinerary
                 }
             }
         }

@@ -365,7 +365,8 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                                         :
                                         markerColorsOn ?
                                             <Pin
-                                                background={numberToBgColor(marker.dayId)}
+                                                // marker.dayId ternery operator for saved places to render marker on test-itinerary pg
+                                                background={marker.dayId ? numberToBgColor(marker.dayId) : "#000000"}
                                                 borderColor="#000000"
                                                 glyphColor="#000000"
                                             />

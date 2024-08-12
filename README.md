@@ -500,3 +500,39 @@ Changed threshold dist to 33%
 'day-2': {'id': 'day-2', 'placeIds': [14, 1, 3, 4]}, 
 'day-3': {'id': 'day-3', 'placeIds': [23, 12, 21, 5]}, 
 'day-4': {'id': 'day-4', 'placeIds': [19, 9, 2, 7]}
+
+#5 - attempted to keep remaining places out of days that are more than half dist range away
+'day-1': {'id': 'day-1', 'placeIds': [8, 16, 11, 13]}, 
+'day-2': {'id': 'day-2', 'placeIds': [14, 1, 3, 4]}, 
+'day-3': {'id': 'day-3', 'placeIds': [23, 12, 21, 5]}, 
+'day-4': {'id': 'day-4', 'placeIds': [19, 9, 2, 7]}
+
+#6 - outlier code implemented, limit places in days to 50% of modified distance range w/o outlier
+Purposefully treating 8 as an outlier was very good:
+'day-1': {'id': 'day-1', 'placeIds': [16, 18, 23, 12]}, 
+'day-2': {'id': 'day-2', 'placeIds': [19, 9, 15, 2]}, 
+'day-3': {'id': 'day-3', 'placeIds': [14, 1, 22, 17]}, 
+'day-4': {'id': 'day-4', 'placeIds': [10, 6, 20, 13]} 
+'saved_places_ids': [3, 4, 5, 7, 11, 21, 8]
+
+#6.1
+Purposefully treating 8 as a priority outlier
+'day-1': {'id': 'day-1', 'placeIds': [8]}, 
+'day-2': {'id': 'day-2', 'placeIds': [16, 18, 23, 12]}, 
+'day-3': {'id': 'day-3', 'placeIds': [19, 9, 15, 2]}, 
+'day-4': {'id': 'day-4', 'placeIds': [14, 1, 22, 17]}
+'saved_places_ids': [3, 4, 5, 6, 7, 10, 11, 13, 20, 21]
+
+#6.2
+8 as normal (not an outlier), 8 day limited to 3 places bc no more remaining places are 50% of dist_range
+'day-1': {'id': 'day-1', 'placeIds': [8, 16, 18]}, 
+'day-2': {'id': 'day-2', 'placeIds': [14, 1, 4, 22]}, 
+'day-3': {'id': 'day-3', 'placeIds': [19, 9, 2, 15]}, 
+'day-4': {'id': 'day-4', 'placeIds': [23, 12, 3, 17]}
+'saved_places_ids': [6, 7, 10, 11, 13, 20, 21, 5]
+
+<!-- 8Aug24 Team Meeting -->
+Day design in itinerary page
+More_vert options to swap days/move places
+
+protect ptc card with min map width

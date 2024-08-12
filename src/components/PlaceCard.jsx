@@ -3,7 +3,7 @@ import { DataContext } from '../Context/DataProvider'
 import "./placecards.scoped.css"
 import ScrollText from './ScrollText';
 
-export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, removePlace, updateMapCenter }, ref) => {
+export const PlaceCard = forwardRef(({ place, addPlaceToConfirm, index, addStar, removeStar, removePlace, updateMapCenter }, ref) => {
     // imports
     const { textFunctions, renderRating } = useContext(DataContext);
 
@@ -75,7 +75,7 @@ export const PlaceCard = forwardRef(({ place, index, addStar, removeStar, remove
                 <div ref={ref} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
 
                     <div className="placeCard-img-div flx-4">
-                        <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
+                        <img onClick={() => addPlaceToConfirm(place)} className="placeCard2-img" src={place.imgURL} />
                     </div>
                     <div className="placeCard2-body flx-7">
                         {/* <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div> */}

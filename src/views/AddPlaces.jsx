@@ -379,6 +379,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                 // currentTripCopy.places = places
                 setCurrentTrip(currentTripCopy)
                 clearPlaceToConfirm()
+                setScrollDownStandby(true)
                 if (firstTimeOnPage) {
                     openStarPlacesToolTip()
                 }
@@ -399,9 +400,11 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             // currentTripCopy.places = places
             setCurrentTrip(currentTripCopy)
             clearPlaceToConfirm()
+            setScrollDownStandby(true)
             if (firstTimeOnPage) {
                 openStarPlacesToolTip()
             }
+
         }
 
     }
@@ -778,6 +781,21 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         })
 
     }
+    const [scrollDownStandBy, setScrollDownStandby] = useState(false);
+    const placesScrollBarRef = useRef(null);
+    const scrollDown = (placesList) => {
+        if (placesList === "addedPlaces" && placesScrollBarRef.current) {
+            placesScrollBarRef.current.scrollToBottom()
+        }
+    }
+    useEffect(() => {
+        if (scrollDownStandBy) {
+            scrollDown("addedPlaces");
+            setScrollDownStandby(false);
+        }
+    }, [places])
+    
+
 
     // added places render 'added to places' button
     const [placesAddressList, setPlacesAddressList] = useState([])
@@ -1006,7 +1024,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             <div className={`page-container90 ${!mobileMode && "vh-100"} flx-c`}>
                 <div className={`add-places-title-row ${mobileMode ? "flx-c mobile" : "flx-r align-c gap-8"}`}>
 
-                    <p onClick={() => { printPlaces(); printCurrentTrip() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
+                    <p onClick={() => { printPlaces(); printCurrentTrip(); scrollDown() }} className="page-subsubheading-bold m-0">Search and add places to your trip to <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span></p>
                     <div className={`tripInfo flx-r align-c ${mobileModeNarrow ? "gap-1" : "gap-2"} position-relative`}>
                         <span className={`material-symbols-outlined o-50 ${mobileModeNarrow && "larger"}`}>
                             calendar_month
@@ -1122,14 +1140,15 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                             <p onClick={() => setConfirmationModalOpen(true)} className={`my-2 purple-text pointer z-1 position-right bold500 mr-1 ${mobileModeNarrow && "smedium"}`}>Clear list</p>
                                         }
                                     </div>
-                                    <div className={`placeCards ${places.length > 0 ? "h482" : null}`}>
-                                        <Scrollbars autoHide>
+                                    <div id='placeCardsList' className={`placeCards ${places.length > 0 ? "h482" : null}`}>
+                                        <Scrollbars ref={placesScrollBarRef} autoHide>
 
                                             {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
 
                                                 return <PlaceCard
                                                     ref={e => placeCardRefs.current[index] = e}
                                                     place={place}
+                                                    addPlaceToConfirm={addPlaceToConfirm}
                                                     index={index}
                                                     updateMapCenter={updateMapCenter}
                                                     addStar={addStar}
