@@ -630,7 +630,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             //     places_serial: places_serial,
             // }
             // console.log(data)
-            console.log(currentTrip.tripID)
+            console.log("this is the trip id! = "+currentTrip.tripID)
             const response = await axios.get(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`)
                 .then((response) => {
                     createItinerary(response)
