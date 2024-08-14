@@ -535,4 +535,10 @@ Purposefully treating 8 as a priority outlier
 Day design in itinerary page
 More_vert options to swap days/move places
 
-protect ptc card with min map width
+**protect ptc card with min map width
+
+<!-- 12Aug24 Team Meeting -->
+Start working on suggested places (gMaps)
+Algorithm??
+Which city are you travelling to dropdown 
+Itinerary page new days design with colors

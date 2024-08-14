@@ -8,11 +8,11 @@ import { Draggable, Droppable } from '@hello-pangea/dnd';
 
 const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
 
-    const [dayTitle, setDayTitle] = useState('')
+    const [dayTitle, setDayTitle] = useState('');
 
 
     const updateDayTitle = (e) => {
-        setDayTitle(e.target.value)
+        setDayTitle(e.target.value);
     }
 
     useEffect(() => {
@@ -54,9 +54,43 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
             setNarrowWindow(false)
         }
     }
-
+    
+    const numberToBgColor = (num) => {
+        let lastDigit = num.slice(-1)
+        if (lastDigit === "1") {
+            return "#FF4856" // RED
+        }
+        if (lastDigit === "2") {
+            return "#FFD84E" // YELLOW
+        }
+        if (lastDigit === "3") {
+            return "#2185F9" // BLUE
+        }
+        if (lastDigit === "4") {
+            return "#4CDE08" // GREEN
+        }
+        if (lastDigit === "5") {
+            return "#FFA80A" // ORANGE
+        }
+        if (lastDigit === "6") {
+            return "#FF52FF" // PINK
+        }
+        if (lastDigit === "7") {
+            return "#14DCDC" // LIGHT BLUE
+        }
+        if (lastDigit === "8") {
+            return "#CECDFE" // PURPLE
+        }
+        if (lastDigit === "9") {
+            return "#A9743A" // BROWN
+        }
+        if (lastDigit === "0") {
+            return "#42F2A8" // LIGHT GREEN
+        }
+        return null;
+    }
     return (
-        <div id={`flowBox-${id}`} className="flow-box">
+        <div id={`flowBox-${id}`} className="flow-box" style={{ borderLeftColor: numberToBgColor(day.id) }}>
 
             <div className="flow-header">
                 <div onClick={() => toggleFlow(id)} className="flx-r just-sb pointer">
