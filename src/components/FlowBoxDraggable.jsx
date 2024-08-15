@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { PlaceCardDraggable } from './PlaceCardDraggable';
 import { Link } from 'react-router-dom';
 import { SearchPlace } from './SearchPlace';
 // import { Draggable, Droppable } from 'react-beautiful-dnd';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
+import './flowbox.scoped.css'
+import { DataContext } from '../Context/DataProvider';
 
 
 const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
-
+    const { gIcon } = useContext(DataContext);
     const [dayTitle, setDayTitle] = useState('');
 
 
@@ -54,7 +56,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
             setNarrowWindow(false)
         }
     }
-    
+
     const numberToBgColor = (num) => {
         let lastDigit = num.slice(-1)
         if (lastDigit === "1") {
@@ -93,16 +95,22 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
         <div id={`flowBox-${id}`} className="flow-box" style={{ borderLeftColor: numberToBgColor(day.id) }}>
 
             <div className="flow-header">
-                <div onClick={() => toggleFlow(id)} className="flx-r just-sb pointer">
+                <div onClick={() => toggleFlow(id)} className="content">
                     <p className="page-subheading-bold smallertext975-respond m-0">
-                        <span id={`expandArrow-${id}`} className="material-symbols-outlined xx-large v-align symbol td-2">
+                        <span id={`expandArrow-${id}`} className={`${gIcon} expandArrow`}>
                             expand_more
                         </span>
-                        {day.date_converted.split(' ')[0]} <span className="smalltext-respond"> {day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span></p>
-                    <p id={`placeCount-${id}`} className="gray-text m-0 mt-2 bold500 placeCount ws-nowrap td-2 o-none">{narrowWindow ? "("+day.placeIds.length+")" : day.placeIds.length+" "+placeOrPlaces }</p></div>
+                        {day.date_converted.split(' ')[0]} 
+                        <span className="smalltext-respond">&nbsp;{day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span>
+                    </p>
+                    <div className="options">
+                        <p id={`placeCount-${id}`} className="placeCount o-none">{narrowWindow ? "(" + day.placeIds.length + ")" : day.placeIds.length + " " + placeOrPlaces}</p>
+                        <span className={`${gIcon} o-50`}>more_vert</span>
+                    </div>
+                </div>
                 <div className="addTitle-input position-relative">
                     <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-dayTitle ml-5" placeholder='Add subheading' />
-                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className="material-symbols-outlined o-20 edit-overlay small">
+                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className={`${gIcon} o-20 edit-overlay small`}>
                         edit
                     </span></label>
                 </div>
@@ -117,7 +125,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                                     <Draggable key={place.id} draggableId={`${place.id}`} index={i} >
                                         {(draggableProvided, draggableSnapshot) => (
                                             <div ref={draggableProvided.innerRef} {...draggableProvided.draggableProps} {...draggableProvided.dragHandleProps} key={i}>
-                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} updateMapCenter={updateMapCenter} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved}  isSavedPlace={isSavedPlace} />
+                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} updateMapCenter={updateMapCenter} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved} isSavedPlace={isSavedPlace} />
                                             </div>
                                         )}
 

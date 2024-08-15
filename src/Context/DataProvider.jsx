@@ -412,6 +412,26 @@ const DataProvider = (props) => {
     const geoToLatLng = (geocode) => {
         return { lat: geocode[0], lng: geocode[1] }
     }
+    const convertInfoToMap = (openingHoursStr) => {
+        if (openingHoursStr.toLowerCase().includes(":")) {
+
+            let openingHoursArr = openingHoursStr.split(", ");
+            let result = {}
+            // loop thru arr
+            for (let i = 0; i < openingHoursArr.length; i++) {
+                // let day = openingHoursArr[i].slice(0, 3)
+                // get day
+                let day = openingHoursArr[i].split(": ")[0]
+                // get opning hrs
+                let hours = openingHoursArr[i].split(": ")[1]
+                // update result object
+                result[day] = hours;
+            }
+            return result;
+        } else {
+            return openingHoursStr;
+        }
+    }
     const renderRating = (num) => {
         // input = num from 0 to 5, returns array of star fill numbers
 
@@ -434,6 +454,7 @@ const DataProvider = (props) => {
         }
         return ratingArr;
     }
+    const gIcon = "material-symbols-outlined";
 
     return (
         <DataContext.Provider value={{
@@ -444,7 +465,7 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating, wait
+            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon
         }}>
             {props.children}
         </DataContext.Provider>

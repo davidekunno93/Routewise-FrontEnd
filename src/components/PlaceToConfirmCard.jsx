@@ -160,7 +160,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                             {placeToConfirm.address &&
                                 <div className="detail address">
                                     <span className="material-symbols-outlined">location_on</span>
-                                    <p className="m-0">{placeToConfirm.address}</p>
+                                    <p className="m-0 truncated">{placeToConfirm.address}</p>
                                 </div>
                             }
                             {placeToConfirm.website &&

@@ -1,0 +1,46 @@
+.flow-header {
+    /* background-color: #F0EFFF; */
+    padding: 8px 16px;
+    border-radius: 12px;
+}
+.flow-header .content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.flow-header .expandArrow {
+    font-size: xx-large;
+    transition: 0.2s;
+    vertical-align: middle;
+}
+.flow-header .options {
+    display: flex;
+    gap: 8px;
+    padding-top: 10px;
+    align-items: center;
+}
+.flow-box {
+    margin-top: 15px;
+    padding-bottom: 12px;
+    border-left: 7px solid salmon;
+    border-radius: 5px;
+    background-color: white;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.07);
+}
+
+.flowBody {
+    transition: 0.3s;
+}
+.placeCount {
+    white-space: nowrap;
+    color: gray;
+    transition: 0.2s;
+    margin: 0;
+    font-weight: 500;
+    font-size: 14px;
+}
+#expandArrow {
+    /* transform: rotate(-90deg); */
+    transition: 0.2s;
+}

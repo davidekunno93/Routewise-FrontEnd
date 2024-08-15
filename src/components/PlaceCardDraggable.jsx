@@ -1,8 +1,9 @@
 import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
+import OpeningHoursMap from './OpeningHoursMap';
 
 export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
-    const { textFunctions, renderRating } = useContext(DataContext);
+    const { textFunctions, convertInfoToMap, renderRating } = useContext(DataContext);
     // PLACE CARD TITLE ELLIPSIS RE-RENDER CODE
     // const cardBodyRef = useRef(null);
     // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
@@ -54,6 +55,8 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
         borderColor: "gainsboro",
         boxShadow: "0 0 0px rgba(0, 0, 0, 0.1)",
     }
+
+
     return (
         <div className="placeCard-box flx-r grabber">
             <div className="drag-icon flx">
@@ -77,26 +80,32 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     {/* <p className="body-title">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit)+"..." : place.placeName}</p> */}
                     <p className="body-title">{place.placeName}</p>
                     <div className="align-all-items">
-                            <p className="body-category">{place.category ? textFunctions.capitalize(place.category.split(',')[0]) : "No category"}</p>
-                            {place.rating &&
-                                <>
-                                    <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
-                                    <div className="rating">
-                                        <p className='score-text'>{place.rating}</p>
-                                        {renderRating(place.rating).map((star, index) => {
-                                            let noStar = star === 0;
-                                            let fullStar = star === 1;
-                                            let halfStar = star === 0.5;
-                                            return <img key={index} src={`${fullStar ? "https://i.imgur.com/3eEFOjj.png" : noStar ? "https://i.imgur.com/ZhvvgPZ.png" : "https://i.imgur.com/SWExJbv.png"}`} alt="" className="star-img" />
-                                        })}
+                        <p className="body-category">{place.category ? textFunctions.capitalize(place.category.split(',')[0]) : "No category"}</p>
+                        {place.rating &&
+                            <>
+                                <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
+                                <div className="rating">
+                                    <p className='score-text'>{place.rating}</p>
+                                    {renderRating(place.rating).map((star, index) => {
+                                        let noStar = star === 0;
+                                        let fullStar = star === 1;
+                                        let halfStar = star === 0.5;
+                                        return <img key={index} src={`${fullStar ? "https://i.imgur.com/3eEFOjj.png" : noStar ? "https://i.imgur.com/ZhvvgPZ.png" : "https://i.imgur.com/SWExJbv.png"}`} alt="" className="star-img" />
+                                    })}
 
-                                    </div>
-                                </>
-                            }
+                                </div>
+                            </>
+                        }
 
-                        </div>
+                    </div>
                     {place.info &&
-                        <p className="body-info">{place.info}</p>
+                        <>
+                            {place.info.includes(":") ?
+                                <OpeningHoursMap openingHoursObject={convertInfoToMap(place.info)} />
+                                :
+                                <p className="body-info">{place.info}</p>
+                            }
+                        </>
                     }
                     <p className="body-address">{place.summary ?? place.address}</p>
                 </div>
