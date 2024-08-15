@@ -492,7 +492,7 @@ export const Dashboard = () => {
     const [autoCompleteCities, setAutoCompleteCities] = useState(null);
     const getAutoCompleteCities = async () => {
         console.log("fetching...")
-        const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
+        const url = `https://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
         const response = axios.get(url)
             .then((response) => {
                 console.log(response.data.data)
