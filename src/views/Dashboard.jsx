@@ -123,7 +123,7 @@ export const Dashboard = () => {
     const [fullTranslated, setFullTranslated] = useState(false);
     const [mapCenter, setMapCenter] = useState([51.50735, -0.12776]);
     const [calendarOpen, setCalendarOpen] = useState(false)
-    const [city, setCity] = useState(null);
+    const [cityText, setCityText] = useState(null);
     const [tripData, setTripData] = useState(null);
     const [specifyCityOpen, setSpecifyCityOpen] = useState(false);
     const [cityOptions, setCityOptions] = useState([
@@ -174,33 +174,33 @@ export const Dashboard = () => {
         console.log(data);
 
         let upcomingTripsArr = []
-            let pastTripsArr = []
-            // sort trips into past and upcoming
-            if (data && data.length > 0) {
-                for (let i = 0; i < data.length; i++) {
-                    // let endDate = data[i].end_date
-                    // let yday = new Date(new Date().valueOf() - 1000*60*60*24)
-                    // console.log("trip end date:", new Date(datiundash(endDate)))
-                    if (new Date(timeFunctions.datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
-                        upcomingTripsArr.push(data[i])
-                    } else {
-                        pastTripsArr.push(data[i])
-                    }
+        let pastTripsArr = []
+        // sort trips into past and upcoming
+        if (data && data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                // let endDate = data[i].end_date
+                // let yday = new Date(new Date().valueOf() - 1000*60*60*24)
+                // console.log("trip end date:", new Date(datiundash(endDate)))
+                if (new Date(timeFunctions.datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
+                    upcomingTripsArr.push(data[i])
+                } else {
+                    pastTripsArr.push(data[i])
                 }
-                
-                upcomingTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(a.start_date)) - new Date(timeFunctions.datiundash(b.start_date)))
-                pastTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(b.start_date)) - new Date(timeFunctions.datiundash(a.start_date)))
-                const allTripsArr = upcomingTripsArr.concat(pastTripsArr);
-                // console.log(allTripsArr)
-                setUserTrips(allTripsArr);
-                // sort upcoming trips from old to future
-                // add past trips ordered from new to old
-                // the page will grab the first ~5 trips
-
-
-                // console.log("past Trips", pastTripsArr)
-                // console.log("upcoming Trips", upcomingTripsArr)
             }
+
+            upcomingTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(a.start_date)) - new Date(timeFunctions.datiundash(b.start_date)))
+            pastTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(b.start_date)) - new Date(timeFunctions.datiundash(a.start_date)))
+            const allTripsArr = upcomingTripsArr.concat(pastTripsArr);
+            // console.log(allTripsArr)
+            setUserTrips(allTripsArr);
+            // sort upcoming trips from old to future
+            // add past trips ordered from new to old
+            // the page will grab the first ~5 trips
+
+
+            // console.log("past Trips", pastTripsArr)
+            // console.log("upcoming Trips", upcomingTripsArr)
+        }
 
 
 
@@ -397,12 +397,12 @@ export const Dashboard = () => {
     }
 
     const getCity = async () => {
+        let cityInput = document.getElementById('cityInput');
         if (!user) {
             openSignUp()
         } else {
-            if (!city) {
+            if (!cityInput.value) {
                 // if there is no city entered --> please enter city name
-                let cityInput = document.getElementById('cityInput')
                 cityInput.classList.add('entry-error')
                 console.log("no city")
                 alert("Please enter a city destination")
@@ -411,10 +411,11 @@ export const Dashboard = () => {
             } else {
                 // if there is a city entered
                 startLoading()
-                const index = city.indexOf(',')
+                const cityName = cityInput.value;
+                const index = cityName.indexOf(',')
                 // if the user input includes a "," -- it contains city and state/country
                 if (index > -1) {
-                    let cityNoSpaces = city.replace(/ /g, '')
+                    let cityNoSpaces = cityName.replace(/ /g, '')
                     const cityArr = cityNoSpaces.split(',')
                     // console.log(cityArr)
                     const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`, {
@@ -427,7 +428,7 @@ export const Dashboard = () => {
                     // go to TripName Modal automatically
                 } else {
                     // if user enters just a city name with no ","
-                    const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${city}`, {
+                    const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${cityName}`, {
                         headers: { 'X-Api-Key': apiKey }
                     }).then((response => openNewTrip(response)))
                         .catch((error) => {
@@ -488,11 +489,37 @@ export const Dashboard = () => {
         setSpecifyCityOpen(true)
     }
 
+    const [autoCompleteCities, setAutoCompleteCities] = useState(null);
+    const getAutoCompleteCities = async () => {
+        console.log("fetching...")
+        const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
+        const response = axios.get(url)
+            .then((response) => {
+                console.log(response.data.data)
+                setAutoCompleteCities(response.data.data);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+    useEffect(() => {
+        if (cityText && cityText.length > 2) {
+            getAutoCompleteCities();
+        } else {
+            setAutoCompleteCities(null);
+        }
+    }, [cityText])
+    const updateCityInput = (cityName) => {
+        const cityInput = document.getElementById('cityInput');
+        cityInput.value = cityName;
+    }
+    const clearCitySearch = () => {
+        setAutoCompleteCities(null);
+        // setCityText(null);
+    }
 
-
-
-    const updateCity = (e) => {
-        setCity(e.target.value)
+    const updateCityText = (text, tog) => {
+        setCityText(text)
     }
     const closeSpecifyCity = () => {
         setSpecifyCityOpen(false);
@@ -500,13 +527,13 @@ export const Dashboard = () => {
 
     useEffect(() => {
         // console.log(city)
-        if (city) {
-            if (city.length > 0) {
+        if (cityText) {
+            if (cityText.length > 0) {
                 let cityInput = document.getElementById('cityInput')
                 cityInput.classList.remove('entry-error')
             }
         }
-    }, [city])
+    }, [cityText])
 
     const startLoading = () => {
         setLoading(true);
@@ -916,7 +943,7 @@ export const Dashboard = () => {
 
     return (
         <>
-        <PageBlock />
+            <PageBlock />
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
             <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={closeEditTripModal} />
@@ -932,7 +959,18 @@ export const Dashboard = () => {
                         <div className="item-location flx-3 flx-c just-en">
                             <div className="">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
-                                <input onChange={(e) => updateCity(e)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className='calendarInput italic-placeholder' autoComplete='off' required />
+                                <div className="inputBox">
+                                    <input onChange={(e) => updateCityText(e.target.value)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className={`calendarInput ${autoCompleteCities && cityText && "drop"} italic-placeholder`} autoComplete='off' required />
+                                    <div className={`auto-dropdown ${autoCompleteCities && cityText ? "show" : "hide"}`}>
+                                        {autoCompleteCities && cityText && autoCompleteCities.map((city, index) => {
+                                            return <div key={index} onClick={() => {updateCityInput(city.name); clearCitySearch()}} className="option">
+                                                <p className="m-0 city">{city.name}</p>
+                                                <p className="m-0 country">, {city.country ?? ""}</p>
+                                            </div>
+                                        })}
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className={`item-dates ${mobileMode && "mobile"} flx- flx-c just-en`}>
