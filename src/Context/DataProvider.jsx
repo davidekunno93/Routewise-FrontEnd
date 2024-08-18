@@ -456,6 +456,41 @@ const DataProvider = (props) => {
     }
     const gIcon = "material-symbols-outlined";
 
+    const numberToBgColor = (numString) => {
+        let lastDigit = numString.slice(-1)
+        if (lastDigit === "1") {
+          return "#FF4856" // RED
+        }
+        if (lastDigit === "2") {
+          return "#FFD84E" // YELLOW
+        }
+        if (lastDigit === "3") {
+          return "#2185F9" // BLUE
+        }
+        if (lastDigit === "4") {
+          return "#4CDE08" // GREEN
+        }
+        if (lastDigit === "5") {
+          return "#FFA80A" // ORANGE
+        }
+        if (lastDigit === "6") {
+          return "#FF52FF" // PINK
+        }
+        if (lastDigit === "7") {
+          return "#14DCDC" // LIGHT BLUE
+        }
+        if (lastDigit === "8") {
+          return "#CECDFE" // PURPLE
+        }
+        if (lastDigit === "9") {
+          return "#A9743A" // BROWN
+        }
+        if (lastDigit === "0") {
+          return "#42F2A8" // LIGHT GREEN
+        }
+        return null;
+      }
+
     return (
         <DataContext.Provider value={{
             'mobileMode': mobileMode, 'mobileModeNarrow': mobileModeNarrow,
@@ -465,7 +500,7 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon
+            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor
         }}>
             {props.children}
         </DataContext.Provider>

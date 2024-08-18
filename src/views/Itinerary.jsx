@@ -18,6 +18,7 @@ import OpenMapBox from '../components/OpenMapBox'
 import DaySelector from '../components/DaySelector'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
+import ConfirmationModal from '../components/ConfirmationModal'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -448,6 +449,22 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     }
   };
 
+  const itineraryFunctions = {
+    swapDays: function (sourceDayNum, DestinationDayNum) {
+      let tripStateCopy = { ...tripState };
+      // get destDay placeIds copy them to placeId holder
+      // make destDay placeIds = sourceDay placeIds
+      // make sourceDay placeIds = held placeIds
+
+      [tripStateCopy[sourceDayNum].placeIds, tripStateCopy[DestinationDayNum].placeIds] = [tripStateCopy[DestinationDayNum].placeIds, tripStateCopy[sourceDayNum].placeIds]
+      // setState
+      setTripState(tripStateCopy)
+    },
+    moveAllDays: function () {
+
+    },
+  }
+
   // add place from map and suggeseted places
   const addPlace = async (dayNum, modifier) => {
     let tripStateCopy = { ...tripState }
@@ -647,38 +664,21 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     // setMapCenterToggle(!mapCenterToggle);
     // resetPanelSearch()
   }
-  // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
-  const [placeToConfirmCardTitleCharLimit, setPlaceToConfirmCardTitleCharLimit] = useState(0);
-  const [charLimit, setCharLimit] = useState(18);
-  const ptcCardBodyRef = useRef(null);
-  const calculateCharLimit = (width) => {
-    let extraPercent = (Math.floor((width - 213) / 6)) / 1000;
-    let charLimit = Math.floor(width * (0.07 + extraPercent));
-    // console.log(charLimit);
-    return charLimit
-  }
+  
+  
   // observe place to confirm card body
-  useEffect(() => {
-    if (ptcCardBodyRef.current) {
-      const observer = new ResizeObserver((entries) => {
-        // console.log(entries)
-        let width = entries[0].contentRect.width
-        let charLimit = calculateCharLimit(width)
-        setPlaceToConfirmCardTitleCharLimit(charLimit);
-      })
-      observer.observe(ptcCardBodyRef.current)
-    }
-  }, [placeToConfirm])
-  useEffect(() => {
-    // if (cardBodyRef.current) {
-    //   const observer = new ResizeObserver((entries) => {
-    //     // console.log(cardBodyRef.current)
-    //     let width = entries[0].contentRect.width
-    //     calculateCharLimit(width, "placeCard")
-    //   })
-    //   observer.observe(cardBodyRef.current)
-    // }
-  }, [])
+  // useEffect(() => {
+  //   if (ptcCardBodyRef.current) {
+  //     const observer = new ResizeObserver((entries) => {
+  //       // console.log(entries)
+  //       let width = entries[0].contentRect.width
+  //       let charLimit = calculateCharLimit(width)
+  //       setPlaceToConfirmCardTitleCharLimit(charLimit);
+  //     })
+  //     observer.observe(ptcCardBodyRef.current)
+  //   }
+  // }, [placeToConfirm])
+
   const openDaySelection = (modifier) => {
     let daySelection = document.getElementById('daySelection')
     if (modifier) {
@@ -805,14 +805,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
   // [map & geography code]
   const [markers, setMarkers] = useState(null);
-  const [newPlaceMarker, setNewPlaceMarker] = useState(null);
   // const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776])
   const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : geoToLatLng([51.50735, -0.12776]))
   const [mapCenterToggle, setMapCenterToggle] = useState(false);
   const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
-  const [searchText, setSearchText] = useState('');
-  const [panelSearchText, setPanelSearchText] = useState('');
-  const [auto, setAuto] = useState([]);
   const [mapView, setMapView] = useState(false);
   const updateMapCenter = (geocode) => {
     // console.log(geocode);
@@ -1151,22 +1147,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     window.addEventListener('scroll', observeFlowBoxes)
     return window.removeEventListener('scroll', observeFlowBoxes)
   }, []);
-  // place card title char limit code
-  const cardBodyRef = useRef();
-  const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
-  useEffect(() => {
-    // first place in first day calculates char limit and mutates charLimit in itinerary
-    if (cardBodyRef.current) {
-      const observer = new ResizeObserver((entries) => {
-        // console.log(cardBodyRef.current)
-        let width = entries[0].contentRect.width
-        let charLimit = calculateCharLimit(width)
-        setPlaceCardTitleCharLimit(charLimit);
-        // console.log(charLimit);
-      })
-      observer.observe(cardBodyRef.current)
-    }
-  }, [tripState, selectedPlacesList]);
+  
 
 
 
@@ -1686,51 +1667,62 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const numberToBgColor = (num) => {
     let lastDigit = num.slice(-1)
     if (lastDigit === "1") {
-        return "#FF4856" // RED
+      return "#FF4856" // RED
     }
     if (lastDigit === "2") {
-        return "#FFD84E" // YELLOW
+      return "#FFD84E" // YELLOW
     }
     if (lastDigit === "3") {
-        return "#2185F9" // BLUE
+      return "#2185F9" // BLUE
     }
     if (lastDigit === "4") {
-        return "#4CDE08" // GREEN
+      return "#4CDE08" // GREEN
     }
     if (lastDigit === "5") {
-        return "#FFA80A" // ORANGE
+      return "#FFA80A" // ORANGE
     }
     if (lastDigit === "6") {
-        return "#FF52FF" // PINK
+      return "#FF52FF" // PINK
     }
     if (lastDigit === "7") {
-        return "#14DCDC" // LIGHT BLUE
+      return "#14DCDC" // LIGHT BLUE
     }
     if (lastDigit === "8") {
-        return "#CECDFE" // PURPLE
+      return "#CECDFE" // PURPLE
     }
     if (lastDigit === "9") {
-        return "#A9743A" // BROWN
+      return "#A9743A" // BROWN
     }
     if (lastDigit === "0") {
-        return "#42F2A8" // LIGHT GREEN
+      return "#42F2A8" // LIGHT GREEN
     }
     return null;
-}
+  }
 
+  const confirmationModalRef = useRef(null);
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [confirmationModalProps, setConfirmationModalProps] = useState({
+    confirmAction: null,
+    confirmActionParams: null,
+    questionText: null,
+    descText: null,
+    confirmOption: null,
+    rejectOption: null
+  })
+  const openConfirmationModal = (props) => {
+    setConfirmationModalProps(props);
+    setConfirmationModalOpen(true);
+  }
 
   return (
     <>
-
-      <DaySelector
-        open={daySelectorOpen}
-        tripState={tripState}
-        addPlace={placeFuntions.addPlace}
-        savedToItinerary={savedToItinerary}
-        itineraryToSaved={itineraryToSaved}
-        daySelectorStateProps={daySelectorStateProps}
-        onClose={() => closeDaySelector(false)}
+      <ConfirmationModal
+        open={confirmationModalOpen}
+        ref={confirmationModalRef}
+        confirmationModalProps={confirmationModalProps}
+        onClose={() => setConfirmationModalOpen(false)}
       />
+      
       {mobileMode &&
         <button onClick={() => setMapView(mapView => !mapView)} className={`mapview-btn ${mapView && "light"}`}>
           <span className={`material-symbols-outlined large ${mapView ? "dark-text" : "white-text"}`}>
@@ -1887,7 +1879,27 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                         return <Suspense fallback={<LoadBox />} >
                           <div ref={e => refs.current[id] = e} key={id} className="">
-                            <FlowBoxDraggable key={day.id} id={id} dayNum={dayNum} addSearchOpen={addSearchOpen} addSearchClose={addSearchClose} toggleFlow={toggleFlow} day={day} places={places} removePlace={removePlace} addPlaceFromFlowBox={addPlaceFromFlowBox} country={country} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} updateMapCenter={updateMapCenter} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved} isSavedPlace={isSavedPlace} />
+                            <FlowBoxDraggable
+                              key={day.id}
+                              id={id}
+                              tripState={tripState}
+                              setTripState={setTripState}
+                              addSearchOpen={addSearchOpen}
+                              addSearchClose={addSearchClose}
+                              toggleFlow={toggleFlow}
+                              day={day}
+                              places={places}
+                              // placesFunctions?
+                              removePlace={removePlace}
+                              addPlaceFromFlowBox={addPlaceFromFlowBox}
+                              addPlaceToConfirm={addPlaceToConfirm}
+                              itineraryToSaved={itineraryToSaved}
+                              isSavedPlace={isSavedPlace}
+
+                              country={country}
+                              openConfirmationModal={openConfirmationModal}
+                              confirmationModalRef={confirmationModalRef}
+                            />
                           </div>
                         </Suspense>
                       })}
@@ -2190,7 +2202,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                 <div className={`it-map position-relative ${mobileMode && "m-auto"}`}>
 
-                  <div id='daySelection' className="daySelection d-none">
+                  <div id='daySelection' className="daySelection map d-none">
                     <div className="day-selector">
                       <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
                       {/* <div className="daySelected position-absolute white-bg">
@@ -2210,7 +2222,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                         // const lightbulb = lightbulb_days.includes(dayNum) ? true : false
                         return <div id='day-option' onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="day-option">
                           {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
-                          <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1])}}></div>
+                          <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
                           <div className="text">
                             <p className="m-0 bold500"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
                             {/* <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p> */}

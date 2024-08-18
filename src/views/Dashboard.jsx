@@ -116,7 +116,7 @@ export const Dashboard = () => {
     const { userPreferences, setPreferences } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
-    const { timeFunctions } = useContext(DataContext);
+    const { timeFunctions, gIcon } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
@@ -492,7 +492,7 @@ export const Dashboard = () => {
     const [autoCompleteCities, setAutoCompleteCities] = useState(null);
     const getAutoCompleteCities = async () => {
         console.log("fetching...")
-        const url = `https://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
+        const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
         const response = axios.get(url)
             .then((response) => {
                 console.log(response.data.data)
@@ -502,6 +502,7 @@ export const Dashboard = () => {
                 console.log(error)
             })
     }
+
     useEffect(() => {
         if (cityText && cityText.length > 2) {
             getAutoCompleteCities();
@@ -939,7 +940,34 @@ export const Dashboard = () => {
             setAwaitingItinerary(false)
             navigate('/itinerary')
         }
-    }, [currentTrip])
+    }, [currentTrip]);
+
+    // world cities local api
+    const [citySearchQuery, setCitySearchQuery] = useState("");
+    const [cityAutocomplete, setCityAutocomplete] = useState([]);
+    const getWorldCities = () => {
+        if (citySearchQuery.length > 1) {
+            fetch('../../src/worldcities_masterlog.json')
+                .then(response => response.json())
+                .then(data => {
+                    let results = [];
+                    let limit = 5;
+                    for (let i = 0; i < data.length; i++) {
+                        if (results.length === limit) {
+                            break
+                        } else if (data[i].city_name.toLowerCase().includes(citySearchQuery)) {
+                            results.push(data[i]);
+                        }
+                    }
+                    setCityAutocomplete(results);
+                })
+        } else {
+            setCityAutocomplete([]);
+        }
+    }
+    useEffect(() => {
+        getWorldCities()
+    }, [citySearchQuery]);
 
     return (
         <>
@@ -960,12 +988,15 @@ export const Dashboard = () => {
                             <div className="">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
                                 <div className="inputBox">
-                                    <input onChange={(e) => updateCityText(e.target.value)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className={`calendarInput ${autoCompleteCities && cityText && "drop"} italic-placeholder`} autoComplete='off' required />
-                                    <div className={`auto-dropdown ${autoCompleteCities && cityText ? "show" : "hide"}`}>
-                                        {autoCompleteCities && cityText && autoCompleteCities.map((city, index) => {
-                                            return <div key={index} onClick={() => {updateCityInput(city.name); clearCitySearch()}} className="option">
-                                                <p className="m-0 city">{city.name}</p>
-                                                <p className="m-0 country">, {city.country ?? ""}</p>
+                                    <input onChange={(e) => setCitySearchQuery(e.target.value)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className={`calendarInput ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 && "drop"} italic-placeholder`} autoComplete='off' required />
+                                    <div className={`auto-dropdown ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 ? "show" : "hide"}`}>
+                                        {cityAutocomplete.length > 0 && citySearchQuery.length > 1 && cityAutocomplete.map((city, index) => {
+                                            return <div key={index} onClick={() => { updateCityInput(city.city_name); setCityAutocomplete([]) }} className="option">
+                                                <span className={gIcon + " large"}>location_on</span>
+                                                <div className="text">
+                                                    <p className="m-0 city">{city.city_name}{city.isCapital && <><span> </span><span className={gIcon + " small"}>star</span></>},&nbsp;</p>
+                                                    <p className="m-0 country">{city.country_name}</p>
+                                                </div>
                                             </div>
                                         })}
 

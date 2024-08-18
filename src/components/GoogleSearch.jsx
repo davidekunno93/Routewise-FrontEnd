@@ -10,9 +10,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
     // [search bar code]
     const searchRef = useRef(null);
     // autocomplete api
-    const {
-        ready, value, setValue, suggestions: { status, data }, clearSuggestions
-    } = usePlacesAutocomplete({
+    const { ready, value, setValue, suggestions: { status, data }, clearSuggestions } = usePlacesAutocomplete({
         requestOptions: {
             locationRestriction: searchMapViewBounds ? mapViewBounds : tripMapBounds,
             // region: "uk"
@@ -25,6 +23,8 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         if (searchRef.current) {
             searchRef.current.value = value;
         }
+
+        // console.log(data)
 
         // important! - clears cache so that the defined location bias in autocomplete hook is able to takeover
         sessionStorage.removeItem('upa');

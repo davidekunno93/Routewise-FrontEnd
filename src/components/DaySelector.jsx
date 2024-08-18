@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react'
 import DaySelected from './DaySelected'
 import { Fade } from 'react-awesome-reveal';
 
-const DaySelector = ({ open, tripState, daySelectorStateProps, placeToConfirm, dateToConfirm, addPlace, savedToItinerary, onClose }) => {
+const DaySelector = ({ open, tripState, daySelectorStateProps, addPlace, savedToItinerary, onClose }) => {
     if (!open) return null;
+
     const place = daySelectorStateProps.place;
     const action = daySelectorStateProps.action;
     const sideEffectFuntion = daySelectorStateProps.sideEffectFuntion;
     const sideEffectVariable = daySelectorStateProps.sideEffectVariable;
-    // actions - addPlace, itineraryToSaved, savedToItinerary
+    // actions - addPlace, itineraryToSaved, savedToItinerary... adding swapDays, moveAllPlaces
+
     const [daySelectedOpen, setDaySelectedOpen] = useState(false);
     const [lightbulbDays, setLightbulbDays] = useState([]);
     useEffect(() => {
-        setLightbulbDays(getLightbulbDays(place));
+            setLightbulbDays(getLightbulbDays(place));
     }, []);
     const getLightbulbDays = (placeObj) => {
         // create object with { dayNum: place distance from centroid}
@@ -26,25 +28,12 @@ const DaySelector = ({ open, tripState, daySelectorStateProps, placeToConfirm, d
             }
         }
         let min_dist = Math.min(...Object.values(dayDistances));
-        // let min_dist = null;
-        // let dist_list = Object.values(dayDistances)
-        // for (let i = 0; i < dist_list.length; i++) {
-        //     if (!min_dist) {
-        //         min_dist = dist_list[i]
-        //     } else if (min_dist > parseFloat(dist_list[i])) {
-        //         min_dist = dist_list[i]
-        //     }
-        // }
-        // console.log("min dist =", min_dist)
         let lightbulb_days = []
         for (let [dayNum, dist] of Object.entries(dayDistances)) {
             if (dist === min_dist) {
                 lightbulb_days.push(dayNum)
             }
         }
-        // console.log("lightbulb days are = ", lightbulb_days);
-        // place["lightbulb_days"] = lightbulb_days;
-        // setLightbulbDays(lightbulb_days);
         return lightbulb_days
     }
     return (

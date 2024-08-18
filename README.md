@@ -541,5 +541,5 @@ More_vert options to swap days/move places
 Start working on suggested places (gMaps)
 Algorithm??
 Which city are you travelling to dropdown 
-Itinerary page new days design with colors
+<!-- Itinerary page new days design with colors -->
 Greater London no funciona

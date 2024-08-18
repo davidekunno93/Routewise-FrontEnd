@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { PlaceCardDraggable } from './PlaceCardDraggable';
 import { Link } from 'react-router-dom';
 import { SearchPlace } from './SearchPlace';
@@ -6,9 +6,10 @@ import { SearchPlace } from './SearchPlace';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import './flowbox.scoped.css'
 import { DataContext } from '../Context/DataProvider';
+import Dropdown from './Dropdown/Dropdown';
 
 
-const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
+const FlowBoxDraggable = ({ id, tripState, setTripState, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, addPlaceToConfirm, itineraryToSaved, isSavedPlace, openConfirmationModal, confirmationModalRef }) => {
     const { gIcon } = useContext(DataContext);
     const [dayTitle, setDayTitle] = useState('');
 
@@ -91,6 +92,26 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
         }
         return null;
     }
+
+    // [dropdown code]
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const dropDownItems = {
+        header: null, // title/closeBtn
+        options: [
+            {
+                itemName: "Swap entire day",
+                gIconPrompt: "sync_alt",
+                clickFunction: "daySelection:swap days",
+            },
+            {
+                itemName: "Move all to different day",
+                gIconPrompt: "subdirectory_arrow_right",
+                clickFunction: "daySelection:move places",
+            }
+        ]
+    }
+    const pointerRef = useRef(null);
+
     return (
         <div id={`flowBox-${id}`} className="flow-box" style={{ borderLeftColor: numberToBgColor(day.id) }}>
 
@@ -100,12 +121,24 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                         <span id={`expandArrow-${id}`} className={`${gIcon} expandArrow`}>
                             expand_more
                         </span>
-                        {day.date_converted.split(' ')[0]} 
+                        {day.date_converted.split(' ')[0]}
                         <span className="smalltext-respond">&nbsp;{day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span>
                     </p>
                     <div className="options">
                         <p id={`placeCount-${id}`} className="placeCount o-none">{narrowWindow ? "(" + day.placeIds.length + ")" : day.placeIds.length + " " + placeOrPlaces}</p>
-                        <span className={`${gIcon} o-50`}>more_vert</span>
+                        <span ref={pointerRef} onClick={(e) => { e.stopPropagation(); setDropdownOpen(!dropdownOpen) }} className={`${gIcon} o-50`}>more_vert</span>
+                        <Dropdown
+                            open={dropdownOpen}
+                            itemsList={dropDownItems}
+                            day={day}
+                            tripState={tripState}
+                            setTripState={setTripState}
+                            renderLocation={"itinerary"}
+                            pointerRef={pointerRef}
+                            openConfirmationModal={openConfirmationModal}
+                            confirmationModalRef={confirmationModalRef}
+                            onClose={() => setDropdownOpen(false)}
+                        />
                     </div>
                 </div>
                 <div className="addTitle-input position-relative">
@@ -125,7 +158,7 @@ const FlowBoxDraggable = ({ id, addSearchOpen, addSearchClose, toggleFlow, day, 
                                     <Draggable key={place.id} draggableId={`${place.id}`} index={i} >
                                         {(draggableProvided, draggableSnapshot) => (
                                             <div ref={draggableProvided.innerRef} {...draggableProvided.draggableProps} {...draggableProvided.dragHandleProps} key={i}>
-                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} placeCardTitleCharLimit={placeCardTitleCharLimit} setPlaceCardTitleCharLimit={setPlaceCardTitleCharLimit} cardBodyRef={cardBodyRef} updateMapCenter={updateMapCenter} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved} isSavedPlace={isSavedPlace} />
+                                                <PlaceCardDraggable id={i} place={place} removePlace={removePlace} dayId={day.id} draggableSnapshot={draggableSnapshot} addPlaceToConfirm={addPlaceToConfirm} itineraryToSaved={itineraryToSaved} isSavedPlace={isSavedPlace} />
                                             </div>
                                         )}
 

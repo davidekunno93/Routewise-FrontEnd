@@ -2,29 +2,11 @@ import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'r
 import { DataContext } from '../Context/DataProvider';
 import OpeningHoursMap from './OpeningHoursMap';
 
-export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, placeCardTitleCharLimit, setPlaceCardTitleCharLimit, cardBodyRef, updateMapCenter, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
+export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
     const { textFunctions, convertInfoToMap, renderRating } = useContext(DataContext);
-    // PLACE CARD TITLE ELLIPSIS RE-RENDER CODE
-    // const cardBodyRef = useRef(null);
-    // const [placeCardTitleCharLimit, setPlaceCardTitleCharLimit] = useState(0);
-    const calculateCharLimit = (width) => {
-        let extraPercent = (Math.floor((width - 213) / 6)) / 1000;
-        let charLimit = Math.floor(width * (0.07 + extraPercent));
-        console.log(charLimit)
-        return charLimit
-    }
-    // useEffect(() => {
-    //     // first place in first day calculates char limit and mutates charLimit in itinerary
-    //     if (cardBodyRef.current && dayId === "day-1" && i === 0) {
-    //         const observer = new ResizeObserver((entries) => {
-    //             // console.log(cardBodyRef.current)
-    //             let width = entries[0].contentRect.width
-    //             let charLimit = calculateCharLimit(width)
-    //             setPlaceCardTitleCharLimit(charLimit);
-    //         })
-    //         observer.observe(cardBodyRef.current)
-    //     }
-    // }, [])
+
+    
+    
 
     const openDropdown = (dayId, id) => {
         const dropdown = document.getElementById(`itineraryPlaceCardDropdown-${dayId + "-" + id}`);
@@ -76,7 +58,7 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     </div>
                     <img className="placeCard2-img" src={place.imgURL} />
                 </div>
-                <div ref={dayId === "day-1" && id == 0 ? cardBodyRef : null} className="placeCard-body flx-3">
+                <div className="placeCard-body flx-3">
                     {/* <p className="body-title">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit)+"..." : place.placeName}</p> */}
                     <p className="body-title">{place.placeName}</p>
                     <div className="align-all-items">

@@ -1,0 +1,152 @@
+.daySelection {
+    background-color: white;
+    padding-bottom: 5px;
+    border-radius: 12px;
+    z-index: 1 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    bottom: auto !important;
+    border: 1px solid gainsboro;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.07);
+    position: absolute;
+    width: auto;
+    /* bottom: 112px; */
+    /* right: calc(5% + 32px); */
+}
+.daySelection.itinerary {
+    top: 12px;
+    left: -12px;
+}
+.daySelection.map {
+    height: auto;
+    z-index: 10 !important;
+    bottom: 112px !important;
+    right: calc(5% + 32px);
+}
+
+.day-selector {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.day-selector .titleDiv {
+    height: 44px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+}
+
+.day-selector .title {
+    margin: 0;
+    font-weight: 600;
+    align-self: flex-start;
+}
+
+.day-option {
+    display: flex;
+    flex-direction: row;
+    height: 48px;
+    padding-left: 16px;
+    gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
+    align-content: center;
+    border-top: 1px solid gainsboro;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.day-option.disabled {
+    background-color: rgb(230, 230, 230);
+    /* pointer-events: none; */
+    cursor: auto;
+}
+.day-option.disabled .text p {
+    color: gray;
+    opacity: 0.7;
+}
+
+.day-option .text p {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.day-option .text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.day-option:not(.disabled):hover {
+    background-color: rgb(245, 245, 245);
+    transition: 0.2s;
+}
+
+.day-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: flex;
+    align-self: center;
+}
+
+.day-lightBulb {
+    width: 24px;
+    margin: 0 10px;
+    position: relative;
+}
+
+.day-lightBulb .img {
+    width: 24px;
+    object-fit: contain;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 10px solid gainsboro;
+    top: 100%;
+    right: 15.5px;
+}
+
+.tooltip {
+    visibility: hidden;
+    opacity: 0;
+    width: 160px;
+    background-color: gainsboro;
+    color: black;
+    text-align: center;
+    border-radius: 12px;
+    padding: 8px;
+    font-size: small;
+    font-family: 'Plus Jakarta Sans';
+    transition-delay: 0s;
+
+    /* Position the tooltip */
+    position: absolute;
+    bottom: 104%;
+    right: -8px;
+    z-index: 1;
+}
+
+.day-lightBulb:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 2.5s;
+    transition-duration: 0.2s;
+}
+
+
+
+
+.d-none {
+    display: none;
+}

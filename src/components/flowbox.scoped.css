@@ -19,7 +19,9 @@
     gap: 8px;
     padding-top: 10px;
     align-items: center;
+    position: relative;
 }
+
 .flow-box {
     margin-top: 15px;
     padding-bottom: 12px;

@@ -1,0 +1,43 @@
+.dropdown {
+    border-radius: 8px;
+    border: 1px solid gainsboro;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.07);
+    background-color: white;
+    position: absolute;
+    right: 24px;
+    padding: 4px 0px;
+    /* overflow: hidden; */
+    z-index: 1;
+
+}
+
+.dropdown .option {
+    display: flex;
+    flex-direction: row;
+    border-top: 1px solid rgb(240, 240, 240);
+    align-items: center;
+    padding: 8px 12px;
+    transition: 0.2s;
+    cursor: pointer;
+    gap: 8px;
+}
+.dropdown .option.noTopBorder {
+    border-top: 1px solid transparent;
+}
+.dropdown .option p {
+    white-space: nowrap;
+    margin: 0;
+    margin-right: 6px;
+}
+
+.dropdown .option:hover {
+    background-color: rgb(240, 240, 240);
+    transition: 0.2s;
+}
+.dropdown .option-disabled {
+    color: gainsboro;
+}
+
+.dropdown .daySelection {
+    bottom: -112px;
+}
