@@ -493,7 +493,7 @@ export const Dashboard = () => {
     const getAutoCompleteCities = async () => {
         console.log("fetching...")
         const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
-        const response = axios.get(url)
+        const response = await axios.get(url)
             .then((response) => {
                 console.log(response.data.data)
                 setAutoCompleteCities(response.data.data);
@@ -945,9 +945,11 @@ export const Dashboard = () => {
     // world cities local api
     const [citySearchQuery, setCitySearchQuery] = useState("");
     const [cityAutocomplete, setCityAutocomplete] = useState([]);
-    const getWorldCities = () => {
+    const getWorldCities = async () => {
         if (citySearchQuery.length > 1) {
-            fetch('../../src/worldcities_masterlog.json')
+            // fetch('../../src/worldcities_masterlog.json')
+            let url = 'https://davidekunno93.github.io/worldcities_api/worldcities.json'
+            const response = await fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     let results = [];
