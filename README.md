@@ -531,6 +531,11 @@ Purposefully treating 8 as a priority outlier
 'day-4': {'id': 'day-4', 'placeIds': [23, 12, 3, 17]}
 'saved_places_ids': [6, 7, 10, 11, 13, 20, 21, 5]
 
+#6.3 Cheryl's 398 trip
+'day-1': {'id': 'day-1', 'placeIds': [4]}, 
+'day-2': {'id': 'day-2', 'placeIds': [3, 7, 6, 2]}, 
+'day-3': {'id': 'day-3', 'placeIds': [5, 1]}
+
 <!-- 8Aug24 Team Meeting -->
 Day design in itinerary page
 More_vert options to swap days/move places
@@ -543,3 +548,14 @@ Algorithm??
 Which city are you travelling to dropdown 
 <!-- Itinerary page new days design with colors -->
 Greater London no funciona
+
+<!-- 19Aug24 Team Meeting -->
+Review Kaitlyn's PR
+Make time to meet Kaitlyn for algorithm issue resolve
+Meet w/ Kaitlyn for swap days/move all places function
+deefang to replace render? (uses docker)
+Meet w/ Kaitlyn to incorporate interim algorithm code
+Cheryl's trips by trip_id
+385 (og trip posted on discord)
+398
+

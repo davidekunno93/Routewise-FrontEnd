@@ -116,7 +116,7 @@ export const Dashboard = () => {
     const { userPreferences, setPreferences } = useContext(DataContext);
     const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
     const { pageOpen, setPageOpen } = useContext(DataContext);
-    const { timeFunctions, gIcon } = useContext(DataContext);
+    const { timeFunctions, gIcon, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
@@ -396,6 +396,8 @@ export const Dashboard = () => {
         setSignUpIsOpen(true);
     }
 
+    
+
     const getCity = async () => {
         let cityInput = document.getElementById('cityInput');
         if (!user) {
@@ -404,7 +406,6 @@ export const Dashboard = () => {
             if (!cityInput.value) {
                 // if there is no city entered --> please enter city name
                 cityInput.classList.add('entry-error')
-                console.log("no city")
                 alert("Please enter a city destination")
             } else if (!range[0].startDate || !range[0].endDate) {
                 alert("Please enter a start and end date for your trip")
@@ -417,8 +418,14 @@ export const Dashboard = () => {
                 if (index > -1) {
                     let cityNoSpaces = cityName.replace(/ /g, '')
                     const cityArr = cityNoSpaces.split(',')
-                    // console.log(cityArr)
-                    const response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`, {
+                    let url = "";
+                    if (isStateAbbv(cityArr[1])) {
+                        url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&state=${convertAbbvToState(cityArr[1])}&country=US`
+                        console.log(url)
+                    } else {
+                        url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`
+                    }
+                    const response = await axios.get(url, {
                         headers: { 'X-Api-Key': apiKey }
                     }).then((response => openNewTrip(response)))
                         .catch((error) => {
@@ -510,9 +517,13 @@ export const Dashboard = () => {
             setAutoCompleteCities(null);
         }
     }, [cityText])
-    const updateCityInput = (cityName) => {
+    const updateCityInput = (city) => {
         const cityInput = document.getElementById('cityInput');
-        cityInput.value = cityName;
+        if (city.state) {
+            cityInput.value = city.city_name+", "+convertStateToAbbv(city.state);
+        } else {
+            cityInput.value = city.city_name;
+        }
     }
     const clearCitySearch = () => {
         setAutoCompleteCities(null);
@@ -947,8 +958,7 @@ export const Dashboard = () => {
     const [cityAutocomplete, setCityAutocomplete] = useState([]);
     const getWorldCities = async () => {
         if (citySearchQuery.length > 1) {
-            // fetch('../../src/worldcities_masterlog.json')
-            let url = 'https://davidekunno93.github.io/worldcities_api/worldcities.json'
+            let url = 'https://davidekunno93.github.io/worldcities_api/worldcities.json';
             const response = await fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -956,11 +966,11 @@ export const Dashboard = () => {
                     let limit = 5;
                     for (let i = 0; i < data.length; i++) {
                         if (results.length === limit) {
-                            break
+                            break;
                         } else if (data[i].city_name.toLowerCase().includes(citySearchQuery)) {
                             results.push(data[i]);
                         }
-                    }
+                    };
                     setCityAutocomplete(results);
                 })
         } else {
@@ -970,6 +980,7 @@ export const Dashboard = () => {
     useEffect(() => {
         getWorldCities()
     }, [citySearchQuery]);
+
 
     return (
         <>
@@ -993,10 +1004,14 @@ export const Dashboard = () => {
                                     <input onChange={(e) => setCitySearchQuery(e.target.value)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className={`calendarInput ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 && "drop"} italic-placeholder`} autoComplete='off' required />
                                     <div className={`auto-dropdown ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 ? "show" : "hide"}`}>
                                         {cityAutocomplete.length > 0 && citySearchQuery.length > 1 && cityAutocomplete.map((city, index) => {
-                                            return <div key={index} onClick={() => { updateCityInput(city.city_name); setCityAutocomplete([]) }} className="option">
+                                            return <div key={index} onClick={() => { updateCityInput(city); setCityAutocomplete([]) }} className="option">
                                                 <span className={gIcon + " large"}>location_on</span>
                                                 <div className="text">
-                                                    <p className="m-0 city">{city.city_name}{city.isCapital && <><span> </span><span className={gIcon + " small"}>star</span></>},&nbsp;</p>
+                                                    <p className="m-0 city">
+                                                        {city.city_name}
+                                                        {city.state ? `, ${convertStateToAbbv(city.state)}` : ""}
+                                                        {city.isCapital && <><span> </span><span className={gIcon + " small"}>star</span></>},&nbsp;
+                                                    </p>
                                                     <p className="m-0 country">{city.country_name}</p>
                                                 </div>
                                             </div>

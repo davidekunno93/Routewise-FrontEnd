@@ -20,7 +20,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         id: 'google-maps-script',
         googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
         libraries: gLibrary
-    })
+    });
 
     // for test page
     const [testMarkers, setTestMarkers] = useState({
@@ -62,6 +62,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
             let lat = tripMapCenter.lat;
             let lng = tripMapCenter.lng;
             let latLngBnds = {
+                // ~30 - 38 mile radius
                 north: lat + 0.426,
                 south: lat - 0.426,
                 east: lng + 0.686,
@@ -376,10 +377,10 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                                             />
                                     }
                                 </AdvancedMarker>
-                                {marker.infoWindowOpen &&
+                                {!marker.infoWindowOpen &&
                                     <InfoWindow key={index} position={marker.position} pixelOffset={[0, -25]} onCloseClick={() => infoWindowFunctions.close(marker.id)}>
-                                        {/* <p className='m-0'>{marker.id}</p> */}
-                                        <p className='m-0'>{marker.placeName}</p>
+                                        <p className='m-0'>{marker.id}</p>
+                                        {/* <p className='m-0'>{marker.placeName}</p> */}
                                     </InfoWindow>
                                 }
 

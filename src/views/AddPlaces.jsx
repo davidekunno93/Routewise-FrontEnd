@@ -1,9 +1,7 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { OpenMap } from '../components/OpenMap'
 import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
-import { Itinerary } from './Itinerary'
 import { LoadingScreen } from '../components/LoadingScreen'
 import { Loading } from '../components/Loading'
 import { DataContext } from '../Context/DataProvider'
@@ -13,9 +11,6 @@ import { auth, firestore } from '../firebase'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange, DateRangePicker } from 'react-date-range';
-import ItineraryUpdatedModal from '../components/ItineraryUpdatedModal'
-import OpenMapBox from '../components/OpenMapBox'
-import { Fade, Slide } from 'react-awesome-reveal'
 import ConfirmationModal from '../components/ConfirmationModal'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
@@ -24,13 +19,12 @@ import PlaceCard from '../components/PlaceCard'
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     // Send Kate Data
-    const { user, setUser } = useContext(DataContext);
-    const { userPreferences } = useContext(DataContext);
-    const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
-    const { setSignUpIsOpen, setAuthIndex } = useContext(DataContext);
-    const { loadCityImg, mapBoxCategoryKey } = useContext(DataContext);
-    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
-    const { geoToLatLng } = useContext(DataContext);
+    const {
+        user, setUser,
+        userPreferences, currentTrip, setCurrentTrip, clearCurrentTrip,
+        setSignUpIsOpen, setAuthIndex, loadCityImg, mapBoxCategoryKey, mobileMode, mobileModeNarrow,
+        geoToLatLng, toLatitudeLongitude
+    } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
     const [places, setPlaces] = useState(currentTrip.places.length > 0 ? currentTrip.places : []);
@@ -44,23 +38,11 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         } else {
             setPlaceToConfirmAnimation(false);
         }
-    }, [placeToConfirm])
-    // const [placeToConfirm, setPlaceToConfirm] = useState({
-    //     placeName: "Tate Modern",
-    //     info: "Mon-Sun 10 AM-6 PM",
-    //     address: "Bankside, London SE1 9TG, UK",
-    //     imgURL: "https://i.imgur.com/FYc6OB3.jpg",
-    //     category: "my creation",
-    //     favorite: false,
-    //     lat: 51.507748,
-    //     long: -0.099469,
-    //     geocode: [51.507748, -0.099469],
-    //     placeId: "2",
-    // });
+    }, [placeToConfirm]);
+
     const [markers, setMarkers] = useState({});
     const [newPlaceMarker, setNewPlaceMarker] = useState(null);
     const [searchText, setSearchText] = useState('');
-    // const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]);
     const [mapCenter, setMapCenter] = useState(currentTrip.geocode ? { lat: currentTrip.geocode[0], lng: currentTrip.geocode[1] } : { lat: 51.50735, lng: -0.12776 });
     const [mapCenterToggle, setMapCenterToggle] = useState(false);
     const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
@@ -630,7 +612,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             //     places_serial: places_serial,
             // }
             // console.log(data)
-            console.log("this is the trip id! = "+currentTrip.tripID)
+            console.log("this is the trip id! = " + currentTrip.tripID)
             const response = await axios.get(`https://routewise-backend.onrender.com/itinerary/createdays/${currentTrip.tripID}`)
                 .then((response) => {
                     createItinerary(response)
@@ -794,7 +776,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
             setScrollDownStandby(false);
         }
     }, [places])
-    
+
 
 
     // added places render 'added to places' button
@@ -1000,6 +982,38 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     }
 
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+
+    
+    
+    const nearbySearch = async () => {
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': import.meta.env.VITE_APP_GOOGLE_API_KEY,
+                'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos,places.id,places.regularOpeningHours,places.editorialSummary', // address, summary, biz info
+            },
+            body: JSON.stringify({
+                includedTypes: ['restaurant'],
+                maxResultCount: 12,
+                locationRestriction: {
+                    circle: {
+                        center: toLatitudeLongitude(mapCenter),
+                        radius: 20000,
+                    },
+                },
+            }),
+        }
+        let url = `https://places.googleapis.com/v1/places:searchNearby`
+        fetch(url, requestOptions)
+            .then(response => response.json())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error))
+
+    }
+    useEffect(() => {
+        nearbySearch()
+    }, [])
 
     return (
         <>

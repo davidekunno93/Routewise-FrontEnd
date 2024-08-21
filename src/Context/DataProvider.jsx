@@ -228,14 +228,14 @@ const DataProvider = (props) => {
             let fullYear = systemDate.getFullYear();
             let hour = systemDate.getHours().toString().length === 1 ? "0" + systemDate.getHours() : systemDate.getHours();
             let minutes = systemDate.getMinutes().toString().length === 1 ? "0" + systemDate.getMinutes() : systemDate.getMinutes();
-            let timeConverted = hour+":"+minutes;
+            let timeConverted = hour + ":" + minutes;
             let dateConverted = month + "/" + day + "/" + fullYear;
             if (!dateOrTime || dateOrTime === "date") {
                 return dateConverted;
             } else if (dateOrTime === "time") {
                 return timeConverted
             } else if (dateOrTime === "dateAndTime" || dateOrTime === "timeAndDate") {
-                return dateConverted+", "+timeConverted;
+                return dateConverted + ", " + timeConverted;
             }
         },
         datify: function (normalDate) {
@@ -293,15 +293,15 @@ const DataProvider = (props) => {
             };
             // if days is less than or equal to month days then stop 
             const monthArr = Object.entries(months).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-            for (let i=0; i<monthArr.length; i++) {
+            for (let i = 0; i < monthArr.length; i++) {
                 const monthNum = monthArr[i][0];
                 const monthDays = monthArr[i][1];
                 if (days > monthDays) {
                     days -= monthDays;
                 } else {
-                    const dayOfTheMonth = days.toString().length === 2 ? days.toString() : "0"+days.toString();
+                    const dayOfTheMonth = days.toString().length === 2 ? days.toString() : "0" + days.toString();
                     const monthOfTheYear = monthNum;
-                    return dayOfTheMonth+"/"+monthOfTheYear+"/"+year.toString();
+                    return dayOfTheMonth + "/" + monthOfTheYear + "/" + year.toString();
                 }
             }
             return "Function should never reach this point"
@@ -328,7 +328,7 @@ const DataProvider = (props) => {
                 "12": 31,
             };
             const monthArr = Object.entries(months).sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-            for (let i=0; i<monthArr.length; i++) {
+            for (let i = 0; i < monthArr.length; i++) {
                 const monthNum = monthArr[i][0];
                 const monthDays = monthArr[i][1];
                 if (dateMonth === monthNum) {
@@ -345,20 +345,20 @@ const DataProvider = (props) => {
         },
         addDays: function (date, days) {
             let yearDay = dateToDay(date);
-            yearDay += days; 
+            yearDay += days;
             date = dayToDate(yearDay);
             return date;
         },
     }
     const mapBoxCategoryKey = {
-        landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions", imgUrl: 'https://i.imgur.com/nixatab.png'},
-        nature: { categoryQueries: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature", imgUrl: 'https://i.imgur.com/kmZtRbp.png'},
-        shopping: { categoryQueries: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping", imgUrl: 'https://i.imgur.com/Fo8WLyJ.png'},
-        food: { categoryQueries: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants", imgUrl: 'https://i.imgur.com/K6ADmfR.png'},
-        relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation", imgUrl: 'https://i.imgur.com/o8PJDZ5.png'},
-        entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment", imgUrl: 'https://i.imgur.com/A8Impx2.png'},
-        arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture", imgUrl: 'https://i.imgur.com/ExY7HDK.png'},
-        nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife", imgUrl: 'https://i.imgur.com/9fVucq9.png'},
+        landmarks: { categoryQueries: ["tourist_attraction", "historic_site"], categoryTitle: "Landmarks & Attractions", imgUrl: 'https://i.imgur.com/nixatab.png' },
+        nature: { categoryQueries: ["garden", "forest", "zoo", "vineyard", "aquarium", "planetarium"], categoryTitle: "Nature", imgUrl: 'https://i.imgur.com/kmZtRbp.png' },
+        shopping: { categoryQueries: ["clothing_store", "shoe_store", "jewelry_store", "gift_shop", "shopping_mall"], categoryTitle: "Shopping", imgUrl: 'https://i.imgur.com/Fo8WLyJ.png' },
+        food: { categoryQueries: ["restaurant", "food_and_drink", "fast_food", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants", imgUrl: 'https://i.imgur.com/K6ADmfR.png' },
+        relaxation: { categoryQueries: ["salon", "spa", "nail_salon"], categoryTitle: "Spa & Relaxation", imgUrl: 'https://i.imgur.com/o8PJDZ5.png' },
+        entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment", imgUrl: 'https://i.imgur.com/A8Impx2.png' },
+        arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture", imgUrl: 'https://i.imgur.com/ExY7HDK.png' },
+        nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife", imgUrl: 'https://i.imgur.com/9fVucq9.png' },
     }
     const [suggestedPlaces, setSuggestedPlaces] = useState({
         loaded: false,
@@ -367,12 +367,12 @@ const DataProvider = (props) => {
 
     const repeatItems = (num) => {
         let arr = [];
-        for (let i=0; i<num; i++) {
+        for (let i = 0; i < num; i++) {
             arr.push("")
         }
         return arr
     }
-    
+
 
     // load place img
     const getCityImg = async (imgQuery) => {
@@ -407,11 +407,167 @@ const DataProvider = (props) => {
         } else {
             return data.results[0].urls.regular
         }
+    };
+    const abbvToStatesKey = {
+        'AL': 'Alabama',
+        'AK': 'Alaska',
+        'AZ': 'Arizona',
+        'AR': 'Arkansas',
+        'CA': 'California',
+        'CO': 'Colorado',
+        'CT': 'Connecticut',
+        'DE': 'Delaware',
+        'FL': 'Florida',
+        'GA': 'Georgia',
+        'HI': 'Hawaii',
+        'ID': 'Idaho',
+        'IL': 'Illinois',
+        'IN': 'Indiana',
+        'IA': 'Iowa',
+        'KS': 'Kansas',
+        'KY': 'Kentucky',
+        'LA': 'Louisiana',
+        'ME': 'Maine',
+        'MD': 'Maryland',
+        'MA': 'Massachusetts',
+        'MI': 'Michigan',
+        'MN': 'Minnesota',
+        'MS': 'Mississippi',
+        'MO': 'Missouri',
+        'MT': 'Montana',
+        'NE': 'Nebraska',
+        'NV': 'Nevada',
+        'NH': 'New Hampshire',
+        'NJ': 'New Jersey',
+        'NM': 'New Mexico',
+        'NY': 'New York',
+        'NC': 'North Carolina',
+        'ND': 'North Dakota',
+        'OH': 'Ohio',
+        'OK': 'Oklahoma',
+        'OR': 'Oregon',
+        'PA': 'Pennsylvania',
+        'RI': 'Rhode Island',
+        'SC': 'South Carolina',
+        'SD': 'South Dakota',
+        'TN': 'Tennessee',
+        'TX': 'Texas',
+        'UT': 'Utah',
+        'VT': 'Vermont',
+        'VA': 'Virginia',
+        'WA': 'Washington',
+        'WV': 'West Virginia',
+        'WI': 'Wisconsin',
+        'WY': 'Wyoming',
+        'DC': 'District of Columbia',
+        'AS': 'American Samoa',
+        'GU': 'Guam',
+        'MP': 'Northern Mariana Islands',
+        'PR': 'Puerto Rico',
+        'UM': 'United States Minor Outlying Islands',
+        'VI': 'Virgin Islands'
+    }
+    const stateToAbbKey = {
+        'Alabama': 'AL',
+        'Alaska': 'AK',
+        'Arizona': 'AZ',
+        'Arkansas': 'AR',
+        'California': 'CA',
+        'Colorado': 'CO',
+        'Connecticut': 'CT',
+        'Delaware': 'DE',
+        'Florida': 'FL',
+        'Georgia': 'GA',
+        'Hawaii': 'HI',
+        'Idaho': 'ID',
+        'Illinois': 'IL',
+        'Indiana': 'IN',
+        'Iowa': 'IA',
+        'Kansas': 'KS',
+        'Kentucky': 'KY',
+        'Louisiana': 'LA',
+        'Maine': 'ME',
+        'Maryland': 'MD',
+        'Massachusetts': 'MA',
+        'Michigan': 'MI',
+        'Minnesota': 'MN',
+        'Mississippi': 'MS',
+        'Missouri': 'MO',
+        'Montana': 'MT',
+        'Nebraska': 'NE',
+        'Nevada': 'NV',
+        'New Hampshire': 'NH',
+        'New Jersey': 'NJ',
+        'New Mexico': 'NM',
+        'New York': 'NY',
+        'North Carolina': 'NC',
+        'North Dakota': 'ND',
+        'Ohio': 'OH',
+        'Oklahoma': 'OK',
+        'Oregon': 'OR',
+        'Pennsylvania': 'PA',
+        'Rhode Island': 'RI',
+        'South Carolina': 'SC',
+        'South Dakota': 'SD',
+        'Tennessee': 'TN',
+        'Texas': 'TX',
+        'Utah': 'UT',
+        'Vermont': 'VT',
+        'Virginia': 'VA',
+        'Washington': 'WA',
+        'West Virginia': 'WV',
+        'Wisconsin': 'WI',
+        'Wyoming': 'WY',
+        'District of Columbia': 'DC',
+        'American Samoa': 'AS',
+        'Guam': 'GU',
+        'Northern Mariana Islands': 'MP',
+        'Puerto Rico': 'PR',
+        'United States Minor Outlying Islands': 'UM',
+        'Virgin Islands': 'VI'
+    };
+    const convertStateToAbbv = (state) => {
+        if (Object.keys(stateToAbbKey).includes(textFunctions.titalize(state))) {
+            return stateToAbbKey[textFunctions.titalize(state)];
+        }
+        return state;
+    };
+    const convertAbbvToState = (abbv) => {
+        if (Object.keys(abbvToStatesKey).includes(abbv.toUpperCase())) {
+            return abbvToStatesKey[abbv.toUpperCase()];
+        }
+        return abbv;
+    };
+    const isUSState = (state) => {
+        if (Object.keys(stateToAbbKey).includes(textFunctions.titalize(state))) {
+            return true;
+        }
+        return false;
+    };
+    const isStateAbbv = (abbv) => {
+        if (Object.keys(abbvToStatesKey).includes(abbv.toUpperCase())) {
+            return true;
+        }
+        return false;
     }
 
     const geoToLatLng = (geocode) => {
         return { lat: geocode[0], lng: geocode[1] }
     }
+    const toLatitudeLongitude = (geo) => {
+        let latitudeLongitude = {
+            latitude: null,
+            longitude: null,
+        };
+        if (typeof geo === "Array") {
+            latitudeLongitude.latitude = geo[0];
+            latitudeLongitude.longitude = geo[1];
+        } else if (typeof geo === "object") {
+            latitudeLongitude.latitude = geo.lat;
+            latitudeLongitude.longitude = geo.lng;
+        }
+        return latitudeLongitude;
+    };
     const convertInfoToMap = (openingHoursStr) => {
         if (openingHoursStr.toLowerCase().includes(":")) {
 
@@ -459,37 +615,37 @@ const DataProvider = (props) => {
     const numberToBgColor = (numString) => {
         let lastDigit = numString.slice(-1)
         if (lastDigit === "1") {
-          return "#FF4856" // RED
+            return "#FF4856" // RED
         }
         if (lastDigit === "2") {
-          return "#FFD84E" // YELLOW
+            return "#FFD84E" // YELLOW
         }
         if (lastDigit === "3") {
-          return "#2185F9" // BLUE
+            return "#2185F9" // BLUE
         }
         if (lastDigit === "4") {
-          return "#4CDE08" // GREEN
+            return "#4CDE08" // GREEN
         }
         if (lastDigit === "5") {
-          return "#FFA80A" // ORANGE
+            return "#FFA80A" // ORANGE
         }
         if (lastDigit === "6") {
-          return "#FF52FF" // PINK
+            return "#FF52FF" // PINK
         }
         if (lastDigit === "7") {
-          return "#14DCDC" // LIGHT BLUE
+            return "#14DCDC" // LIGHT BLUE
         }
         if (lastDigit === "8") {
-          return "#CECDFE" // PURPLE
+            return "#CECDFE" // PURPLE
         }
         if (lastDigit === "9") {
-          return "#A9743A" // BROWN
+            return "#A9743A" // BROWN
         }
         if (lastDigit === "0") {
-          return "#42F2A8" // LIGHT GREEN
+            return "#42F2A8" // LIGHT GREEN
         }
         return null;
-      }
+    }
 
     return (
         <DataContext.Provider value={{
@@ -500,7 +656,8 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize' : handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor
+            'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor,
+            toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv
         }}>
             {props.children}
         </DataContext.Provider>

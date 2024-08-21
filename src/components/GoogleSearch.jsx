@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
-import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
+import usePlacesAutocomplete from 'use-places-autocomplete';
 import { DataContext } from '../Context/DataProvider';
 import { connectStorageEmulator } from 'firebase/storage';
 
