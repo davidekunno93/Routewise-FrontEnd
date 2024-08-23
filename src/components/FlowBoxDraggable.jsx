@@ -7,10 +7,11 @@ import { Draggable, Droppable } from '@hello-pangea/dnd';
 import './flowbox.scoped.css'
 import { DataContext } from '../Context/DataProvider';
 import Dropdown from './Dropdown/Dropdown';
+import GoogleSearch from './GoogleSearch';
 
 
-const FlowBoxDraggable = ({ id, tripState, setTripState, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, addPlaceToConfirm, itineraryToSaved, isSavedPlace, openConfirmationModal, confirmationModalRef }) => {
-    const { gIcon } = useContext(DataContext);
+const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, addPlaceToConfirm, itineraryToSaved, isSavedPlace, openConfirmationModal, confirmationModalRef }) => {
+    const { gIcon, generateTripMapBounds } = useContext(DataContext);
     const [dayTitle, setDayTitle] = useState('');
 
 
@@ -95,6 +96,19 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, addSearchOpen, addSearc
 
     // [dropdown code]
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const toggleDropdown = () => {
+        if (dropdownOpen) {
+            setDropdownOpen(false);
+            if (pointerRef.current) {
+                pointerRef.current.classList.remove('pressed');
+            };
+        } else if (!dropdownOpen) {
+            setDropdownOpen(true);
+            if (pointerRef.current) {
+                pointerRef.current.classList.add('pressed');
+            };
+        };
+    };
     const dropDownItems = {
         header: null, // title/closeBtn
         options: [
@@ -109,8 +123,36 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, addSearchOpen, addSearc
                 clickFunction: "daySelection:move places",
             }
         ]
-    }
+    };
     const pointerRef = useRef(null);
+
+    const [searchBoxOpen, setSearchBoxOpen] = useState(false);
+    const openSearchBox = (id) => {
+        const addPlacesBtn = document.getElementById(`addPlacesBtn`)
+        const searchBar = document.getElementById(`searchBar-`)
+        const addPlaceExpand = document.getElementById(`addPlace-expand`)
+        addPlacesBtn.classList.add('d-none')
+        searchBar.classList.remove('d-none')
+        addPlaceExpand.style.height = '70px'
+        wait(100).then(() => {
+            searchBar.classList.remove('o-none')
+        })
+    }
+    const closeSearchBox = (id) => {
+        const addPlacesBtn = document.getElementById(`addPlacesBtn-${id}`)
+        const searchBar = document.getElementById(`searchBar-${id}`)
+        const addPlaceExpand = document.getElementById(`addPlace-expand-${id}`)
+        searchBar.classList.add('o-none')
+        wait(100).then(() => {
+            addPlacesBtn.classList.remove('d-none')
+            searchBar.classList.add('d-none')
+            addPlaceExpand.style.height = '30px'
+        })
+    };
+
+    const addPlaceFromFlowBoxFlow = (place) => {
+        addPlaceFromFlowBox(day.id, place);
+    };
 
     return (
         <div id={`flowBox-${id}`} className="flow-box" style={{ borderLeftColor: numberToBgColor(day.id) }}>
@@ -126,7 +168,9 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, addSearchOpen, addSearc
                     </p>
                     <div className="options">
                         <p id={`placeCount-${id}`} className="placeCount o-none">{narrowWindow ? "(" + day.placeIds.length + ")" : day.placeIds.length + " " + placeOrPlaces}</p>
-                        <span ref={pointerRef} onClick={(e) => { e.stopPropagation(); setDropdownOpen(!dropdownOpen) }} className={`${gIcon} o-50`}>more_vert</span>
+                        <div className="more_vert-container">
+                            <span ref={pointerRef} onClick={(e) => { e.stopPropagation(); toggleDropdown() }} className={`${gIcon} o-50 more_vert`}>more_vert</span>
+                        </div>
                         <Dropdown
                             open={dropdownOpen}
                             itemsList={dropDownItems}
@@ -178,14 +222,24 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, addSearchOpen, addSearc
                             </span>
                                 Add Places</p>
                         </Link>
-                        <div id={`searchBar-${id}`} className="searchPlace w-100 o-none d-none td-4 flx-r align-c">
+                        <div id={`searchBar-${id}`} className="searchPlace-container w-100 o-none d-none td-4 flx-r align-c">
                             <div className="flx-c">
                                 <span onClick={() => addSearchClose(id)} className="material-symbols-outlined mt-1 px-1 pointer onHover-fade o-50">
                                     close
                                 </span>
                             </div>
-                            <SearchPlace id={id} country={country} addPlaceFromFlowBox={addPlaceFromFlowBox} dayNum={day.id} />
+                            {/* <SearchPlace id={id} country={country} addPlaceFromFlowBox={addPlaceFromFlowBox} dayNum={day.id} /> */}
+                            <div className="google-search-container position-relative" style={{ width: "100%", height: "70px", paddingLeft: "34px" }}>
 
+                                <GoogleSearch
+                                    addPlaceFunction={addPlaceToConfirm}
+                                    tripMapBounds={generateTripMapBounds(mapCenter)}
+                                    searchLimit={4}
+                                    isLoaded={true}
+                                    styleProfile={"flowbox"}
+                                />
+
+                            </div>
                         </div>
                     </div>
 

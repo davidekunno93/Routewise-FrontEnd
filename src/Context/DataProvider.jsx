@@ -559,7 +559,7 @@ const DataProvider = (props) => {
             latitude: null,
             longitude: null,
         };
-        if (typeof geo === "Array") {
+        if (geo.constructor == Array) {
             latitudeLongitude.latitude = geo[0];
             latitudeLongitude.longitude = geo[1];
         } else if (typeof geo === "object") {
@@ -568,6 +568,25 @@ const DataProvider = (props) => {
         }
         return latitudeLongitude;
     };
+    const generateTripMapBounds = (center) => {
+        let lat = "";
+        let lng = "";
+        if (typeof center === "object") {
+            lat = center.lat;
+            lng = center.lng;
+        } else if (center.constructor === Array) {
+            lat = center[0];
+            lng = center[1];
+        }
+        let latLngBnds = {
+            // ~30 - 38 mile radius
+            north: lat + 0.426,
+            south: lat - 0.426,
+            east: lng + 0.686,
+            west: lng - 0.686,
+        }
+        return latLngBnds;
+    }
     const convertInfoToMap = (openingHoursStr) => {
         if (openingHoursStr.toLowerCase().includes(":")) {
 
@@ -657,7 +676,7 @@ const DataProvider = (props) => {
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
             'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor,
-            toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv
+            toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv, generateTripMapBounds
         }}>
             {props.children}
         </DataContext.Provider>

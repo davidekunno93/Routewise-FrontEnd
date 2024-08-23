@@ -11,8 +11,8 @@ import { DataContext } from '../../Context/DataProvider';
 // currentMapBounds
 // tripMapBounds
 
-const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch, showPlaceAddedBox, setShowPlaceAddedBox }) => {
-    const { wait } = useContext(DataContext);
+const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch, showPlaceAddedBox, setShowPlaceAddedBox, placeAddedBoxText }) => {
+    const { wait, generateTripMapBounds } = useContext(DataContext);
 
     // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
     const gLibrary = ["core", "maps", "places", "marker"];
@@ -57,17 +57,10 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     // [tracking the map]
     // get tripMapBounds - mapBounds of trip destination location at zoom ~ 9, doesn't change after first set
     const [tripMapBounds, setTripMapBounds] = useState(null);
+
     useEffect(() => {
         if (tripMapCenter) {
-            let lat = tripMapCenter.lat;
-            let lng = tripMapCenter.lng;
-            let latLngBnds = {
-                // ~30 - 38 mile radius
-                north: lat + 0.426,
-                south: lat - 0.426,
-                east: lng + 0.686,
-                west: lng - 0.686,
-            }
+            let latLngBnds = generateTripMapBounds(tripMapCenter);
             setTripMapBounds(latLngBnds);
         }
     }, [])
@@ -292,7 +285,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                 <span onClick={() => closePlaceAddedBox()} className="material-symbols-outlined">
                     close
                 </span>
-                <p>Added to Places List!</p>
+                <p>{placeAddedBoxText ?? "Added to Places List!"}</p>
             </div>
             {searchMapViewBounds &&
                 <div className="boundarySearch-popup">
@@ -300,7 +293,14 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                 </div>
             }
             {!removeSearch &&
-                <GoogleSearch isLoaded={isLoaded} tripMapBounds={tripMapBounds} mapViewBounds={mapMonitor.bounds} addPlaceToConfirm={addPlaceToConfirm} searchMapViewBounds={searchMapViewBounds} />
+                <GoogleSearch isLoaded={isLoaded}
+                    tripMapBounds={tripMapBounds}
+                    mapViewBounds={mapMonitor.bounds}
+                    addPlaceFunction={addPlaceToConfirm}
+                    searchMapViewBounds={searchMapViewBounds}
+                    searchLimit={5}
+                    styleProfile={"googlemap"}
+                />
             }
             <div className="gMap-btns">
                 {!removeSearch &&
@@ -377,10 +377,10 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                                             />
                                     }
                                 </AdvancedMarker>
-                                {!marker.infoWindowOpen &&
+                                {marker.infoWindowOpen &&
                                     <InfoWindow key={index} position={marker.position} pixelOffset={[0, -25]} onCloseClick={() => infoWindowFunctions.close(marker.id)}>
-                                        <p className='m-0'>{marker.id}</p>
-                                        {/* <p className='m-0'>{marker.placeName}</p> */}
+                                        {/* <p className='m-0'>{marker.id}</p> */}
+                                        <p className='m-0'>{marker.placeName}</p>
                                     </InfoWindow>
                                 }
 

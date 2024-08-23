@@ -19,6 +19,7 @@ import DaySelector from '../components/DaySelector'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 import ConfirmationModal from '../components/ConfirmationModal'
+import OpeningHoursMap from '../components/OpeningHoursMap'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -29,7 +30,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const { userPreferences, setUserPreferences } = useContext(DataContext);
   const { loadCityImg, geoToLatLng } = useContext(DataContext);
   const { suggestedPlaces, mapBoxCategoryKey } = useContext(DataContext);
-  const { mobileMode, mobileModeNarrow, timeFunctions } = useContext(DataContext);
+  const { mobileMode, mobileModeNarrow, timeFunctions, gIcon, convertInfoToMap } = useContext(DataContext);
 
   // ['libraries']
 
@@ -465,8 +466,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     },
   }
 
+  const [showPlaceAddedBox, setShowPlaceAddedBox] = useState(false);
   // add place from map and suggeseted places
-  const addPlace = async (dayNum, modifier) => {
+  const addPlace = async (dayNum) => {
     let tripStateCopy = { ...tripState }
     let place = placeToConfirm
     // add day_id to place object
@@ -512,7 +514,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         // closeDaySelection()
         // clearPlaceToConfirm()
         // console.log(tripStateCopy)
-        confirmPlaceAdded(modifier)
+        // confirmPlaceAdded(modifier)
+        setPlaceToConfirm(null);
+        closeDaySelection();
+        setShowPlaceAddedBox(true);
       }).catch((error) => {
         console.log(error)
       })
@@ -525,7 +530,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
       tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
       setTripState(tripStateCopy)
-      confirmPlaceAdded(modifier)
+      // confirmPlaceAdded(modifier)
+      setPlaceToConfirm(null);
+      closeDaySelection();
+      setShowPlaceAddedBox(true);
     }
   };
   // Sending Kate added place code
@@ -664,8 +672,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     // setMapCenterToggle(!mapCenterToggle);
     // resetPanelSearch()
   }
-  
-  
+
+
   // observe place to confirm card body
   // useEffect(() => {
   //   if (ptcCardBodyRef.current) {
@@ -919,92 +927,69 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // add place from search in flowbox
   const addPlaceFromFlowBox = async (dayNum, place) => {
     // {run imgquery on place.name + country}
-    let imgQuery = place.text.replace(/ /g, '-');
+    // let imgQuery = place.text.replace(/ /g, '-');
     // {run place details query with place_id}
     // let placeInfo = await loadPlaceDetails(place.place_id)
-    let placeInfo = "";
-    let imgUrl = await loadCityImg(imgQuery);
+    // let placeInfo = "";
+    // let imgUrl = await loadCityImg(imgQuery);
     let tripStateCopy = { ...tripState };
-
-    // let newPlace = {
-    //   placeName: place.name,
-    //   info: placeInfo,
-    //   address: place.formatted,
-    //   imgURL: imgUrl,
-    //   category: place.category ? place.category : "none",
-    //   favorite: false,
-    //   lat: place.lat,
-    //   long: place.lon,
-    //   geocode: [place.lat, place.lon],
-    //   placeId: place.place_id,
-    //   day_id: tripStateCopy.days[dayNum].day_id,
-    //   trip_id: tripStateCopy.trip_id
-    // }
-
-    let placeCategory = place.properties.category ?? "No Category";
-
-    let newPlace = {
-      placeName: place.text,
-      info: placeInfo,
-      address: place.place_name.split(", ").slice(1, -1).join(", "),
-      imgURL: imgUrl,
-      category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
-      favorite: false,
-      lat: place.geometry.coordinates[1],
-      long: place.geometry.coordinates[0],
-      geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-      placeId: place.id,
-      day_id: tripStateCopy.days[dayNum].day_id ?? tripStateCopy.days[dayNum].db_id,
-      trip_id: tripStateCopy.trip_id
+    // add day_id to place object
+    if (tripStateCopy.days[dayNum].day_id) {
+      // not sure if day_id key is used anymore
+      place['day_id'] = tripStateCopy.days[dayNum].day_id
+    } else {
+      place['day_id'] = tripStateCopy.days[dayNum].db_id
     }
+    place['trip_id'] = tripStateCopy.trip_id;
 
     // if database on then procede else do not proceed (create databaseOn in DataProvider?)
-    if (tripState.trip_id) {
+    if (tripStateCopy.trip_id) {
 
       // send place details to Kate for db update - return db place_id
-      let place_id = null
-      let sendPlace = { id: parseInt(tripStateCopy.places_last) + 1, ...newPlace }
+      let sendPlace = { id: parseInt(tripStateCopy.places_last) + 1, ...place }
       let data = {
         place: sendPlace,
         day_id: sendPlace.day_id
       }
+      console.log("sendPlace: ", sendPlace)
       const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       }).then((response) => {
         console.log(response.status)
-        place_id = response.data
+        let place_id = response.data
 
-        // create a new place id for the place by incrementing places_last, and add the id key to the place object
+        // create a new place id for the place
         tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
           id: parseInt(tripStateCopy.places_last) + 1,
-          ...newPlace,
-          place_id: place_id ? place_id : null // also adding place_id from database (from Kate response)
+          ...place,
+          place_id: place_id // also adding place_id from database (from Kate response)
         }
-        // increment places_last
         tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
-        // add place to the desired day
         tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
         setTripState(tripStateCopy)
+        // closeDaySelection()
+        // clearPlaceToConfirm()
+        // console.log(tripStateCopy)
+        confirmPlaceAdded(modifier)
+      }).catch((error) => {
+        console.log(error)
       })
     } else {
-      // no trip_id therefore we're in the playground with test data
+      // we're in playground mode i.e. using test place objects on default itinerary page
       tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
         id: parseInt(tripStateCopy.places_last) + 1,
-        ...newPlace,
-        place_id: null // place_id comes from database (from Kate response)
+        ...place,
       }
-      // increment places_last
       tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
-      // add place to the desired day
       tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
       setTripState(tripStateCopy)
-    }
-  }
+    };
+  };
 
   useEffect(() => {
     // update code: needs to update each time itinerary places changes
-    updateCentroids()
-  }, [])
+    updateCentroids();
+  }, []);
   const updateCentroids = () => {
     let tripStateCopy = { ...tripState }
     for (let dayNum of tripStateCopy.day_order) {
@@ -1147,7 +1132,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     window.addEventListener('scroll', observeFlowBoxes)
     return window.removeEventListener('scroll', observeFlowBoxes)
   }, []);
-  
+
 
 
 
@@ -1480,6 +1465,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const expandSidebar = () => {
     // let logo = document.getElementById('sb-logoSpace')
     let arrow = document.getElementById('arrow-icon');
+    let vLine = document.getElementById('arrow-v-line');
     let logoSpace = document.getElementById('sb-logoSpace');
     const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
     const sidebar = document.getElementById('itinerarySidebar')
@@ -1490,6 +1476,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       // logo.style.width = "252px"
       arrow.classList.add("rotate-180");
       logoSpace.style.paddingRight = "0px";
+      vLine.classList.add("push-left");
 
       let expandItems = document.getElementsByClassName('sb-expanded')
       for (let i = 0; i < expandItems.length; i++) {
@@ -1505,6 +1492,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const collapseSidebar = () => {
     // let logo = document.getElementById('sb-logoSpace')
     let arrow = document.getElementById('arrow-icon');
+    let vLine = document.getElementById('arrow-v-line');
     let logoSpace = document.getElementById('sb-logoSpace');
     let expandItems = document.getElementsByClassName('sb-expanded')
     const sidebarPlaceholder = document.getElementById('itinerarySideBarPlaceholder')
@@ -1512,6 +1500,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     // logo.style.width = "34px"
     arrow.classList.remove("rotate-180");
     logoSpace.style.paddingRight = "10px";
+    vLine.classList.remove("push-left");
 
     for (let i = 0; i < expandItems.length; i++) {
       expandItems[i].classList.remove('show')
@@ -1722,7 +1711,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         confirmationModalProps={confirmationModalProps}
         onClose={() => setConfirmationModalOpen(false)}
       />
-      
+
       {mobileMode &&
         <button onClick={() => setMapView(mapView => !mapView)} className={`mapview-btn ${mapView && "light"}`}>
           <span className={`material-symbols-outlined large ${mapView ? "dark-text" : "white-text"}`}>
@@ -1780,10 +1769,11 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                 </div>
 
                 <div id='sb-logoSpace' className="logo-space">
-                  <div onClick={() => toggleSidebarExpanded()} className="open-arrow-icon pointer">
-                    <span id='arrow-icon' className="material-symbols-outlined darkpurple-text">
+                  <div onClick={() => toggleSidebarExpanded()} className="arrow-icon pointer">
+                    <span id='arrow-icon' className={gIcon + " darkpurple-text"}>
                       arrow_forward
                     </span>
+                    <span id='arrow-v-line' className="v-line"></span>
                   </div>
                   {/* <div className="icon-cold">
                     <img onClick={() => toggleSidebarExpanded()} src="https://i.imgur.com/d2FMf3s.png" alt="" className="logo-icon" />
@@ -1884,6 +1874,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                               id={id}
                               tripState={tripState}
                               setTripState={setTripState}
+                              mapCenter={mapCenter}
                               addSearchOpen={addSearchOpen}
                               addSearchClose={addSearchClose}
                               toggleFlow={toggleFlow}
@@ -1934,9 +1925,18 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                           <div className="placeCard-body flx-5">
                             {/* <div className="popUp d-none">{savedPlace.info}</div> */}
                             <p className="body-title ">{savedPlace.placeName}</p>
-                            {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{savedPlace.info}</p> */}
                             <p className="body-category">{category}</p>
-                            <p className="body-address">{savedPlace.address}</p>
+                            {savedPlace.info &&
+                              <>
+                                {savedPlace.info.includes(":") ?
+                                  <OpeningHoursMap openingHoursObject={convertInfoToMap(savedPlace.info)} />
+                                  :
+                                  <p className="body-info">{savedPlace.info}</p>
+                                }
+                              </>
+                            }
+
+                            <p className="body-address">{savedPlace.summary ?? savedPlace.address}</p>
                           </div>
                           <div className="placeCard-options py-2h flx-c just-sb align-c">
                             <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
@@ -2313,7 +2313,18 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                   {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
                   {/* <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} /> */}
-                  <GoogleMapBox tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })} mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} addPlaceToConfirm={addPlaceToConfirm} markers={markers} setMarkers={setMarkers} markerColors />
+                  <GoogleMapBox
+                    tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })}
+                    mapCenter={mapCenter}
+                    mapCenterToggle={mapCenterToggle}
+                    addPlaceToConfirm={addPlaceToConfirm}
+                    markers={markers}
+                    setMarkers={setMarkers}
+                    showPlaceAddedBox={showPlaceAddedBox}
+                    placeAddedBoxText={"Added to Itinerary!"}
+                    setShowPlaceAddedBox={setShowPlaceAddedBox}
+                    markerColors
+                  />
 
                 </div>
 

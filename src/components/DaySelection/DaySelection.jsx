@@ -3,13 +3,14 @@ import DaySelected from '../DaySelected'
 import { DataContext } from '../../Context/DataProvider';
 import './dayselection.scoped.css'
 import ConfirmationModal from '../ConfirmationModal';
+import axios from 'axios';
 
 export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlace, placeToConfirm, titleText, action, renderLocation, openConfirmationModal, onClose, closeTree }) => {
     if (!open) return null;
     const { gIcon } = useContext(DataContext);
 
     // where might this component be?
-    
+
     // action = swap days
     // action = move all places
     // -- on itinerary (swap day/move all places) - x addPlace (switched to swap/move places), placeToConfirm
@@ -59,9 +60,26 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
     const itineraryFunctions = {
         swapDays: function (sourceDayNum, destinationDayNum) {
             let tripStateCopy = { ...tripState };
-            [tripStateCopy.days[sourceDayNum].placeIds, tripStateCopy.days[destinationDayNum].placeIds] = [tripStateCopy.days[destinationDayNum].placeIds, tripStateCopy.days[sourceDayNum].placeIds];
             // send updates to Kate Backend
-            setTripState(tripStateCopy);
+            if (tripState.trip_id) {
+                let url = `https://routewise-backend.onrender.com/itinerary/move-day-places/${tripState.trip_id}`
+                let data = {
+                    sourceDayId: tripStateCopy.days[sourceDayNum].db_id,
+                    destDayId: tripStateCopy.days[destinationDayNum].db_id,
+                    swap: true,
+                }
+                console.log(data)
+                const response = axios.patch(url, data)
+                    .then((response) => {
+                        console.log(response)
+                        [tripStateCopy.days[sourceDayNum].placeIds, tripStateCopy.days[destinationDayNum].placeIds] = [tripStateCopy.days[destinationDayNum].placeIds, tripStateCopy.days[sourceDayNum].placeIds];
+                        setTripState(tripStateCopy);
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+            }
+
         },
         moveAllPlaces: function (sourceDayNum, destinationDayNum) {
             let tripStateCopy = { ...tripState };

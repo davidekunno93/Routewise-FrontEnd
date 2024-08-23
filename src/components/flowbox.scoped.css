@@ -16,6 +16,7 @@
 }
 .flow-header .options {
     display: flex;
+    justify-content: space-between;
     gap: 8px;
     padding-top: 10px;
     align-items: center;

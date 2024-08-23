@@ -3,7 +3,7 @@ import usePlacesAutocomplete from 'use-places-autocomplete';
 import { DataContext } from '../Context/DataProvider';
 import { connectStorageEmulator } from 'firebase/storage';
 
-const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchMapViewBounds, isLoaded }) => {
+const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, searchMapViewBounds, isLoaded, searchLimit, styleProfile }) => {
     if (!isLoaded) return null;
     const { textFunctions } = useContext(DataContext);
 
@@ -12,7 +12,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
     // autocomplete api
     const { ready, value, setValue, suggestions: { status, data }, clearSuggestions } = usePlacesAutocomplete({
         requestOptions: {
-            locationRestriction: searchMapViewBounds ? mapViewBounds : tripMapBounds,
+            locationRestriction: searchMapViewBounds && mapViewBounds ? mapViewBounds : tripMapBounds,
             // region: "uk"
         },
         debounce: 300
@@ -108,7 +108,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         let result = "";
         // make string
         // replace days with short days
-        for (let i=0; i<openingHoursArr.length; i++) {
+        for (let i = 0; i < openingHoursArr.length; i++) {
             openingHoursArr[i] = openingHoursArr[i].replace(",", ";");
         }
         console.log(openingHoursArr)
@@ -128,7 +128,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
             if (categoryArr.includes("point_of_interest")) {
                 categoryArr.splice(categoryArr.indexOf("point_of_interest"), 1);
             }
-        }
+        };
 
         bestCategory = categoryArr[0];
         if (bestCategory === "tourist_attraction" || bestCategory === "establishment") {
@@ -137,43 +137,30 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
                     bestCategory = categoryArr[i];
                 }
             }
-        }
+        };
 
         if (bestCategory.includes("locality")) {
             bestCategory = "area";
         }
-        return bestCategory
-    }
-    const getTodaysHours = (openingHoursArr) => {
-        let openingHoursToday = "";
-        for (let i = 0; i < openingHoursArr.length; i++) {
-            let todayAbbr = new Date().toString().split(" ")[0]; // Mon, Tue, Wed.. etc.
-            if (openingHoursArr[i].includes(todayAbbr)) {
-                openingHoursToday = openingHoursArr[i];
-            }
-        }
-        return openingHoursToday
-    }
+        return bestCategory;
+    };
+
     useEffect(() => {
         // getTodaysHours("hi");
     }, [])
     const loadPlace = async (autoCompletePlace) => {
         const newPlace = await getPlace(autoCompletePlace);
-        addPlaceToConfirm(newPlace);
+        addPlaceFunction(newPlace);
 
-    }
-    const simplifyWebsite = (website) => {
-        if (website) {
-            website = website.split("www.")[1];
-        }
-        return website
-    }
+    };
 
 
     // check for establishments in search and show see locations option in dropdown
     useEffect(() => {
-        updateEstablishmentOption()
-    }, [data])
+        if (searchLimit > 3) {
+            updateEstablishmentOption();
+        };
+    }, [data]);
 
     const [establishmentOption, setEstablishmentOption] = useState(null);
     const updateEstablishmentOption = () => {
@@ -208,11 +195,57 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
         } else {
             setEstablishmentOption(null);
         }
+    };
+
+    const [selectedStyle, setSelectedStyle] = useState({
+        searchContainer: {},
+        searchBar: {},
+        searchInput: {}
+    });
+    useEffect(() => {
+        if (styleProfile === "flowbox") {
+            setSelectedStyle(stylings.flowbox);
+        } else if (styleProfile === "googlemap") {
+            setSelectedStyle(stylings.googlemap);
+        }
+    }, []);
+    const stylings = {
+        flowbox: {
+            searchBar: {
+                width: "100%",
+            },
+            searchContainer: {
+                width: "100%",
+                height: "70px",
+                zIndex: "1",
+            },
+            searchInput: {
+                border: "1px solid gainsboro",
+                boxShadow: "none",
+            },
+        },
+        googlemap: {
+            searchBar: {
+                width: "90%",
+            },
+            searchContainer: {
+                width: "calc(95% - 40px)",
+                height: "90px",
+            },
+            searchInput: {
+                border: "none",
+            },
+        }
     }
+    
+
 
     return (
-        <div className="searchBar-container flx-c position-absolute z-1">
-            <div className="searchBar position-relative w-90 flx align-c">
+        <div
+            className="searchBar-container flx-c position-absolute z-1"
+            style={selectedStyle.searchContainer}
+        >
+            <div className="searchBar position-relative w-90 flx align-c" style={selectedStyle.searchBar}>
                 {value.length === 0 ?
                     <span className="material-symbols-outlined google-icon-overlay-right">
                         search
@@ -231,6 +264,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
                     className={`google-input ${status === "OK" && "resultsLoaded"}`}
                     placeholder='Search places...'
                     disabled={!ready}
+                    style={selectedStyle.searchInput}
                 />
 
                 {status === "OK" &&
@@ -252,7 +286,7 @@ const GoogleSearch = ({ addPlaceToConfirm, tripMapBounds, mapViewBounds, searchM
                             let placeName = place.structured_formatting.main_text;
                             let hasAddress = place.structured_formatting.secondary_text ? true : false;
                             let address = place.structured_formatting.secondary_text;
-                            let limit = establishmentOption ? 4 : 5;
+                            let limit = establishmentOption ? searchLimit - 1 : searchLimit;
                             return hasAddress && index < limit && <div key={index} onClick={() => handleSelect(place)} className="option">
                                 {/* <img src="https://i.imgur.com/ukt1lYj.png" alt="" className="img" /> */}
                                 <div className="img">

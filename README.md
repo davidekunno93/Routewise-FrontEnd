@@ -559,3 +559,11 @@ Cheryl's trips by trip_id
 385 (og trip posted on discord)
 398
 
+- Update algorithm to interim algorithm
+- Review and work on Machine Learning algorithm
+- Create backend routes to swap places/move all places
+
+<!-- 22Aug24 Team Meeting -->
+Add instagram posts with links on landing page
+Swap days/move all places connection w/BE
+Featured itineraries
