@@ -264,6 +264,36 @@ export const Landing = () => {
         "https://i.imgur.com/V82Owfa.jpg",
         "https://i.imgur.com/Mf39Zrc.jpg",
     ]
+    const igImages = [
+        {
+            title: "Explore Kyoto with RouteWise",
+            imgUrl: "https://i.imgur.com/7VoY5tnh.jpg",
+            displayPicture: "https://i.imgur.com/qyd4LXy.png",
+            caption: "Kyoto, Japan is my ultimate travel spot, and here's why...",
+            link: "https://www.instagram.com/p/C-GyTLkpRMo/",
+        },
+        {
+            title: "Discover Reykjavik with RouteWise",
+            imgUrl: "https://i.imgur.com/ZNCaiV8h.jpg",
+            displayPicture: "https://i.imgur.com/qyd4LXy.png",
+            caption: "Reykjavik, the northernmost capital of a sovereign state, is renowned for its unique landscapes and nature that are unlike anywhere else in the world.",
+            link: "https://www.instagram.com/p/C-bwK0KJS_C/",
+        },
+        {
+            title: "Wander London Like a Local",
+            imgUrl: "https://i.imgur.com/wo57fM1h.jpg",
+            displayPicture: "https://i.imgur.com/qyd4LXy.png",
+            caption: "This week, our front-end developer David is sharing his favorite city: London!",
+            link: "https://www.instagram.com/p/C-t9refOmrZ/",
+        },
+        {
+            title: "This Week's City Spotlight: Victoria!",
+            imgUrl: "https://i.imgur.com/AoGbBOWh.jpg",
+            displayPicture: "https://i.imgur.com/qyd4LXy.png",
+            caption: "With its beautifully preserved architecture and the welcoming, laid-back vibe of the locals, Victoria is the perfect place to unwind and soak in some history.",
+            link: "https://www.instagram.com/p/C-9BkAHMSKN/",
+        },
+    ]
 
     return (
         <>
@@ -508,11 +538,22 @@ export const Landing = () => {
                     {/* <div className="inner-no-flex"> */}
                     <div className="ig-cards">
 
-                        {exploreImgs.map((img, index) => {
+                        {igImages.map((img, index) => {
                             let first = index === 0 ? true : false
-                            return <div key={index} className={`ig-card ${!first ? "ml-4" : null} ${mobileMode && "mobile"} `}>
-                                <img src={img} alt="" className="fill-img" />
-                            </div>
+                            return <Link to={img.link} target='_blank'>
+                                <div key={index} className={`ig-card ${!first ? "ml-4" : null} ${mobileMode && "mobile"} `}>
+                                    <img src={img.imgUrl} alt="" className="fill-img" />
+                                    <div className="caption">
+                                        <div className="displayPicture">
+                                            <img src={img.displayPicture} alt="" className="img" />
+                                        </div>
+                                        <div className="text">
+                                            <p className="title truncated">{img.title}</p>
+                                            <p className="desc truncated">{img.caption}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
                         })}
 
                     </div>

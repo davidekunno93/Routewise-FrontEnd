@@ -15,7 +15,6 @@ import DaySelected from '../components/DaySelected'
 import { DataContext } from '../Context/DataProvider'
 import { Loading } from '../components/Loading'
 import OpenMapBox from '../components/OpenMapBox'
-import DaySelector from '../components/DaySelector'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 import ConfirmationModal from '../components/ConfirmationModal'
@@ -1427,8 +1426,6 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }, []);
 
   const [daySelectorOpen, setDaySelectorOpen] = useState(false);
-  const [placeForDaySelector, setPlaceForDaySelector] = useState({});
-  const [actionForDaySelector, setActionForDaySelector] = useState("");
   const [daySelectorStateProps, setDaySelectorStateProps] = useState({
     place: {},
     action: "",
@@ -1939,6 +1936,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                             <p className="body-address">{savedPlace.summary ?? savedPlace.address}</p>
                           </div>
                           <div className="placeCard-options py-2h flx-c just-sb align-c">
+
                             <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
                               <div onClick={() => { addPlaceToConfirm(savedPlace); closeOptionDropdown(index) }} className="option">
                                 <div className="material-symbols-outlined icon">location_on</div>
@@ -1953,6 +1951,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                                 <p className="m-0 text red-text">Remove from list</p>
                               </div>
                             </div>
+                            
+
                             <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
                               more_vert
                             </span>

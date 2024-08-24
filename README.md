@@ -567,3 +567,12 @@ Cheryl's trips by trip_id
 Add instagram posts with links on landing page
 Swap days/move all places connection w/BE
 Featured itineraries
+Suggested places
+Suggested place card component
+Saved Place card component
+Dropdown on place cards, use dropdown component
+itinerary sidepanel component
+profile dropdown use dropdown component
+
+Atypical stay times
+Amusement park - all day?
