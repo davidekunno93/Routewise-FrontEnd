@@ -564,10 +564,11 @@ Cheryl's trips by trip_id
 - Create backend routes to swap places/move all places
 
 <!-- 22Aug24 Team Meeting -->
-Add instagram posts with links on landing page
+<!-- Add instagram posts with links on landing page -->
 Swap days/move all places connection w/BE
 Featured itineraries
 Suggested places
+ORGANIZE
 Suggested place card component
 Saved Place card component
 Dropdown on place cards, use dropdown component

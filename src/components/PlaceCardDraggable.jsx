@@ -5,8 +5,8 @@ import OpeningHoursMap from './OpeningHoursMap';
 export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
     const { textFunctions, convertInfoToMap, renderRating } = useContext(DataContext);
 
-    
-    
+
+
 
     const openDropdown = (dayId, id) => {
         const dropdown = document.getElementById(`itineraryPlaceCardDropdown-${dayId + "-" + id}`);
@@ -83,7 +83,10 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     {place.info &&
                         <>
                             {place.info.includes(":") ?
-                                <OpeningHoursMap openingHoursObject={convertInfoToMap(place.info)} />
+                                <OpeningHoursMap
+                                    idTree={dayId + "-" + id.toString()}
+                                    openingHoursObject={convertInfoToMap(place.info)}
+                                />
                                 :
                                 <p className="body-info">{place.info}</p>
                             }
