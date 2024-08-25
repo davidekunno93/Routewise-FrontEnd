@@ -5936,6 +5936,7 @@ selection-box-landing.mobile {
   box-sizing: border-box;
   /* align-self: center; */
   transition-duration: 0.3s;
+  position: relative;
 }
 
 .logo-icon {
@@ -6477,6 +6478,14 @@ selection-box-landing.mobile {
   height: 23px;
   /* background-color: red; */
   position: relative;
+}
+.arrow-icon::after {
+  position: absolute;
+  /* border: 1px solid salmon; */
+  content: "";
+  right: -10px;
+  width: 36px;
+  height: 100%;
 }
 
 

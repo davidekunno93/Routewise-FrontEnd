@@ -1717,81 +1717,84 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
           <p className={`m-0 ${mapView ? "dark-text" : "white-text"}`}>{mapView ? "Close Map" : "Map View"}</p>
         </button>
       }
-      <div className={`itinerary-page ${mobileMode && "overflow-h"}`}>
+      <div className={`itinerary-page flx-r ${mobileMode && "overflow-h"}`}>
         {/* <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`} style={{ transform: `translateX(-${mobileMode ? mapView ? 1 * 50 : 0 * 50 : 0}%)` }}> */}
-        <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`}>
-          <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-r flx-4"}`}>
 
-            {/* itinerary sidebar */}
-            <div id='itinerarySideBarPlaceholder' className="itinerary-sidebar-placeholder sticky">
-              <div id='itinerarySidebar' className="itinerary-sidebar-expanded sticky position-fixe">
-                {/* tooltip for saved places */}
-                <div className={`sidebar-tooltip saved-places ${currentTrip.itineraryFirstLoad ? toolTipIndex === 0 ? "shown" : "hidden-o" : "hidden-o"}`}>
-                  <div className="dot-indicators just-ce">
-                    <div className="dot selected"></div>
-                    <div onClick={() => updateToolTipIndex(1)} className="dot"></div>
-                  </div>
-                  <div className="title align-all-items gap-2 my-2">
-                    <span className="material-symbols-outlined lightpurple-text">bookmark</span>
-                    <p className="m-0 lightpurple-text">Find more in Saved Places</p>
-                  </div>
-                  <div className="body-text">
-                    <p className="m-0 white-text">We couldn't fit all of your places in the itinerary, but don't worry-they're
-                      in your Saved Places folder!</p>
-                    <br />
-                    <p className="m-0 white-text">Feel free to add them to your itinerary as you wish and use this folder for
-                      additional places you're interested in but not ready to add to your itinerary just yet.</p>
-                  </div>
-                  <div className="btns flx-r just-en mt-2">
-                    <button onClick={() => updateToolTipIndex(1)} className="btn-primaryflex">Got it</button>
-                  </div>
-                </div>
 
-                {/* tooltip for suggested places */}
-                <div className={`sidebar-tooltip suggested-places  ${currentTrip.itineraryFirstLoad ? toolTipIndex === 1 ? "shown" : "hidden-o" : "hidden-o"}`}>
-                  <div className={`dot-indicators just-ce ${tripState.saved_places.placesIds.length === 0 && "hidden"}`}>
-                    <div onClick={() => updateToolTipIndex(0)} className="dot"></div>
-                    <div className="dot selected"></div>
-                  </div>
-                  <div className="title align-all-items gap-2 my-2">
-                    <span className="material-symbols-outlined lightpurple-text">emoji_objects</span>
-                    <p className="m-0 lightpurple-text">Suggested Places</p>
-                  </div>
-                  <div className="body-text">
-                    <p className="m-0 white-text">Find personalized recommendations based on your travel preferences.</p>
-                  </div>
-                  <div className="btns flx-r just-en mt-2">
-                    <button onClick={() => { updateToolTipIndex(null); removeItineraryFirstLoad() }} className="btn-primaryflex">Close</button>
-                  </div>
-                </div>
+        {/* itinerary sidebar */}
+        <div id='itinerarySideBarPlaceholder' className="itinerary-sidebar-placeholder sticky">
+          <div id='itinerarySidebar' className="itinerary-sidebar-expanded sticky position-fixe">
+            {/* tooltip for saved places */}
+            <div className={`sidebar-tooltip saved-places ${currentTrip.itineraryFirstLoad ? toolTipIndex === 0 ? "shown" : "hidden-o" : "hidden-o"}`}>
+              <div className="dot-indicators just-ce">
+                <div className="dot selected"></div>
+                <div onClick={() => updateToolTipIndex(1)} className="dot"></div>
+              </div>
+              <div className="title align-all-items gap-2 my-2">
+                <span className="material-symbols-outlined lightpurple-text">bookmark</span>
+                <p className="m-0 lightpurple-text">Find more in Saved Places</p>
+              </div>
+              <div className="body-text">
+                <p className="m-0 white-text">We couldn't fit all of your places in the itinerary, but don't worry-they're
+                  in your Saved Places folder!</p>
+                <br />
+                <p className="m-0 white-text">Feel free to add them to your itinerary as you wish and use this folder for
+                  additional places you're interested in but not ready to add to your itinerary just yet.</p>
+              </div>
+              <div className="btns flx-r just-en mt-2">
+                <button onClick={() => updateToolTipIndex(1)} className="btn-primaryflex">Got it</button>
+              </div>
+            </div>
 
-                <div id='sb-logoSpace' className="logo-space">
-                  <div onClick={() => toggleSidebarExpanded()} className="arrow-icon pointer">
-                    <span id='arrow-icon' className={gIcon + " darkpurple-text"}>
-                      arrow_forward
-                    </span>
-                    <span id='arrow-v-line' className="v-line"></span>
-                  </div>
-                  {/* <div className="icon-cold">
+            {/* tooltip for suggested places */}
+            <div className={`sidebar-tooltip suggested-places  ${currentTrip.itineraryFirstLoad ? toolTipIndex === 1 ? "shown" : "hidden-o" : "hidden-o"}`}>
+              <div className={`dot-indicators just-ce ${tripState.saved_places.placesIds.length === 0 && "hidden"}`}>
+                <div onClick={() => updateToolTipIndex(0)} className="dot"></div>
+                <div className="dot selected"></div>
+              </div>
+              <div className="title align-all-items gap-2 my-2">
+                <span className="material-symbols-outlined lightpurple-text">emoji_objects</span>
+                <p className="m-0 lightpurple-text">Suggested Places</p>
+              </div>
+              <div className="body-text">
+                <p className="m-0 white-text">Find personalized recommendations based on your travel preferences.</p>
+              </div>
+              <div className="btns flx-r just-en mt-2">
+                <button onClick={() => { updateToolTipIndex(null); removeItineraryFirstLoad() }} className="btn-primaryflex">Close</button>
+              </div>
+            </div>
+
+            <div id='sb-logoSpace' className="logo-space">
+              <div onClick={() => toggleSidebarExpanded()} className="arrow-icon pointer">
+                <span id='arrow-icon' className={gIcon + " darkpurple-text"}>
+                  arrow_forward
+                </span>
+                <span id='arrow-v-line' className="v-line"></span>
+              </div>
+              {/* <div className="icon-cold">
                     <img onClick={() => toggleSidebarExpanded()} src="https://i.imgur.com/d2FMf3s.png" alt="" className="logo-icon" />
                   </div>
 
                   <img src="https://i.imgur.com/Eu8Uf2u.png" alt="" className="text-logo-icon" /> */}
 
-                </div>
-
-                {sidebarOptions.map((option, index) => {
-                  let selected = selectedPlacesList === option.title ? true : false
-                  return <div key={index} onClick={() => setSelectedPlacesList(option.title)} className={`${selected ? "option-selected" : "option"}`}>
-                    <img src={option.iconUrl} alt="" className="icon" />
-                    <p className="m-0 darkpurple-text sb-expanded">{option.title}</p>
-                  </div>
-                })}
-
-              </div>
             </div>
-            {/* itinerary sidebar end */}
 
+            {sidebarOptions.map((option, index) => {
+              let selected = selectedPlacesList === option.title ? true : false
+              return <div key={index} onClick={() => setSelectedPlacesList(option.title)} className={`${selected ? "option-selected" : "option"}`}>
+                <img src={option.iconUrl} alt="" className="icon" />
+                <p className="m-0 darkpurple-text sb-expanded">{option.title}</p>
+              </div>
+            })}
+
+          </div>
+        </div>
+        {/* itinerary sidebar end */}
+
+        <div className="flx-c w-100">
+
+        <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`}>
+          <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-r flx-4"}`}>
 
             {/* Itinerary Display */}
             {selectedPlacesList === "Itinerary" &&
@@ -1951,7 +1954,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                                 <p className="m-0 text red-text">Remove from list</p>
                               </div>
                             </div>
-                            
+
 
                             <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
                               more_vert
@@ -2394,27 +2397,26 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
           </div>
 
         </div>
+
+
+        <div className="flx-r">
+          <div className="position-right mr-5">
+
+            {/* Completion buttons */}
+            < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
+              <Link to='/dashboard'><button className="btn-outlineflex center-text mx-2">Back to Dashboard</button></Link>
+              <Link to='/print-itinerary'><button className="btn-primaryflex w-2h center-text mx-2">Share Itinerary</button></Link>
+            </div >
+            {/* End Completion buttons */}
+
+            <h1 className='empty-3'></h1>
+
+
+          </div>
+        </div>
+
+        </div>
       </div >
-
-      <div className="flx-r">
-        <div className="itinerary-sidebar-placeholder">
-
-        </div>
-
-        <div className="position-right mr-5">
-
-          {/* Completion buttons */}
-          < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
-            <Link to='/dashboard'><button className="btn-outlineflex center-text mx-2">Back to Dashboard</button></Link>
-            <Link to='/print-itinerary'><button className="btn-primaryflex w-2h center-text mx-2">Share Itinerary</button></Link>
-          </div >
-          {/* End Completion buttons */}
-
-          <h1 className='empty-3'></h1>
-
-
-        </div>
-      </div>
 
     </>
   )
