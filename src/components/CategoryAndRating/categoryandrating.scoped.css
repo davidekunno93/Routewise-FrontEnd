@@ -1,0 +1,29 @@
+.rating {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+}
+
+.rating .score-text {
+    margin: 0;
+    font-size: 12px;
+    color: #7A7A7A;
+}
+
+.rating .star-img {
+    width: 10px;
+    height: 10px;
+    object-fit: contain;
+}
+
+
+.body-category {
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 400;
+    font-size: 12px;
+    color: #7A7A7A;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}

@@ -30,10 +30,11 @@ function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
   const userData = window.localStorage.getItem("userData");
   const userPref = window.localStorage.getItem("userPref");
-  const { user, setUser } = useContext(DataContext);
-  const { userPreferences, setUserPreferences } = useContext(DataContext);
-  const { currentTrip, mapBoxCategoryKey, suggestedPlaces, setSuggestedPlaces } = useContext(DataContext);
-  const { loadCityImg } = useContext(DataContext);
+  const { user, setUser, userPreferences, setUserPreferences,
+    currentTrip, mapBoxCategoryKey, suggestedPlaces, setSuggestedPlaces,
+    loadCityImg, getGoogleImg, modifyInfo, textFunctions, toLatitudeLongitude, 
+    getBestCategory, googleCategoryKey, googlePlaceTypeKey } = useContext(DataContext);
+
 
   // wakeup function
   useEffect(() => {
@@ -41,10 +42,11 @@ function App() {
     // console.log(auth.currentUser)
     // docRef = doc, docSnap = getDoc, if docSnap.exists() --> docSnap.data()
     // fetch user details
-    auth.onAuthStateChanged((userCred) => 
-    {setUser(userCred)
-  });
-  
+    auth.onAuthStateChanged((userCred) => {
+      setUser(userCred)
+      setPreferences();
+    });
+
 
   }, [])
   const wakeUpBackEnd = async () => {
@@ -80,33 +82,33 @@ function App() {
     }
     console.log("userPref =", userPref)
     setUserPreferences(userPref)
-  }
+  };
 
   // [suggested places code]
   const suggestedPlacesFunctions = {
     empty: function () {
       let suggestedPlacesCopy = { ...suggestedPlaces };
       suggestedPlacesCopy.places = [];
-      suggestedPlacesCopy.loaded = false;
+      suggestedPlacesCopy.isLoaded = false;
       setSuggestedPlaces(suggestedPlacesCopy);
     },
     reset: function () {
       // currently the same as empty
       setSuggestedPlaces({
-        loaded: false,
+        isLoaded: false,
         places: [],
       });
     },
     returnNone: function () {
       let suggestedPlacesCopy = { ...suggestedPlaces };
       suggestedPlacesCopy.places = [];
-      suggestedPlacesCopy.loaded = true;
+      suggestedPlacesCopy.isLoaded = true;
       setSuggestedPlaces(suggestedPlacesCopy);
-      // setSuggestedPlaces({...suggestedPlaces, places: [], loaded: true});
+      // setSuggestedPlaces({...suggestedPlaces, places: [], isLoaded: true});
     },
     setPlaces: function (placeSuggestions) {
       setSuggestedPlaces({
-        loaded: true,
+        isLoaded: true,
         places: placeSuggestions,
       });
     }
@@ -180,9 +182,103 @@ function App() {
     return response.status === 200 ? response.data.features : "error"
   }
   useEffect(() => {
-    loadSuggestedPlaces();
-    // console.log("user preferences was updated")
+    nearbySearch();
+    console.log("user preferences was updated");
   }, [userPreferences, currentTrip.geocode])
+
+  const getSelectedPreferences = (userPreferencesObj) => {
+    let selectedPreferences = [];
+    for (let [key, value] of Object.entries(userPreferencesObj)) {
+      if (value === true) {
+        selectedPreferences.push(key);
+      };
+    };
+    return selectedPreferences;
+  };
+  const getCategoryQueries = (selectedPreferencesArr) => {
+    let categoryQueries = [];
+    for (let i = 0; i<selectedPreferencesArr.length; i++) {
+      categoryQueries.push(...googleCategoryKey[selectedPreferencesArr[i]].categoryQueries)
+    };
+    return categoryQueries;
+  }
+  const nearbySearch = async () => {
+    console.log(userPreferences);
+    let selectedPreferences = getSelectedPreferences(userPreferences);
+    let categoryQueries = getCategoryQueries(selectedPreferences)
+    // return "cp"
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': import.meta.env.VITE_APP_GOOGLE_API_KEY,
+        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos,places.id,places.regularOpeningHours,places.editorialSummary,places.location,places.types,places.rating,places.internationalPhoneNumber,places.websiteUri', // address, summary, biz info
+      },
+      body: JSON.stringify({
+        includedTypes: categoryQueries,
+        maxResultCount: 12,
+        locationRestriction: {
+          circle: {
+            center: toLatitudeLongitude(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]),
+            radius: 40000, // ~25 miles
+          },
+        },
+      }),
+    }
+    let url = `https://places.googleapis.com/v1/places:searchNearby`
+    await fetch(url, requestOptions)
+      .then(async (response) => {
+        let data = await response.json();
+        let resultPlaces = await handleNearbySearchData(data);
+        console.log(resultPlaces);
+        suggestedPlacesFunctions.setPlaces(resultPlaces);
+      })
+      // .then(async (data) => {
+      // })
+      .catch(error => console.log('error', error));
+
+  };
+  const handleNearbySearchData = async (data) => {
+    data = data.places;
+    console.log(data)
+    let resultPlaces = [];
+    let selectedPreferences = getSelectedPreferences(userPreferences);
+    let googleCategoryPlaceTypesArr = Object.keys(googlePlaceTypeKey);
+    for (let i = 0; i < data.length; i++) {
+      let photoName = data[i].photos[0].name;
+      let categoryTitle = "";
+      for (let j = 0; j<data[i].types.length; j++) {
+        // if type match with google keys
+        if (googleCategoryPlaceTypesArr.includes(data[i].types[j])) {
+          console.log(data[i].displayName.text, data[i].types[j])
+          // set category Title to google key value if user preference is chosen
+          if (selectedPreferences.includes(googlePlaceTypeKey[data[i].types[j]].userPreference)) {
+            categoryTitle = googlePlaceTypeKey[data[i].types[j]].categoryTitle;
+            break;
+          };
+        };
+      };
+      let place = {
+        placeName: data[i].displayName.text,
+        info: data[i].regularOpeningHours ? modifyInfo(data[i].regularOpeningHours.weekdayDescriptions) : "",
+        category: textFunctions.capitalize(getBestCategory(data[i].types).replace(/_/g, " ")),
+        categoryTitle: categoryTitle,
+        rating: data[i].rating ? data[i].rating.toFixed(1) : null,
+        address: data[i].formattedAddress,
+        geocode: [data[i].location.latitude, data[i].location.longitude],
+        lat: data[i].location.latitude,
+        long: data[i].location.longitude,
+        placeId: data[i].id,
+        imgURL: await getGoogleImg(photoName),
+        summary: data[i].editorialSummary ? data[i].editorialSummary.text : "",
+        phoneNumber: data[i].internationalPhoneNumber ?? "",
+        website: data[i].websiteUri ?? "",        
+      };
+      resultPlaces.push(place);
+    }
+    console.log(resultPlaces);
+    return resultPlaces;
+  };
 
 
   // other functions
@@ -209,7 +305,7 @@ function App() {
           <Route children path='/add-places/suggested-places' element={<ProtectedRoute><AddPlaces selectedPlacesListOnLoad={"Suggested Places"} /></ProtectedRoute>} />
           <Route children path='/itinerary' element={<ProtectedRoute><Itinerary /></ProtectedRoute>} />
           <Route children path='/itinerary/suggested-places' element={<ProtectedRoute><Itinerary selectedPlacesListOnLoad={"Suggested Places"} /></ProtectedRoute>} />
-          
+
           <Route children path='/mytrips' element={<MyTrips />} />
           <Route children path='/test' element={<Test />} />
           <Route children path='/test-itinerary' element={<TestItinerary />} />

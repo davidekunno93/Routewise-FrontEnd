@@ -3,6 +3,8 @@ import { DataContext } from '../Context/DataProvider';
 import './placecards.scoped.css'
 import ScrollText from './ScrollText';
 import { Link } from 'react-router-dom';
+import CategoryAndRating from './CategoryAndRating/CategoryAndRating';
+import OpeningHoursMap from './OpeningHoursMap';
 
 const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceToConfirm, addressList, savedAddressList, addToSavedPlaces, removeFromSavedPlaces, openDaySelection, forAddPlaces, forItinerary }) => {
     if (!placeToConfirm) return null;
@@ -112,45 +114,12 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                     <div ref={ptcCardBodyRef} className="body flx-2">
                         <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
                         <p className="body-title truncated">{textFunctions.capitalize(placeToConfirm.placeName)}</p>
-                        <div className="align-all-items">
-                            <p className="body-category">{placeToConfirm.category ? textFunctions.capitalize(placeToConfirm.category.split(',')[0]) : "No Category"}</p>
-                            {placeToConfirm.rating &&
-                                <>
-                                    <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
-                                    <div className="rating">
-                                        <p className='score-text'>{placeToConfirm.rating}</p>
-                                        {renderRating(placeToConfirm.rating).map((star, index) => {
-                                            let noStar = star === 0;
-                                            let fullStar = star === 1;
-                                            let halfStar = star === 0.5;
-                                            return <img key={index} src={`${fullStar ? "https://i.imgur.com/3eEFOjj.png" : noStar ? "https://i.imgur.com/ZhvvgPZ.png" : "https://i.imgur.com/SWExJbv.png"}`} alt="" className="star-img" />
-                                        })}
-
-                                    </div>
-                                </>
-                            }
-
-                        </div>
+                        <CategoryAndRating place={placeToConfirm} />
                         {/* {placeToConfirm.info &&
                             <p className="body-info truncated">{placeToConfirm.info}</p>
                         } */}
-                        <div className="days">
+                        <OpeningHoursMap idTree={"PTC"} placeInfo={placeToConfirm.info} />
 
-                            {placeToConfirm.info.includes(":") ?
-                                Object.entries(convertInfoToMap(placeToConfirm.info)).map((day, id) => {
-                                    let dayName = day[0];
-                                    let dayShort = dayName.slice(0, 2)
-                                    let openingHours = day[1];
-                                    return <>
-                                        <div key={id} onClick={() => hoursTextFunctions.toggle(id)} className={`day-circle ${id === openingHoursDayId && "selected"}`}>
-                                            <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
-                                        </div>
-                                        <p id={`hours-text-${id}`} className={`openingHours x-small ${id !== openingHoursDayId && "closed"}`}>{openingHours}</p>
-                                    </>
-                                })
-                                :
-                                placeToConfirm.info}
-                        </div>
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         {placeToConfirm.summary &&
                             <p className="body-summary truncated-2 m-0">{placeToConfirm.summary}</p>
@@ -190,11 +159,11 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
 
                     </div>
                     <div className="right-panel flx-1">
-                        <div className="imgDiv">
+                        <div className="imgDiv flx">
                             {placeToConfirm.imgURL ?
                                 <img className="img" src={placeToConfirm.imgURL} />
                                 :
-                                <p>Loading...</p>
+                                <p className='m-auto small'>No image</p>
                             }
                         </div>
 

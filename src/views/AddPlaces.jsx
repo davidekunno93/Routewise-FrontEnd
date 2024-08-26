@@ -15,15 +15,18 @@ import ConfirmationModal from '../components/ConfirmationModal'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 import PlaceCard from '../components/PlaceCard'
+import OpeningHoursMap from '../components/OpeningHoursMap'
+import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
+import SuggestedPlaceCard from '../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
 
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     // Send Kate Data
     const {
-        user, setUser,
+        user, setUser, textFunctions,
         userPreferences, currentTrip, setCurrentTrip, clearCurrentTrip,
         setSignUpIsOpen, setAuthIndex, loadCityImg, mapBoxCategoryKey, mobileMode, mobileModeNarrow,
-        geoToLatLng, toLatitudeLongitude
+        geoToLatLng, toLatitudeLongitude, modifyInfo, getBestCategory, getGoogleImg
     } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
@@ -131,7 +134,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                 dayId: null,
             }
         }
-        setMarkers(markersObj)
+        setMarkers(markersObj);
     }
 
     // useEffect(() => {
@@ -239,7 +242,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const clearPlaceToConfirm = () => {
         setPlaceToConfirm(null)
         removeMarker(null, true);
-    }
+    };
 
     /** 
      * @param place placeObj
@@ -275,67 +278,23 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     }
 
     const addPlaceToConfirm = async (place) => {
-        clearPlaceToConfirm();
+        // clearPlaceToConfirm();
         setPlaceToConfirm(place);
         // addMarker(place, true)
         updateMapCenter(place.geocode);
+    };
 
-        // only load image for place if there isn't already an imgUrl defined in the place object
-        // let imgUrl = ""
-        // let imgQuery = ""
-        // if (!place.imgUrl) {
-        //     // let imgQuery = place.name.replace(/ /g, '-')
-        //     try {
-        //         imgQuery = place.text.replace(/ /g, '-')
-        //     }
-        //     catch {
-        //         imgQuery = place.placeName.replace(/ /g, '-')
-        //     }
-        //     imgUrl = await loadCityImg(imgQuery)
-        // } else {
-        //     imgUrl = place.imgUrl
-        // }
-        // let placeInfo = "";
-        // let newPlace = {};
-        // if (place.place_name) {
-        //     let placeCategory = place.properties.category ?? "No Category";
-
-        //     newPlace = {
-        //         placeName: place.text,
-        //         info: placeInfo,
-        //         address: place.place_name.split(", ").slice(1, -1).join(", "),
-        //         imgURL: imgUrl,
-        //         category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
-        //         favorite: false,
-        //         lat: place.geometry.coordinates[1],
-        //         long: place.geometry.coordinates[0],
-        //         geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-        //         placeId: place.id,
-        //     }
-        // } else {
-        //     newPlace = {
-        //         ...place,
-        //         favorite: false,
-        //     }
-        // }
-
-        // updateMapCenter(newPlace.geocode);
-
-        // setMapCenter(newPlace.geocode)
-        // setMapCenterToggle(!mapCenterToggle);
-
-        // setPlaceToConfirm(newPlace)
-
-
-        // resetSearch()
-    }
-
-    const addPlace = async () => {
+    const addPlace = async (place) => {
         // let imgQuery = place.name.replace(/ /g, '-')
         // let placeInfo = await loadPlaceDetails(place.place_id)
         // let imgUrl = await loadCityImg(imgQuery)
         let placesCopy = [...places]
-        let newPlace = { ...placeToConfirm, id: placesCopy.length + 1 }
+        let newPlace = {};
+        if (place) {
+            newPlace = { ...place, id: placesCopy.length + 1 }
+        } else {
+            newPlace = { ...placeToConfirm, id: placesCopy.length + 1 }
+        }
         // let place_id = await addPlaceInDB(newPlace)
         console.log("new place:", newPlace)
 
@@ -393,89 +352,6 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
     const [showPlaceAddedBox, setShowPlaceAddedBox] = useState(false);
 
-    const addPlaceToList = async (place) => {
-        let placeInfo = "";
-
-        // let placeInfo = await loadPlaceDetails(place.place_id)
-        let placesCopy = [...places]
-
-        // let newPlace = {
-        //     id: placesCopy.length + 1,
-        //     placeName: place.name,
-        //     info: placeInfo,
-        //     address: place.formatted,
-        //     imgURL: place.imgUrl,
-        //     category: place.category ? place.category : "none",
-        //     favorite: false,
-        //     lat: place.lat,
-        //     long: place.lon,
-        //     geocode: [place.lat, place.lon],
-        //     placeId: place.place_id
-        // }
-
-        // let newPlace = {
-        //     placeName: place.placeName,
-        //     info: placeInfo,
-        //     address: place.address,
-        //     imgURL: place.imgUrl,
-        //     category: place.category,
-        //     favorite: false,
-        //     lat: place.lat,
-        //     long: place.long,
-        //     geocode: place.geocode,
-        //     placeId: place.id,
-        // }
-        delete place["categoryTitle"];
-        let newPlace = {
-            ...place,
-            favorite: false,
-        };
-        console.log(newPlace)
-
-
-        // add place in database
-        if (currentTrip.tripID) {
-            let url = `https://routewise-backend.onrender.com/places/add-get-place/${currentTrip.tripID}`
-            const response = await axios.post(url, newPlace, {
-                headers: { "Content-Type": "application/json" }
-            }).then((response) => {
-                console.log("response:", response.data)
-                let place_id = response.data
-                newPlace = { ...newPlace, place_id: place_id }
-                console.log("new Place after db:", newPlace)
-
-
-
-                placesCopy.push(newPlace)
-                console.log(placesCopy)
-                setPlaces(placesCopy)
-                let currentTripCopy = { ...currentTrip }
-                currentTripCopy.places.push(newPlace)
-                // currentTripCopy.places = places
-                setCurrentTrip(currentTripCopy)
-                if (firstTimeOnPage) {
-                    openStarPlacesToolTip()
-                }
-
-            }).catch((error) => {
-                console.log(error)
-            })
-
-        } else {
-            // if just navigating site without login 
-            placesCopy.push(newPlace)
-            console.log(placesCopy)
-            setPlaces(placesCopy)
-            let currentTripCopy = { ...currentTrip }
-            currentTripCopy.places.push(newPlace)
-            // currentTripCopy.places = places
-            setCurrentTrip(currentTripCopy)
-            if (firstTimeOnPage) {
-                openStarPlacesToolTip()
-            }
-        }
-
-    }
 
     const addPlaceInDB = async (trip) => {
 
@@ -983,36 +859,75 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
-    
-    
+
+    // const getGoogleImg = async (photoName) => {
+    //     let url = `https://places.googleapis.com/v1/${photoName}/media?key=${import.meta.env.VITE_APP_GOOGLE_API_KEY}&maxWidthPx=512`;
+    //     const response = await fetch(url)
+    //     .then((response) => {
+    //         console.log(response)
+    //     })
+    // }
+    // useEffect(() => {
+    //     let photoName = "places/ChIJ6_3yMNUEdkgRgYFYwtACqqo/photos/AelY_CtbfsnKukDYm-tYgkvkJuPMvbO3kYkwQj8-Us61dZactA-jP6wO9cTG8qR8ojeQGu4daKbjIeUym4xEojC5uEBfjPYoKFXoy_UKnx2m0MUyNisIJLa5Rl-nn1nUhQAneHvn_7qqYRmqvk27FWrrhnX7RU1GTJvJeG-H"
+    //     getGoogleImg(photoName)
+    // }, []);
     const nearbySearch = async () => {
         const requestOptions = {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
                 'X-Goog-Api-Key': import.meta.env.VITE_APP_GOOGLE_API_KEY,
-                'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos,places.id,places.regularOpeningHours,places.editorialSummary', // address, summary, biz info
+                'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos,places.id,places.regularOpeningHours,places.editorialSummary,places.location,places.types,places.rating', // address, summary, biz info
             },
             body: JSON.stringify({
                 includedTypes: ['restaurant'],
-                maxResultCount: 12,
+                maxResultCount: 4,
                 locationRestriction: {
                     circle: {
                         center: toLatitudeLongitude(mapCenter),
-                        radius: 20000,
+                        radius: 40000, // ~25 miles
                     },
                 },
             }),
         }
         let url = `https://places.googleapis.com/v1/places:searchNearby`
-        fetch(url, requestOptions)
-            .then(response => response.json())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error))
+        await fetch(url, requestOptions)
+            .then(async (response) => {
+                let data = await response.json();
+                console.log(data.places);
+                let resultPlaces = await handleNearbySearchData(data);
+                console.log(resultPlaces);
+            })
+            // .then(async (data) => {
+            // })
+            .catch(error => console.log('error', error));
 
+    };
+    const handleNearbySearchData = async (data) => {
+        data = data.places;
+        let resultPlaces = [];
+        for (let i = 0; i < data.length; i++) {
+            let photoName = data[i].photos[0].name;
+            let place = {
+                placeName: data[i].displayName.text,
+                info: data[i].regularOpeningHours ? modifyInfo(data[i].regularOpeningHours.weekdayDescriptions) : "",
+                category: textFunctions.capitalize(getBestCategory(data[i].types).replace(/_/g, " ")),
+                rating: data[i].rating ? data[i].rating.toFixed(1) : null,
+                address: data[i].formattedAddress,
+                geocode: [data[i].location.latitude, data[i].location.longitude],
+                lat: data[i].location.latitude,
+                long: data[i].location.longitude,
+                placeId: data[i].id,
+                imgUrl: await getGoogleImg(photoName),
+                summary: data[i].editorialSummary.text ?? "",
+            };
+            resultPlaces.push(place);
+        }
+        console.log(resultPlaces);
+        return resultPlaces;
     }
     useEffect(() => {
-        nearbySearch()
+        // nearbySearch();
     }, [])
 
     return (
@@ -1269,7 +1184,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                     </div>
                                     <div className={`placeCards ${suggestedPlaces.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
-                                            {!Object.values(userPreferences).includes(true) || suggestedPlaces.loaded && suggestedPlaces.places.length === 0 ?
+                                            {suggestedPlaces.isLoaded && suggestedPlaces.places.length === 0 ?
                                                 <div className="add-places-card">
                                                     <span className="material-symbols-outlined xx-large">
                                                         map
@@ -1277,7 +1192,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                     <p className="large bold700 my-1 o-50">0 suggested places</p>
                                                     <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
                                                 </div> : null}
-                                            {Object.values(userPreferences).includes(true) && !suggestedPlaces.loaded &&
+                                            {Object.values(userPreferences).includes(true) && !suggestedPlaces.isLoaded &&
                                                 <>
                                                     <div className="loadingBox-inline">
                                                         <Loading noMascot={true} innerText={"Loading..."} />
@@ -1288,100 +1203,74 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                                             {suggestedPlaces.places.length > 0 &&
                                                 suggestedPlaces.places.map((suggestedPlace, index) => {
-                                                    // let suggestedPlace = place.properties
-                                                    let id = 'suggested-' + index
-                                                    let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
-                                                    let blacklisted = blacklist.includes(suggestedPlace.placeName)
-                                                    let added = placesAddressList.includes(suggestedPlace.address)
-                                                    // if (blacklist.includes(suggestedPlace.placeName)) {
-                                                    //     blacklisted = true
-                                                    // }
-                                                    if (!suggestedPlacesFilter) {
-                                                        return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+                                                    return <SuggestedPlaceCard
+                                                        index={index}
+                                                        place={suggestedPlace}
+                                                        addPlaceToConfirm={addPlaceToConfirm}
+                                                        addPlace={addPlace}
+                                                        removePlace={removePlace}
+                                                        placesAddressList={placesAddressList}
+                                                        suggestedPlacesFilter={suggestedPlacesFilter}
+                                                        blacklist={blacklist}
+                                                        addToBlacklist={addToBlacklist}
+                                                        flashAdded={flashAdded}
+                                                    />
 
-                                                            <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
-                                                                <p className="m-0 purple-text">Added!</p>
-                                                            </div>
-                                                            <div className="placeCard-img-div flx-3">
-                                                                <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
-                                                            </div>
-                                                            <div ref={suggestedCardBodyRef} className="placeCard-body flx-5">
-                                                                {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                                                                <div className={`scroll-over-text ${suggestedPlace.placeName.length <= suggestedCardTitleCharLimit && "disabled"}`}>
-                                                                    <p className="static-text body-title ">{suggestedPlace.placeName.length > suggestedCardTitleCharLimit ? suggestedPlace.placeName.slice(0, suggestedCardTitleCharLimit).trim() + "..." : suggestedPlace.placeName}</p>
-                                                                    <div className="scroller" data-animated="true">
-                                                                        <div className="scroller-inner">
-                                                                            <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
-                                                                            <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                                                                <p className="body-address">{suggestedPlace.address}</p>
-                                                            </div>
-                                                            <div className="placeCard-starOrDelete flx-c just-sb align-c">
-                                                                {added ?
-                                                                    <div onClick={() => { removePlace(placesAddressList.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
-                                                                        <span className="material-symbols-outlined m-auto mt-h medium white-text">
-                                                                            done
-                                                                        </span>
-                                                                    </div>
-                                                                    :
-                                                                    <div onClick={() => { addPlaceToList(suggestedPlace); flashAdded(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
-                                                                        <span className="material-symbols-outlined m-auto medium purple-text">
-                                                                            add
-                                                                        </span>
-                                                                    </div>}
 
-                                                                <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                                    visibility_off
-                                                                </span>
-                                                            </div>
-                                                        </div> : null
-                                                    } else {
-                                                        if (suggestedPlace.categoryTitle === filter) {
+                                                    // <div key={index} className="placeCard2 position-relative flx-r my-2">
 
-                                                            return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+                                                    //     <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
+                                                    //         <p className="m-0 purple-text">Added!</p>
+                                                    //     </div>
+                                                    //     <div className="placeCard-img-div flx-3">
+                                                    //         <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
+                                                    //     </div>
+                                                    //     <div ref={suggestedCardBodyRef} className="placeCard-body flx-5">
+                                                    //         {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
+                                                    //         <div className={`scroll-over-text ${suggestedPlace.placeName.length <= suggestedCardTitleCharLimit && "disabled"}`}>
+                                                    //             <p className="static-text body-title truncated">{suggestedPlace.placeName}</p>
+                                                    //             <div className="scroller" data-animated="true">
+                                                    //                 <div className="scroller-inner">
+                                                    //                     <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
+                                                    //                     <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
+                                                    //                 </div>
+                                                    //             </div>
+                                                    //         </div>
+                                                    //         <CategoryAndRating place={suggestedPlace} />
+                                                    //         {suggestedPlace.info.includes(":") ?
+                                                    //             <OpeningHoursMap
+                                                    //                 idTree={index}
+                                                    //                 placeInfo={suggestedPlace.info}
+                                                    //             />
+                                                    //             :
+                                                    //             <p className="m-0">{suggestedPlace.info}</p>
+                                                    //         }
+                                                    //         {suggestedPlace.summary ?
+                                                    //             <p className={`body-address truncated-2`}>{suggestedPlace.summary}</p>
+                                                    //             :
+                                                    //             <p className={`body-address truncated`}>{suggestedPlace.address}</p>
+                                                    //         }
+                                                    //     </div>
+                                                    //     <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                                                    //         {added ?
+                                                    //             <div onClick={() => { removePlace(placesAddressList.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                                    //                 <span className="material-symbols-outlined m-auto mt-h medium white-text">
+                                                    //                     done
+                                                    //                 </span>
+                                                    //             </div>
+                                                    //             :
+                                                    //             <div onClick={() => { addPlace(suggestedPlace); flashAdded(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
+                                                    //                 <span className="material-symbols-outlined m-auto medium purple-text">
+                                                    //                     add
+                                                    //                 </span>
+                                                    //             </div>}
 
-                                                                <div className="placeCard-img-div flx-3">
-                                                                    <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
-                                                                </div>
-                                                                <div ref={suggestedCardBodyRef} className="placeCard-body flx-5">
-                                                                    {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                                                                    <div className={`scroll-over-text ${suggestedPlace.placeName.length <= suggestedCardTitleCharLimit && "disabled"}`}>
-                                                                        <p className="static-text body-title ">{suggestedPlace.placeName.length > suggestedCardTitleCharLimit ? suggestedPlace.placeName.slice(0, suggestedCardTitleCharLimit).trim() + "..." : suggestedPlace.placeName}</p>
-                                                                        <div className="scroller" data-animated="true">
-                                                                            <div className="scroller-inner">
-                                                                                <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
-                                                                                <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                                                                    <p className="body-address">{suggestedPlace.address}</p>
-                                                                </div>
-                                                                <div className="placeCard-starOrDelete flx-c just-sb align-c">
+                                                    //         <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                                    //             visibility_off
+                                                    //         </span>
+                                                    //     </div>
+                                                    // </div> : null
 
-                                                                    {added ?
-                                                                        <div onClick={() => { removePlace(placesAddressList.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
-                                                                            <span className="material-symbols-outlined m-auto mt-h medium white-text">
-                                                                                done
-                                                                            </span>
-                                                                        </div>
-                                                                        :
-                                                                        <div onClick={() => { addPlaceToList(suggestedPlace); flashAdded(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
-                                                                            <span className="material-symbols-outlined m-auto medium purple-text">
-                                                                                add
-                                                                            </span>
-                                                                        </div>}
-
-                                                                    <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                                        visibility_off
-                                                                    </span>
-                                                                </div>
-                                                            </div> : null
-                                                        }
-                                                    }
 
                                                 })}
                                         </Scrollbars>

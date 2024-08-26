@@ -2,8 +2,10 @@ import React, { forwardRef, useContext, useEffect, useState } from 'react'
 import { DataContext } from '../Context/DataProvider'
 import "./placecards.scoped.css"
 import ScrollText from './ScrollText';
+import CategoryAndRating from './CategoryAndRating/CategoryAndRating';
+import OpeningHoursMap from './OpeningHoursMap';
 
-export const PlaceCard = forwardRef(({ place, addPlaceToConfirm, index, addStar, removeStar, removePlace, updateMapCenter }, ref) => {
+export const PlaceCard = forwardRef(({ index, place, addPlaceToConfirm, addStar, removeStar, removePlace, updateMapCenter }, ref) => {
     // imports
     const { textFunctions, renderRating } = useContext(DataContext);
 
@@ -43,12 +45,12 @@ export const PlaceCard = forwardRef(({ place, addPlaceToConfirm, index, addStar,
     const hoursTextFunctions = {
         open: function (id) {
             let hoursText = document.getElementById(`hours-text-${id}`);
-        if (openingHoursDayId !== null) {
-            hoursTextFunctions.close(openingHoursDayId)
-        }
-        hoursText.style.width = hoursText.scrollWidth.toString()+"px";
-        hoursText.style.margin = "0px 4px";
-        hoursText.style.opacity = 1;
+            if (openingHoursDayId !== null) {
+                hoursTextFunctions.close(openingHoursDayId)
+            }
+            hoursText.style.width = hoursText.scrollWidth.toString() + "px";
+            hoursText.style.margin = "0px 4px";
+            hoursText.style.opacity = 1;
         },
         close: function (id) {
             let hoursText = document.getElementById(`hours-text-${id}`);
@@ -66,7 +68,7 @@ export const PlaceCard = forwardRef(({ place, addPlaceToConfirm, index, addStar,
             }
         },
     }
-    
+
 
     return (
         <>
@@ -75,50 +77,20 @@ export const PlaceCard = forwardRef(({ place, addPlaceToConfirm, index, addStar,
                 <div ref={ref} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
 
                     <div className="placeCard-img-div flx-4">
-                        <img onClick={() => addPlaceToConfirm(place)} className="placeCard2-img" src={place.imgURL} />
+                        <img onClick={() => addPlaceToConfirm(place)} className="placeCard2-img pointer" src={place.imgURL} />
                     </div>
                     <div className="placeCard2-body flx-7">
-                        {/* <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div> */}
                         <p className="body-title truncated">{place.placeName}</p>
-                        <div className="align-all-items">
-                            <p className="body-category">{textFunctions.capitalize(place.category.split(',')[0])}</p>
-                            {place.rating &&
-                                <>
-                                    <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
-                                    <div className="rating">
-                                        <p className='score-text'>{place.rating}</p>
-                                        {renderRating(place.rating).map((star, index) => {
-                                            let noStar = star === 0;
-                                            let fullStar = star === 1;
-                                            let halfStar = star === 0.5;
-                                            return <img key={index} src={`${fullStar ? "https://i.imgur.com/3eEFOjj.png" : noStar ? "https://i.imgur.com/ZhvvgPZ.png" : "https://i.imgur.com/SWExJbv.png"}`} alt="" className="star-img" />
-                                        })}
-
-                                    </div>
-                                </>
-                            }
-
-                        </div>
-                        {/* {place.info &&
-                            <ScrollText text={place.info} height={20} fontSize={12} color="gray" />
-                            // <p className="body-info truncated">{place.info.constructor === Array ? place.info.join(", ") : place.info}</p>
-                        } */}
-                        <div className="days">
-
-                            {Object.entries(convertInfoToMap(place.info)).map((day, local_index) => {
-                                let id = index.toString()+"-"+local_index.toString();
-                                let dayName = day[0];
-                                let dayShort = dayName.slice(0, 2)
-                                let openingHours = day[1];
-                                return <>
-                                    <div key={id} onClick={() => hoursTextFunctions.toggle(id)} className={`day-circle ${id === openingHoursDayId && "selected"}`}>
-                                        <p className="m-0 x-small bold700">{textFunctions.capitalize(dayShort)}</p>
-                                    </div>
-                                    <p id={`hours-text-${id}`} className={`openingHours x-small ${id !== openingHoursDayId && "closed"}`}>{openingHours}</p>
-                                </>
-                            })}
-                        </div>
-                        <p className="m-0 body-address truncated-2">{place.summary ?? place.address}</p>
+                        <CategoryAndRating place={place} />
+                        <OpeningHoursMap
+                            idTree={index}
+                            placeInfo={place.info}
+                        />
+                        {place.summary ?
+                            <p className="m-0 body-address truncated-2">{place.summary}</p>
+                            :
+                            <p className="m-0 body-address truncated-2">{place.address}</p>
+                        }
                     </div>
                     <div className="side-options">
 

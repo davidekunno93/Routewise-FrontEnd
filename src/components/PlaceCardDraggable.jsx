@@ -85,7 +85,8 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                             {place.info.includes(":") ?
                                 <OpeningHoursMap
                                     idTree={dayId + "-" + id.toString()}
-                                    openingHoursObject={convertInfoToMap(place.info)}
+                                    placeInfo={place.info}
+                                    // openingHoursObject={convertInfoToMap(place.info)}
                                 />
                                 :
                                 <p className="body-info">{place.info}</p>

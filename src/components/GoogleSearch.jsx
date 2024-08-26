@@ -5,7 +5,7 @@ import { connectStorageEmulator } from 'firebase/storage';
 
 const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, searchMapViewBounds, isLoaded, searchLimit, styleProfile }) => {
     if (!isLoaded) return null;
-    const { textFunctions } = useContext(DataContext);
+    const { textFunctions, modifyInfo, getBestCategory } = useContext(DataContext);
 
     // [search bar code]
     const searchRef = useRef(null);
@@ -102,48 +102,9 @@ const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, searchMa
         console.log(newPlace)
         return newPlace
 
-
     }
-    const modifyInfo = (openingHoursArr) => {
-        let result = "";
-        // make string
-        // replace days with short days
-        for (let i = 0; i < openingHoursArr.length; i++) {
-            openingHoursArr[i] = openingHoursArr[i].replace(",", ";");
-        }
-        console.log(openingHoursArr)
-        let openingHoursStr = openingHoursArr.join(", ")
-        result = openingHoursStr.replace("Monday", "Mon").replace("Tuesday", "Tue").replace("Wednesday", "Wed").replace("Thursday", "Thu").replace("Friday", "Fri").replace("Saturday", "Sat").replace("Sunday", "Sun")
-        return result;
-    }
-    const getBestCategory = (categoryArr) => {
-        // remove meal delivery, point of interest
-        // negate tourist attraction if museum, park, restaurant
-        // sublocality_level_#, sublocality, locality
-        let bestCategory = "";
-        if (categoryArr.length > 1) {
-            if (categoryArr.includes("meal_delivery")) {
-                categoryArr.splice(categoryArr.indexOf("meal_delivery"), 1);
-            }
-            if (categoryArr.includes("point_of_interest")) {
-                categoryArr.splice(categoryArr.indexOf("point_of_interest"), 1);
-            }
-        };
-
-        bestCategory = categoryArr[0];
-        if (bestCategory === "tourist_attraction" || bestCategory === "establishment") {
-            for (let i = 0; i < categoryArr.length; i++) {
-                if (categoryArr[i] === "museam" || categoryArr[i] === "restaurant" || categoryArr[i] === "park") {
-                    bestCategory = categoryArr[i];
-                }
-            }
-        };
-
-        if (bestCategory.includes("locality")) {
-            bestCategory = "area";
-        }
-        return bestCategory;
-    };
+   
+    
 
     useEffect(() => {
         // getTodaysHours("hi");

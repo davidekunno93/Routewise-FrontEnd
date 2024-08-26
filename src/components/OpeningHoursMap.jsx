@@ -2,8 +2,12 @@ import React, { useContext, useState } from 'react'
 import { DataContext } from '../Context/DataProvider';
 import './placecards.scoped.css'
 
-const OpeningHoursMap = ({ idTree, openingHoursObject }) => {
-    const { textFunctions } = useContext(DataContext);
+const OpeningHoursMap = ({ idTree, placeInfo, openingHoursMap }) => {
+    const { textFunctions, convertInfoToMap } = useContext(DataContext);
+    if (placeInfo) {
+        openingHoursMap = convertInfoToMap(placeInfo);
+    };
+
     const [openingHoursDayId, setOpeningHoursDayId] = useState(null);
     const hoursTextFunctions = {
         open: function (id) {
@@ -33,7 +37,7 @@ const OpeningHoursMap = ({ idTree, openingHoursObject }) => {
     };
     return (
         <div className="days">
-                {Object.entries(openingHoursObject).map((day, index) => {
+                {Object.entries(openingHoursMap).map((day, index) => {
                     let id = idTree ? idTree.toString()+"-"+index.toString() : index;
                     let dayName = day[0];
                     let dayShort = dayName.slice(0, 2)

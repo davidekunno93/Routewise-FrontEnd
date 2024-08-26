@@ -359,7 +359,113 @@ const DataProvider = (props) => {
         entertainment: { categoryQueries: ["entertainment", "theme_park", "bowling_alley", "laser_tag", "planetarium"], categoryTitle: "Music & Entertainment", imgUrl: 'https://i.imgur.com/A8Impx2.png' },
         arts: { categoryQueries: ["art", "art_gallery", "museum."], categoryTitle: "Arts & Culture", imgUrl: 'https://i.imgur.com/ExY7HDK.png' },
         nightclub: { categoryQueries: ["nightlife", "bar", "nightclub"], categoryTitle: "Nightlife", imgUrl: 'https://i.imgur.com/9fVucq9.png' },
-    }
+    };
+    const googleCategoryKey = {
+        landmarks: { categoryQueries: ["tourist_attraction", "historical_landmark"], categoryTitle: "Landmarks & Attractions", imgUrl: 'https://i.imgur.com/nixatab.png' },
+        nature: { categoryQueries: ["park", "national_park", "hiking_area", "zoo", "aquarium"], categoryTitle: "Nature", imgUrl: 'https://i.imgur.com/kmZtRbp.png' },
+        shopping: { categoryQueries: ["shopping_mall", "department_store", "clothing_store", "gift_shop"], categoryTitle: "Shopping", imgUrl: 'https://i.imgur.com/Fo8WLyJ.png' },
+        food: { categoryQueries: ["restaurant", "cafe", "bakery", "coffee_shop"], categoryTitle: "Food & Restaurants", imgUrl: 'https://i.imgur.com/K6ADmfR.png' },
+        relaxation: { categoryQueries: ["spa", "beauty_salon"], categoryTitle: "Spa & Relaxation", imgUrl: 'https://i.imgur.com/o8PJDZ5.png' },
+        entertainment: { categoryQueries: ["amusement_park", "casino", "bowling_alley"], categoryTitle: "Music & Entertainment", imgUrl: 'https://i.imgur.com/A8Impx2.png' },
+        arts: { categoryQueries: ["art_gallery", "museum", "performing_arts_center"], categoryTitle: "Arts & Culture", imgUrl: 'https://i.imgur.com/ExY7HDK.png' },
+        nightclub: { categoryQueries: ["bar", "night_club"], categoryTitle: "Nightlife", imgUrl: 'https://i.imgur.com/9fVucq9.png' },
+    };
+    const googlePlaceTypeKey = {
+        "tourist_attraction": {
+            categoryTitle: "Landmarks & Attractions",
+            userPreference: "landmarks",
+        },
+        "historical_landmark": {
+            categoryTitle: "Landmarks & Attractions",
+            userPreference: "landmarks",
+        },
+        "park": {
+            categoryTitle: "Nature",
+            userPreference: "nature",
+        },
+        "national_park": {
+            categoryTitle: "Nature",
+            userPreference: "nature",
+        },
+        "hiking_area": {
+            categoryTitle: "Nature",
+            userPreference: "nature",
+        },
+        "zoo": {
+            categoryTitle: "Nature",
+            userPreference: "nature",
+        },
+        "aquarium": {
+            categoryTitle: "Nature",
+            userPreference: "nature",
+        },
+        "shopping_mall": {
+            categoryTitle: "Shopping",
+            userPreference: "shopping",
+        },
+        "department_store": {
+            categoryTitle: "Shopping",
+            userPreference: "shopping",
+        }, 
+        "clothing_store": {
+            categoryTitle: "Shopping",
+            userPreference: "shopping",
+        },
+        "gift_shop": {
+            categoryTitle: "Shopping",
+            userPreference: "shopping",
+        },
+        "restaurant": {
+            categoryTitle: "Food & Restaurants",
+            userPreference: "food",
+        },
+        "cafe": {
+            categoryTitle: "Food & Restaurants",
+            userPreference: "food",
+        },
+        "bakery": {
+            categoryTitle: "Food & Restaurants",
+            userPreference: "food",
+        },
+        "coffee_shop": {
+            categoryTitle: "Food & Restaurants",
+            userPreference: "food",
+        },
+        "spa": {
+            categoryTitle: "Spa & Relaxation",
+            userPreference: "spa",
+        },
+        "beauty_salon": {
+            categoryTitle: "Spa & Relaxation",
+            userPreference: "spa",
+        },
+        "amusement_park": {
+            categoryTitle: "Music & Entertainment",
+            userPreference: "entertainment",
+        },
+        "casino": {
+            categoryTitle: "Music & Entertainment",
+            userPreference: "entertainment",
+        },
+        "bowling_alley": {
+            categoryTitle: "Music & Entertainment",
+            userPreference: "entertainment",
+        },
+        "art_gallery": {
+            categoryTitle: "Arts & Culture",
+            userPreference: "art",
+        },
+        "museum": {
+            categoryTitle: "Arts & Culture",
+            userPreference: "art",
+        },
+        "performing_arts_center": {
+            categoryTitle: "Arts & Culture",
+            userPreference: "art",
+        },
+        "bar": "Nightlife",
+        "night_club": "Nightlife",
+    };
     const [suggestedPlaces, setSuggestedPlaces] = useState({
         loaded: false,
         places: [],
@@ -629,6 +735,51 @@ const DataProvider = (props) => {
         }
         return ratingArr;
     }
+    const modifyInfo = (openingHoursArr) => {
+        let result = "";
+        // make string
+        // replace days with short days
+        for (let i = 0; i < openingHoursArr.length; i++) {
+            openingHoursArr[i] = openingHoursArr[i].replace(",", ";");
+        }
+        let openingHoursStr = openingHoursArr.join(", ")
+        result = openingHoursStr.replace("Monday", "Mon").replace("Tuesday", "Tue").replace("Wednesday", "Wed").replace("Thursday", "Thu").replace("Friday", "Fri").replace("Saturday", "Sat").replace("Sunday", "Sun")
+        return result;
+    }
+    const getBestCategory = (categoryArr) => {
+        // remove meal delivery, point of interest
+        // negate tourist attraction if museum, park, restaurant
+        // sublocality_level_#, sublocality, locality
+        let bestCategory = "";
+        if (categoryArr.length > 1) {
+            if (categoryArr.includes("meal_delivery")) {
+                categoryArr.splice(categoryArr.indexOf("meal_delivery"), 1);
+            }
+            if (categoryArr.includes("point_of_interest")) {
+                categoryArr.splice(categoryArr.indexOf("point_of_interest"), 1);
+            }
+        };
+
+        bestCategory = categoryArr[0];
+        if (bestCategory === "tourist_attraction" || bestCategory === "establishment") {
+            for (let i = 0; i < categoryArr.length; i++) {
+                if (categoryArr[i] === "museam" || categoryArr[i] === "restaurant" || categoryArr[i] === "park") {
+                    bestCategory = categoryArr[i];
+                }
+            }
+        };
+
+        if (bestCategory.includes("locality")) {
+            bestCategory = "area";
+        }
+        return bestCategory;
+    };
+    const getGoogleImg = async (photoName) => {
+        let url = `https://places.googleapis.com/v1/${photoName}/media?key=${import.meta.env.VITE_APP_GOOGLE_API_KEY}&maxWidthPx=512`;
+        const response = await fetch(url)
+        return response.url
+    };
+
     const gIcon = "material-symbols-outlined";
 
     const numberToBgColor = (numString) => {
@@ -676,7 +827,8 @@ const DataProvider = (props) => {
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
             'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor,
-            toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv, generateTripMapBounds
+            toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv, generateTripMapBounds,
+            modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, googlePlaceTypeKey
         }}>
             {props.children}
         </DataContext.Provider>
