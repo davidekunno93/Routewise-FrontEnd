@@ -80,7 +80,7 @@ function App() {
       entertainment: prefs ? prefs.entertainment : false,
       arts: prefs ? prefs.arts : false
     }
-    console.log("userPref =", userPref)
+    // console.log("userPref =", userPref)
     setUserPreferences(userPref)
   };
 
@@ -156,7 +156,6 @@ function App() {
       // no user preferences currently selected
       suggestedPlacesFunctions.returnNone()
     } else {
-      console.log(placeSuggestions)
       if (placeSuggestions.length === 0) {
         // no places found for the user (even though they have selected preferences)
         suggestedPlacesFunctions.returnNone()
@@ -175,8 +174,6 @@ function App() {
     const lon = bias[1];
     const limit = 5;
     const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter.toLowerCase() : "gb";
-    console.log("new country code: " + country_2letter.toLowerCase());
-    console.log("new geocode: " + bias);
     const url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
     const response = await axios.get(url)
     return response.status === 200 ? response.data.features : "error"
@@ -203,7 +200,7 @@ function App() {
     return categoryQueries;
   }
   const nearbySearch = async () => {
-    console.log(userPreferences);
+    // console.log(userPreferences);
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let categoryQueries = getCategoryQueries(selectedPreferences)
     // return "cp"
@@ -230,7 +227,6 @@ function App() {
       .then(async (response) => {
         let data = await response.json();
         let resultPlaces = await handleNearbySearchData(data);
-        console.log(resultPlaces);
         suggestedPlacesFunctions.setPlaces(resultPlaces);
       })
       // .then(async (data) => {
@@ -240,7 +236,7 @@ function App() {
   };
   const handleNearbySearchData = async (data) => {
     data = data.places;
-    console.log(data)
+    // console.log(data)
     let resultPlaces = [];
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let googleCategoryPlaceTypesArr = Object.keys(googlePlaceTypeKey);
@@ -250,7 +246,7 @@ function App() {
       for (let j = 0; j<data[i].types.length; j++) {
         // if type match with google keys
         if (googleCategoryPlaceTypesArr.includes(data[i].types[j])) {
-          console.log(data[i].displayName.text, data[i].types[j])
+          // console.log(data[i].displayName.text, data[i].types[j]);
           // set category Title to google key value if user preference is chosen
           if (selectedPreferences.includes(googlePlaceTypeKey[data[i].types[j]].userPreference)) {
             categoryTitle = googlePlaceTypeKey[data[i].types[j]].categoryTitle;
@@ -276,7 +272,6 @@ function App() {
       };
       resultPlaces.push(place);
     }
-    console.log(resultPlaces);
     return resultPlaces;
   };
 

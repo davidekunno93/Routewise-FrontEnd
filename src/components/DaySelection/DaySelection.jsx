@@ -59,34 +59,58 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
 
     const itineraryFunctions = {
         swapDays: function (sourceDayNum, destinationDayNum) {
-            let tripStateCopy = { ...tripState };
             // send updates to Kate Backend
             if (tripState.trip_id) {
                 let url = `https://routewise-backend.onrender.com/itinerary/move-day-places/${tripState.trip_id}`
                 let data = {
-                    sourceDayId: tripStateCopy.days[sourceDayNum].db_id,
-                    destDayId: tripStateCopy.days[destinationDayNum].db_id,
+                    sourceDayId: tripState.days[sourceDayNum].db_id,
+                    destDayId: tripState.days[destinationDayNum].db_id,
                     swap: true,
-                }
+                };
                 console.log(data)
                 const response = axios.patch(url, data)
                     .then((response) => {
-                        console.log(response)
+                        console.log(response);
+                        let tripStateCopy = { ...tripState };
                         [tripStateCopy.days[sourceDayNum].placeIds, tripStateCopy.days[destinationDayNum].placeIds] = [tripStateCopy.days[destinationDayNum].placeIds, tripStateCopy.days[sourceDayNum].placeIds];
                         setTripState(tripStateCopy);
                     })
                     .catch((error) => {
                         console.log(error)
                     })
-            }
+            } else {
+                let tripStateCopy = { ...tripState };
+                [tripStateCopy.days[sourceDayNum].placeIds, tripStateCopy.days[destinationDayNum].placeIds] = [tripStateCopy.days[destinationDayNum].placeIds, tripStateCopy.days[sourceDayNum].placeIds];
+                setTripState(tripStateCopy);
+            };
 
         },
         moveAllPlaces: function (sourceDayNum, destinationDayNum) {
-            let tripStateCopy = { ...tripState };
-            tripStateCopy.days[destinationDayNum].placeIds = tripStateCopy.days[destinationDayNum].placeIds.concat(tripStateCopy.days[sourceDayNum].placeIds);
-            tripStateCopy.days[sourceDayNum].placeIds = [];
             // send updates to Kate Backend
-            setTripState(tripStateCopy);
+            if (tripState.trip_id) {
+                let url = `https://routewise-backend.onrender.com/itinerary/move-day-places/${tripState.trip_id}`
+                let data = {
+                    sourceDayId: tripState.days[sourceDayNum].db_id,
+                    destDayId: tripState.days[destinationDayNum].db_id,
+                    swap: false,
+                };
+                console.log(data)
+                const response = axios.patch(url, data)
+                    .then((response) => {
+                        let tripStateCopy = { ...tripState };
+                        tripStateCopy.days[destinationDayNum].placeIds = tripStateCopy.days[destinationDayNum].placeIds.concat(tripStateCopy.days[sourceDayNum].placeIds);
+                        tripStateCopy.days[sourceDayNum].placeIds = [];
+                        setTripState(tripStateCopy);
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
+                } else {
+                    let tripStateCopy = { ...tripState };
+                    tripStateCopy.days[destinationDayNum].placeIds = tripStateCopy.days[destinationDayNum].placeIds.concat(tripStateCopy.days[sourceDayNum].placeIds);
+                    tripStateCopy.days[sourceDayNum].placeIds = [];
+                    setTripState(tripStateCopy);
+                }
         },
     }
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(true);

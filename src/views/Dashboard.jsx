@@ -149,15 +149,15 @@ export const Dashboard = () => {
     }
 
     useLayoutEffect(() => {
-        console.log(Object.entries(userPreferences));
-        console.log(auth.currentUser);
+        // console.log(Object.entries(userPreferences));
+        // console.log(auth.currentUser);
         setPreferences();
         setPageOpen('dashboard');
         return resetPageOpen;
     }, [])
-    useEffect(() => {
-        console.log(userPreferences);
-    }, [userPreferences])
+    // useEffect(() => {
+    //     console.log(userPreferences);
+    // }, [userPreferences])
 
 
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
@@ -171,7 +171,7 @@ export const Dashboard = () => {
         setIsLoadingTrips(true);
         let data = await getUserTripsData();
         // setUserTrips(data);
-        console.log(data);
+        // console.log(data);
 
         let upcomingTripsArr = []
         let pastTripsArr = []
@@ -212,46 +212,22 @@ export const Dashboard = () => {
     useEffect(() => {
         if (auth.currentUser) {
             loadUserTripsData();
-            // console.log(auth.currentUser.uid)
         }
-        console.log(userTrips);
-        console.log(userPreferences);
         let userPreferencesBooleans = Object.values(userPreferences);
-        // console.log(userPreferencesBooleans);
         let count = 0;
         for (let i = 0; i < userPreferencesBooleans.length; i++) {
-            console.log(userPreferencesBooleans[i]);
             if (userPreferencesBooleans[i] === true) {
                 count++
             }
         }
         setUserPreferencesCount(count);
-        console.log(count);
     }, [])
-    useEffect(() => {
-        console.log("pref count = " + userPreferencesCount)
-    }, [userPreferencesCount])
+    
     useEffect(() => {
         loadUserTripsData()
     }, [user])
 
-    const apiKey = 'ka/g7nybqosAgLyFNCod1A==WBv07XT0PI2TrXTO'
-    const updateMapCenter = async () => {
-        let response = await axios.get(`https://api.api-ninjas.com/v1/geocoding?city=London&country=England`, {
-            headers: { 'X-Api-Key': apiKey }
-        }).then(response => {
-            console.log(response.data[0])
-            let city = response.data[0]
-            console.log(city.name, city.state)
-            console.log(city.latitude, city.longitude)
-            let cityGeo = [city.latitude, city.longitude]
-            setMapCenter(cityGeo)
-        })
-    }
-    const changeCC = () => {
-        setMapCenter([23.5, 28.3])
 
-    }
 
     // carousel
     const cities = [
@@ -291,7 +267,7 @@ export const Dashboard = () => {
         let fullTranslateWidth = carouselWidth - window.innerWidth * 0.9
         let test = cities.length * 350 - 50 - 350
         if (translatedWidth > cities.length * 350 - 50 - 350) {
-            console.log(translatedWidth, test, carouselWidth, fullTranslateWidth)
+            // console.log(translatedWidth, test, carouselWidth, fullTranslateWidth)
             carousel.style.transform = `translateX(-${fullTranslateWidth}px)`
             setFullTranslated(true)
         } else {
@@ -421,7 +397,7 @@ export const Dashboard = () => {
                     let url = "";
                     if (isStateAbbv(cityArr[1])) {
                         url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&state=${convertAbbvToState(cityArr[1])}&country=US`
-                        console.log(url)
+                        // console.log(url)
                     } else {
                         url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`
                     }
@@ -664,7 +640,7 @@ export const Dashboard = () => {
         }
     }
     const loadPlaces = (place_list, trip) => {
-        console.log(place_list)
+        // console.log(place_list)
         let placesList = []
         for (let i = 0; i < place_list.length; i++) {
             let place = {
@@ -772,7 +748,7 @@ export const Dashboard = () => {
         setEditTripModalOpen(true);
     }
     const closeEditTripModal = () => {
-        console.log('hy')
+        // console.log('hy')
         setTripToEdit(null)
         setEditTripModalOpen(false);
     }
