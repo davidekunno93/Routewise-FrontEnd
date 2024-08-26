@@ -149,7 +149,7 @@ export const Dashboard = () => {
     }
 
     useLayoutEffect(() => {
-        // console.log(Object.entries(userPreferences));
+        console.log(Object.entries(userPreferences));
         // console.log(auth.currentUser);
         setPreferences();
         setPageOpen('dashboard');
@@ -227,7 +227,8 @@ export const Dashboard = () => {
         loadUserTripsData()
     }, [user])
 
-
+    const apiKey = 'ka/g7nybqosAgLyFNCod1A==WBv07XT0PI2TrXTO'
+    
 
     // carousel
     const cities = [
@@ -478,7 +479,7 @@ export const Dashboard = () => {
         const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
         const response = await axios.get(url)
             .then((response) => {
-                console.log(response.data.data)
+                // console.log(response.data.data)
                 setAutoCompleteCities(response.data.data);
             })
             .catch((error) => {

@@ -565,10 +565,10 @@ Cheryl's trips by trip_id
 
 <!-- 22Aug24 Team Meeting -->
 <!-- Add instagram posts with links on landing page -->
-Swap days/move all places connection w/BE
+<!-- Swap days/move all places connection w/BE -->
 Featured itineraries
 Suggested places
-userPrefs need to load when the user is signed in! - setPreferences function running on App.jsx fix?
+<!-- userPrefs need to load when the user is signed in! - setPreferences function running on App.jsx fix? -->
 ORGANIZE
 Suggested place card component
 Saved Place card component
@@ -578,13 +578,3 @@ profile dropdown use dropdown component
 
 Atypical stay times
 Amusement park - all day?
-
-userPreferences to types
-spa - spa
-food and drink - restaurant, cafe, bakery
-landmarks - tourist_attraction, historical_landmark
-nature - park, aquarium, zoo, hiking_area, national_park
-entertainment - amusement_park, casino, bowling_alley, event_venue
-art - art_gallery, museum, perfoming_arts_theater
-nightlife - bar, night_club
-shopping - shopping_mall, gift_shop
