@@ -578,3 +578,6 @@ profile dropdown use dropdown component
 
 Atypical stay times
 Amusement park - all day?
+
+<!-- 26Aug24 Team Meeting -->
+Allow users to make user name

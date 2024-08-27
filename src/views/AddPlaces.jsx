@@ -873,65 +873,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     //     let photoName = "places/ChIJ6_3yMNUEdkgRgYFYwtACqqo/photos/AelY_CtbfsnKukDYm-tYgkvkJuPMvbO3kYkwQj8-Us61dZactA-jP6wO9cTG8qR8ojeQGu4daKbjIeUym4xEojC5uEBfjPYoKFXoy_UKnx2m0MUyNisIJLa5Rl-nn1nUhQAneHvn_7qqYRmqvk27FWrrhnX7RU1GTJvJeG-H"
     //     getGoogleImg(photoName)
     // }, []);
-    const nearbySearch = async () => {
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Goog-Api-Key': import.meta.env.VITE_APP_GOOGLE_API_KEY,
-                'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos,places.id,places.regularOpeningHours,places.editorialSummary,places.location,places.types,places.rating', // address, summary, biz info
-            },
-            body: JSON.stringify({
-                includedTypes: ['restaurant'],
-                maxResultCount: 4,
-                locationRestriction: {
-                    circle: {
-                        center: toLatitudeLongitude(mapCenter),
-                        radius: 40000, // ~25 miles
-                    },
-                },
-            }),
-        }
-        let url = `https://places.googleapis.com/v1/places:searchNearby`
-        await fetch(url, requestOptions)
-            .then(async (response) => {
-                let data = await response.json();
-                console.log(data.places);
-                let resultPlaces = await handleNearbySearchData(data);
-                console.log(resultPlaces);
-            })
-            // .then(async (data) => {
-            // })
-            .catch(error => console.log('error', error));
-
-    };
-    const handleNearbySearchData = async (data) => {
-        data = data.places;
-        let resultPlaces = [];
-        for (let i = 0; i < data.length; i++) {
-            let photoName = data[i].photos[0].name;
-            let place = {
-                placeName: data[i].displayName.text,
-                info: data[i].regularOpeningHours ? modifyInfo(data[i].regularOpeningHours.weekdayDescriptions) : "",
-                category: textFunctions.capitalize(getBestCategory(data[i].types).replace(/_/g, " ")),
-                rating: data[i].rating ? data[i].rating.toFixed(1) : null,
-                address: data[i].formattedAddress,
-                geocode: [data[i].location.latitude, data[i].location.longitude],
-                lat: data[i].location.latitude,
-                long: data[i].location.longitude,
-                placeId: data[i].id,
-                imgUrl: await getGoogleImg(photoName),
-                summary: data[i].editorialSummary.text ?? "",
-            };
-            resultPlaces.push(place);
-        }
-        console.log(resultPlaces);
-        return resultPlaces;
-    }
-    useEffect(() => {
-        // nearbySearch();
-    }, [])
-
+    
     return (
         <>
             {/* <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} /> */}

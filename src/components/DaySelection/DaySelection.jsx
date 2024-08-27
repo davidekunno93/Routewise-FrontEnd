@@ -185,7 +185,7 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
                                     </div>
                                     {action === "move places" &&
                                         <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
-                                            <div className="tooltip">This day is recommended because it has the closest activities!</div>
+                                            <div className="tooltip">RouteWise recommended: Most optimal date!</div>
                                             <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
                                         </div>
                                     }
