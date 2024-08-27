@@ -118,8 +118,11 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                         {/* {placeToConfirm.info &&
                             <p className="body-info truncated">{placeToConfirm.info}</p>
                         } */}
-                        <OpeningHoursMap idTree={"PTC"} placeInfo={placeToConfirm.info} />
-
+                        {placeToConfirm.info.includes(":") ?
+                            <OpeningHoursMap idTree={"PTC"} placeInfo={placeToConfirm.info} />
+                            :
+                            <div className="body-info">{placeToConfirm.info}</div>
+                        }
                         {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         {placeToConfirm.summary &&
                             <p className="body-summary truncated-2 m-0">{placeToConfirm.summary}</p>

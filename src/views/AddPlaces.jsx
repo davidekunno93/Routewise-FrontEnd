@@ -290,8 +290,10 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         // let imgUrl = await loadCityImg(imgQuery)
         let placesCopy = [...places]
         let newPlace = {};
+        // console.log(placeToConfirm)
+        // console.log(place)
         if (place) {
-            newPlace = { ...place, id: placesCopy.length + 1 }
+            newPlace = { ...place, favorite: false, id: placesCopy.length + 1 }
         } else {
             newPlace = { ...placeToConfirm, id: placesCopy.length + 1 }
         }

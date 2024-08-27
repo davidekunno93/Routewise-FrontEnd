@@ -78,7 +78,7 @@ const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, searchMa
         // console.log(place.regularOpeningHours.weekdayDescriptions)
         // console.log(place.location);
         // console.log(place)
-        // console.log(place.photos[0].getURI())
+        // console.log(place.photos)
         // setUri(place.photos[0].getURI())
         // console.log(place.rating)
         // console.log(autoCompletePlace.types)
@@ -90,7 +90,7 @@ const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, searchMa
             address: place.formattedAddress,
             phoneNumber: place.internationalPhoneNumber,
             website: place.websiteURI,
-            imgURL: place.photos[0].getURI(), // photos - getURI
+            imgURL: place.photos.length > 0 ? place.photos[0].getURI() : "https://i.imgur.com/QsPqFMbh.jpg", // photos - getURI
             category: textFunctions.capitalize(getBestCategory(autoCompletePlace.types).replace(/_/g, " ")), // ?? .make better
             favorite: false,
             lat: place.location.lat(),
@@ -106,9 +106,7 @@ const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, searchMa
    
     
 
-    useEffect(() => {
-        // getTodaysHours("hi");
-    }, [])
+    
     const loadPlace = async (autoCompletePlace) => {
         const newPlace = await getPlace(autoCompletePlace);
         addPlaceFunction(newPlace);
