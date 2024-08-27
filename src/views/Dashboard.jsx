@@ -154,10 +154,8 @@ export const Dashboard = () => {
         setPreferences();
         setPageOpen('dashboard');
         return resetPageOpen;
-    }, [])
-    // useEffect(() => {
-    //     console.log(userPreferences);
-    // }, [userPreferences])
+    }, []);
+
 
 
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
@@ -180,7 +178,6 @@ export const Dashboard = () => {
             for (let i = 0; i < data.length; i++) {
                 // let endDate = data[i].end_date
                 // let yday = new Date(new Date().valueOf() - 1000*60*60*24)
-                // console.log("trip end date:", new Date(datiundash(endDate)))
                 if (new Date(timeFunctions.datiundash(data[i].end_date)) > new Date((new Date().valueOf() - 1000 * 60 * 60 * 24))) {
                     upcomingTripsArr.push(data[i])
                 } else {
@@ -198,8 +195,7 @@ export const Dashboard = () => {
             // the page will grab the first ~5 trips
 
 
-            // console.log("past Trips", pastTripsArr)
-            // console.log("upcoming Trips", upcomingTripsArr)
+
         }
 
 
@@ -360,11 +356,7 @@ export const Dashboard = () => {
     const hidePopUpOnClickOutside = (e) => {
         if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id.split("-")[0] !== ("userTripPopUpBtn")) {
             closeUserTripPopup()
-            // console.log('triggered')
         }
-        // console.log(e.target.id)
-        // console.log("refPopup", refPopUp.current)
-        // console.log("e.target", e.target)
     }
     const refPopUp = useRef(null);
 
@@ -744,12 +736,10 @@ export const Dashboard = () => {
     // edit trip modal code
     const [editTripModalOpen, setEditTripModalOpen] = useState(false)
     const openEditTripModal = (trip) => {
-        // console.log(trip)
         setTripToEdit(trip)
         setEditTripModalOpen(true);
     }
     const closeEditTripModal = () => {
-        // console.log('hy')
         setTripToEdit(null)
         setEditTripModalOpen(false);
     }
@@ -1139,8 +1129,6 @@ export const Dashboard = () => {
                     <div className={`preference-cards flx-r flx-wrap gap-6 ${mobileMode && "just-se"}`}>
                         {userPreferences && Object.values(userPreferences).includes(true) ? Object.entries(userPreferences).map((category, index) => {
                             let categoryName = category[0]
-                            console.log(categoryName)
-                            console.log(cards2_dict[categoryName])
                             let selected = category[1] // this is the boolean value of the interest
                             return selected && <div key={index} className="card2-frozen" style={{ maxWidth: 167 }}>
                                 <div className="green-checkbox">

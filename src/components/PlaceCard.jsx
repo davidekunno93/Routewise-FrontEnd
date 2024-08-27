@@ -82,10 +82,14 @@ export const PlaceCard = forwardRef(({ index, place, addPlaceToConfirm, addStar,
                     <div className="placeCard2-body flx-7">
                         <p className="body-title truncated">{place.placeName}</p>
                         <CategoryAndRating place={place} />
-                        <OpeningHoursMap
-                            idTree={index}
-                            placeInfo={place.info}
-                        />
+                        {place.info.includes(":") ?
+                            <OpeningHoursMap
+                                idTree={index}
+                                placeInfo={place.info}
+                            />
+                            :
+                            <p className="m-0">{place.info}</p>
+                        }
                         {place.summary ?
                             <p className="m-0 body-address truncated-2">{place.summary}</p>
                             :

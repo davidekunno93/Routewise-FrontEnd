@@ -86,14 +86,18 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                                 <OpeningHoursMap
                                     idTree={dayId + "-" + id.toString()}
                                     placeInfo={place.info}
-                                    // openingHoursObject={convertInfoToMap(place.info)}
+                                // openingHoursObject={convertInfoToMap(place.info)}
                                 />
                                 :
                                 <p className="body-info">{place.info}</p>
                             }
                         </>
                     }
-                    <p className="body-address">{place.summary ?? place.address}</p>
+                    {place.summary ?
+                        <p className="body-address">{place.summary}</p>
+                        :
+                        <p className="body-address">{place.address}</p>
+                    }
                 </div>
                 <div className="placeCard-options flx-c just-sb align-c">
                     {/* <img src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" /> */}
