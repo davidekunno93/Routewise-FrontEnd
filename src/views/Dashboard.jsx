@@ -28,84 +28,84 @@ export const Dashboard = () => {
     const cards2 = [
         {
             userPreference: "landmarks",
-            imgURL: 'https://i.imgur.com/nixatab.png',
+            imgUrl: 'https://i.imgur.com/nixatab.png',
             title: 'Landmarks & Attractions'
         },
         {
             userPreference: "nature",
-            imgURL: 'https://i.imgur.com/kmZtRbp.png',
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
             title: 'Nature'
         },
         {
             userPreference: "shopping",
-            imgURL: 'https://i.imgur.com/Fo8WLyJ.png',
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
             title: 'Shopping'
         },
         {
             userPreference: "food",
-            imgURL: 'https://i.imgur.com/K6ADmfR.png',
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
             title: 'Food & Restaurants'
         },
         {
             userPreference: "arts",
-            imgURL: 'https://i.imgur.com/ExY7HDK.png',
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
             title: 'Arts & Culture'
         },
         {
             userPreference: "nightlife",
-            imgURL: 'https://i.imgur.com/9fVucq9.png',
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
             title: 'Nightlife'
         },
         {
             userPreference: "entertainment",
-            imgURL: 'https://i.imgur.com/A8Impx2.png',
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
             title: 'Music & Entertainment'
         },
         {
             userPreference: "relaxation",
-            imgURL: 'https://i.imgur.com/o8PJDZ5.png',
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
             title: 'Spa & Relaxation'
         },
     ]
     const cards2_dict = {
         "landmarks": {
             userPreference: "landmarks",
-            imgURL: 'https://i.imgur.com/nixatab.png',
+            imgUrl: 'https://i.imgur.com/nixatab.png',
             title: 'Landmarks & Attractions'
         },
         "nature": {
             userPreference: "nature",
-            imgURL: 'https://i.imgur.com/kmZtRbp.png',
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
             title: 'Nature'
         },
         "shopping": {
             userPreference: "shopping",
-            imgURL: 'https://i.imgur.com/Fo8WLyJ.png',
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
             title: 'Shopping'
         },
         "food": {
             userPreference: "food",
-            imgURL: 'https://i.imgur.com/K6ADmfR.png',
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
             title: 'Food & Restaurants'
         },
         "arts": {
             userPreference: "arts",
-            imgURL: 'https://i.imgur.com/ExY7HDK.png',
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
             title: 'Arts & Culture'
         },
-        "nightlife": {
-            userPreference: "nightlife",
-            imgURL: 'https://i.imgur.com/9fVucq9.png',
+        "nightclub": {
+            userPreference: "nightclub",
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
             title: 'Nightlife'
         },
         "entertainment": {
             userPreference: "entertainment",
-            imgURL: 'https://i.imgur.com/A8Impx2.png',
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
             title: 'Music & Entertainment'
         },
         "relaxation": {
             userPreference: "relaxation",
-            imgURL: 'https://i.imgur.com/o8PJDZ5.png',
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
             title: 'Spa & Relaxation'
         },
     }
@@ -234,31 +234,31 @@ export const Dashboard = () => {
     const cities = [
         {
             name: 'Paris',
-            imgURL: 'https://i.imgur.com/JnLJKbEl.jpg'
+            imgUrl: 'https://i.imgur.com/JnLJKbEl.jpg'
         },
         {
             name: 'Rome',
-            imgURL: 'https://i.imgur.com/HJJEIntl.jpg'
+            imgUrl: 'https://i.imgur.com/HJJEIntl.jpg'
         },
         {
             name: 'London',
-            imgURL: 'https://i.imgur.com/sCT1BpFl.jpg'
+            imgUrl: 'https://i.imgur.com/sCT1BpFl.jpg'
         },
         {
             name: 'New York City',
-            imgURL: 'https://i.imgur.com/RxO0dfyl.jpg'
+            imgUrl: 'https://i.imgur.com/RxO0dfyl.jpg'
         },
         {
             name: 'Tokyo',
-            imgURL: 'https://i.imgur.com/JMgMvzPl.png'
+            imgUrl: 'https://i.imgur.com/JMgMvzPl.png'
         },
         {
             name: 'Miami',
-            imgURL: 'https://i.imgur.com/F6fkD7Ol.jpg'
+            imgUrl: 'https://i.imgur.com/F6fkD7Ol.jpg'
         },
         {
             name: 'Dubai',
-            imgURL: 'https://i.imgur.com/OWmQg9Ll.jpgg'
+            imgUrl: 'https://i.imgur.com/OWmQg9Ll.jpgg'
         }
     ]
     const slideCarouselRight = () => {
@@ -672,7 +672,7 @@ export const Dashboard = () => {
             endDate: trip.end_date,
             tripDuration: trip.duration,
             geocode: [trip.dest_lat, trip.dest_long],
-            imgURL: trip.dest_img,
+            imgUrl: trip.dest_img,
             places: placesList,
             itinerary: null,
             itineraryFirstLoad: false
@@ -694,7 +694,7 @@ export const Dashboard = () => {
             endDate: trip.end_date,
             tripDuration: trip.duration,
             geocode: [trip.dest_lat, trip.dest_long],
-            imgURL: trip.dest_img,
+            imgUrl: trip.dest_img,
             places: Object.values(itinerary.places),
             itinerary: itinerary,
             itineraryFirstLoad: firstLoad ? true : false
@@ -1139,6 +1139,8 @@ export const Dashboard = () => {
                     <div className={`preference-cards flx-r flx-wrap gap-6 ${mobileMode && "just-se"}`}>
                         {userPreferences && Object.values(userPreferences).includes(true) ? Object.entries(userPreferences).map((category, index) => {
                             let categoryName = category[0]
+                            console.log(categoryName)
+                            console.log(cards2_dict[categoryName])
                             let selected = category[1] // this is the boolean value of the interest
                             return selected && <div key={index} className="card2-frozen" style={{ maxWidth: 167 }}>
                                 <div className="green-checkbox">
@@ -1147,7 +1149,7 @@ export const Dashboard = () => {
                                     </span>
                                 </div>
                                 <div className="card2-imgDiv">
-                                    <img src={cards2_dict[categoryName].imgURL} alt="" className="card2-img" />
+                                    <img src={cards2_dict[categoryName].imgUrl} alt="" className="card2-img" />
                                 </div>
                                 <div className="card2-text flx-1">
                                     <div className="card2-title">{cards2_dict[categoryName].title}</div>
@@ -1174,7 +1176,7 @@ export const Dashboard = () => {
                         <div id='cityCarouselInner' className="inner-no-flex" style={{ transform: `translateX(-${translationIndex * 350}px)` }}>
                             {cities.map((city, index) => {
                                 return <div key={index} className="card3 position-relative">
-                                    <img src={city.imgURL} alt="" className="card3-img" />
+                                    <img src={city.imgUrl} alt="" className="card3-img" />
                                     <div className="model-overlay position-absolute white-text">
                                         <span className="material-symbols-outlined v-bott white-text">
                                             favorite

@@ -463,8 +463,14 @@ const DataProvider = (props) => {
             categoryTitle: "Arts & Culture",
             userPreference: "art",
         },
-        "bar": "Nightlife",
-        "night_club": "Nightlife",
+        "bar": {
+            categoryTitle: "Nightlife",
+            userPreference: "nightclub",
+        },
+        "night_club": {
+            categoryTitle: "Nightlife",
+            userPreference: "nightclub",
+        },
     };
     const [suggestedPlaces, setSuggestedPlaces] = useState({
         loaded: false,
