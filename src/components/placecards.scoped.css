@@ -327,7 +327,7 @@ button.open-in-google-maps > .icon {
     height: 130px;
     border-bottom: 2px solid gainsboro;
     background-color: white;
-    overflow: hidden;
+    /* overflow-x: hidden; */
     transition: 0.3s;
     padding: 12px 12px;
     margin-bottom: 12px;

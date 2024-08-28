@@ -5,7 +5,7 @@ import './dayselection.scoped.css'
 import ConfirmationModal from '../ConfirmationModal';
 import axios from 'axios';
 
-export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlace, placeToConfirm, titleText, action, renderLocation, openConfirmationModal, onClose, closeTree }) => {
+export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlace, place, titleText, action, renderLocation, openConfirmationModal, onClose, closeTree }) => {
     if (!open) return null;
     const { gIcon } = useContext(DataContext);
 
@@ -33,7 +33,7 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
         let days = {}
         for (let dayNum of tripState.day_order) {
             let day = tripState.days[dayNum]
-            let dist = Math.sqrt((placeToConfirm.lat - day.centroid[0]) ** 2 + (placeToConfirm.long - day.centroid[1]) ** 2)
+            let dist = Math.sqrt((place.lat - day.centroid[0]) ** 2 + (place.long - day.centroid[1]) ** 2)
             days[dayNum] = dist
         }
         let min_dist = 99999999999
@@ -52,7 +52,7 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
         setLightbulbDays(lightbulb_days)
     }
     useEffect(() => {
-        if (placeToConfirm) {
+        if (place) {
             getLightbulbDays()
         }
     }, [])
@@ -105,12 +105,12 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
                     .catch((error) => {
                         console.log(error)
                     })
-                } else {
-                    let tripStateCopy = { ...tripState };
-                    tripStateCopy.days[destinationDayNum].placeIds = tripStateCopy.days[destinationDayNum].placeIds.concat(tripStateCopy.days[sourceDayNum].placeIds);
-                    tripStateCopy.days[sourceDayNum].placeIds = [];
-                    setTripState(tripStateCopy);
-                }
+            } else {
+                let tripStateCopy = { ...tripState };
+                tripStateCopy.days[destinationDayNum].placeIds = tripStateCopy.days[destinationDayNum].placeIds.concat(tripStateCopy.days[sourceDayNum].placeIds);
+                tripStateCopy.days[sourceDayNum].placeIds = [];
+                setTripState(tripStateCopy);
+            }
         },
     }
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(true);
@@ -151,16 +151,18 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
         if (standBy) {
             openConfirmationModal(confirmationModalProps)
             setStandby(false);
-        }
+        };
+        // console.log(addPlace);
     }, [confirmationModalProps])
 
+    
 
 
     return (
         <>
             <div id='daySelection' className={`daySelection ${renderLocation}`}>
                 <div className="day-selector">
-                    <DaySelected open={daySelectedOpen} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
+                    {/* <DaySelected open={daySelectedOpen} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} /> */}
 
                     <span onClick={() => { onClose() }} className={`closeBtn2 ${gIcon} position-absolute x-large color-gains`}>
                         close
@@ -168,31 +170,58 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
                     <div className="titleDiv">
                         <p className="title">{titleText}</p>
                     </div>
-                    {renderLocation === "itinerary" ?
+                    {renderLocation === "itinerary" &&
                         <>
-                            {tripState.day_order.map((dayNum, i) => {
-                                const day = tripState.days[dayNum];
-                                let isSameDay = sourceDay.id === dayNum;
-                                return <div
-                                    key={i}
-                                    id='day-option'
-                                    onClick={() => { !isSameDay && handleConfirmationModal(action, [sourceDay.id, `day-${i + 1}`]) }}
-                                    className={`day-option ${isSameDay && "disabled"}`}
-                                >
-                                    <div className="day-color" style={{ backgroundColor: sourceDay.id === dayNum ? "#808080" : numberToBgColor(dayNum.split("-")[1]) }}></div>
-                                    <div className="text">
-                                        <p className="m-0 mr-4"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
-                                    </div>
-                                    {action === "move places" &&
-                                        <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
-                                            <div className="tooltip">RouteWise recommended: Most optimal date!</div>
-                                            <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
+                            {action === "add place" &&
+                                <>
+                                    {tripState.day_order.map((dayNum, i) => {
+                                        const day = tripState.days[dayNum];
+                                        return <div
+                                            key={i}
+                                            id='day-option'
+                                            onClick={() => addPlace(dayNum, place)}
+                                            className="day-option"
+                                        >
+                                            <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
+                                            <div className="text">
+                                                <p className="m-0 mr-4"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
+                                            </div>
+                                            <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
+                                                <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>
+                                                <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
+                                            </div>
                                         </div>
-                                    }
-                                </div>
-                            })}
+                                    })}
+                                </>
+                            }
+                            {(action === "swap days" || action === "move places") &&
+                                <>
+                                    {tripState.day_order.map((dayNum, i) => {
+                                        const day = tripState.days[dayNum];
+                                        let isSameDay = sourceDay.id === dayNum;
+                                        return <div
+                                            key={i}
+                                            id='day-option'
+                                            onClick={() => { !isSameDay && handleConfirmationModal(action, [sourceDay.id, `day-${i + 1}`]) }}
+                                            className={`day-option ${isSameDay && "disabled"}`}
+                                        >
+                                            <div className="day-color" style={{ backgroundColor: sourceDay.id === dayNum ? "#808080" : numberToBgColor(dayNum.split("-")[1]) }}></div>
+                                            <div className="text">
+                                                <p className="m-0 mr-4"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
+                                            </div>
+                                            {action === "move places" &&
+                                                <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
+                                                    <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>
+                                                    <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
+                                                </div>
+                                            }
+                                        </div>
+                                    })}
+                                </>
+                            }
                         </>
-                        :
+                    }
+                    {renderLocation === "map" &&
                         <>
                             {tripState.day_order.map((dayNum, i) => {
                                 const day = tripState.days[dayNum]
@@ -202,7 +231,7 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
                                         <p className="m-0 mr-4"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
                                     </div>
                                     <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
-                                        <div className="tooltip">This day is recommended because it has the closest activities!</div>
+                                        <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>
                                         <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
                                     </div>
                                 </div>

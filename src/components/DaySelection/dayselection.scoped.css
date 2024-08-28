@@ -23,6 +23,7 @@
     z-index: 10 !important;
     bottom: 112px !important;
     right: calc(5% + 32px);
+    width: auto;
 }
 
 .day-selector {
@@ -120,7 +121,7 @@
 .tooltip {
     visibility: hidden;
     opacity: 0;
-    width: 160px;
+    width: 180px;
     background-color: gainsboro;
     color: black;
     text-align: center;

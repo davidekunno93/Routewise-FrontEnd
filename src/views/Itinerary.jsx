@@ -20,6 +20,8 @@ import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 import ConfirmationModal from '../components/ConfirmationModal'
 import OpeningHoursMap from '../components/OpeningHoursMap'
 import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
+import Dropdown from '../components/Dropdown/Dropdown'
+import SuggestedPlaceCard from '../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -265,77 +267,201 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
 
-  const placeFuntions = {
-    addPlace: async function (dayNum, placeObj) {
-      let tripStateCopy = { ...tripState };
-      // add local id
-      let place = { ...placeObj, id: parseInt(tripStateCopy.places_last) + 1 }
+
+  const placeFunctions = {
+    addPlace: async function (dayNum, place) {
+      let tripStateCopy = { ...tripState }
+      if (!place) {
+        place = placeToConfirm
+      };
+      // add day_id to place object
+      if (tripStateCopy.days[dayNum].day_id) {
+        // not sure if day_id key is used anymore
+        place['day_id'] = tripStateCopy.days[dayNum].day_id
+      } else {
+        place['day_id'] = tripStateCopy.days[dayNum].db_id
+      }
+      place['trip_id'] = tripStateCopy.trip_id
+
+      // key made for lightbulb icon purposes only - indicating day w closest activities
+      if (place.lightbulb_days) {
+        delete place.lightbulb_days
+      }
 
       if (tripStateCopy.trip_id) {
+
         // send place details to Kate for db update - return db place_id
+        let sendPlace = { id: parseInt(tripStateCopy.places_last) + 1, ...place }
         let data = {
-          place: place,
-          day_id: place.day_id
+          place: sendPlace,
+          day_id: sendPlace.day_id
         }
-        console.log("sendPlace: ", place)
-        const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${tripStateCopy.trip_id}`, JSON.stringify(data), {
+        console.log("sendPlace: ", sendPlace)
+        const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
           headers: { "Content-Type": "application/json" }
         }).then((response) => {
-          // console.log(response.status)
-          let db_place_id = response.data
+          console.log(response.status)
+          let place_id = response.data
 
-          // remove lightbulb key
-          if (place.lightbulb_days) {
-            delete place.lightbulb_days
-          }
-
-          // add db place id
+          // create a new place id for the place
           tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
+            id: parseInt(tripStateCopy.places_last) + 1,
             ...place,
-            place_id: db_place_id //
+            place_id: place_id // also adding place_id from database (from Kate response)
           }
-
-
           tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
           tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
           setTripState(tripStateCopy)
-          // confirmPlaceAdded(modifier)
+
+          setPlaceToConfirm(null);
+          closeDaySelection();
+          setShowPlaceAddedBox(true);
         }).catch((error) => {
           console.log(error)
         })
       } else {
         // we're in playground mode i.e. using test place objects on default itinerary page
-
-        // key made for lightbulb icon purposes only - indicating day w closest activities, can delete now
-        if (place.lightbulb_days) {
-          delete place.lightbulb_days
+        tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
+          id: parseInt(tripStateCopy.places_last) + 1,
+          ...place,
         }
-
-        tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = place;
-
         tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
         tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
         setTripState(tripStateCopy)
-        // confirmPlaceAdded(modifier)
+        setPlaceToConfirm(null);
+        closeDaySelection();
+        setShowPlaceAddedBox(true);
       }
     },
-    addPlaceToConfirm: function (placeObj) {
-      clearPlaceToConfirm();
-      setPlaceToConfirm(placeObj);
-      updateMapCenter(placeObj.geocode);
+    addPlaceToConfirm: function (place) {
+      let newPlace = { ...place, favorite: false };
+
+
+      // lightbulb code can be separated to independent function
+      let min_dist = null;
+      let min_dist_dayNums = [];
+      for (let dayNum of tripState.day_order) {
+        let day = tripState.days[dayNum];
+        let dist = Math.sqrt((newPlace.lat - day.centroid[0]) ** 2 + (newPlace.long - day.centroid[1]) ** 2);
+        if (min_dist === null || min_dist > parseFloat(dist)) {
+          min_dist = dist;
+          min_dist_dayNums = [dayNum];
+        } else if (min_dist === parseFloat(dist)) {
+          min_dist_dayNums.push(dayNum);
+        }
+      };
+
+      // console.log("lightbulb days are = ", min_dayNums);
+      newPlace["lightbulb_days"] = min_dist_dayNums;
+      setLightbulbDays(min_dist_dayNums);
+
+
+
+      setPlaceToConfirm(newPlace);
+      updateMapCenter(newPlace.geocode);
     },
-    addToSavedPlaces: function (placeObj) {
+    addToSavedPlaces: async function (place) {
       let tripStateCopy = { ...tripState }
       let placesLast = tripStateCopy.places_last;
 
-      placeObj = { ...placeObj, favorite: false, id: placesLast + 1, day_id: null };
-      tripStateCopy.places[placesLast + 1] = placeObj;
-      tripStateCopy.places_last = placesLast + 1;
-      tripStateCopy.saved_places.placesIds.push(placeObj.id)
-      tripStateCopy.saved_places.addresses.push(placeObj.address)
-      // send added place change to db - need add to saved places route
+      place = { ...place, favorite: false, id: placesLast + 1, day_id: null };
 
-      setTripState(tripStateCopy);
+      // send added place to db ($test$)
+      if (tripStateCopy.trip_id) {
+
+        // send place details to Kate for db update - return db place_id
+        let sendPlace = place
+        let data = {
+          place: sendPlace,
+          day_id: null
+        }
+        // console.log("sendPlace: ", sendPlace)
+        const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${tripStateCopy.trip_id}`, JSON.stringify(data), {
+          headers: { "Content-Type": "application/json" }
+        }).then((response) => {
+          console.log(response.status)
+          let place_id = response.data
+
+          // add db_place_id
+          tripStateCopy.places[placesLast + 1] = {
+            ...place,
+            place_id: place_id
+          }
+
+          tripStateCopy.places_last = placesLast + 1
+          tripStateCopy.saved_places.placesIds.push(place.id)
+          tripStateCopy.saved_places.addresses.push(place.address)
+
+          setTripState(tripStateCopy)
+        }).catch((error) => {
+          console.log(error)
+        })
+      } else {
+        // we're in playground mode i.e. using test place objects on default itinerary page ($test$)
+
+        tripStateCopy.places[placesLast + 1] = place;
+        tripStateCopy.places_last = placesLast + 1;
+        tripStateCopy.saved_places.placesIds.push(place.id)
+        tripStateCopy.saved_places.addresses.push(place.address)
+        setTripState(tripStateCopy)
+      }
+    },
+    getPlaceIdFromAddress: function (address) {
+      let tripStateCopy = { ...tripState };
+      let placeId = "";
+
+      for (let tripPlace of Object.values(tripStateCopy.places)) {
+        if (address === tripPlace.address) {
+          placeId = tripPlace.id;
+          console.log(placeId);
+        };
+      };
+      if (placeId) {
+        return placeId;
+      } else {
+        return null;
+      };
+
+    },
+    getPlaceId: function (place) {
+      let googlePlaceId = place.placeId;
+      let placeId = "";
+      for (let tripPlace of Object.values(tripState.places)) {
+        if (googlePlaceId === tripPlace.placeId) {
+          placeId = tripPlace.id;
+          console.log(placeId);
+        };
+      };
+
+      if (placeId) {
+        return placeId;
+      } else {
+        return null;
+      };
+
+    },
+    getDayId: function (placeOrPlaceId) {
+      let placeId = "";
+      if (typeof placeOrPlaceId === 'number') {
+        placeId = placeOrPlaceId;
+      } else {
+        let place = placeOrPlaceId;
+        if (place.id) {
+          placeId = place.id;
+        } else {
+          placeId = placeFunctions.getPlaceId(place);
+        };
+      };
+      for (let dayNum of tripState.day_order) {
+        let day = tripState.days[dayNum];
+        for (let i = 0; i < day.placeIds.length; i++) {
+          if (placeId === day.placeIds[i]) {
+            console.log(dayNum);
+            return dayNum;
+          };
+        };
+      };
+      return null;
     },
     removeFromSavedPlaces: function (placeId, address) {
       let tripStateCopy = { ...tripState };
@@ -344,11 +470,13 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       if (!placeId && address) {
         for (let tripPlace of Object.values(tripStateCopy.places)) {
           if (address === tripPlace.address) {
+            console.log(address)
             let index = tripStateCopy.saved_places.addresses.indexOf(address);
             placeId = tripStateCopy.saved_places.placesIds[index];
-          }
-        }
-      }
+            console.log(placeId)
+          };
+        };
+      };
 
       let place = tripStateCopy.places[placeId];
       let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
@@ -371,6 +499,28 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       };
 
       // set state
+      setTripState(tripStateCopy);
+    },
+    removePlace: function (dayNum, placeId, place) {
+      if (!dayNum) {
+        dayNum = placeFunctions.getDayId(place);
+      };
+      if (!placeId) {
+        placeId = placeFunctions.getPlaceId(place);
+      };
+      // tripState > days[dayNum] > remove placeIds[placeId]
+      deletePlaceFromDatabase(placeId);
+
+      const tripStateCopy = { ...tripState };
+      let index = tripStateCopy.days[dayNum].placeIds.indexOf(placeId);
+      tripStateCopy.days[dayNum].placeIds.splice(index, 1);
+      delete tripStateCopy.places[placeId];
+
+      // decrement places_last if possible
+      if (tripStateCopy.places_last === placeId) {
+        tripStateCopy.places_last = tripState.places_last - 1;
+      };
+
       setTripState(tripStateCopy);
     },
     deletePlace: function (placeObj) {
@@ -400,13 +550,27 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         address = placeOrAddress.address;
       } else if (typeof placeOrAddress === "string") {
         address = placeOrAddress;
-      }
+      };
 
       if (tripState.saved_places.addresses.length > 0 && tripState.saved_places.addresses.includes(address)) {
         return true;
       } else {
         return false;
-      }
+      };
+    },
+    inItinerary: function (placeOrAddress) {
+      let address = "";
+      if (typeof placeOrAddress === "object") {
+        address = placeOrAddress.address;
+      } else if (typeof placeOrAddress === "string") {
+        address = placeOrAddress;
+      };
+
+      if (itineraryAddressList.length > 0 && itineraryAddressList.includes(address)) {
+        return true;
+      } else {
+        return false;
+      };
     },
     savedToItinerary: function (dayNum, placeId) {
       // remove id and from saved_places placesIds
@@ -450,27 +614,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     }
   };
 
-  const itineraryFunctions = {
-    swapDays: function (sourceDayNum, DestinationDayNum) {
-      let tripStateCopy = { ...tripState };
-      // get destDay placeIds copy them to placeId holder
-      // make destDay placeIds = sourceDay placeIds
-      // make sourceDay placeIds = held placeIds
 
-      [tripStateCopy[sourceDayNum].placeIds, tripStateCopy[DestinationDayNum].placeIds] = [tripStateCopy[DestinationDayNum].placeIds, tripStateCopy[sourceDayNum].placeIds]
-      // setState
-      setTripState(tripStateCopy)
-    },
-    moveAllDays: function () {
-
-    },
-  }
 
   const [showPlaceAddedBox, setShowPlaceAddedBox] = useState(false);
   // add place from map and suggeseted places
-  const addPlace = async (dayNum) => {
+  const addPlace = async (dayNum, place) => {
     let tripStateCopy = { ...tripState }
-    let place = placeToConfirm
+    if (!place) {
+      place = placeToConfirm
+    };
     // add day_id to place object
     if (tripStateCopy.days[dayNum].day_id) {
       // not sure if day_id key is used anymore
@@ -479,8 +631,6 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       place['day_id'] = tripStateCopy.days[dayNum].db_id
     }
     place['trip_id'] = tripStateCopy.trip_id
-    // console.log(tripStateCopy.trip_id) 
-    // console.log(tripStateCopy.days[dayNum]);
 
     // key made for lightbulb icon purposes only - indicating day w closest activities
     if (place.lightbulb_days) {
@@ -511,10 +661,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
         tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
         setTripState(tripStateCopy)
-        // closeDaySelection()
-        // clearPlaceToConfirm()
-        // console.log(tripStateCopy)
-        // confirmPlaceAdded(modifier)
+
         setPlaceToConfirm(null);
         closeDaySelection();
         setShowPlaceAddedBox(true);
@@ -530,7 +677,6 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
       tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
       setTripState(tripStateCopy)
-      // confirmPlaceAdded(modifier)
       setPlaceToConfirm(null);
       closeDaySelection();
       setShowPlaceAddedBox(true);
@@ -612,66 +758,36 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     setPlaceToConfirm(null)
   }
   const addPlaceToConfirm = async (place) => {
+    let newPlace = { ...place, favorite: false };
 
-
-
-    let newPlace = {}
-    if (place.placeName) {
-      newPlace = { ...place, favorite: false };
-    } else {
-      let imgQuery = place.text.replace(/ /g, '-');
-      let imgUrl = await loadCityImg(imgQuery);
-      // let placeInfo = await loadPlaceDetails(place.place_id)
-      let placeInfo = "";
-
-      let placeCategory = place.properties.category ?? "No Category";
-
-      newPlace = {
-        placeName: place.text,
-        info: placeInfo,
-        address: place.place_name.split(", ").slice(1, -1).join(", "),
-        imgURL: imgUrl,
-        category: placeCategory.length > 32 ? placeCategory.split(", ")[0] : placeCategory,
-        favorite: false,
-        lat: place.geometry.coordinates[1],
-        long: place.geometry.coordinates[0],
-        geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-        placeId: place.id,
-      }
-    }
-
-    // lightbulb
-    let days = {}
+    // lightbulb code can be separated to independent function
+    let days = {};
     for (let dayNum of tripState.day_order) {
       let day = tripState.days[dayNum]
       let dist = Math.sqrt((newPlace.lat - day.centroid[0]) ** 2 + (newPlace.long - day.centroid[1]) ** 2)
-      days[dayNum] = dist
+      days[dayNum] = dist;
     }
-    let min_dist = 99999999999
+    // let min_dist = 99999999999
+    let min_dist = null;
     let dist_list = Object.values(days)
-    // console.log(dist_list)
     for (let i = 0; i < dist_list.length; i++) {
-      // console.log(parseFloat(dist_list[i]))
-      if (min_dist > parseFloat(dist_list[i])) {
+      if (min_dist === null || min_dist > parseFloat(dist_list[i])) {
         min_dist = dist_list[i]
       }
     }
     // console.log("min dist =", min_dist)
-    let lightbulb_days = []
+    let lightbulb_days = [];
     for (let [dayNum, dist] of Object.entries(days)) {
       if (dist === min_dist) {
-        lightbulb_days.push(dayNum)
-      }
+        lightbulb_days.push(dayNum);
+      };
     }
     // console.log("lightbulb days are = ", lightbulb_days);
     newPlace["lightbulb_days"] = lightbulb_days;
     setLightbulbDays(lightbulb_days);
     setPlaceToConfirm(newPlace);
-    updateMapCenter(newPlace.geocode)
-    // setMapCenter(newPlace.geocode);
-    // setMapCenterToggle(!mapCenterToggle);
-    // resetPanelSearch()
-  }
+    updateMapCenter(newPlace.geocode);
+  };
 
 
   // observe place to confirm card body
@@ -834,13 +950,13 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     for (let i = 0; i < placesArr.length; i++) {
       if (placesArr[i].day_id !== null) {
         itineraryAddressListCopy.push(placesArr[i].address);
-      }
+      };
     }
-    console.log(itineraryAddressListCopy)
-    setItineraryAddressList(itineraryAddressListCopy)
+    console.log(itineraryAddressListCopy);
+    setItineraryAddressList(itineraryAddressListCopy);
   }
   useEffect(() => {
-    updateItineraryAddressList()
+    updateItineraryAddressList();
   }, [tripState])
 
   // [flowbox operations code]
@@ -2070,12 +2186,51 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                       }
                       {suggestedPlaces.places.length > 0 &&
                         suggestedPlaces.places.map((suggestedPlace, index) => {
-                          let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
+                          let filteredIn = suggestedPlacesFilter ? suggestedPlace.categoryTitles.includes(suggestedPlacesFilter) : true;
                           let blacklisted = blacklist.includes(suggestedPlace.placeName) ? true : false
                           let added = false
+                          let itemsList = {
+                            options: [
+                              {
+                                itemName: "View on map",
+                                gIconPrompt: "location_on",
+                                clickFunction: {
+                                  function: addPlaceToConfirm,
+                                  params: [suggestedPlace]
+                                },
+                              },
+                              {
+                                itemName: "Add to itinerary",
+                                gIconPrompt: "map",
+                                clickFunction: "daySelection:add place",
+                              },
+                              {
+                                itemName: isSavedPlace(suggestedPlace) ? "Remove from saved places" : "Add to saved places",
+                                gIconPrompt: "bookmark",
+                                clickFunction: {
+                                  function: isSavedPlace(suggestedPlace) ? removeFromSavedPlaces : addToSavedPlaces,
+                                  params: isSavedPlace(suggestedPlace) ? [null, suggestedPlace.address] : [suggestedPlace],
+                                },
+                                textColor: isSavedPlace(suggestedPlace) ? "red" : "",
+                              },
+                            ]
+                          }
 
-                          if (!suggestedPlacesFilter) {
-                            return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+
+                          return <SuggestedPlaceCard
+                            index={index}
+                            place={suggestedPlace}
+                            addToBlacklist={addToBlacklist}
+                            blacklist={blacklist}
+                            suggestedPlacesFilter={suggestedPlacesFilter}
+                            // flashAdded={flashAdded}
+                            tripState={tripState}
+                            setTripState={setTripState}
+                            placeFunctions={placeFunctions}
+                            forItinerary
+                          />
+                          return suggestedPlace.placeName && filteredIn && !blacklisted ?
+                            <div key={index} className="placeCard2 position-relative flx-r my-2">
 
                               <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
                                 <p className="m-0 purple-text">Added!</p>
@@ -2105,6 +2260,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                               </div>
                               <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
                                 {/* suggested place popup */}
+                                <Dropdown
+                                  open={true}
+                                  itemsList={itemsList}
+                                  place={suggestedPlace}
+                                  tripState={tripState}
+                                  setTripState={setTripState}
+                                  renderLocation={"itinerary"}
+                                  offsetX={"100%"}
+                                />
                                 <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden" style={{ width: isSavedPlace(suggestedPlace) ? 236 : 200 }}>
                                   <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
                                     <span className="material-symbols-outlined icon">
@@ -2136,14 +2300,14 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                                 </div>
                                 {/* End suggested place popup */}
                                 {/* {added ?
-                          <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
-                            <span className="material-symbols-outlined m-auto mt-h medium white-text">
-                              done
-                            </span>
-                          </div>
-                          : 
-                          }
-                          */}
+                                <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                  <span className="material-symbols-outlined m-auto mt-h medium white-text">
+                                    done
+                                  </span>
+                                </div>
+                                : 
+                                }
+                              */}
                                 <div id={`suggestedPlace-btn-${index}`} onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
                                   <span className="material-symbols-outlined m-auto large">
                                     add
@@ -2155,57 +2319,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                                 </span>
                               </div>
                             </div> : null
-                          } else {
-                            if (suggestedPlace.categoryTitle === filter) {
 
-                              return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
-                                <div className="placeCard-img-div flx-3">
-                                  <img className="placeCard2-img" src={suggestedPlace.imgURL} />
-                                </div>
-                                <div className="placeCard-body flx-5">
-                                  {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                                  <p className="body-title ">{suggestedPlace.placeName}</p>
-                                  <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                                  <p className="body-address">{suggestedPlace.address}</p>
-                                </div>
-                                <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
-                                  {/* filtered suggested place popup */}
-                                  <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
-                                    <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
-                                      <span className="material-symbols-outlined">
-                                        map
-                                      </span>
-                                      <p className="m-0">Add to Map</p>
-                                    </div>
-                                    <div className="option">
-                                      <span className="material-symbols-outlined">
-                                        bookmark
-                                      </span>
-                                      <p className="m-0">Add to Saved Places</p>
-                                    </div>
-                                  </div>
-                                  {/* End filtered suggested place popup */}
-                                  {added ?
-                                    <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
-                                      <span className="material-symbols-outlined m-auto mt-h medium white-text">
-                                        done
-                                      </span>
-                                    </div>
-                                    :
-                                    <div onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
-                                      <span className="material-symbols-outlined m-auto medium">
-                                        add
-                                      </span>
-                                    </div>}
-
-                                  <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                    visibility_off
-                                  </span>
-                                </div>
-                              </div> : null
-                            }
-                          }
                         })}
 
 
@@ -2254,7 +2369,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                               {/* <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p> */}
                             </div>
                             <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
-                              <div className="tooltip">This day is recommended because it has the closest activities!</div>
+                              <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>
                               {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
                               {/* <span class="material-symbols-outlined m-auto gray-text normal-cursor">
                               emoji_objects
@@ -2273,7 +2388,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                     {placeToConfirm &&
                       <PlaceToConfirmCard
-                        addToSavedPlaces={placeFuntions.addToSavedPlaces}
+                        addToSavedPlaces={placeFunctions.addToSavedPlaces}
                         removeFromSavedPlaces={removeFromSavedPlaces}
                         // addToItinerary={addPlace}
                         openDaySelection={openDaySelection}

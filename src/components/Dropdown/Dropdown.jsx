@@ -4,8 +4,21 @@ import { DataContext } from '../../Context/DataProvider'
 import DaySelector from '../DaySelector';
 import { DaySelection } from '../DaySelection/DaySelection';
 
-const Dropdown = ({ open, itemsList, day, tripState, setTripState, renderLocation, openConfirmationModal, pointerRef, confirmationModalRef, onClose }) => {
+const Dropdown = ({ open, itemsList, day, place, addPlace, tripState, setTripState, renderLocation, openConfirmationModal, pointerRef, confirmationModalRef, offsetX, onClose }) => {
   if (!open) return null;
+  // propsKey = {
+    // open: state
+    // onClose: close open state
+    // itemsList: [{header: {}?, options: [{itemName: "", gIconPrompt: "", clickFunction: func}]}]
+    // renderLocation?: "itinerary" || "map" - needed if opening daySelection
+    // day? - only needed if dropdown is on flowbox or other day capturing element
+    // place?
+    // addPlace?
+    // openConfirmationModal?
+    // confirmationModalRef?
+    // pointerRef?
+    // offsetX?
+  // }
 
   // imports
   const { gIcon } = useContext(DataContext);
@@ -19,13 +32,17 @@ const Dropdown = ({ open, itemsList, day, tripState, setTripState, renderLocatio
   const actionToTitleText = (action) => {
     if (action === "swap days") {
       return "Swap day with:";
-    }
+    };
     if (action === "move places") {
       return "Move all places to:";
+    };
+    if (action === "add place") {
+      return "Add to:"
     }
   };
-  const handleClick = (prompt) => {
-    if (typeof prompt === "string") {
+  const handleClick = (param) => {
+    if (typeof param === "string") {
+      let prompt = param;
       let category = prompt.split(":")[0]
       let action = prompt.split(":")[1]
       if (category === "daySelection") {
@@ -35,6 +52,12 @@ const Dropdown = ({ open, itemsList, day, tripState, setTripState, renderLocatio
         })
         setDaySelectionOpen(true);
       }
+    } else if (typeof param === 'object') {
+      let clickFunction = param;
+      let functionCall = clickFunction.function;
+      let params = clickFunction.params;
+      functionCall(...params);
+      onClose();
     }
   };
 
@@ -45,22 +68,22 @@ const Dropdown = ({ open, itemsList, day, tripState, setTripState, renderLocatio
       dropdownRef.current &&
       !dropdownRef.current.contains(e.target)
     ) {
-      if (!pointerRef || !pointerRef.current.contains(e.target)) {
-        if (!confirmationModalRef || !confirmationModalRef.current.contains(e.target)) {
-        onClose()
+      if (!pointerRef || !pointerRef.current || !pointerRef.current.contains(e.target)) {
+        if (!confirmationModalRef || !confirmationModalRef.current || !confirmationModalRef.current.contains(e.target)) {
+        onClose();
         }
       }
     }
   };
 
   useEffect(() => {
-    window.addEventListener('click', handleClickOutside, true)
+    window.addEventListener('click', handleClickOutside, true);
     return () => window.removeEventListener('click', handleClickOutside)
-  }, [])
+  }, []);
 
 
   return (
-    <div ref={dropdownRef} onClick={(e) => e.stopPropagation()} className="dropdown">
+    <div ref={dropdownRef} onClick={(e) => e.stopPropagation()} className="dropdown" style={{ right: offsetX ? typeof offsetX === 'string' ? offsetX : offsetX.toString()+"px" : "" }}>
       {/* itemsList.headers ? */}
       {itemsList.options.map((item, index) => {
         let isFirst = index === 0;
@@ -70,9 +93,9 @@ const Dropdown = ({ open, itemsList, day, tripState, setTripState, renderLocatio
           className={`option ${isFirst && "noTopBorder"}`}
         >
           {item.gIconPrompt &&
-            <span className={gIcon + " large"}>{item.gIconPrompt}</span>
+            <span className={gIcon} style={{ color: item.textColor ?? "" }}>{item.gIconPrompt}</span>
           }
-          <p className="text">{item.itemName}</p>
+          <p className="text" style={{ color: item.textColor ?? "" }}>{item.itemName}</p>
         </div>
       })}
       <DaySelection
@@ -80,6 +103,8 @@ const Dropdown = ({ open, itemsList, day, tripState, setTripState, renderLocatio
         tripState={tripState}
         setTripState={setTripState}
         sourceDay={day}
+        place={place}
+        addPlace={addPlace}
         renderLocation={renderLocation}
         titleText={daySelectionProps.titleText}
         action={daySelectionProps.action}

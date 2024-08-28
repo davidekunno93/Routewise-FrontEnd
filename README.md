@@ -569,8 +569,10 @@ Cheryl's trips by trip_id
 Featured itineraries
 Suggested places
 <!-- userPrefs need to load when the user is signed in! - setPreferences function running on App.jsx fix? -->
+saved to saved places indicator on itinerary?
+create inItinerary function to check if place is inItinerary
 ORGANIZE
-Suggested place card component
+<!-- Suggested place card component -->
 Saved Place card component
 Dropdown on place cards, use dropdown component
 itinerary sidepanel component
@@ -581,4 +583,4 @@ Amusement park - all day?
 
 <!-- 26Aug24 Team Meeting -->
 Allow users to make user name - new user flow
-userPreferences bug
+<!-- userPreferences bug -->

@@ -203,8 +203,8 @@ function App() {
     // console.log(userPreferences);
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let categoryQueries = getCategoryQueries(selectedPreferences)
-    console.log(selectedPreferences);
-    console.log(categoryQueries);
+    // console.log(selectedPreferences);
+    // console.log(categoryQueries);
     // return "cp"
     const requestOptions = {
       method: "POST",
@@ -215,7 +215,7 @@ function App() {
       },
       body: JSON.stringify({
         includedTypes: categoryQueries,
-        maxResultCount: 16,
+        maxResultCount: 10,
         locationRestriction: {
           circle: {
             center: toLatitudeLongitude(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]),
@@ -230,7 +230,7 @@ function App() {
         let data = await response.json();
         let resultPlaces = await handleNearbySearchData(data);
         suggestedPlacesFunctions.setPlaces(resultPlaces);
-        console.log(resultPlaces);
+        // console.log(resultPlaces);
       })
       .catch(error => console.log('error', error));
 
