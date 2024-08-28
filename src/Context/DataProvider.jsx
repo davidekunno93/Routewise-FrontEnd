@@ -44,7 +44,53 @@ const DataProvider = (props) => {
     const [firstTimeUser, setFirstTimeUser] = useState({
         firstPlaceAdded: true,
         firstSignIn: true
-    })
+    });
+
+    const userPreferenceItems = {
+        cards: {
+            "landmarks": {
+                userPreference: "landmarks",
+                imgUrl: 'https://i.imgur.com/nixatab.png',
+                title: 'Landmarks & Attractions'
+            },
+            "nature": {
+                userPreference: "nature",
+                imgUrl: 'https://i.imgur.com/kmZtRbp.png',
+                title: 'Nature'
+            },
+            "shopping": {
+                userPreference: "shopping",
+                imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
+                title: 'Shopping'
+            },
+            "food": {
+                userPreference: "food",
+                imgUrl: 'https://i.imgur.com/K6ADmfR.png',
+                title: 'Food & Restaurants'
+            },
+            "arts": {
+                userPreference: "arts",
+                imgUrl: 'https://i.imgur.com/ExY7HDK.png',
+                title: 'Arts & Culture'
+            },
+            "nightclub": {
+                userPreference: "nightclub",
+                imgUrl: 'https://i.imgur.com/9fVucq9.png',
+                title: 'Nightlife'
+            },
+            "entertainment": {
+                userPreference: "entertainment",
+                imgUrl: 'https://i.imgur.com/A8Impx2.png',
+                title: 'Music & Entertainment'
+            },
+            "relaxation": {
+                userPreference: "relaxation",
+                imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
+                title: 'Spa & Relaxation'
+            },
+        },
+        order: ['landmarks', 'nature', 'shopping', 'food', 'arts', 'nightclub', 'entertainment', 'relaxation']
+    };
 
 
     // [current trip code]
@@ -98,22 +144,7 @@ const DataProvider = (props) => {
 
     const [pageOpen, setPageOpen] = useState(null);
 
-    // logout code currently disabled
-    const logOut = () => {
-        // window.localStorage.removeItem("userData");
-        // window.localStorage.removeItem("userPref");
-        // window.localStorage.removeItem("isLoggedIn");
-        // console.log('remove loggedIn')
-        signOut(auth).then(() => {
-            console.log("user signed out")
-        })
-        console.log("this btn")
-        // signOut(auth).then(() => {
-        // console.log("user signed out")
-        // setUser(null);
-        // setLogoutStandby(true);
-        // })
-    }
+
     const [logoutStandby, setLogoutStandby] = useState(false);
     useEffect(() => {
         if (logoutStandby && !user) {
@@ -406,7 +437,7 @@ const DataProvider = (props) => {
         "department_store": {
             categoryTitle: "Shopping",
             userPreference: "shopping",
-        }, 
+        },
         "clothing_store": {
             categoryTitle: "Shopping",
             userPreference: "shopping",
@@ -834,7 +865,7 @@ const DataProvider = (props) => {
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
             'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor,
             toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv, generateTripMapBounds,
-            modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, googlePlaceTypeKey
+            modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, googlePlaceTypeKey, userPreferenceItems
         }}>
             {props.children}
         </DataContext.Provider>

@@ -355,7 +355,7 @@ export const Dashboard = () => {
     const refOne = useRef(null);
     const hidePopUpOnClickOutside = (e) => {
         if (refPopUp.current && !refPopUp.current.contains(e.target) && e.target.id.split("-")[0] !== ("userTripPopUpBtn")) {
-            closeUserTripPopup()
+            closeUserTripPopup();
         }
     }
     const refPopUp = useRef(null);

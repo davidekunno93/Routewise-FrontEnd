@@ -2276,6 +2276,7 @@ input {
   background-color: rgb(240, 240, 240);
   /* width: 160px; */
   text-align: center;
+  font-size: 14px;
   display: flex;
   align-items: center;
   border-radius: 12px;
@@ -2703,7 +2704,8 @@ p {
   text-align: center;
 }
 
-.green-checkbox {
+.card2 .green-checkbox,
+.card2-frozen .green-checkbox {
   width: 30px;
   height: 30px;
   background-color: #55ca46;
@@ -2713,6 +2715,13 @@ p {
   top: 12px;
   right: 14px;
 }
+.card2.selected .green-checkbox {
+  visibility: visible;
+}
+.card2.unselected .green-checkbox {
+  visibility: hidden;
+}
+
 
 .card4-img {
   width: 100%;
@@ -6028,6 +6037,7 @@ selection-box-landing.mobile {
   background-color: white;
   padding: 8px 8px 8px 0px;
   z-index: 2;
+  overflow-x: hidden;
   /* border-bottom: 1px solid rgb(180, 180, 180); */
   /* border-top: 2px solid white; */
 }

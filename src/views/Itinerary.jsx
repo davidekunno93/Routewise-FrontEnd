@@ -19,6 +19,7 @@ import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 import ConfirmationModal from '../components/ConfirmationModal'
 import OpeningHoursMap from '../components/OpeningHoursMap'
+import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -1287,8 +1288,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     if (!placeId && address) {
       for (let tripPlace of Object.values(tripStateCopy.places)) {
         if (address === tripPlace.address) {
+          console.log(address)
           let index = tripStateCopy.saved_places.addresses.indexOf(address);
           placeId = tripStateCopy.saved_places.placesIds[index];
+          console.log(placeId)
         }
       }
     }
@@ -1793,38 +1796,38 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
         <div className="flx-c w-100">
 
-        <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`}>
-          <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-r flx-4"}`}>
+          <div className={`${mobileMode ? "inner-wide" : "flx-r w-100"}`}>
+            <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-r flx-4"}`}>
 
-            {/* Itinerary Display */}
-            {selectedPlacesList === "Itinerary" &&
-              <div className="itinerary-c2 flx-2 ws-normal">
-                <div className="page-container96">
-                  <div className="align-all-items my-1 gap-2">
-                    {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
-                    <div ref={tripNameWrapperRef} className="tripName-wrapper flx align-c gap-2">
-                      <span ref={tripNameSpanRef} onClick={() => setTripNameIsUpdating(true)} className={`page-subheading-bold input-text ${tripNameIsUpdating && "hidden-away"}`}>{tripName}</span>
-                      <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
-                      <span onClick={() => setTripNameIsUpdating(true)} className={`material-symbols-outlined large gains-text pointer ${tripNameIsUpdating && "d-none"}`}>edit</span>
+              {/* Itinerary Display */}
+              {selectedPlacesList === "Itinerary" &&
+                <div className="itinerary-c2 flx-2 ws-normal">
+                  <div className="page-container96">
+                    <div className="align-all-items my-1 gap-2">
+                      {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
+                      <div ref={tripNameWrapperRef} className="tripName-wrapper flx align-c gap-2">
+                        <span ref={tripNameSpanRef} onClick={() => setTripNameIsUpdating(true)} className={`page-subheading-bold input-text ${tripNameIsUpdating && "hidden-away"}`}>{tripName}</span>
+                        <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
+                        <span onClick={() => setTripNameIsUpdating(true)} className={`material-symbols-outlined large gains-text pointer ${tripNameIsUpdating && "d-none"}`}>edit</span>
+                      </div>
+                      <Link to='/print-itinerary' className='position-right'><button className="btn-primary-small align-all-items gap-2">
+                        <span className="material-symbols-outlined white-text small">share</span>
+                        Share
+                      </button></Link>
                     </div>
-                    <Link to='/print-itinerary' className='position-right'><button className="btn-primary-small align-all-items gap-2">
-                      <span className="material-symbols-outlined white-text small">share</span>
-                      Share
-                    </button></Link>
-                  </div>
-                  {/* calendar edit */}
-                  <div className="calendar-edit border-bottom-gains flx-r pb-2 align-c gap-2">
-                    <span className="material-symbols-outlined o-50">
-                      calendar_month
-                    </span>
-                    <div className="dark-text font-jakarta">{currentTrip.startDate ? timeFunctions.datify(timeFunctions.datiundash(currentTrip.startDate)) + " - " + timeFunctions.datify(timeFunctions.datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
-                    <p className="m-0">&bull;</p>
-                    <div className="dark-text font-jakarta"><span className="dark-text">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
-                    {/* <p className="m-0 purple-text">Edit</p> */}
-                  </div>
-                  {/* calendar edit end */}
-                  {/* trip flow */}
-                  {/* <div className="tripFlow flx-r">
+                    {/* calendar edit */}
+                    <div className="calendar-edit border-bottom-gains flx-r pb-2 align-c gap-2">
+                      <span className="material-symbols-outlined o-50">
+                        calendar_month
+                      </span>
+                      <div className="dark-text font-jakarta">{currentTrip.startDate ? timeFunctions.datify(timeFunctions.datiundash(currentTrip.startDate)) + " - " + timeFunctions.datify(timeFunctions.datiundash(currentTrip.endDate)) : <p className="m-0">November 8, 2023 &nbsp; - &nbsp; November 11, 2023</p>}</div>
+                      <p className="m-0">&bull;</p>
+                      <div className="dark-text font-jakarta"><span className="dark-text">{currentTrip.tripDuration ? currentTrip.tripDuration : "4"}</span>&nbsp;days</div>
+                      {/* <p className="m-0 purple-text">Edit</p> */}
+                    </div>
+                    {/* calendar edit end */}
+                    {/* trip flow */}
+                    {/* <div className="tripFlow flx-r">
                     <Link to='/dashboard'><p className="m-0 purple-text">Create Trip</p></Link>
                     <span className="material-symbols-outlined">
                       arrow_right
@@ -1835,174 +1838,180 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     </span>
                     <p className="m-0 purple-text bold700">Itinerary</p>
                   </div> */}
-                  {/* trip flow end */}
+                    {/* trip flow end */}
 
-                  {/* trip days */}
-                  <div className="trip-information-div z-1 sticky">
-                    <div className="trip-days flx-r gap-2">
+                    {/* trip days */}
+                    <div className="trip-information-div z-1 sticky">
+                      <div className="trip-days flx-r gap-2">
 
-                      {/* {tripState.day_order.map((dayNum, id) => {
+                        {/* {tripState.day_order.map((dayNum, id) => {
                         const day = tripState.days[dayNum]
                         return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-rounder px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>{day.day_short} {day.date_short}</div>
                       })} */}
-                      {tripState.day_order.map((dayNum, id) => {
-                        const day = tripState.days[dayNum]
-                        return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-column px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>
-                          <p className="m-0">{day.day_short.toUpperCase()}</p>
-                          <p className="m-0">{day.date_short}</p>
-                        </div>
-                      })}
+                        {tripState.day_order.map((dayNum, id) => {
+                          const day = tripState.days[dayNum]
+                          return <div key={id} onClick={() => scrollToSection(id)} className={`dateBox-column px-2 pointer font-jakarta ${parseInt(flowBoxShowingIndex) === id ? "dateBox-rounder-selected" : null} `}>
+                            <p className="m-0">{day.day_short.toUpperCase()}</p>
+                            <p className="m-0">{day.date_short}</p>
+                          </div>
+                        })}
+
+
+                      </div>
+                    </div>
+                    {/* trip days end */}
+                    <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
+
+                    <div className="itinerary-flow mt-3">
+
+
+                      <DragDropContext onDragEnd={onDragEndItinerary}>
+                        {tripState.day_order.map((dayNum, id) => {
+                          const day = tripState.days[dayNum]
+                          const places = day.placeIds.map((placeId) => tripState.places[placeId])
+
+                          return <Suspense fallback={<LoadBox />} >
+                            <div ref={e => refs.current[id] = e} key={id} className="">
+                              <FlowBoxDraggable
+                                key={day.id}
+                                id={id}
+                                tripState={tripState}
+                                setTripState={setTripState}
+                                mapCenter={mapCenter}
+                                addSearchOpen={addSearchOpen}
+                                addSearchClose={addSearchClose}
+                                toggleFlow={toggleFlow}
+                                day={day}
+                                places={places}
+                                // placesFunctions?
+                                removePlace={removePlace}
+                                addPlaceFromFlowBox={addPlaceFromFlowBox}
+                                addPlaceToConfirm={addPlaceToConfirm}
+                                itineraryToSaved={itineraryToSaved}
+                                isSavedPlace={isSavedPlace}
+
+                                country={country}
+                                openConfirmationModal={openConfirmationModal}
+                                confirmationModalRef={confirmationModalRef}
+                              />
+                            </div>
+                          </Suspense>
+                        })}
+                      </DragDropContext>
 
 
                     </div>
-                  </div>
-                  {/* trip days end */}
-                  <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold">Itinerary</p>
-
-                  <div className="itinerary-flow mt-3">
-
-
-                    <DragDropContext onDragEnd={onDragEndItinerary}>
-                      {tripState.day_order.map((dayNum, id) => {
-                        const day = tripState.days[dayNum]
-                        const places = day.placeIds.map((placeId) => tripState.places[placeId])
-
-                        return <Suspense fallback={<LoadBox />} >
-                          <div ref={e => refs.current[id] = e} key={id} className="">
-                            <FlowBoxDraggable
-                              key={day.id}
-                              id={id}
-                              tripState={tripState}
-                              setTripState={setTripState}
-                              mapCenter={mapCenter}
-                              addSearchOpen={addSearchOpen}
-                              addSearchClose={addSearchClose}
-                              toggleFlow={toggleFlow}
-                              day={day}
-                              places={places}
-                              // placesFunctions?
-                              removePlace={removePlace}
-                              addPlaceFromFlowBox={addPlaceFromFlowBox}
-                              addPlaceToConfirm={addPlaceToConfirm}
-                              itineraryToSaved={itineraryToSaved}
-                              isSavedPlace={isSavedPlace}
-
-                              country={country}
-                              openConfirmationModal={openConfirmationModal}
-                              confirmationModalRef={confirmationModalRef}
-                            />
-                          </div>
-                        </Suspense>
-                      })}
-                    </DragDropContext>
 
 
                   </div>
-
-
                 </div>
-              </div>
-            }
-            {/* End Itinerary Display */}
+              }
+              {/* End Itinerary Display */}
 
-            {/* Saved Places Display */}
-            {selectedPlacesList === "Saved Places" &&
-              <div className="itinerary-c2 flx-2 ws-normal">
-                <div className="page-container96">
-                  <p onClick={() => printItinerary()} className="m-0 page-subheading-bold">Saved Places</p>
-                  <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
+              {/* Saved Places Display */}
+              {selectedPlacesList === "Saved Places" &&
+                <div className="itinerary-c2 flx-2 ws-normal">
+                  <div className="page-container96">
+                    <p onClick={() => printItinerary()} className="m-0 page-subheading-bold">Saved Places</p>
+                    <p onClick={() => printSavedPlaces()} className="m-0 page-subsubheading-bold my-2">Here are all of your saved places. Don't forget to add them to your itinerary!</p>
 
-                  <div className="placeCards-itinerary">
-                    {tripState.saved_places && tripState.saved_places.placesIds.length > 0 ?
-                      tripState.saved_places.placesIds.map((placeId, index) => {
-                        let savedPlace = tripState.places[placeId]
-                        let category = savedPlace.category ? savedPlace.category.split(", ")[0].charAt(0).toUpperCase() + savedPlace.category.split(", ")[0].slice(1) : "No Category";
+                    <div className="placeCards-itinerary">
+                      {tripState.saved_places && tripState.saved_places.placesIds.length > 0 ?
+                        tripState.saved_places.placesIds.map((placeId, index) => {
+                          let savedPlace = tripState.places[placeId]
+                          let category = savedPlace.category ? savedPlace.category.split(", ")[0].charAt(0).toUpperCase() + savedPlace.category.split(", ")[0].slice(1) : "No Category";
 
-                        return <div key={index} className="placeCard2 flx-r position-relative">
-                          <div className="placeCard-img-div flx-3">
-                            <img onClick={() => addPlaceToConfirm(savedPlace)} className="placeCard2-img" src={savedPlace.imgURL} />
-                          </div>
-                          <div className="placeCard-body flx-5">
-                            {/* <div className="popUp d-none">{savedPlace.info}</div> */}
-                            <p className="body-title ">{savedPlace.placeName}</p>
-                            <p className="body-category">{category}</p>
-                            {savedPlace.info &&
-                              <>
-                                {savedPlace.info.includes(":") ?
-                                  <OpeningHoursMap openingHoursObject={convertInfoToMap(savedPlace.info)} />
-                                  :
-                                  <p className="body-info">{savedPlace.info}</p>
-                                }
-                              </>
-                            }
-
-                            <p className="body-address">{savedPlace.summary ?? savedPlace.address}</p>
-                          </div>
-                          <div className="placeCard-options py-2h flx-c just-sb align-c">
-
-                            <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
-                              <div onClick={() => { addPlaceToConfirm(savedPlace); closeOptionDropdown(index) }} className="option">
-                                <div className="material-symbols-outlined icon">location_on</div>
-                                <p className="m-0 text">View on map</p>
-                              </div>
-                              <div onClick={() => openDaySelector(savedPlace, "savedToItinerary")} className="option">
-                                <div className="material-symbols-outlined icon">map</div>
-                                <p className="m-0 text">Move to Itinerary</p>
-                              </div>
-                              <div onClick={() => removeFromSavedPlaces(savedPlace.id)} className="option">
-                                <div className="material-symbols-outlined icon red-text">delete</div>
-                                <p className="m-0 text red-text">Remove from list</p>
-                              </div>
+                          return <div key={index} className="placeCard2 flx-r position-relative">
+                            <div className="placeCard-img-div flx-3">
+                              <img onClick={() => addPlaceToConfirm(savedPlace)} className="placeCard2-img" src={savedPlace.imgURL} />
                             </div>
+                            <div className="placeCard-body flx-5">
+                              {/* <div className="popUp d-none">{savedPlace.info}</div> */}
+                              <p className="body-title ">{savedPlace.placeName}</p>
+                              <p className="body-category">{category}</p>
+                              {savedPlace.info &&
+                                <>
+                                  {savedPlace.info.includes(":") ?
+                                    <OpeningHoursMap
+                                      idTree={`saved-${index}`}
+                                      placeInfo={savedPlace.info}
+                                    />
+                                    :
+                                    <p className="body-info">{savedPlace.info}</p>
+                                  }
+                                </>
+                              }
+                              {savedPlace.summary ?
+                                <p className="body-address">{savedPlace.summary}</p>
+                                :
+                                <p className="body-address">{savedPlace.address}</p>
+                              }
+                            </div>
+                            <div className="placeCard-options py-2h flx-c just-sb align-c">
+
+                              <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
+                                <div onClick={() => { addPlaceToConfirm(savedPlace); closeOptionDropdown(index) }} className="option">
+                                  <div className="material-symbols-outlined icon">location_on</div>
+                                  <p className="m-0 text">View on map</p>
+                                </div>
+                                <div onClick={() => openDaySelector(savedPlace, "savedToItinerary")} className="option">
+                                  <div className="material-symbols-outlined icon">map</div>
+                                  <p className="m-0 text">Move to Itinerary</p>
+                                </div>
+                                <div onClick={() => removeFromSavedPlaces(savedPlace.id)} className="option">
+                                  <div className="material-symbols-outlined icon red-text">delete</div>
+                                  <p className="m-0 text red-text">Remove from list</p>
+                                </div>
+                              </div>
 
 
-                            <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
-                              more_vert
-                            </span>
-                            <span onClick={() => removeFromSavedPlaces(savedPlace.id)} className="material-symbols-outlined gray-text showOnHover-50 pointer">
-                              delete
-                            </span>
+                              <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
+                                more_vert
+                              </span>
+                              <span onClick={() => removeFromSavedPlaces(savedPlace.id)} className="material-symbols-outlined gray-text showOnHover-50 pointer">
+                                delete
+                              </span>
+                            </div>
                           </div>
+                        })
+                        :
+                        <div className="add-places-card">
+                          <span className="material-symbols-outlined xx-large">
+                            bookmark
+                          </span>
+                          <p className="large bold700 my-1 o-50">Save places</p>
+                          <p className="m-0 w-60 center-text o-50 addPlace-text">Want to revisit places that aren't in your itinerary? Add them to your saved places</p>
                         </div>
-                      })
-                      :
-                      <div className="add-places-card">
-                        <span className="material-symbols-outlined xx-large">
-                          bookmark
-                        </span>
-                        <p className="large bold700 my-1 o-50">Save places</p>
-                        <p className="m-0 w-60 center-text o-50 addPlace-text">Want to revisit places that aren't in your itinerary? Add them to your saved places</p>
-                      </div>
-                    }
+                      }
+
+                    </div>
 
                   </div>
-
                 </div>
-              </div>
-            }
-            {/* End Saved Places Display */}
+              }
+              {/* End Saved Places Display */}
 
-            {/* Suggested Places Display */}
-            {selectedPlacesList === "Suggested Places" &&
-              <div className="itinerary-c2 flx-2 ws-normal">
-                <div className="page-container96">
-                  <p className="m-0 page-subheading-bold">Suggested Places</p>
+              {/* Suggested Places Display */}
+              {selectedPlacesList === "Suggested Places" &&
+                <div className="itinerary-c2 flx-2 ws-normal">
+                  <div className="page-container96">
+                    <p className="m-0 page-subheading-bold">Suggested Places</p>
 
-                  <p className="page-subsubheading-bold m-0 my-2">Here are some places in <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span> that you might like based on your travel preferences</p>
+                    <p className="page-subsubheading-bold m-0 my-2">Here are some places in <span className="purple-text">{currentTrip.city ? currentTrip.city : "*city*"}</span> that you might like based on your travel preferences</p>
 
-                  <div className="suggested-header-div sticky z-1">
-                    {Object.values(userPreferences).includes(true) ?
-                      <div className="suggestedCategories flx-r gap-2 my-2">
-                        <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className={`dateBox-rounder px-2 pointer ${suggestedPlacesFilter ? "unselected" : "selected"}`}>All</div>
-                        {Object.entries(userPreferences).map((userPreference, index) => {
-                          let category = userPreference[0];
-                          let selected = userPreference[1];
-                          let categoryTitle = mapBoxCategoryKey[category].categoryTitle
-                          return selected && <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, categoryTitle)} className={`dateBox-rounder large px-2 pointer ${suggestedPlacesFilter === categoryTitle ? "selected" : "unselected"}`}>{categoryTitle}</div>
-                        })}
-                      </div>
-                      : null}
-                    {/* {Object.values(userPreferences).includes(true) ?
+                    <div className="suggested-header-div sticky z-1">
+                      {Object.values(userPreferences).includes(true) ?
+                        <div className="suggestedCategories flx-r gap-2 my-2">
+                          <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className={`dateBox-rounder px-2 pointer ${suggestedPlacesFilter ? "unselected" : "selected"}`}>All</div>
+                          {Object.entries(userPreferences).map((userPreference, index) => {
+                            let category = userPreference[0];
+                            let selected = userPreference[1];
+                            let categoryTitle = mapBoxCategoryKey[category].categoryTitle
+                            return selected && <div key={index} id={`suggestedCategory-${index + 2}`} onClick={() => updateSuggestedPlacesFilter(index + 2, categoryTitle)} className={`dateBox-rounder large px-2 pointer ${suggestedPlacesFilter === categoryTitle ? "selected" : "unselected"}`}>{categoryTitle}</div>
+                          })}
+                        </div>
+                        : null}
+                      {/* {Object.values(userPreferences).includes(true) ?
                   <div className="suggestedCategories flx-r gap-4 my-2">
                     <div id='suggestedCategory-1' onClick={() => updateSuggestedPlacesFilter(1, "All")} className={`option px-2 pointer ${suggestedPlacesFilter ? "unselected" : "selecte"}`}>
                       <span className="material-symbols-outlined xx-large mt-1 o-50">
@@ -2022,22 +2031,22 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     })}
                   </div>
                   : null} */}
-                    <div className="flx-r align-c">
-                      {blacklist.length > 0 &&
-                        <div onClick={() => undoHidePlace()} className="flx-r mt-2 align-c onHover-fadelite">
-                          <span className="material-symbols-outlined purple-text medium mr-1">
-                            undo
-                          </span>
-                          <p className="m-0 purple-text pointer small">Undo Hide</p>
-                        </div>
-                      }
-                      <Link to='/survey-update' state={{ returnPage: "/itinerary/suggested-places" }} className='position-right'><p className="m-0 purple-text pointer my-2">Update Travel Preferences</p></Link>
+                      <div className="flx-r align-c">
+                        {blacklist.length > 0 &&
+                          <div onClick={() => undoHidePlace()} className="flx-r mt-2 align-c onHover-fadelite">
+                            <span className="material-symbols-outlined purple-text medium mr-1">
+                              undo
+                            </span>
+                            <p className="m-0 purple-text pointer small">Undo Hide</p>
+                          </div>
+                        }
+                        <Link to='/survey-update' state={{ returnPage: "/itinerary/suggested-places" }} className='position-right'><p className="m-0 purple-text pointer my-2 smedium">Update Travel Preferences</p></Link>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="placeCards-itinerary">
+                    <div className="placeCards-itinerary">
 
-                    {/* {userInterestsTEST.length === 0 ?
+                      {/* {userInterestsTEST.length === 0 ?
                   <div className="add-places-card">
                     <span className="material-symbols-outlined xx-large">
                       map
@@ -2045,74 +2054,88 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     <p className="large bold700 my-1 o-50">0 suggested places</p>
                     <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
                   </div> : null} */}
-                    {!Object.values(userPreferences).includes(true) &&
-                      <div className="add-places-card">
-                        <span className="material-symbols-outlined xx-large">
-                          map
-                        </span>
-                        <p className="large bold700 my-1 o-50">0 suggested places</p>
-                        <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
-                      </div>
-                    }
-                    {Object.values(userPreferences).includes(true) && suggestedPlaces.places.length === 0 &&
-                      <div className="loadingBox-inline">
-                        <Loading noMascot={true} innerText={"Loading..."} />
-                      </div>
-                    }
-                    {suggestedPlaces.places.length > 0 &&
-                      suggestedPlaces.places.map((suggestedPlace, index) => {
-                        let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
-                        let blacklisted = blacklist.includes(suggestedPlace.placeName) ? true : false
-                        let added = false
+                      {!Object.values(userPreferences).includes(true) &&
+                        <div className="add-places-card">
+                          <span className="material-symbols-outlined xx-large">
+                            map
+                          </span>
+                          <p className="large bold700 my-1 o-50">0 suggested places</p>
+                          <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p>
+                        </div>
+                      }
+                      {Object.values(userPreferences).includes(true) && suggestedPlaces.places.length === 0 &&
+                        <div className="loadingBox-inline">
+                          <Loading noMascot={true} innerText={"Loading..."} />
+                        </div>
+                      }
+                      {suggestedPlaces.places.length > 0 &&
+                        suggestedPlaces.places.map((suggestedPlace, index) => {
+                          let filter = suggestedPlacesFilter ? suggestedPlacesFilter : false
+                          let blacklisted = blacklist.includes(suggestedPlace.placeName) ? true : false
+                          let added = false
 
-                        if (!suggestedPlacesFilter) {
-                          return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+                          if (!suggestedPlacesFilter) {
+                            return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
 
-                            <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
-                              <p className="m-0 purple-text">Added!</p>
-                            </div>
-                            <div className="placeCard-img-div flx-3">
-                              <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
-                            </div>
-                            <div className="placeCard-body flx-5">
-                              {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                              <p className="body-title ">{suggestedPlace.placeName}</p>
-                              <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                              <p className="body-address">{suggestedPlace.address}</p>
-                            </div>
-                            <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
-                              {/* suggested place popup */}
-                              <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden">
-                                <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
-                                  <span className="material-symbols-outlined icon">
-                                    location_on
-                                  </span>
-                                  <p className="m-0 text">View on Map</p>
-                                </div>
-                                <div onClick={() => openDaySelector(suggestedPlace, "addPlace", closeSuggestedPlacePopUp, index)} className="option">
-                                  <span className="material-symbols-outlined icon">
-                                    map
-                                  </span>
-                                  <p className="m-0 text">Add to itinerary</p>
-                                </div>
-                                {isSavedPlace(suggestedPlace.address) ?
-                                  <div onClick={() => { addToSavedPlaces(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
-                                    <span className="material-symbols-outlined icon red-text">
-                                      bookmark
-                                    </span>
-                                    <p className="m-0 text red-text">Remove from Saved Places</p>
-                                  </div>
+                              <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
+                                <p className="m-0 purple-text">Added!</p>
+                              </div>
+                              <div className="placeCard-img-div flx-3">
+                                <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
+                              </div>
+                              <div className="placeCard-body flx-5">
+                                {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
+                                <p className="body-title ">{suggestedPlace.placeName}</p>
+                                <CategoryAndRating
+                                  place={suggestedPlace}
+                                />
+                                {suggestedPlace.info.includes(":") ?
+                                  <OpeningHoursMap
+                                    idTree={`suggested-${index}`}
+                                    placeInfo={suggestedPlace.info}
+                                  />
                                   :
-                                  <div onClick={() => { addToSavedPlaces(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
-                                    <span className="material-symbols-outlined icon">
-                                      bookmark
-                                    </span>
-                                    <p className="m-0 text">Add to Saved Places</p>
-                                  </div>
+                                  <div className="body-info">{suggestedPlace.info}</div>
+                                }
+                                {suggestedPlace.summary ?
+                                  <p className="body-address">{suggestedPlace.summary}</p>
+                                  :
+                                  <p className="body-address">{suggestedPlace.address}</p>
                                 }
                               </div>
-                              {/* End suggested place popup */}
-                              {/* {added ?
+                              <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
+                                {/* suggested place popup */}
+                                <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden" style={{ width: isSavedPlace(suggestedPlace) ? 236 : 200 }}>
+                                  <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
+                                    <span className="material-symbols-outlined icon">
+                                      location_on
+                                    </span>
+                                    <p className="m-0 text">View on Map</p>
+                                  </div>
+                                  <div onClick={() => openDaySelector(suggestedPlace, "addPlace", closeSuggestedPlacePopUp, index)} className="option">
+                                    <span className="material-symbols-outlined icon">
+                                      map
+                                    </span>
+                                    <p className="m-0 text">Add to itinerary</p>
+                                  </div>
+                                  {isSavedPlace(suggestedPlace.address) ?
+                                    <div onClick={() => { removeFromSavedPlaces(null, suggestedPlace.address); closeSuggestedPlacePopUp(index) }} className="option">
+                                      <span className="material-symbols-outlined icon red-text">
+                                        bookmark
+                                      </span>
+                                      <p className="m-0 text red-text">Remove from Saved Places</p>
+                                    </div>
+                                    :
+                                    <div onClick={() => { addToSavedPlaces(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
+                                      <span className="material-symbols-outlined icon">
+                                        bookmark
+                                      </span>
+                                      <p className="m-0 text">Add to Saved Places</p>
+                                    </div>
+                                  }
+                                </div>
+                                {/* End suggested place popup */}
+                                {/* {added ?
                           <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
                             <span className="material-symbols-outlined m-auto mt-h medium white-text">
                               done
@@ -2121,219 +2144,219 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                           : 
                           }
                           */}
-                              <div id={`suggestedPlace-btn-${index}`} onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
-                                <span className="material-symbols-outlined m-auto large">
-                                  add
-                                </span>
-                              </div>
-
-                              <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                visibility_off
-                              </span>
-                            </div>
-                          </div> : null
-                        } else {
-                          if (suggestedPlace.categoryTitle === filter) {
-
-                            return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
-
-                              <div className="placeCard-img-div flx-3">
-                                <img className="placeCard2-img" src={suggestedPlace.imgURL} />
-                              </div>
-                              <div className="placeCard-body flx-5">
-                                {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                                <p className="body-title ">{suggestedPlace.placeName}</p>
-                                <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
-                                <p className="body-address">{suggestedPlace.address}</p>
-                              </div>
-                              <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
-                                {/* filtered suggested place popup */}
-                                <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
-                                  <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
-                                    <span className="material-symbols-outlined">
-                                      map
-                                    </span>
-                                    <p className="m-0">Add to Map</p>
-                                  </div>
-                                  <div className="option">
-                                    <span className="material-symbols-outlined">
-                                      bookmark
-                                    </span>
-                                    <p className="m-0">Add to Saved Places</p>
-                                  </div>
+                                <div id={`suggestedPlace-btn-${index}`} onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-dark">
+                                  <span className="material-symbols-outlined m-auto large">
+                                    add
+                                  </span>
                                 </div>
-                                {/* End filtered suggested place popup */}
-                                {added ?
-                                  <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
-                                    <span className="material-symbols-outlined m-auto mt-h medium white-text">
-                                      done
-                                    </span>
-                                  </div>
-                                  :
-                                  <div onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
-                                    <span className="material-symbols-outlined m-auto medium">
-                                      add
-                                    </span>
-                                  </div>}
 
-                                <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
                                   visibility_off
                                 </span>
                               </div>
                             </div> : null
+                          } else {
+                            if (suggestedPlace.categoryTitle === filter) {
+
+                              return suggestedPlace.placeName && !blacklisted ? <div key={index} className="placeCard2 position-relative flx-r my-2">
+
+                                <div className="placeCard-img-div flx-3">
+                                  <img className="placeCard2-img" src={suggestedPlace.imgURL} />
+                                </div>
+                                <div className="placeCard-body flx-5">
+                                  {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
+                                  <p className="body-title ">{suggestedPlace.placeName}</p>
+                                  <p className="body-info pointer">{suggestedPlace.categoryTitle}</p>
+                                  <p className="body-address">{suggestedPlace.address}</p>
+                                </div>
+                                <div className="placeCard-starOrDelete position-relative flx-c just-sb align-c">
+                                  {/* filtered suggested place popup */}
+                                  <div id={`suggestedPlace-popUp-${index}`} className="placeCard-popUp hidden-o">
+                                    <div onClick={() => { addPlaceToConfirm(suggestedPlace); closeSuggestedPlacePopUp(index) }} className="option">
+                                      <span className="material-symbols-outlined">
+                                        map
+                                      </span>
+                                      <p className="m-0">Add to Map</p>
+                                    </div>
+                                    <div className="option">
+                                      <span className="material-symbols-outlined">
+                                        bookmark
+                                      </span>
+                                      <p className="m-0">Add to Saved Places</p>
+                                    </div>
+                                  </div>
+                                  {/* End filtered suggested place popup */}
+                                  {added ?
+                                    <div onClick={() => { removePlace(addedPlaceAddresses.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
+                                      <span className="material-symbols-outlined m-auto mt-h medium white-text">
+                                        done
+                                      </span>
+                                    </div>
+                                    :
+                                    <div onClick={() => { toggleSuggestedPlacePopUp(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
+                                      <span className="material-symbols-outlined m-auto medium">
+                                        add
+                                      </span>
+                                    </div>}
+
+                                  <span className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
+                                    visibility_off
+                                  </span>
+                                </div>
+                              </div> : null
+                            }
                           }
-                        }
-                      })}
-
-
-                  </div>
-                </div>
-              </div>
-            }
-            {/* End Suggeseted Places Display */}
-          </div>
-
-
-
-
-
-          <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-5"}`}>
-            {/* Side Map display */}
-            <div className="itinerary-c3 ws-normal sticky">
-
-              <div className={`sticky ${mobileMode && "flx"}`}>
-
-                <div className={`it-map position-relative ${mobileMode && "m-auto"}`}>
-
-                  <div id='daySelection' className="daySelection map d-none">
-                    <div className="day-selector">
-                      <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
-                      {/* <div className="daySelected position-absolute white-bg">
-                    <p className="m-0 mt-3 mb-2 bold700">Added!</p>
-                    <img className="daySelected-img" src={placeToConfirm.imgURL} />
-                    <div className="daySelected-text"><span className="purple-text bold700">{placeToConfirm.placeName}</span> was added to <span className="purple-text bold700">DAY NAME</span> in your itinerary!</div>
-                  </div> */}
-                      <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
-                        close
-                      </span>
-                      <div className="titleDiv">
-                        <p className="title">Add to</p>
-                      </div>
-                      {tripState.day_order.map((dayNum, i) => {
-                        const day = tripState.days[dayNum]
-                        // const lightbulb_days = placeToConfirm ? placeToConfirm.lightbulb_days : []
-                        // const lightbulb = lightbulb_days.includes(dayNum) ? true : false
-                        return <div id='day-option' onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="day-option">
-                          {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
-                          <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
-                          <div className="text">
-                            <p className="m-0 bold500"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
-                            {/* <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p> */}
-                          </div>
-                          <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
-                            <div className="tooltip">This day is recommended because it has the closest activities!</div>
-                            {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
-                            {/* <span class="material-symbols-outlined m-auto gray-text normal-cursor">
-                              emoji_objects
-                            </span> */}
-                            <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
-                          </div>
-                        </div>
-                      })}
+                        })}
 
 
                     </div>
                   </div>
-
-
-
-
-                  {placeToConfirm &&
-                    <PlaceToConfirmCard
-                      addToSavedPlaces={placeFuntions.addToSavedPlaces}
-                      removeFromSavedPlaces={removeFromSavedPlaces}
-                      // addToItinerary={addPlace}
-                      openDaySelection={openDaySelection}
-                      removePlace={removePlace}
-                      placeToConfirm={placeToConfirm}
-                      clearPlaceToConfirm={clearPlaceToConfirm}
-                      addressList={itineraryAddressList}
-                      savedAddressList={tripState.saved_places.addresses}
-
-                      forItinerary
-                    />
-                    // <div id='placeToConfirmCard' className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
-                    //   <div className="placeCard-PTC w-97 position-relative flx-r my-2">
-
-                    //     <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
-                    //       close
-                    //     </span>
-
-                    //     <div onClick={() => toggleSavedPlaces(placeToConfirm)} className="saveBtn">
-                    //       <img src={`${isSavedPlace(placeToConfirm.address) ? "https://i.imgur.com/o7IoL2K.png" : "https://i.imgur.com/TcS7RjD.png"}`} alt="" className={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "icon-img-selected" : "icon-img"}`} />
-                    //       {/* <span className={`material-symbols-outlined white-text ${savedPlaces.addresses.includes(placeToConfirm.address) ? "purple-text" : null}`}>
-                    //     bookmark
-                    //   </span> */}
-
-                    //     </div>
-
-                    //     <div className="placeCard-img-div flx-1">
-                    //       <img className="placeCard-img" src={placeToConfirm.imgURL} />
-                    //     </div>
-                    //     <div ref={ptcCardBodyRef} className="placeToConfirmCard-body flx-2">
-                    //       <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
-                    //       <p className="body-title-PTC">{placeToConfirm.placeName.length > charLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit) + "..." : placeToConfirm.placeName}</p>
-                    //       {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
-                    //       <p className="body-info-PTC pointer mb-1">{placeToConfirm.category ? placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1) : "No Category"}</p>
-                    //       <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
-
-                    //       <div className="flx-r position-bottom">
-                    //         <div onClick={() => openDaySelection()} className="add-place-btn onHover-fadelite">
-                    //           <div className="flx pointer mx-2">
-                    //             <span className="material-symbols-outlined m-auto medium purple-text">
-                    //               add
-                    //             </span>
-                    //           </div>
-                    //           <p className="m-0 purple-text">Add to itinerary</p>
-                    //         </div>
-                    //       </div>
-
-                    //       {/* <div className="flx">
-                    //     <div className="addTab">
-                    //       <span className="material-symbols-outlined purple-text large">
-                    //         add
-                    //       </span>
-                    //       <p className="m-0 purple-text">Add to places</p>
-                    //     </div>
-                    //   </div> */}
-
-                    //     </div>
-                    //   </div>
-                    // </div>
-                  }
-
-
-
-                  {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
-                  {/* <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} /> */}
-                  <GoogleMapBox
-                    tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })}
-                    mapCenter={mapCenter}
-                    mapCenterToggle={mapCenterToggle}
-                    addPlaceToConfirm={addPlaceToConfirm}
-                    markers={markers}
-                    setMarkers={setMarkers}
-                    showPlaceAddedBox={showPlaceAddedBox}
-                    placeAddedBoxText={"Added to Itinerary!"}
-                    setShowPlaceAddedBox={setShowPlaceAddedBox}
-                    markerColors
-                  />
-
                 </div>
+              }
+              {/* End Suggeseted Places Display */}
+            </div>
 
 
-                {/* Suggested places */}
-                {/* <div className="page-subheading-bold my-3 dark-text">Suggested places</div>
+
+
+
+            <div className={`${mobileMode ? "carousel-item-pagewide" : "flx-5"}`}>
+              {/* Side Map display */}
+              <div className="itinerary-c3 ws-normal sticky">
+
+                <div className={`sticky ${mobileMode && "flx"}`}>
+
+                  <div className={`it-map position-relative ${mobileMode && "m-auto"}`}>
+
+                    <div id='daySelection' className="daySelection map d-none">
+                      <div className="day-selector">
+                        <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
+                        {/* <div className="daySelected position-absolute white-bg">
+                    <p className="m-0 mt-3 mb-2 bold700">Added!</p>
+                    <img className="daySelected-img" src={placeToConfirm.imgURL} />
+                    <div className="daySelected-text"><span className="purple-text bold700">{placeToConfirm.placeName}</span> was added to <span className="purple-text bold700">DAY NAME</span> in your itinerary!</div>
+                  </div> */}
+                        <span onClick={() => closeDaySelection()} className="closeBtn2 material-symbols-outlined position-absolute x-large color-gains">
+                          close
+                        </span>
+                        <div className="titleDiv">
+                          <p className="title">Add to</p>
+                        </div>
+                        {tripState.day_order.map((dayNum, i) => {
+                          const day = tripState.days[dayNum]
+                          // const lightbulb_days = placeToConfirm ? placeToConfirm.lightbulb_days : []
+                          // const lightbulb = lightbulb_days.includes(dayNum) ? true : false
+                          return <div id='day-option' onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="day-option">
+                            {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
+                            <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
+                            <div className="text">
+                              <p className="m-0 bold500"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
+                              {/* <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p> */}
+                            </div>
+                            <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
+                              <div className="tooltip">This day is recommended because it has the closest activities!</div>
+                              {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
+                              {/* <span class="material-symbols-outlined m-auto gray-text normal-cursor">
+                              emoji_objects
+                            </span> */}
+                              <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
+                            </div>
+                          </div>
+                        })}
+
+
+                      </div>
+                    </div>
+
+
+
+
+                    {placeToConfirm &&
+                      <PlaceToConfirmCard
+                        addToSavedPlaces={placeFuntions.addToSavedPlaces}
+                        removeFromSavedPlaces={removeFromSavedPlaces}
+                        // addToItinerary={addPlace}
+                        openDaySelection={openDaySelection}
+                        removePlace={removePlace}
+                        placeToConfirm={placeToConfirm}
+                        clearPlaceToConfirm={clearPlaceToConfirm}
+                        addressList={itineraryAddressList}
+                        savedAddressList={tripState.saved_places.addresses}
+
+                        forItinerary
+                      />
+                      // <div id='placeToConfirmCard' className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>
+                      //   <div className="placeCard-PTC w-97 position-relative flx-r my-2">
+
+                      //     <span onClick={() => clearPlaceToConfirm()} className="closeBtn-PTC material-symbols-outlined position-absolute showOnHover x-large color-gains">
+                      //       close
+                      //     </span>
+
+                      //     <div onClick={() => toggleSavedPlaces(placeToConfirm)} className="saveBtn">
+                      //       <img src={`${isSavedPlace(placeToConfirm.address) ? "https://i.imgur.com/o7IoL2K.png" : "https://i.imgur.com/TcS7RjD.png"}`} alt="" className={`${savedPlaces.addresses.includes(placeToConfirm.address) ? "icon-img-selected" : "icon-img"}`} />
+                      //       {/* <span className={`material-symbols-outlined white-text ${savedPlaces.addresses.includes(placeToConfirm.address) ? "purple-text" : null}`}>
+                      //     bookmark
+                      //   </span> */}
+
+                      //     </div>
+
+                      //     <div className="placeCard-img-div flx-1">
+                      //       <img className="placeCard-img" src={placeToConfirm.imgURL} />
+                      //     </div>
+                      //     <div ref={ptcCardBodyRef} className="placeToConfirmCard-body flx-2">
+                      //       <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
+                      //       <p className="body-title-PTC">{placeToConfirm.placeName.length > charLimit ? placeToConfirm.placeName.slice(0, placeToConfirmCardTitleCharLimit) + "..." : placeToConfirm.placeName}</p>
+                      //       {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
+                      //       <p className="body-info-PTC pointer mb-1">{placeToConfirm.category ? placeToConfirm.category.split(',')[0].charAt(0).toUpperCase() + placeToConfirm.category.split(',')[0].slice(1) : "No Category"}</p>
+                      //       <p className="body-address-PTC m-0">{placeToConfirm.address}</p>
+
+                      //       <div className="flx-r position-bottom">
+                      //         <div onClick={() => openDaySelection()} className="add-place-btn onHover-fadelite">
+                      //           <div className="flx pointer mx-2">
+                      //             <span className="material-symbols-outlined m-auto medium purple-text">
+                      //               add
+                      //             </span>
+                      //           </div>
+                      //           <p className="m-0 purple-text">Add to itinerary</p>
+                      //         </div>
+                      //       </div>
+
+                      //       {/* <div className="flx">
+                      //     <div className="addTab">
+                      //       <span className="material-symbols-outlined purple-text large">
+                      //         add
+                      //       </span>
+                      //       <p className="m-0 purple-text">Add to places</p>
+                      //     </div>
+                      //   </div> */}
+
+                      //     </div>
+                      //   </div>
+                      // </div>
+                    }
+
+
+
+                    {/* <OpenMap markers={markers} newPlaceMarker={newPlaceMarker} mapCenter={currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]} /> */}
+                    {/* <OpenMapBox mapCenter={mapCenter} mapCenterToggle={mapCenterToggle} newPlaceMarker={newPlaceMarker} markers={markers} addPlaceToConfirm={addPlaceToConfirm} /> */}
+                    <GoogleMapBox
+                      tripMapCenter={currentTrip.geocode ? geoToLatLng(currentTrip.geocode) : ({ lat: 51.50735, lng: -0.12776 })}
+                      mapCenter={mapCenter}
+                      mapCenterToggle={mapCenterToggle}
+                      addPlaceToConfirm={addPlaceToConfirm}
+                      markers={markers}
+                      setMarkers={setMarkers}
+                      showPlaceAddedBox={showPlaceAddedBox}
+                      placeAddedBoxText={"Added to Itinerary!"}
+                      setShowPlaceAddedBox={setShowPlaceAddedBox}
+                      markerColors
+                    />
+
+                  </div>
+
+
+                  {/* Suggested places */}
+                  {/* <div className="page-subheading-bold my-3 dark-text">Suggested places</div>
 
             <div className="hideOverFlow flx-c">
 
@@ -2386,34 +2409,34 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
 
 
+                </div>
+
+
+                <div className="empty-6"></div>
+
+
               </div>
+              {/* End Side Map display */}
+            </div>
+
+          </div>
 
 
-              <div className="empty-6"></div>
+          <div className="flx-r">
+            <div className="position-right mr-5">
+
+              {/* Completion buttons */}
+              < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
+                <Link to='/dashboard'><button className="btn-outlineflex center-text mx-2">Back to Dashboard</button></Link>
+                <Link to='/print-itinerary'><button className="btn-primaryflex w-2h center-text mx-2">Share Itinerary</button></Link>
+              </div >
+              {/* End Completion buttons */}
+
+              <h1 className='empty-3'></h1>
 
 
             </div>
-            {/* End Side Map display */}
           </div>
-
-        </div>
-
-
-        <div className="flx-r">
-          <div className="position-right mr-5">
-
-            {/* Completion buttons */}
-            < div className="save-btn-row flx-r flx-wrap just-ce mt-5" >
-              <Link to='/dashboard'><button className="btn-outlineflex center-text mx-2">Back to Dashboard</button></Link>
-              <Link to='/print-itinerary'><button className="btn-primaryflex w-2h center-text mx-2">Share Itinerary</button></Link>
-            </div >
-            {/* End Completion buttons */}
-
-            <h1 className='empty-3'></h1>
-
-
-          </div>
-        </div>
 
         </div>
       </div >

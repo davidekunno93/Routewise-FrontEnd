@@ -8,10 +8,12 @@ import { Fade, Slide } from 'react-awesome-reveal';
 export const SurveyUpdate = () => {
     const location = useLocation();
     const state = location.state;
+    // returnPage captures the page to return to if applicable
     const returnPage = state ? state.returnPage : null;
     const { user, setUser } = useContext(DataContext);
     const { mobileMode, mobileModeNarrow } = useContext(DataContext);
-    const { userPreferences, setUserPreferences } = useContext(DataContext);
+    const { userPreferences, setUserPreferences, userPreferenceItems } = useContext(DataContext);
+    // the userPreferences being set on the page before updating the actual userPreferences
     const [categories, setCategories] = useState(
         { ...userPreferences }
         // {
@@ -30,26 +32,9 @@ export const SurveyUpdate = () => {
 
     useEffect(() => {
         if (user) {
-            console.log(user)
+            console.log(user);
+            console.log(userPreferences);
         }
-        // get the prefs in userPrefs, get the ids of those that have value of true
-        // let userPrefArr = Object.entries(userPreferences)
-        // // console.log(userPrefArr)
-        // let i = 0
-        // let true_indices = []
-        // for (let [key, value] of userPrefArr) {
-        //     if (value) {
-        //         console.log(key)
-        //         true_indices.push(i)
-        //     }
-        //     i++
-        // }
-        // // loop thru those ids and run toggleSelection func on those ids
-        // for (let i=0;i<true_indices.length;i++) {
-        //     // toggleSelection(true_indices[i])
-        // }
-
-        // console.log(render)
     }, [])
 
 
@@ -110,50 +95,67 @@ export const SurveyUpdate = () => {
 
 
     // category selection modification
-    const toggleSelection = (id) => {
-        const card = document.getElementById(`${id}-card2`)
-        const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        if (!card.classList.contains('selected')) {
-            // card.classList.replace('card2', 'card2-selected')
-            // greenCheck.classList.remove('d-none')
-            addToCategories(id)
-        } else if (card.classList.contains('selected')) {
-            card.classList.remove('selected')
-            greenCheck.classList.add('d-none')
-            removeFromCategories(id)
+    const toggleSelection = (userPreference) => {
+        let categoryCopy = { ...categories };
+        let maxCategoryErrorMessage = document.getElementById('maxCategoryError');
+
+        if (categoryCopy[userPreference] === true) {
+            categoryCopy[userPreference] = false;
+            setCategories(categoryCopy);
+        } else if (categoryCopy[userPreference] === false) {
+            let selectedCategoryCount = Object.values(categories).filter(bool => bool === true).length;
+            // userPreferences max limit = 3
+            if (selectedCategoryCount >= 3) {
+                maxCategoryErrorMessage.classList.remove('d-none');
+            } else {
+                categoryCopy[userPreference] = true;
+                setCategories(categoryCopy);
+            };
         }
-    }
-
-    function wait(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms))
-    }
 
 
-    const addToCategories = (id) => {
-        let categoriesCopy = { ...categories };
-        let category_list = Object.keys(categories);
-        let category_booleans = Object.values(categories);
-        const card = document.getElementById(`${id}-card2`)
-        const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        console.log(category_list[id])
-        let true_count = category_booleans.filter(val => val === true).length;
-        let maxCategoryError = document.getElementById('maxCategoryError')
-        if (true_count > 2) {
-            maxCategoryError.classList.remove('d-none')
-            // console.log('max interests reached')
-        } else {
-            card.classList.add('selected')
-            greenCheck.classList.remove('d-none')
-            categoriesCopy[category_list[id]] = true;
-            setCategories(categoriesCopy);
-        }
+        // const card = document.getElementById(`${id}-card2`)
+        // const greenCheck = document.getElementById(`${id}-green-checkbox`)
+        // if (!card.classList.contains('selected')) {
+        //     addToCategories(id)
+        // } else if (card.classList.contains('selected')) {
+        //     card.classList.remove('selected')
+        //     greenCheck.classList.add('d-none')
+        //     removeFromCategories(id)
+        // }
     }
-    const removeFromCategories = (id) => {
-        let categoriesCopy = { ...categories };
-        let category_list = Object.keys(categories);
-        categoriesCopy[category_list[id]] = false;
-        setCategories(categoriesCopy);
-    }
+
+    // function wait(ms) {
+    //     return new Promise((resolve) => setTimeout(resolve, ms))
+    // }
+
+
+    // const addToCategories = (id) => {
+    //     let categoriesCopy = { ...categories };
+    //     let category_list = Object.keys(categories);
+    //     let category_booleans = Object.values(categories);
+    //     const card = document.getElementById(`${id}-card2`)
+    //     const greenCheck = document.getElementById(`${id}-green-checkbox`)
+    //     console.log(category_list[id])
+
+    //     let true_count = category_booleans.filter(val => val === true).length;
+    //     let maxCategoryErrorMessage = document.getElementById('maxCategoryError');
+    //     if (true_count > 2) {
+    //         maxCategoryErrorMessage.classList.remove('d-none')
+    //         // console.log('max interests reached')
+    //     } else {
+    //         card.classList.add('selected')
+    //         greenCheck.classList.remove('d-none')
+    //         categoriesCopy[category_list[id]] = true;
+    //         setCategories(categoriesCopy);
+    //     }
+    // }
+    // const removeFromCategories = (id) => {
+    //     let categoriesCopy = { ...categories };
+    //     let category_list = Object.keys(categories);
+    //     categoriesCopy[category_list[id]] = false;
+    //     setCategories(categoriesCopy);
+    // }
 
 
     const setfb = async () => {
@@ -169,6 +171,7 @@ export const SurveyUpdate = () => {
             spa: false,
             entertainment: false,
             arts: false,
+            nightclub: false,
             uid: "testing"
         })
     }
@@ -235,18 +238,24 @@ export const SurveyUpdate = () => {
                     error
                 </span></span></p>
                 <div className="cards flx-r flx-wrap just-ce">
-                    {cards2.map((card2, index) => {
-                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className={`card2 ${mobileModeNarrow && "flex"} ${render[index] ? "selected" : ""} mx2 my-3 position-relative`}>
-                            <div id={`${index}-green-checkbox`} className={`green-checkbox ${render[index] ? null : "d-none"}`}>
+                    {userPreferenceItems.order.map((userPreference, index) => {
+                        let card = userPreferenceItems.cards[userPreference];
+                        return <div
+                            onClick={() => toggleSelection(userPreference)}
+                            key={index}
+                            // id={`${index}-card2`}
+                            className={`card2 ${categories[userPreference] ? "selected" : "unselected"} ${mobileModeNarrow && "flex"} mx2 my-3 position-relative`}
+                        >
+                            <div className="green-checkbox">
                                 <span className="material-symbols-outlined white-text m-auto">
                                     check
                                 </span>
                             </div>
                             <div className="card2-imgDiv">
-                                <img src={card2.imgUrl} alt="" className="card2-img" />
+                                <img src={card.imgUrl} alt="" className="card2-img" />
                             </div>
                             <div className="card2-text flx-1">
-                                <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
+                                <div className="card2-title center-text w-80 m-auto dark-text">{card.title}</div>
                             </div>
                         </div>
                     })}

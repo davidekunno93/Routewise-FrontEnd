@@ -1124,7 +1124,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                             </div>
                                         }
 
-                                        <Link to='/survey-update' state={{ returnPage: "/add-places/suggested-places" }} className='position-right'><p className={`m-0 purple-text pointer my-2 ${mobileModeNarrow && "smedium"}`}>Update Travel Preferences</p></Link>
+                                        <Link to='/survey-update' state={{ returnPage: "/add-places/suggested-places" }} className='position-right'><p className={`m-0 purple-text pointer my-2 smedium ${mobileModeNarrow && "smedium"}`}>Update Travel Preferences</p></Link>
                                     </div>
                                     <div className={`placeCards ${suggestedPlaces.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>

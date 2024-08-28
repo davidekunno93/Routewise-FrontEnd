@@ -203,6 +203,8 @@ function App() {
     // console.log(userPreferences);
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let categoryQueries = getCategoryQueries(selectedPreferences)
+    console.log(selectedPreferences);
+    console.log(categoryQueries);
     // return "cp"
     const requestOptions = {
       method: "POST",
@@ -213,7 +215,7 @@ function App() {
       },
       body: JSON.stringify({
         includedTypes: categoryQueries,
-        maxResultCount: 12,
+        maxResultCount: 16,
         locationRestriction: {
           circle: {
             center: toLatitudeLongitude(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]),
@@ -228,9 +230,8 @@ function App() {
         let data = await response.json();
         let resultPlaces = await handleNearbySearchData(data);
         suggestedPlacesFunctions.setPlaces(resultPlaces);
+        console.log(resultPlaces);
       })
-      // .then(async (data) => {
-      // })
       .catch(error => console.log('error', error));
 
   };
@@ -242,15 +243,17 @@ function App() {
     let googleCategoryPlaceTypesArr = Object.keys(googlePlaceTypeKey);
     for (let i = 0; i < data.length; i++) {
       let photoName = data[i].photos[0].name;
-      let categoryTitle = "";
+      let categoryTitles = [];
       for (let j = 0; j<data[i].types.length; j++) {
         // if type match with google keys
         if (googleCategoryPlaceTypesArr.includes(data[i].types[j])) {
           // console.log(data[i].displayName.text, data[i].types[j]);
           // set category Title to google key value if user preference is chosen
           if (selectedPreferences.includes(googlePlaceTypeKey[data[i].types[j]].userPreference)) {
-            categoryTitle = googlePlaceTypeKey[data[i].types[j]].categoryTitle;
-            break;
+            let categoryTitle = googlePlaceTypeKey[data[i].types[j]].categoryTitle;
+            if (!categoryTitles.includes(categoryTitle)) {
+              categoryTitles.push(categoryTitle);
+            }
           };
         };
       };
@@ -258,7 +261,7 @@ function App() {
         placeName: data[i].displayName.text,
         info: data[i].regularOpeningHours ? modifyInfo(data[i].regularOpeningHours.weekdayDescriptions) : "",
         category: textFunctions.capitalize(getBestCategory(data[i].types).replace(/_/g, " ")),
-        categoryTitle: categoryTitle,
+        categoryTitles: categoryTitles,
         rating: data[i].rating ? data[i].rating.toFixed(1) : null,
         address: data[i].formattedAddress,
         geocode: [data[i].location.latitude, data[i].location.longitude],

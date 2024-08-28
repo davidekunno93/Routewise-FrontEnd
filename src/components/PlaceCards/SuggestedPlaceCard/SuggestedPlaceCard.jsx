@@ -3,7 +3,7 @@ import OpeningHoursMap from '../../OpeningHoursMap';
 import CategoryAndRating from '../../CategoryAndRating/CategoryAndRating';
 
 const SuggestedPlaceCard = ({ index, place, addPlaceToConfirm, addPlace, placesAddressList, addToBlacklist, blacklist, suggestedPlacesFilter, flashAdded, removePlace }) => {
-    let filteredIn = suggestedPlacesFilter ? place.categoryTitle === suggestedPlacesFilter : true;
+    let filteredIn = suggestedPlacesFilter ? place.categoryTitles.includes(suggestedPlacesFilter) : true;
     let blacklisted = blacklist.includes(place.placeName);
     if (!filteredIn || blacklisted || !place.placeName) return null;
 
