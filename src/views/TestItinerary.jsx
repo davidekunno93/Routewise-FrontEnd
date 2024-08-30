@@ -32,7 +32,7 @@ const TestItinerary = () => {
         setTripIsLoading(true);
         const response = axios.get(`https://routewise-backend.onrender.com/itinerary/createdays/${tripText}`)
             .then((response) => {
-                console.log(response)
+                console.log(response.data)
                 setTripState(response.data);
                 setTripIsLoading(false);
             })

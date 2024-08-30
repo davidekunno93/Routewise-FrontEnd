@@ -218,13 +218,13 @@ export const Dashboard = () => {
         }
         setUserPreferencesCount(count);
     }, [])
-    
+
     useEffect(() => {
         loadUserTripsData()
     }, [user])
 
     const apiKey = 'ka/g7nybqosAgLyFNCod1A==WBv07XT0PI2TrXTO'
-    
+
 
     // carousel
     const cities = [
@@ -257,6 +257,854 @@ export const Dashboard = () => {
             imgUrl: 'https://i.imgur.com/OWmQg9Ll.jpgg'
         }
     ]
+    const featuredTrips = [
+        {
+            destination: "Vancouver, Canada",
+            numberOfDays: 8,
+            numberOfPlaces: 32,
+            summary: "Thrill-seeking in Vancouver!",
+            imgUrl: "https://i.imgur.com/WnlEhfqh.jpg",
+            flagImgUrl: "https://i.imgur.com/J2cz7mCh.jpg",
+            trip: {
+                tripID: null,
+                tripName: "Thrill-seeking in Vancouver!",
+                city: "Vancouver",
+                country: "Canada",
+                country_2letter: "CA",
+                startDate: "2024-09-23",
+                endDate: "2024-09-30",
+                geocode: [49.2827, -123.1207],
+                tripDuration: 8,
+                imgUrl: "https://i.imgur.com/egL9NRQh.jpg",
+                places: [],
+                itinerary: {
+                    "day_order": [
+                        "day-1",
+                        "day-2",
+                        "day-3",
+                        "day-4",
+                        "day-5",
+                        "day-6",
+                        "day-7",
+                        "day-8"
+                    ],
+                    "days": {
+                        "day-1": {
+                            "date_converted": "Monday, September 23",
+                            "date_formatted": "Mon, 23 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/23",
+                            "day_id": 1836,
+                            "day_short": "Mon",
+                            "id": "day-1",
+                            "placeIds": [1, 17, 23, 28]
+                        },
+                        "day-2": {
+                            "date_converted": "Tuesday, September 24",
+                            "date_formatted": "Tue, 24 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/24",
+                            "day_id": 1837,
+                            "day_short": "Tue",
+                            "id": "day-2",
+                            "placeIds": [12, 25, 3, 13]
+                        },
+                        "day-3": {
+                            "date_converted": "Wednesday, September 25",
+                            "date_formatted": "Wed, 25 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/25",
+                            "day_id": 1838,
+                            "day_short": "Wed",
+                            "id": "day-3",
+                            "placeIds": [35, 22, 4, 10]
+                        },
+                        "day-4": {
+                            "date_converted": "Thursday, September 26",
+                            "date_formatted": "Thu, 26 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/26",
+                            "day_id": 1839,
+                            "day_short": "Thu",
+                            "id": "day-4",
+                            "placeIds": [38, 18, 20, 21]
+                        },
+                        "day-5": {
+                            "date_converted": "Friday, September 27",
+                            "date_formatted": "Fri, 27 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/27",
+                            "day_id": 1840,
+                            "day_short": "Fri",
+                            "id": "day-5",
+                            "placeIds": [8, 7, 32, 34]
+                        },
+                        "day-6": {
+                            "date_converted": "Saturday, September 28",
+                            "date_formatted": "Sat, 28 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/28",
+                            "day_id": 1841,
+                            "day_short": "Sat",
+                            "id": "day-6",
+                            "placeIds": [24, 29, 30, 26]
+                        },
+                        "day-7": {
+                            "date_converted": "Sunday, September 29",
+                            "date_formatted": "Sun, 29 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/29",
+                            "day_id": 1842,
+                            "day_short": "Sun",
+                            "id": "day-7",
+                            "placeIds": [14, 36, 2, 15]
+                        },
+                        "day-8": {
+                            "date_converted": "Monday, September 30",
+                            "date_formatted": "Mon, 30 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/30",
+                            "day_id": 1843,
+                            "day_short": "Mon",
+                            "id": "day-8",
+                            "placeIds": [5, 6, 31, 19]
+                        }
+                    },
+                    "places": {
+                        1: {
+                            "address": "24480 Fern Crescent, Maple Ridge, BC V4R 2S1, Canada",
+                            "category": "Park",
+                            "day_id": 1836,
+                            "favorite": false,
+                            "geocode": [49.2754387, -122.5154058],
+                            "id": 1,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJLfu9PdebhlQRgp71o2-R60c/photos/AelY_CuV8V3JH3pm-ayrDhuWSqvxYjOasjOXG9PyHHE9THZfPaMVHWN1pwhGbA8z1adT_CDfm6QoPtPhnmC2I_WVUg7FtVIkTS2Xb9X8b3mkbmF_zNaYmk_DvJLR_Nq8iqM7A5QNtpDzn70uviFqgzN3atMdGXFvY-UhJWfL/media?maxWidthPx=720&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 7:00 AM - 11:00 PM, Tue: 7:00 AM - 11:00 PM, Wed: 7:00 AM - 11:00 PM, Thu: 7:00 AM - 11:00 PM, Fri: 7:00 AM - 11:00 PM, Sat: 7:00 AM - 11:00 PM, Sun: 7:00 AM - 11:00 PM",
+                            "lat": 49.2754387,
+                            "long": -122.5154058,
+                            "phoneNumber": "+1 604-466-8325",
+                            "placeName": "Golden Ears Park",
+                            "place_id": 3319,
+                            "rating": "4.7",
+                            "summary": "Large park offering water recreation on Alouette Lake, 3 campgrounds & extensive hiking trails.",
+                            "website": "https://bcparks.ca/golden-ears-park/"
+                        },
+                        2: {
+                            "address": "4700 Kingsway, Burnaby, BC V5H 4M5, Canada",
+                            "category": "Establishment",
+                            "day_id": 1842,
+                            "favorite": false,
+                            "geocode": [49.2273037, -122.9999839],
+                            "id": 2,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJB7RfXFl2hlQRpb-Vv0SYE3A/photos/AelY_CtElhg9kMOHF7lNfH0XyPRfciqTg2VUd97KLnUTl_XU5u9WDHXv7oU_Jw8f09vAmYY0rxBfFTGd7cZR7n7YS6e948R8S3gCn_0IE-vKOUx-vGoC1Qb6Bb9XYtaQMvgypDJjRi_-zl_jXBMfzbumMS8Sn_C7alf9cMEe/media?maxWidthPx=871&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 10:00 AM - 9:00 PM, Tue: 10:00 AM - 9:00 PM, Wed: 10:00 AM - 9:00 PM, Thu: 10:00 AM - 9:00 PM, Fri: 10:00 AM - 9:00 PM, Sat: 10:00 AM - 9:00 PM, Sun: 11:00 AM - 7:00 PM",
+                            "lat": 49.2273037,
+                            "long": -122.9999839,
+                            "phoneNumber": "+1 604-438-4715",
+                            "placeName": "Metropolis at Metrotown",
+                            "place_id": 3320,
+                            "rating": "4.3",
+                            "summary": "Expansive shopping mall with almost 400 stores, restaurants & services, including a movie theater.",
+                            "website": "https://www.metropolisatmetrotown.com/?utm_source=google-business-profile&utm_medium=organic&utm_campaign=metropolis-at-metrotown&utm_id=65229"
+                        },
+                        3: {
+                            "address": "1510 Commercial Dr, Vancouver, BC V5L 2Y7, Canada",
+                            "category": "Restaurant",
+                            "day_id": 1837,
+                            "favorite": false,
+                            "geocode": [49.2711635, -123.0693181],
+                            "id": 3,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJqyN6rDhxhlQRqg9-Y5l1Zaw/photos/AelY_CtXibrYcFJS6QLCsIFSKCAIsGqw7MI4GT060tlkbrsfN6tXJ9yopxrZbDnmqD48PbKafKIJ4T7UuSpEGY086C_SYVKggTwhkdNl7voXSTYAV2yFdc-bO23eCAy0oDUkmsxPdcgBE8UoU0vlZIJRLj5xSf9YXASmY3o-/media?maxWidthPx=4608&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 4:00 - 10:00 PM, Tue: 4:00 - 10:00 PM, Wed: 4:00 - 10:00 PM, Thu: 4:00 - 10:00 PM, Fri: 12:00 - 11:30 PM, Sat: 12:00 - 11:30 PM, Sun: 12:00 - 10:00 PM",
+                            "lat": 49.2711635,
+                            "long": -123.0693181,
+                            "phoneNumber": "+1 604-251-7586",
+                            "placeName": "Sopra Sotto Pizzeria",
+                            "place_id": 3321,
+                            "rating": "4.4",
+                            "summary": null,
+                            "website": "http://www.soprasotto.ca/"
+                        },
+                        4: {
+                            "address": "305 Water St, Vancouver, BC V6B 1B9, Canada",
+                            "category": "Establishment",
+                            "day_id": 1838,
+                            "favorite": false,
+                            "geocode": [49.2844086, -123.1088716],
+                            "id": 4,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ36zlvedzhlQRAFUUd93cPgg/photos/AelY_Cssg7ds9FAUTl9pS_H15av00Y2Sm0u99UCj-jhQE3FlBfbqfY8POfFxeejQKQGyi3j_TAlkqfMsnyK4AHvC1Z1OvsCDKSvt1UvDzaEYgkYkIbsySjq4-Hc4g3I7wpl3hjQLPJQM0sQHoclO9hEwffVpegnYVIfCySNO/media?maxWidthPx=3072&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
+                            "lat": 49.2844086,
+                            "long": -123.1088716,
+                            "phoneNumber": "+1 604-873-7000",
+                            "placeName": "Gastown Steam Clock",
+                            "place_id": 3322,
+                            "rating": "4.5",
+                            "summary": "Built in 1977, this well-known, antique-style clock is powered by steam & whistles to tell the time.",
+                            "website": null
+                        },
+                        5: {
+                            "address": "Vancouver, BC V6G 1Z4, Canada",
+                            "category": "Park",
+                            "day_id": 1843,
+                            "favorite": false,
+                            "geocode": [49.3042584, -123.1442523],
+                            "id": 5,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJo-QmrYxxhlQRFuIJtJ1jSjY/photos/AelY_CsdhlIj8r9XAtC-nqzISEV89UViCMog22ua-YY4sUDWNUjJXbPAQEF1Cch0UYhbOIIHR8M3-1JpfheSDNk28RTuXXPSzqAVKy5ET7UuVv3t2C8PpfFcLSCnK64IUOPI1zny8t3dBIqwp2lD-FalF3din-7Yw2YMYXYK/media?maxWidthPx=4080&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 9:00 AM - 5:00 PM, Tue: 9:00 AM - 5:00 PM, Wed: 9:00 AM - 5:00 PM, Thu: 9:00 AM - 5:00 PM, Fri: 9:00 AM - 5:00 PM, Sat: 9:00 AM - 5:00 PM, Sun: 9:00 AM - 5:00 PM",
+                            "lat": 49.3042584,
+                            "long": -123.1442523,
+                            "phoneNumber": "+1 604-681-6728",
+                            "placeName": "Stanley Park",
+                            "place_id": 3323,
+                            "rating": "4.8",
+                            "summary": "Vancouver's largest urban park has beaches, trails & family attractions, plus a picturesque seawall.",
+                            "website": "http://vancouver.ca/parks-recreation-culture/stanley-park.aspx"
+                        },
+                        6: {
+                            "address": "845 Avison Way, Vancouver, BC V6G 3E2, Canada",
+                            "category": "Aquarium",
+                            "day_id": 1843,
+                            "favorite": false,
+                            "geocode": [49.3004876, -123.1308774],
+                            "id": 6,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJp2zKeo1xhlQRWOMOmCcWJV8/photos/AelY_CsSgAYaaoZ7KHJSpJJVONVNXH-5GkI8OE1Fa0R4G2Xt6Oo4WSkpoGIzq07rmkIEThyHoGZCg1d42KtH7_Z_OAAeExS3iv1yqn5qxE4s3oM1xqryHVEnh86Qs7K_-SCzmXFmxk7RkWMMevOjGsyeSMxa6M9SGbD2jJhp/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 9:30 AM - 5:30 PM, Tue: 9:30 AM - 5:30 PM, Wed: 9:30 AM - 5:30 PM, Thu: 9:30 AM - 5:30 PM, Fri: 9:30 AM - 5:30 PM, Sat: 9:30 AM - 5:30 PM, Sun: 9:30 AM - 5:30 PM",
+                            "lat": 49.3004876,
+                            "long": -123.1308774,
+                            "phoneNumber": "+1 778-655-9554",
+                            "placeName": "Vancouver Aquarium",
+                            "place_id": 3324,
+                            "rating": "4.5",
+                            "summary": "Popular kid-friendly attraction showcases local & exotic aquatic life with a focus on conservation.",
+                            "website": "https://www.vanaqua.org/"
+                        },
+                        7: {
+                            "address": "6301 Crescent Rd, Vancouver, BC V6T 1Z2, Canada",
+                            "category": "Park",
+                            "day_id": 1840,
+                            "favorite": false,
+                            "geocode": [49.2693791, -123.2564979],
+                            "id": 7,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ463WQ7FyhlQR-LzU0BG7Qz0/photos/AelY_CuQQ9r2b3_GSP5_eqT0s_EckgeKz_CZHtI8Q46g3QtE1lUZAhglxWd0eBTeaLwnRH1TO5-a-vkfIaQdkYmbX5vD2i-8MsEG-QYk-5IFIqHrCXNQ8GzObApfrl4Tq-0zI23K5SGrcJCwBXaRNiyXkz-ycNkVMr30a3Tx/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
+                            "lat": 49.2693791,
+                            "long": -123.2564979,
+                            "phoneNumber": "+1 604-822-6000",
+                            "placeName": "UBC Rose Garden",
+                            "place_id": 3325,
+                            "rating": "4.7",
+                            "summary": null,
+                            "website": "http://www.maps.ubc.ca/PROD/index_detail.php?locat1=N026"
+                        },
+                        8: {
+                            "address": "Wreck Beach, SW Marine Dr, Vancouver, BC V6T 1Z4, Canada",
+                            "category": "Natural feature",
+                            "day_id": 1840,
+                            "favorite": false,
+                            "geocode": [49.2621955, -123.2615183],
+                            "id": 8,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJUzqZj0oNhlQRSzlBeYd5v-0/photos/AelY_CujIx4ZMzOxlduxkSTMGbUlevy7PAcEPFLQINw8ScQChBIzfNMPCJXsS-PhQ0pO_g9KRrxuESQmHba4nB3nB05YLXD5OkqwDLGRx65A2Gccf1x3jMK81hAjQY1S06cjuOUe1aKZXi6IXO1hPHwTyJ3Kp3XIYdnc46MY/media?maxWidthPx=4000&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 8:00 AM - 8:00 PM, Tue: 8:00 AM - 8:00 PM, Wed: 8:00 AM - 8:00 PM, Thu: 8:00 AM - 8:00 PM, Fri: 8:00 AM - 8:00 PM, Sat: 8:00 AM - 8:00 PM, Sun: 8:00 AM - 8:00 PM",
+                            "lat": 49.2621955,
+                            "long": -123.2615183,
+                            "phoneNumber": null,
+                            "placeName": "Wreck Beach",
+                            "place_id": 3326,
+                            "rating": "4.7",
+                            "summary": "Sandy, 7.8km stretch known as North America's largest official naturist beach.",
+                            "website": null
+                        },
+                        9: {
+                            "address": "Kitsilano Beach, Vancouver, BC, Canada",
+                            "category": "Natural feature",
+                            "day_id": 1837,
+                            "favorite": false,
+                            "geocode": [49.2754238, -123.153535],
+                            "id": 9,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJHUYfoDVyhlQRrGFzpe5fhaQ/photos/AelY_CupNTKa5_q3YsYpe1kKiVBki-sZZy0bS8Fwrz-R3eHoOoiGUAjx6ROYzamEICMg4X6v_R8fo_ZfHfiw5X7M0vQMbO9a11Dwe1d9DGupVPzATmoLdwi7CGV9hI3lQTJrcaGFOazSPEER5hxa5Z7akElqPyvUtbsH6fwS/media?maxWidthPx=4000&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "",
+                            "lat": 49.2754238,
+                            "long": -123.153535,
+                            "phoneNumber": null,
+                            "placeName": "Kitsilano Beach",
+                            "place_id": 3327,
+                            "rating": "4.6",
+                            "summary": "Popular urban beach offering sandy shores, a playground, volleyball courts & a huge saltwater pool.",
+                            "website": "http://vancouver.ca/parks-recreation-culture/kitsilano-beach.aspx"
+                        },
+                        10: {
+                            "address": "2042 W 4th Ave, Vancouver, BC V6J 1M9, Canada",
+                            "category": "Restaurant",
+                            "day_id": 1838,
+                            "favorite": false,
+                            "geocode": [49.267915, -123.15143],
+                            "id": 10,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJT7myb1hzhlQRsEFaHH_FXOU/photos/AelY_CvALoUsyxbnw44UTReZnheUi1C11pf0Ld6foXqtwUQSb6-g7ycLg-GfEJv5d2QF6wFviOBoN-dgpM_IrUFUFIgRBq05zznPUw9foIx1kIbWhh8c4DIqcbF8hOhacKSV54RfLnS2ALygQHHCTnXMsQCpbjNB1mdKAWHt/media?maxWidthPx=4608&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Closed, Tue: 9:00 AM - 4:00 PM, Wed: 9:00 AM - 4:00 PM, Thu: 9:00 AM - 4:00 PM, Fri: 9:00 AM - 4:00 PM, Sat: 9:00 AM - 4:00 PM, Sun: 9:00 AM - 4:00 PM",
+                            "lat": 49.267915,
+                            "long": -123.15143,
+                            "phoneNumber": "+1 604-736-8828",
+                            "placeName": "Their There",
+                            "place_id": 3328,
+                            "rating": "4.4",
+                            "summary": null,
+                            "website": "http://www.theirthere.ca/"
+                        },
+                        11: {
+                            "address": "555 Great Northern Way, Vancouver, BC V5T 1E1, Canada",
+                            "category": "Food",
+                            "day_id": 1843,
+                            "favorite": false,
+                            "geocode": [49.267036, -123.0925892],
+                            "id": 11,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJZzxdHW9xhlQRKS9s0XXYUZQ/photos/AelY_Cu4yoTWj0MGGxhQD-S_tsDdjJp5Uw6A8-j9_KAHDukh9JuvFLVR85ltb17MH5X1veFs6XDFXe5sa-UuOPyQtcjbVdNDEICahzGJdUpL3NQJGHBlvqb52QhSKbDC60wsotyQUs8W600BXqlf0Qh8yP2vo8Emp9w_65sk/media?maxWidthPx=3456&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: 8:00 AM - 4:00 PM, Tue: 8:00 AM - 4:00 PM, Wed: 8:00 AM - 4:00 PM, Thu: 8:00 AM - 4:00 PM, Fri: 8:00 AM - 4:00 PM, Sat: 9:00 AM - 5:00 PM, Sun: 9:00 AM - 5:00 PM",
+                            "lat": 49.267036,
+                            "long": -123.0925892,
+                            "phoneNumber": null,
+                            "placeName": "Nemesis Coffee GNW",
+                            "place_id": 3329,
+                            "rating": "4.3",
+                            "summary": null,
+                            "website": "https://www.nemesis.coffee/"
+                        },
+                        12: {
+                            "address": "20256 56 Ave, Langley, BC V3A 3Y5, Canada",
+                            "category": "Restaurant",
+                            "day_id": 1837,
+                            "favorite": false,
+                            "geocode": [49.1039579, -122.6613624],
+                            "id": 12,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ4T6K-tTPhVQRxnZSA5mShuY/photos/AelY_Cv9Aj4gPgGI_AgBEdDSXZSczVuE0D1cUr7A8CN9lHLDByOQcHHnbSqxx7Psyf1GjeRZFvhVKYUWrwPLsjvhop4l7HOykPq6AhMyzFWM6O0wNqW12G7tVxRXTP1BlsrSBs6biaPkuUyQNZjdbCifolpyTtjCG33-zvqb/media?maxWidthPx=1280&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 11:00 AM - 8:00 PM, Tue: Closed, Wed: 11:00 AM - 8:00 PM, Thu: 11:00 AM - 9:00 PM, Fri: 11:00 AM - 9:00 PM, Sat: 11:00 AM - 9:00 PM, Sun: 11:00 AM - 8:00 PM",
+                            "lat": 49.1039579,
+                            "long": -122.6613624,
+                            "phoneNumber": "+1 604-510-1787",
+                            "placeName": "Pho Tam Langley",
+                            "place_id": 3330,
+                            "rating": "4.7",
+                            "summary": null,
+                            "website": "https://order.ubereats.com/vancouver/food-delivery/Pho%20Tam%20Vietnamese%20Restaurant/n-Kd6-7FThKQ_MrTVyACNw/?utm_source=web-restaurant-manager"
+                        },
+                        13: {
+                            "address": "1996 Kingsway, Vancouver, BC V5N 2S9, Canada",
+                            "category": "Food",
+                            "day_id": 1837,
+                            "favorite": false,
+                            "geocode": [49.2450891, -123.0653888],
+                            "id": 13,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ7xClTa92hlQRL7mlmoiHeUg/photos/AelY_CthOrIo5trWDyDqWIK9hE0hHnDVL8yJ_FDOA9_9hMM5dUIqC_eE17taNsA_qWvC2JuRv1Azdw8eBwMDfgbVSyOSvxc3kjAjF1JGsxyp-Qd2ncmBTXM0BefXnrE29qdmfLJSuAJyP1mJR-PPtybQJf0yaOku45K6iWJ6/media?maxWidthPx=2813&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Closed, Tue: 10:30 AM - 2:30 PM, Wed: 10:30 AM - 2:30 PM, Thu: 10:30 AM - 2:30 PM, Fri: 10:30 AM - 2:30 PM, Sat: 10:30 AM - 2:30 PM, Sun: 10:30 AM - 2:30 PM",
+                            "lat": 49.2450891,
+                            "long": -123.0653888,
+                            "phoneNumber": "+1 604-875-9740",
+                            "placeName": "Pho Duy Restaurant",
+                            "place_id": 3331,
+                            "rating": "4.2",
+                            "summary": null,
+                            "website": null
+                        },
+                        14: {
+                            "address": "4567 Lougheed Hwy., Burnaby, BC V5C 3Z6, Canada",
+                            "category": "Establishment",
+                            "day_id": 1842,
+                            "favorite": false,
+                            "geocode": [49.2681552, -123.0005819],
+                            "id": 14,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJs9jfATF3hlQRQLAQmrvxpqk/photos/AelY_CuqNhEzr0m6voik7m7Igljsk-WcnXutc1VJDukXsdQod-4QPR1i6CmKzXvVHk6OoTEQj1eRPJgvCNLzQMxaPXxI9WZhI5UUjh2TS7uzcpcWKO7eG1fHgtDOVFSfBaLDIhBW1iIsqNP5KkVNCex7kE0AjiLc7y0qmLCQ/media?maxWidthPx=3778&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 10:00 AM - 8:00 PM, Tue: 10:00 AM - 8:00 PM, Wed: 10:00 AM - 8:00 PM, Thu: 10:00 AM - 9:00 PM, Fri: 10:00 AM - 9:00 PM, Sat: 10:00 AM - 9:00 PM, Sun: 11:00 AM - 7:00 PM",
+                            "lat": 49.2681552,
+                            "long": -123.0005819,
+                            "phoneNumber": "+1 604-298-7314",
+                            "placeName": "Brentwood Mall",
+                            "place_id": 3332,
+                            "rating": "3.9",
+                            "summary": null,
+                            "website": "https://theamazingbrentwood.com/"
+                        },
+                        15: {
+                            "address": "Trout Lake, Vancouver, BC V5N, Canada",
+                            "category": "Establishment",
+                            "day_id": 1842,
+                            "favorite": false,
+                            "geocode": [49.2562519, -123.0622902],
+                            "id": 15,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJzaq7R7N2hlQRvzDhJk7twls/photos/AelY_CskjGji31PWhlXljNHIwb7_V6pdNLjlGeFfg9NyoHlVoMReljqkzVNRv-oL2pbuhAx_4oiKyG8WcJ0OA0ZMxdplz0N52rET-QgYu8y4nMNgAAYf7lrAdqKxBoE1YW6fuq30YP9_sVlU484n4Fc-UQfQEcjqAknsaPHG/media?maxWidthPx=4800&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 49.2562519,
+                            "long": -123.0622902,
+                            "phoneNumber": null,
+                            "placeName": "Trout Lake",
+                            "place_id": 3333,
+                            "rating": "4.6",
+                            "summary": null,
+                            "website": null
+                        },
+                        16: {
+                            "address": "560 Seymour St, Vancouver, BC V6B 0A8, Canada",
+                            "category": "Establishment",
+                            "day_id": null,
+                            "favorite": false,
+                            "geocode": [49.2831592, -123.1145291],
+                            "id": 16,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ62A9n0pxhlQRBHEroUDFLWw/photos/AelY_CsDYFM0phNfGIwNgssjkCXrNHLMcbrSd3V1YU9HnHAM9DHc_bMV257RDsmo8VE60z4j1aQoGFcrb1NIXIRClC9q2MqDuJ3SQF-81-kKoi49U_klKVfmgilL1GskHs9hFCL0DZJ5JonmyrDMeIUs4jM5SxDxAuYbL2Ic/media?maxWidthPx=3475&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: Closed, Tue: Closed, Wed: Closed, Thu: 10:00 PM - 2:00 AM, Fri: 10:00 PM - 3:00 AM, Sat: 10:00 PM - 3:00 AM, Sun: Closed",
+                            "lat": 49.2831592,
+                            "long": -123.1145291,
+                            "phoneNumber": "+1 778-863-3111",
+                            "placeName": "Levels Nightclub",
+                            "place_id": 3334,
+                            "rating": "3.1",
+                            "summary": "Sleek locale featuring top 40 & electronica DJs, a dance floor, VIP tables & a full bar.",
+                            "website": "http://levelsvancouver.ca/"
+                        },
+                        17: {
+                            "address": "4807 Main St, Vancouver, BC V5V 3R9, Canada",
+                            "category": "Establishment",
+                            "day_id": 1836,
+                            "favorite": false,
+                            "geocode": [49.2417876, -123.1018068],
+                            "id": 17,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ75lsKAp0hlQRxERNSi-eDZ4/photos/AelY_CvgpNtQA6_Wvir6EPrGduNPPc1iRQ4dV0-NVxjb7p6gs9tdBxjx3Lj45ClC20UaLCGoS6g3QFs2gzrH-WViw-1oLqrd4ql29V6nJ9EX56ntE-Rl7fWq5S0gNUghoU53cEobR3Szu2biX81sTLfeUj0rI4OwM28YQoPS/media?maxWidthPx=1042&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 7:00 AM - 5:00 PM, Tue: 7:00 AM - 5:00 PM, Wed: 7:00 AM - 5:00 PM, Thu: 7:00 AM - 5:00 PM, Fri: 7:00 AM - 5:00 PM, Sat: 7:00 AM - 5:00 PM, Sun: 7:00 AM - 5:00 PM",
+                            "lat": 49.2417876,
+                            "long": -123.1018068,
+                            "phoneNumber": "+1 604-569-4807",
+                            "placeName": "Matchstick Riley Park",
+                            "place_id": 3336,
+                            "rating": "4.2",
+                            "summary": "Espresso & elevated light bites served in a cool space with subway tiles & wooden, community tables.",
+                            "website": "http://www.matchstickyvr.com/"
+                        },
+                        18: {
+                            "address": "200 Granville St #70, Vancouver, BC V6C 1S4, Canada",
+                            "category": "Restaurant",
+                            "day_id": 1839,
+                            "favorite": false,
+                            "geocode": [49.2870179, -123.1130106],
+                            "id": 18,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJlyu4u4NxhlQRkUpN_iFwl8Q/photos/AelY_CvKT4-XNeEaXYPTtAJflkqiOfVwIo1_Ulc6RFQ7SC01IPGWM4SYtKAi6NL1ACok6RRbdylHVtZDod74zeaz_AvFyUQ5bS0whZD0XLSf7ZxMpSU8Z-LYn0LufbmqYf9mh11ga765-lJ5mVqo3GeVOvHloLLD3OnkCTjt/media?maxWidthPx=1210&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 11:30 AM - 10:00 PM, Tue: 11:30 AM - 10:00 PM, Wed: 11:30 AM - 10:00 PM, Thu: 11:30 AM - 10:00 PM, Fri: 11:30 AM - 10:00 PM, Sat: 12:00 - 10:00 PM, Sun: 12:00 - 10:00 PM",
+                            "lat": 49.2870179,
+                            "long": -123.1130106,
+                            "phoneNumber": "+1 604-568-3900",
+                            "placeName": "Miku Vancouver",
+                            "place_id": 3337,
+                            "rating": "4.5",
+                            "summary": "Sushi & sustainable seafood are served in a sophisticated setting with a patio & water views.",
+                            "website": "http://www.mikurestaurant.com/"
+                        },
+                        19: {
+                            "address": "1032 Alberni St, Vancouver, BC V6E 1A3, Canada",
+                            "category": "Bar",
+                            "day_id": 1843,
+                            "favorite": false,
+                            "geocode": [49.2845363, -123.1228402],
+                            "id": 19,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJu1r9tIFxhlQRsfy5cILqdDs/photos/AelY_Cul2pChRmj_PU5jWtUPqg3RAXLXPTvYPisw7Cu9UuSKr0WriJYmDOmFwD5viPG1JVtSRD9HRpsgOKrO_NOwOue86f-W-9WMFP7X3Cno_W2lXSWOczuuavaass4GO7h5h6gJ-Gh8HKnWkK8BK_vjNKwhQruGT64vOzAw/media?maxWidthPx=4077&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 11:30 AM - 12:00 AM, Tue: 11:30 AM - 12:00 AM, Wed: 11:30 AM - 12:00 AM, Thu: 11:30 AM - 12:00 AM, Fri: 11:30 AM - 12:00 AM, Sat: 11:30 AM - 12:00 AM, Sun: 11:30 AM - 12:00 AM",
+                            "lat": 49.2845363,
+                            "long": -123.1228402,
+                            "phoneNumber": "+1 604-637-0777",
+                            "placeName": "Black+Blue",
+                            "place_id": 3338,
+                            "rating": "4.4",
+                            "summary": "Bustling 3-level steakhouse with luxe decor, rare cuts of beef & a custom meat locker for dry-aging.",
+                            "website": "https://blackandbluesteakhouse.ca/vancouver-home/?utm_source=GoogleBusinessProfile&utm_medium=Website&utm_campaign=MapLabs"
+                        },
+                        20: {
+                            "address": "Vancouver, BC V5Y, Canada",
+                            "category": "Park",
+                            "day_id": 1839,
+                            "favorite": false,
+                            "geocode": [49.241757, -123.1126193],
+                            "id": 20,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJIcZrTvVzhlQRiKTnD03vt7Q/photos/AelY_Cu6vJIPpvYoBXoP0HdUBq2F6CHF3wbnK9rdvit8umZQ4LpJmsn44QXATAkNPu1TxC72_2LQFcfn8ZENG-vbpuKmyOzeZPpRKQISLphh2o7gGeoTghj1AB-55gFO5FYcNLfD6UCLNa9mQGU-n9AwDuClxcMqf-5vduSv/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 6:00 AM - 10:00 PM, Tue: 6:00 AM - 10:00 PM, Wed: 6:00 AM - 10:00 PM, Thu: 6:00 AM - 10:00 PM, Fri: 6:00 AM - 10:00 PM, Sat: 6:00 AM - 10:00 PM, Sun: 6:00 AM - 10:00 PM",
+                            "lat": 49.241757,
+                            "long": -123.1126193,
+                            "phoneNumber": "+1 604-873-7000",
+                            "placeName": "Queen Elizabeth Park",
+                            "place_id": 3339,
+                            "rating": "4.7",
+                            "summary": "Urban landmark on a hill featuring manicured gardens, a conservatory, sculptures & sports courts.",
+                            "website": "https://vancouver.ca/parks-recreation-culture/queen-elizabeth-park.aspx"
+                        },
+                        21: {
+                            "address": "5251 Oak St, Vancouver, BC V6M 4H1, Canada",
+                            "category": "Park",
+                            "day_id": 1839,
+                            "favorite": false,
+                            "geocode": [49.239569, -123.1325405],
+                            "id": 21,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJwW3HeIZzhlQRVxJgWI8VjAg/photos/AelY_Cv85dm_sssxAPpW3Ysss6eZKKU49DgvNKWigik9nTedZJyP6hFvQo8ZQndNcYW8ZKlT8qHJauRC5t5Enf2IdsvY69oOqcMcXBtUWa2g6DNZQuha--ezpox3o2GV0DQ_rSWGZwHCggzHBv9uGzlbdrvQu42RPb-jEE76/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 9:00 AM - 7:00 PM, Tue: 9:00 AM - 7:00 PM, Wed: 9:00 AM - 7:00 PM, Thu: 9:00 AM - 7:00 PM, Fri: 9:00 AM - 7:00 PM, Sat: 9:00 AM - 7:00 PM, Sun: 9:00 AM - 7:00 PM",
+                            "lat": 49.239569,
+                            "long": -123.1325405,
+                            "phoneNumber": "+1 604-257-8463",
+                            "placeName": "VanDusen Botanical Garden",
+                            "place_id": 3340,
+                            "rating": "4.7",
+                            "summary": "Space with ever-changing greenery, flowers & art installations plus fine dining & a casual cafe.",
+                            "website": "https://vancouver.ca/parks-recreation-culture/vandusen-botanical-garden.aspx"
+                        },
+                        22: {
+                            "address": "8351 River Rd, Richmond, BC V6X 1Y4, Canada",
+                            "category": "Establishment",
+                            "day_id": 1838,
+                            "favorite": false,
+                            "geocode": [49.194577, -123.1305692],
+                            "id": 22,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJQ7wAFCR1hlQRL7RB8W3XeOU/photos/AelY_CsdzIp_YhNMpTPTpVJCPrO4JnZp_YjrCk8wmQscdo6RHIjFgGVjaltzOYzx8-UP4FyrJbeXgmLPRETJ8eLqK4xcjVZnzwdY_fXqM0-5IJypfRv5zMtHaG7s6NSlvYKJLQh-pRqpy7WqUpk6e08-AeBCOrqc4znVSKJf/media?maxWidthPx=4096&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Closed, Tue: Closed, Wed: Closed, Thu: Closed, Fri: 7:00 PM - 12:00 AM, Sat: 7:00 PM - 12:00 AM, Sun: 7:00 - 11:00 PM",
+                            "lat": 49.194577,
+                            "long": -123.1305692,
+                            "phoneNumber": "+1 604-244-8448",
+                            "placeName": "Richmond Night Market",
+                            "place_id": 3341,
+                            "rating": "3.3",
+                            "summary": null,
+                            "website": "http://www.richmondnightmarket.com/"
+                        },
+                        23: {
+                            "address": "3320 Jacombs Rd Unit 1, Richmond, BC V6V 1Z6, Canada",
+                            "category": "Home goods store",
+                            "day_id": 1836,
+                            "favorite": false,
+                            "geocode": [49.1890883, -123.0790622],
+                            "id": 23,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ-_fdMKd1hlQRPf4nf0VyevE/photos/AelY_CtY4lpfFRuucI-3hynL2aaOUmV5UfADzLJx56E9yWnefteIjk4raaALX9uyMbMxKQ_r-U5kVlfwWh5xpcsGfwOIV8T9CwHFGWmENrD1jeM5IiL0-vSfaeN7ZSS9qwojjKb6O2aAasK9WcOZbJ6bdZdlwhooZfpjB6ie/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 10:00 AM - 9:00 PM, Tue: 10:00 AM - 9:00 PM, Wed: 10:00 AM - 9:00 PM, Thu: 10:00 AM - 9:00 PM, Fri: 10:00 AM - 9:00 PM, Sat: 10:00 AM - 8:00 PM, Sun: 10:00 AM - 7:00 PM",
+                            "lat": 49.1890883,
+                            "long": -123.0790622,
+                            "phoneNumber": "+1 866-866-4532",
+                            "placeName": "IKEA Richmond",
+                            "place_id": 3342,
+                            "rating": "4.1",
+                            "summary": "Scandinavian chain selling ready-to-assemble furniture, plus textiles, lighting & home decor.",
+                            "website": "https://www.ikea.com/ca/en/stores/richmond/?utm_source=google&utm_medium=organic&utm_campaign=map&utm_content=richmond"
+                        },
+                        24: {
+                            "address": "3800 Bayview St, Richmond, BC V7E 4R7, Canada",
+                            "category": "Food",
+                            "day_id": 1841,
+                            "favorite": false,
+                            "geocode": [49.123929, -123.1843443],
+                            "id": 24,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ170JiUThhVQR2uY6eymTnoA/photos/AelY_CtRCjoV90StDJWsXmDbBpPR51BJDtv5vgnUNeRZVoTRmL_panfrDNJkPzJGzJGPsgPZXBm0kMD29xJ2LNrekSt5bHcKWmhllPQq5OdadQVwofLD9UAYreGiIVq4o6nU46C52nMuri39Ia9cQFLLTjkgf2EgnQruwwao/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 8:00 AM - 6:30 PM, Tue: 8:00 AM - 6:30 PM, Wed: 8:00 AM - 6:30 PM, Thu: 8:00 AM - 6:30 PM, Fri: 8:00 AM - 6:30 PM, Sat: 8:00 AM - 6:30 PM, Sun: 8:00 AM - 6:30 PM",
+                            "lat": 49.123929,
+                            "long": -123.1843443,
+                            "phoneNumber": "+1 604-272-5539",
+                            "placeName": "Steveston Fisherman's Wharf",
+                            "place_id": 3343,
+                            "rating": "4.6",
+                            "summary": "Floating seafood market on fishing trawlers, with the chance to buy seasonal shrimp, crab & halibut.",
+                            "website": "https://stevestonharbour.com/fishermans-wharf/"
+                        },
+                        25: {
+                            "address": "2135 W 41st Ave, Vancouver, BC V6M 1Z6, Canada",
+                            "category": "Store",
+                            "day_id": 1837,
+                            "favorite": false,
+                            "geocode": [49.2347102, -123.1565069],
+                            "id": 25,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJc4flUnpzhlQR8POkv22_Qac/photos/AelY_CvMfEzXdKwLIDxMNEXUNluefryzcYmRY5dMrHfSXUa1u3yR_pwjQvswslXF-DMg6v-7c4dBjs99DFD753_WmrEsiPPKcw0SfTnvrOi3no9dADaloaHXB0l2UZAJ9HSs7fRLP9xnGAE2ZDNvqH_LyJy8xjvWZ0dPuIKm/media?maxWidthPx=2877&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 11:00 AM - 9:00 PM, Tue: 11:00 AM - 9:00 PM, Wed: 11:00 AM - 9:00 PM, Thu: 11:00 AM - 9:00 PM, Fri: 11:00 AM - 10:00 PM, Sat: 11:00 AM - 10:00 PM, Sun: 11:00 AM - 9:00 PM",
+                            "lat": 49.2347102,
+                            "long": -123.1565069,
+                            "phoneNumber": "+1 604-263-5054",
+                            "placeName": "Nana's Green Tea",
+                            "place_id": 3344,
+                            "rating": "4.3",
+                            "summary": "Compact operation with a contemporary ambiance offering fancy teas, plus miso soup & desserts.",
+                            "website": "https://sevenleavestea.com/"
+                        },
+                        26: {
+                            "address": "4151 Hazelbridge Wy, Richmond, BC V6X 4J7, Canada",
+                            "category": "Shopping mall",
+                            "day_id": 1841,
+                            "favorite": false,
+                            "geocode": [49.1841117, -123.1335429],
+                            "id": 26,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJZdtWPSZ1hlQRJa3mr4CwOi8/photos/AelY_Cv6LxLA9pxiJ5xxPfqoX1K4SaWsPb-aUiU0hXpH4i_iO5-qYa8gZSEh0WAOYA6C_pK0NRXTaRlnXgWlXA7zq2Mz3bC1tD8COCb-iZW-9sIXkmXhj52kh9TP4D00LIU0-NumbS33Z5evaoTGzR37W93SYO92-T_LLlXh/media?maxWidthPx=3729&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 11:00 AM - 7:00 PM, Tue: 11:00 AM - 7:00 PM, Wed: 11:00 AM - 7:00 PM, Thu: 11:00 AM - 7:00 PM, Fri: 11:00 AM - 8:00 PM, Sat: 11:00 AM - 8:00 PM, Sun: 11:00 AM - 7:00 PM",
+                            "lat": 49.1841117,
+                            "long": -123.1335429,
+                            "phoneNumber": "+1 604-270-1234",
+                            "placeName": "Aberdeen Centre",
+                            "place_id": 3346,
+                            "rating": "4.0",
+                            "summary": "Big indoor mall with diverse Asian retailers & eateries, including a dollar store & a food court.",
+                            "website": "http://www.aberdeencentre.com/"
+                        },
+                        27: {
+                            "address": "3700 No. 3 Rd, Richmond, BC V6X 3X2, Canada",
+                            "category": "Grocery or supermarket",
+                            "day_id": 1841,
+                            "favorite": false,
+                            "geocode": [49.1863717, -123.1328771],
+                            "id": 27,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJjdLRoCd1hlQRZS0TOm2sHfA/photos/AelY_Cu08MoS7zVM5WE_MeOvMi-GsDUz6MdAEZLsCFhyYuE5Zu1aOJSQgo6A6vOidA3P0Az5EnQYTKLOdKKcEp5dazN23b3KKLZ4ul1i13tnqAf4kn7lSs6iL0JAFGtwkUgtKx92H-k1yo_2ZgW9XsaShRPb05s2_wTqiZ08/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: 9:00 AM - 10:00 PM, Tue: 9:00 AM - 10:00 PM, Wed: 9:00 AM - 10:00 PM, Thu: 9:00 AM - 10:00 PM, Fri: 9:00 AM - 10:00 PM, Sat: 9:00 AM - 10:00 PM, Sun: 9:00 AM - 10:00 PM",
+                            "lat": 49.1863717,
+                            "long": -123.1328771,
+                            "phoneNumber": "+1 604-231-0601",
+                            "placeName": "Yaohan Centre",
+                            "place_id": 3347,
+                            "rating": "3.9",
+                            "summary": "Shopping complex featuring Asian retailers, including a grocery store, along with a food court.",
+                            "website": "http://www.yaohancentre.com/"
+                        },
+                        28: {
+                            "address": "Unit1316, 8368 Capstan Wy, Richmond, BC V6X 4B4, Canada",
+                            "category": "Cafe",
+                            "day_id": 1836,
+                            "favorite": false,
+                            "geocode": [49.1872652, -123.1302458],
+                            "id": 28,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ94LONPR1hlQRKDa4FThq2EY/photos/AelY_CscJMya0fqYZMguYyRe0cj6gAtS9sZXYKvQVZDWj1WIUrU49OZYWp-NkUqtIVxf5gD5QXM9v3Q7zCBAGyMWtn1aWJhAHBA959SUV3dDxZcHD4uvIfRpr0YDs01XXAg-q2h_IwR4MfAKA10N95Lue1dTRN0i3Nkh5y5m/media?maxWidthPx=4000&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 12:00 - 10:00 PM, Tue: 12:00 - 10:00 PM, Wed: 12:00 - 10:00 PM, Thu: 12:00 - 10:00 PM, Fri: 12:00 - 10:00 PM, Sat: 12:00 - 10:00 PM, Sun: 12:00 - 10:00 PM",
+                            "lat": 49.1872652,
+                            "long": -123.1302458,
+                            "phoneNumber": "+1 604-285-5997",
+                            "placeName": "MACU TEA- Capstan Way",
+                            "place_id": 3348,
+                            "rating": "4.4",
+                            "summary": null,
+                            "website": "https://www.instagram.com/macutea.bc/"
+                        },
+                        29: {
+                            "address": "6551 No. 3 Rd, Richmond, BC V6Y 2B6, Canada",
+                            "category": "Shopping mall",
+                            "day_id": 1841,
+                            "favorite": false,
+                            "geocode": [49.1672705, -123.1384481],
+                            "id": 29,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJDz5vqMsKhlQRDr0Xeb-CLjY/photos/AelY_Cu2Q1yvQ7fyvkIfiRlfk78b0b4fUNFOSGcCW_gBf_AQVy2j0dykEPTyrZ7HRa0NyYWq4QHGVCS5PPStHXSRqEwmqlNVoL92nauTxqDwCxl9fALlfqupuSDwzUuL6TFOZMiaIBu5vGHG3GhVyeROeTIN_XCz6o2SWEpx/media?maxWidthPx=1080&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 10:00 AM - 9:00 PM, Tue: 10:00 AM - 9:00 PM, Wed: 10:00 AM - 9:00 PM, Thu: 10:00 AM - 9:00 PM, Fri: 10:00 AM - 9:00 PM, Sat: 10:00 AM - 9:00 PM, Sun: 11:00 AM - 7:00 PM",
+                            "lat": 49.1672705,
+                            "long": -123.1384481,
+                            "phoneNumber": "+1 604-713-7467",
+                            "placeName": "CF Richmond Centre",
+                            "place_id": 3349,
+                            "rating": "4.2",
+                            "summary": "Large, light-filled mall with familiar stores, plus counter-serve eateries & sit-down restaurants.",
+                            "website": "https://shops.cadillacfairview.com/property/cf-richmond-centre"
+                        },
+                        30: {
+                            "address": "5951 No. 3 Rd Unit 200, Richmond, BC V6X 2E3, Canada",
+                            "category": "Food",
+                            "day_id": 1841,
+                            "favorite": false,
+                            "geocode": [49.1708599, -123.1370615],
+                            "id": 30,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJm9FoVjN1hlQRe7ATPx9deoY/photos/AelY_CslhwgSK7ycMIhUIeRteSa4LpudMTRqeVG8ImsveiF5z4CG88bpQDFBJzqzaNFx0pgafWdL7CfqpLgySwGwIU7rU99oSirem3PXeB0HftwYkPFO_j1Iwjf1HdVTQkmipzvWbmPFmFmb89APSOsteDlSe_ELDUxpeCo/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM, Tue: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM, Wed: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM, Thu: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM, Fri: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM, Sat: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM, Sun: 9:00 AM - 3:00 PM; 5:30 - 10:00 PM",
+                            "lat": 49.1708599,
+                            "long": -123.1370615,
+                            "phoneNumber": "+1 604-249-0080",
+                            "placeName": "Empire Seafood Restaurant (Richmond)",
+                            "place_id": 3350,
+                            "rating": "4.0",
+                            "summary": "Upscale eatery serving contemporary Chinese cuisine, including seafood, with many dim sum options.",
+                            "website": "http://www.empirerestaurant.ca/"
+                        },
+                        31: {
+                            "address": "1100 Robson St, Vancouver, BC V6E 1B2, Canada",
+                            "category": "Clothing store",
+                            "day_id": 1843,
+                            "favorite": false,
+                            "geocode": [49.2845862, -123.1252497],
+                            "id": 31,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJVUty9YBxhlQRzsGy5YPpbBk/photos/AelY_CsoNoKwBAUApCKVZoogJWmlmnfNhq2dInlI7QHMdhTiwy-9ll5h38M8UdxjJ_6LGrgjxWIBloSWKJeKbt4J6b7L-9yfQkOhDQN7froCELj06ZLn_gKeX-mmGzUauld0E7VRyPgQN4aMvXi7COhqODSxv4Xd07ZYp4Qw/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 10:00 AM - 9:30 PM, Tue: 10:00 AM - 9:30 PM, Wed: 10:00 AM - 9:30 PM, Thu: 10:00 AM - 10:00 PM, Fri: 10:00 AM - 10:00 PM, Sat: 10:00 AM - 10:00 PM, Sun: 10:00 AM - 9:30 PM",
+                            "lat": 49.2845862,
+                            "long": -123.1252497,
+                            "phoneNumber": "+1 604-684-3251",
+                            "placeName": "Aritzia",
+                            "place_id": 3351,
+                            "rating": "3.6",
+                            "summary": "Chain of eclectic boutiques, stocked with trendy women's clothing & accessories.",
+                            "website": "https://www.aritzia.com/en/store?StoreID=aritzia-robson-vancouver"
+                        },
+                        32: {
+                            "address": "2153 W 4th Ave, Vancouver, BC V6K 1N7, Canada",
+                            "category": "Restaurant",
+                            "day_id": 1840,
+                            "favorite": false,
+                            "geocode": [49.268274, -123.154001],
+                            "id": 32,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJS1MJoNZzhlQRDDUvOzoHHZU/photos/AelY_Ct9S-V4az4LiFWvCJDDNxKMLWtY5VuC5m_AH79v6I1WzS8Xyzkt1wYdN5xVW7cBkA31ArggoFwRgC2nXDZfWUEPV8zgQYGVOZFyCN1cFQeSDh3ShcbqCIMlb4nYRZ0vuNdUijcfgR6ywwm7KiaxxJRLgn0xO9ygE9UJ/media?maxWidthPx=2172&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 8:00 AM - 2:30 PM, Tue: 8:00 AM - 2:30 PM, Wed: 8:00 AM - 2:30 PM, Thu: 8:00 AM - 2:30 PM, Fri: 8:00 AM - 2:30 PM, Sat: 8:00 AM - 3:00 PM, Sun: 8:00 AM - 3:00 PM",
+                            "lat": 49.268274,
+                            "long": -123.154001,
+                            "phoneNumber": "+1 604-423-3350",
+                            "placeName": "Jam Cafe Kitsilano",
+                            "place_id": 3352,
+                            "rating": "4.6",
+                            "summary": null,
+                            "website": "https://jamcafes.com/"
+                        },
+                        33: {
+                            "address": "560 Seymour St, Vancouver, BC V6B 0A8, Canada",
+                            "category": "Establishment",
+                            "day_id": 1836,
+                            "favorite": false,
+                            "geocode": [49.2831592, -123.1145291],
+                            "id": 33,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ62A9n0pxhlQRBHEroUDFLWw/photos/AelY_Cuh-B6bTd0CH7CU_dFnTf06zY6UPfszHFs0DJTEBEjiuNb3MAxYbsg-Uw9yjkKm021Fdw173aPDKn0_H1WFMEdSb9vhEUOSBN58TxLsR5TigFce_tdwFZ5RNz3QAuVenzTjBqk11qmKKCxq6St9o_g_-5pKx8uSLeO8/media?maxWidthPx=3475&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: Closed, Tue: Closed, Wed: Closed, Thu: 10:00 PM - 2:00 AM, Fri: 10:00 PM - 3:00 AM, Sat: 10:00 PM - 3:00 AM, Sun: Closed",
+                            "lat": 49.2831592,
+                            "long": -123.1145291,
+                            "phoneNumber": "+1 778-863-3111",
+                            "placeName": "Levels Nightclub",
+                            "place_id": 3353,
+                            "rating": "3.1",
+                            "summary": "Sleek locale featuring top 40 & electronica DJs, a dance floor, VIP tables & a full bar.",
+                            "website": "http://levelsvancouver.ca/"
+                        },
+                        34: {
+                            "address": "2153 W 4th Ave, Vancouver, British Columbia V6K 1N7",
+                            "category": "breakfast spot",
+                            "day_id": 1840,
+                            "favorite": false,
+                            "geocode": [49.268335, -123.153952],
+                            "id": 34,
+                            "imgURL": "https://images.unsplash.com/photo-1594012531621-23dc573ba808?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MzAyODV8MHwxfHNlYXJjaHwxfHxKYW0tQ2FmZXxlbnwwfHx8fDE3MjQyOTE2MjR8MA&ixlib=rb-4.0.3&q=80&w=1080",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 49.268335,
+                            "long": -123.153952,
+                            "phoneNumber": null,
+                            "placeName": "Jam Cafe",
+                            "place_id": 3356,
+                            "rating": null,
+                            "summary": null,
+                            "website": null
+                        },
+                        35: {
+                            "address": "White Rock, BC V4A, Canada",
+                            "category": "Tourist attraction",
+                            "day_id": 1838,
+                            "favorite": false,
+                            "geocode": [49.0171089, -122.8056869],
+                            "id": 35,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ1Zb2TufDhVQRj2JOgo3uUvw/photos/AelY_CsGT8ziLGsKuS79s56rwKIXsBfdewf7dgyGOozdsUKgzlt9z984zTbJ73N14JPtZBKINGSU7jOsp72LUp0F51J2ScEC49PV37X_6uTs1Anv6Ytg0o2im6FG3INda3ayaovxQQP9q1yaaTf0Z2DD91wnNA8ydKap5ar2/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
+                            "lat": 49.0171089,
+                            "long": -122.8056869,
+                            "phoneNumber": null,
+                            "placeName": "White Rock Pier",
+                            "place_id": 3386,
+                            "rating": "4.8",
+                            "summary": null,
+                            "website": null
+                        },
+                        36: {
+                            "address": "3596 E Hastings St, Vancouver, BC V5K 2A7, Canada",
+                            "category": "Establishment",
+                            "day_id": 1842,
+                            "favorite": false,
+                            "geocode": [49.2810072, -123.0260286],
+                            "id": 36,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ41wfngxxhlQRCPXU-tD5zxQ/photos/AelY_CuM6ENgCUDk3R9GwF7DQecZWSPiiTl6V_bo5JvQAX7Dk5fPHWNuN01a3W1VhbgkFdbnNAipKg_LZP5OEk8XqUsXubI6QIZ_faMT_zNBqok_37uLGaJEfKYE4Y7XoKDbkqYPFQYLMstMA-5P0ToJBOEXFeMPsA8Q4Adc/media?maxWidthPx=4080&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Closed, Tue: Closed, Wed: 10:00 AM - 8:00 PM, Thu: 10:00 AM - 8:00 PM, Fri: 10:00 AM - 8:00 PM, Sat: 10:00 AM - 8:00 PM, Sun: 10:00 AM - 4:00 PM",
+                            "lat": 49.2810072,
+                            "long": -123.0260286,
+                            "phoneNumber": "+1 604-423-5969",
+                            "placeName": "Kanadell Japanese Bakery",
+                            "place_id": 3387,
+                            "rating": "4.7",
+                            "summary": null,
+                            "website": "https://www.kanadell.com/"
+                        },
+                        37: {
+                            "address": "7800 Vivian Dr, Vancouver, BC V5S 2E6, Canada",
+                            "category": "Tourist attraction",
+                            "day_id": 1840,
+                            "favorite": false,
+                            "geocode": [49.212453, -123.0477333],
+                            "id": 37,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJqW57tcF1hlQRCFnyi2kJn_U/photos/AelY_CskQeNWvV1jsua2LM0xRSQy2D01iqYyNT4Xk74sbnR_AOmH9Zm3CmykO_-8A6tEiUfHZt49g0N9KmjOGBSCfN8CUxXfutrzbxrBx1WjlSHQup9XBdxX-2nnRaJPjVJjGK3pMW6z592lEcdCDxpzZVsG2h2k7vJd9nmA/media?maxWidthPx=2009&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: 6:00 AM - 8:00 PM, Tue: 6:00 AM - 8:00 PM, Wed: 6:00 AM - 8:00 PM, Thu: 6:00 AM - 8:00 PM, Fri: 6:00 AM - 8:00 PM, Sat: 6:00 AM - 8:00 PM, Sun: 6:00 AM - 8:00 PM",
+                            "lat": 49.212453,
+                            "long": -123.0477333,
+                            "phoneNumber": "+1 604-257-6925",
+                            "placeName": "Fraserview Golf Course",
+                            "place_id": 3390,
+                            "rating": "4.5",
+                            "summary": "Well-maintained 18-hole, par-72 course with tree-lined fairways, putting greens & driving range.",
+                            "website": "https://vancouver.ca/parks-recreation-culture/fraserview-golf-course.aspx"
+                        },
+                        38: {
+                            "address": "10320 152A St, Surrey, BC V3R 7P6, Canada",
+                            "category": "Restaurant",
+                            "day_id": 1839,
+                            "favorite": false,
+                            "geocode": [49.1897845, -122.799234],
+                            "id": 38,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJkQdbDxPXhVQRT7wD-dFbV0w/photos/AelY_CviwWGPnGHfRiFloq8aYwAe_R38FINiHkzS6cllyTTZs5LfZwZsIIU5-VWtrifFXufJHORcEsB951YubLcf6lYuxZArP1oF233dKYko97l33XEDhSDDdajSK5KA7BLHsBMFDOIUj_ueE7uXiGWhvgCP3OhcpFF0Q2Vg/media?maxWidthPx=4656&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 11:30 AM - 9:30 PM, Tue: 11:30 AM - 9:30 PM, Wed: 11:30 AM - 9:30 PM, Thu: 11:30 AM - 9:30 PM, Fri: 11:30 AM - 10:00 PM, Sat: 11:30 AM - 10:00 PM, Sun: 11:30 AM - 9:30 PM",
+                            "lat": 49.1897845,
+                            "long": -122.799234,
+                            "phoneNumber": "+1 604-931-8284",
+                            "placeName": "Sushi California",
+                            "place_id": 3391,
+                            "rating": "4.2",
+                            "summary": "Roomy, understated chain outlet offering an extensive menu of sushi dishes & a take-out option.",
+                            "website": "https://sushi-california.com/"
+                        }
+                    },
+                    "places_last": 38,
+                    "saved_places": {
+                        "addresses": [
+                            "555 Great Northern Way, Vancouver, BC V5T 1E1, Canada",
+                            "Kitsilano Beach, Vancouver, BC, Canada",
+                            "560 Seymour St, Vancouver, BC V6B 0A8, Canada",
+                            "3700 No. 3 Rd, Richmond, BC V6X 3X2, Canada",
+                            "560 Seymour St, Vancouver, BC V6B 0A8, Canada",
+                            "7800 Vivian Dr, Vancouver, BC V5S 2E6, Canada"
+                        ],
+                        "placesIds": [11, 9, 16, 27, 33, 37]
+                    },
+                    "trip_id": "410"
+                },
+                itineraryFirstLoad: false,
+            },
+        },
+    ];
+
     const slideCarouselRight = () => {
         let carousel = document.getElementById('cityCarouselInner')
         let translatedWidth = window.innerWidth * 0.9 + translationIndex * 350
@@ -365,7 +1213,7 @@ export const Dashboard = () => {
         setSignUpIsOpen(true);
     }
 
-    
+
 
     const getCity = async () => {
         let cityInput = document.getElementById('cityInput');
@@ -380,7 +1228,7 @@ export const Dashboard = () => {
                 alert("Please enter a start and end date for your trip")
             } else {
                 // if there is a city entered
-                startLoading()
+                startLoading();
                 const cityName = cityInput.value;
                 const index = cityName.indexOf(',')
                 // if the user input includes a "," -- it contains city and state/country
@@ -489,7 +1337,7 @@ export const Dashboard = () => {
     const updateCityInput = (city) => {
         const cityInput = document.getElementById('cityInput');
         if (city.state) {
-            cityInput.value = city.city_name+", "+convertStateToAbbv(city.state);
+            cityInput.value = city.city_name + ", " + convertStateToAbbv(city.state);
         } else {
             cityInput.value = city.city_name;
         }
@@ -619,19 +1467,20 @@ export const Dashboard = () => {
             if (navigation === "itinerary") {
                 let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
                 const response = await axios.get(url)
+                console.log({ ...trip, itinerary: response.data });
                 // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-                return response.status === 200 ? loadItinerary(response.data, trip) : alert('Something went wrong. Please try again.')
+                return response.status === 200 ? loadItinerary({ ...trip, itinerary: response.data }) : alert('Something went wrong. Please try again.')
             } else if (navigation === "places") {
                 let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
                 const response = await axios.get(url)
                 // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
                 return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
-            }
+            };
         } else {
             let accessDeniedMessage = `You need an account with access to create a trip. Please ${auth.currentUser ? "" : "login and "}navigate to the access option in the navbar to gain access.`
             alert(accessDeniedMessage);
-        }
-    }
+        };
+    };
     const loadPlaces = (place_list, trip) => {
         // console.log(place_list)
         let placesList = []
@@ -668,39 +1517,43 @@ export const Dashboard = () => {
             places: placesList,
             itinerary: null,
             itineraryFirstLoad: false
-        }
+        };
         // console.log(response.data)
         // console.log(currentTripCopy)
-        setIsLoading(false)
-        setCurrentTrip(currentTripCopy)
-        navigate('/add-places')
-    }
-    const loadItinerary = (itinerary, trip, firstLoad) => {
-        let currentTripCopy = {
-            tripID: trip.trip_id,
-            tripName: trip.trip_name,
-            city: trip.dest_city,
-            country: trip.dest_country,
-            country_2letter: trip.dest_country_2letter,
-            startDate: trip.start_date,
-            endDate: trip.end_date,
-            tripDuration: trip.duration,
-            geocode: [trip.dest_lat, trip.dest_long],
-            imgUrl: trip.dest_img,
-            places: Object.values(itinerary.places),
-            itinerary: itinerary,
-            itineraryFirstLoad: firstLoad ? true : false
-        }
-        // console.log(response.data)
-        // console.log(currentTripCopy)
-        setIsLoading(false)
-        setCurrentTrip(currentTripCopy)
-        navigate('/itinerary')
+        setIsLoading(false);
+        setCurrentTrip(currentTripCopy);
+        navigate('/add-places');
+    };
+    const loadItinerary = (trip, firstLoad) => {
+        let currentTripCopy = {};
+        if (trip.trip_id) {
+            // trip.trip_id means the trip object came from the database
+            currentTripCopy = {
+                tripID: trip.trip_id,
+                tripName: trip.trip_name,
+                city: trip.dest_city,
+                country: trip.dest_country,
+                country_2letter: trip.dest_country_2letter,
+                startDate: trip.start_date,
+                endDate: trip.end_date,
+                tripDuration: trip.duration,
+                geocode: [trip.dest_lat, trip.dest_long],
+                imgUrl: trip.dest_img,
+                places: Object.values(trip.itinerary.places),
+                itinerary: trip.itinerary,
+                itineraryFirstLoad: firstLoad ? true : false
+            };
+        } else {
+            currentTripCopy = trip;
+        };
+        setIsLoading(false);
+        setCurrentTrip(currentTripCopy);
+        navigate('/itinerary');
     }
     const [isLoading, setIsLoading] = useState(false);
     const stopLoadingScreen = () => {
-        setIsLoading(false)
-    }
+        setIsLoading(false);
+    };
 
     const deleteTrip = (trip) => {
         let url = `https://routewise-backend.onrender.com/places/delete-trip/${trip.trip_id}`
@@ -1158,11 +2011,11 @@ export const Dashboard = () => {
                 </div> */}
 
                 <div className="popular-destinations mt-5">
-                    <div className="page-subsubheading-bold my-3">Popular destinations</div>
+                    <div className="page-subsubheading-bold my-3">Featured Trips</div>
 
                     <div className="carousel2-window">
                         <div id='cityCarouselInner' className="inner-no-flex" style={{ transform: `translateX(-${translationIndex * 350}px)` }}>
-                            {cities.map((city, index) => {
+                            {/* {cities.map((city, index) => {
                                 return <div key={index} className="card3 position-relative">
                                     <img src={city.imgUrl} alt="" className="card3-img" />
                                     <div className="model-overlay position-absolute white-text">
@@ -1173,7 +2026,27 @@ export const Dashboard = () => {
                                     </div>
                                     <div className="page-subheading-bold my-2 black-text">{city.name}</div>
                                 </div>
+                            })} */}
+                            {featuredTrips.map((trip, index) => {
+
+                                return <div onClick={() => loadItinerary(trip.trip)} key={index} className="featuredTrip-card">
+                                    <div className="imgDiv"><img src={trip.imgUrl} alt="" className="img" /></div>
+                                    <div className="caption">
+                                        <div className="titleDiv">
+                                            <div className="imgDiv">
+                                                <img src={trip.flagImgUrl} alt="" className="country-flag" />
+                                            </div>
+                                            <p className="destination">{trip.destination}</p>
+                                        </div>
+                                        <p className="summary">{trip.summary}</p>
+                                        <div className="details">
+                                            <p className="detail">Trip Duration: <span className="purple-text">{trip.numberOfDays}</span></p>
+                                            <p className="detail">Number of places: <span className="purple-text">{trip.numberOfPlaces}</span></p>
+                                        </div>
+                                    </div>
+                                </div>
                             })}
+
 
                         </div>
                     </div>

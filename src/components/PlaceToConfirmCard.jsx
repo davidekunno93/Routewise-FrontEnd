@@ -23,10 +23,14 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
     // });
     const simplifyWebsite = (website) => {
         if (website) {
-            website = website.split("www.")[1];
-        }
-        return website
-    }
+            if (website.includes("www")) {
+                website = website.split("www.")[1];
+            } else {
+                website = website.split("//")[1];
+            };
+        };
+        return website;
+    };
 
     const placeToConfirmRef = useRef(null);
     useEffect(() => {

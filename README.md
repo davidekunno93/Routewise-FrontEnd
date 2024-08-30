@@ -566,11 +566,11 @@ Cheryl's trips by trip_id
 <!-- 22Aug24 Team Meeting -->
 <!-- Add instagram posts with links on landing page -->
 <!-- Swap days/move all places connection w/BE -->
-Featured itineraries
+Featured itineraries (trip ids = [410, 413])
 Suggested places
 <!-- userPrefs need to load when the user is signed in! - setPreferences function running on App.jsx fix? -->
 saved to saved places indicator on itinerary?
-create inItinerary function to check if place is inItinerary
+<!-- create inItinerary function to check if place is inItinerary -->
 ORGANIZE
 <!-- Suggested place card component -->
 Saved Place card component
@@ -584,3 +584,8 @@ Amusement park - all day?
 <!-- 26Aug24 Team Meeting -->
 Allow users to make user name - new user flow
 <!-- userPreferences bug -->
+
+
+Fix loadPlaces route to serve the correct place keys
+- check placeId/geoapify_placeId??
+- save and serve googlePlaceIds!!

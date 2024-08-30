@@ -107,7 +107,7 @@ const DataProvider = (props) => {
         imgUrl: null,
         places: [],
         itinerary: null,
-        itineraryFirstLoad: false
+        itineraryFirstLoad: false,
     });
     const clearCurrentTrip = () => {
         setCurrentTrip({
@@ -299,15 +299,19 @@ const DataProvider = (props) => {
             let day = dashDate.slice(8)
             return month + "/" + day + "/" + fullyear
         },
-        daytoDate: function (days) {
-            const year = new Date().getFullYear();
-            const isLeapYear = year % 4 === 0;
-            const totalDays = isLeapYear ? 366 : 365;
-            if (days > totalDays) {
-                return "Too many days"
-            } else if (days < 0) {
+        dayToDate: function (days) {
+            let year = new Date().getFullYear();
+            let isLeapYear = year % 4 === 0;
+            let totalDays = isLeapYear ? 366 : 365;
+            if (days < 0) {
                 return "Number of days must be positive"
             }
+            while (days > totalDays) {
+                days -= totalDays;
+                year += 1;
+                isLeapYear = year % 4 === 0;
+                totalDays = isLeapYear ? 366 : 365;
+            };
             const months = {
                 "01": 31,
                 "02": isLeapYear ? 29 : 28,
@@ -332,17 +336,17 @@ const DataProvider = (props) => {
                 } else {
                     const dayOfTheMonth = days.toString().length === 2 ? days.toString() : "0" + days.toString();
                     const monthOfTheYear = monthNum;
-                    return dayOfTheMonth + "/" + monthOfTheYear + "/" + year.toString();
+                    return monthOfTheYear + "/" + dayOfTheMonth + "/" + year.toString();
                 }
             }
             return "Function should never reach this point"
         },
         dateToDay: function (date) {
             // this func doesn't validate the date exists i.e. 01/32/2024 would take
-            const year = new Date().getFullYear();
+            const year = date.slice(6);
             const isLeapYear = year % 4 === 0;
-            const dateMonth = date.slice(3, 5);
-            const dateDays = parseInt(date.slice(0, 2));
+            const dateMonth = date.slice(0, 2);
+            const dateDays = parseInt(date.slice(3, 5));
             let days = 0;
             const months = {
                 "01": 31,
@@ -375,9 +379,9 @@ const DataProvider = (props) => {
             return days;
         },
         addDays: function (date, days) {
-            let yearDay = dateToDay(date);
+            let yearDay = timeFunctions.dateToDay(date);
             yearDay += days;
-            date = dayToDate(yearDay);
+            date = timeFunctions.dayToDate(yearDay);
             return date;
         },
     }
