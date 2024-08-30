@@ -39,22 +39,22 @@ const SuggestedPlaceCard = ({ index, place, addPlaceToConfirm, addPlace, placesA
                 },
             },
             {
-                itemName: placeFunctions.inItinerary(place) ? "Remove from itinerary" : "Add to itinerary",
+                itemName: placeFunctions && placeFunctions.inItinerary(place) ? "Remove from itinerary" : "Add to itinerary",
                 gIconPrompt: "map",
-                clickFunction: placeFunctions.inItinerary(place) ? {
+                clickFunction: placeFunctions && placeFunctions.inItinerary(place) ? {
                     function: placeFunctions.removePlace,
                     params: [null, null, place],
                 } : "daySelection:add place",
-                textColor: placeFunctions.inItinerary(place) ? "red" : "",
+                textColor: placeFunctions && placeFunctions.inItinerary(place) ? "red" : "",
             },
             {
-                itemName: placeFunctions.isSavedPlace(place) ? "Remove from saved places" : "Add to saved places",
+                itemName: placeFunctions && placeFunctions.isSavedPlace(place) ? "Remove from saved places" : "Add to saved places",
                 gIconPrompt: "bookmark",
-                clickFunction: {
+                clickFunction: placeFunctions ? {
                     function: placeFunctions.isSavedPlace(place) ? placeFunctions.removeFromSavedPlaces : placeFunctions.addToSavedPlaces,
                     params: placeFunctions.isSavedPlace(place) ? [null, place.address] : [place],
-                },
-                textColor: placeFunctions.isSavedPlace(place) ? "red" : "",
+                } : null,
+                textColor: placeFunctions && placeFunctions.isSavedPlace(place) ? "red" : "",
             },
         ]
     };
