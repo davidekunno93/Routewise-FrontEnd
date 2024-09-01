@@ -566,26 +566,43 @@ Cheryl's trips by trip_id
 <!-- 22Aug24 Team Meeting -->
 <!-- Add instagram posts with links on landing page -->
 <!-- Swap days/move all places connection w/BE -->
-Featured itineraries (trip ids = [410, 413])
+<!-- Featured itineraries (trip ids = [410, 413]) -->
 Suggested places
 <!-- userPrefs need to load when the user is signed in! - setPreferences function running on App.jsx fix? -->
 saved to saved places indicator on itinerary?
 <!-- create inItinerary function to check if place is inItinerary -->
 ORGANIZE
 <!-- Suggested place card component -->
-Saved Place card component
-Dropdown on place cards, use dropdown component
+<!-- Saved Place card component -->
+<!-- *Dropdown on place cards, use dropdown component -->
 itinerary sidepanel component
-profile dropdown use dropdown component
+profile dropdown use DropdownGeneric component?
+**Get rename trip and subheadings working**
+<!-- daySelection:add place from saved (needed function) -->
 
 Atypical stay times
 Amusement park - all day?
 
 <!-- 26Aug24 Team Meeting -->
-Allow users to make user name - new user flow
+*Allow users to make user name - new user flow
 <!-- userPreferences bug -->
 
-
+<!-- 29Aug24 Team Meeting -->
+<!-- Update marker colors - yellow and orange colors -->
+**Top sites**
+**Landing page update**
+Saved places that are served from backend after trip generation unable to be added to trip
+Saved place should disappear from saved list when added to itinerary
 Fix loadPlaces route to serve the correct place keys
 - check placeId/geoapify_placeId??
 - save and serve googlePlaceIds!!
+
+
+LinkedIn message:
+Hi...
+Short description of skills & experience...
+Interested in role believe I'd be a good candidate for it...
+Are you able to help me out with a referral link or point me in the direction of a hiring mgr to connect with
+Free for coffee chat if you're interested in discussing more about this job
+paste link of job posting
+Attach resume/portfolio

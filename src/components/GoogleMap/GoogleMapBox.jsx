@@ -12,7 +12,7 @@ import { DataContext } from '../../Context/DataProvider';
 // tripMapBounds
 
 const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch, showPlaceAddedBox, setShowPlaceAddedBox, placeAddedBoxText }) => {
-    const { wait, generateTripMapBounds } = useContext(DataContext);
+    const { wait, generateTripMapBounds, numberToBgColor } = useContext(DataContext);
 
     // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
     const gLibrary = ["core", "maps", "places", "marker"];
@@ -137,40 +137,40 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         setMarkersState(markers)
     }, [markers])
     const [markerColorsOn, setMarkerColorsOn] = useState(markerColorsDefaultOn ? true : false);
-    const numberToBgColor = (num) => {
-        let lastDigit = num.slice(-1)
-        if (lastDigit === "1") {
-            return "#FF4856" // RED
-        }
-        if (lastDigit === "2") {
-            return "#FFD84E" // YELLOW
-        }
-        if (lastDigit === "3") {
-            return "#2185F9" // BLUE
-        }
-        if (lastDigit === "4") {
-            return "#4CDE08" // GREEN
-        }
-        if (lastDigit === "5") {
-            return "#FFA80A" // ORANGE
-        }
-        if (lastDigit === "6") {
-            return "#FF52FF" // PINK
-        }
-        if (lastDigit === "7") {
-            return "#14DCDC" // LIGHT BLUE
-        }
-        if (lastDigit === "8") {
-            return "#CECDFE" // PURPLE
-        }
-        if (lastDigit === "9") {
-            return "#A9743A" // BROWN
-        }
-        if (lastDigit === "0") {
-            return "#42F2A8" // LIGHT GREEN
-        }
-        return null;
-    }
+    // const numberToBgColor = (num) => {
+    //     let lastDigit = num.slice(-1)
+    //     if (lastDigit === "1") {
+    //         return "#FF4856" // RED
+    //     }
+    //     if (lastDigit === "2") {
+    //         return "#FFD84E" // YELLOW
+    //     }
+    //     if (lastDigit === "3") {
+    //         return "#2185F9" // BLUE
+    //     }
+    //     if (lastDigit === "4") {
+    //         return "#4CDE08" // GREEN
+    //     }
+    //     if (lastDigit === "5") {
+    //         return "#FFA80A" // ORANGE
+    //     }
+    //     if (lastDigit === "6") {
+    //         return "#FF52FF" // PINK
+    //     }
+    //     if (lastDigit === "7") {
+    //         return "#14DCDC" // LIGHT BLUE
+    //     }
+    //     if (lastDigit === "8") {
+    //         return "#CECDFE" // PURPLE
+    //     }
+    //     if (lastDigit === "9") {
+    //         return "#A9743A" // BROWN
+    //     }
+    //     if (lastDigit === "0") {
+    //         return "#42F2A8" // LIGHT GREEN
+    //     }
+    //     return null;
+    // }
     const numberToBorderColor = (num) => {
         let lastDigit = num.slice(-1)
 

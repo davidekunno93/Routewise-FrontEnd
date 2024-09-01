@@ -36,20 +36,20 @@ const Dropdown = ({ open, itemsList, day, place, addPlace, tripState, setTripSta
     if (action === "move places") {
       return "Move all places to:";
     };
-    if (action === "add place") {
+    if (action === "add place" || action === "add place from saved") {
       return "Add to:"
     }
   };
   const handleClick = (param) => {
     if (typeof param === "string") {
       let prompt = param;
-      let category = prompt.split(":")[0]
-      let action = prompt.split(":")[1]
+      let category = prompt.split(":")[0];
+      let action = prompt.split(":")[1];
       if (category === "daySelection") {
         setDaySelectionProps({
           action: action,
           titleText: actionToTitleText(action)
-        })
+        });
         setDaySelectionOpen(true);
       }
     } else if (typeof param === 'object') {

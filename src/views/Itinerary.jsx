@@ -22,6 +22,7 @@ import OpeningHoursMap from '../components/OpeningHoursMap'
 import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
 import Dropdown from '../components/Dropdown/Dropdown'
 import SuggestedPlaceCard from '../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
+import SavedPlaceCard from '../components/PlaceCards/SavedPlaceCard/SavedPlaceCard'
 // import FlowBoxDraggable from '../components/FlowBoxDraggable'
 
 const FlowBoxDraggable = lazy(() => import('../components/FlowBoxDraggable'));
@@ -30,7 +31,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   // [imports]
   const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
   const { userPreferences, setUserPreferences } = useContext(DataContext);
-  const { loadCityImg, geoToLatLng } = useContext(DataContext);
+  const { loadCityImg, geoToLatLng, numberToBgColor } = useContext(DataContext);
   const { suggestedPlaces, mapBoxCategoryKey } = useContext(DataContext);
   const { mobileMode, mobileModeNarrow, timeFunctions, gIcon, convertInfoToMap } = useContext(DataContext);
 
@@ -272,7 +273,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     addPlace: async function (dayNum, place) {
       let tripStateCopy = { ...tripState }
       if (!place) {
-        place = placeToConfirm
+        place = placeToConfirm;
       };
       // add day_id to place object
       if (tripStateCopy.days[dayNum].day_id) {
@@ -495,7 +496,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
       // tell Kate - update database
       if (tripStateCopy.trip_id) {
-        deletePlaceFromDatabase(placeId);
+        placeFunctions.database.deletePlace(placeId);
       };
 
       // set state
@@ -509,7 +510,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         placeId = placeFunctions.getPlaceId(place);
       };
       // tripState > days[dayNum] > remove placeIds[placeId]
-      deletePlaceFromDatabase(placeId);
+      placeFunctions.database.deletePlace(placeId);
+
 
       const tripStateCopy = { ...tripState };
       let index = tripStateCopy.days[dayNum].placeIds.indexOf(placeId);
@@ -588,10 +590,13 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       // add placeId to days[dayNum].placeIds
       tripStateCopy.days[dayNum].placeIds.push(placeId);
 
+      // tell Kate - send to database ($test$)
+      if (tripStateCopy.trip_id) {
+        placeFunctions.database.updateDayId(place.place_id, place.day_id);
+      }
+
       // set state
       setTripState(tripStateCopy);
-
-      // send to database
     },
     itineraryToSaved: function (dayNum, placeId) {
       // remove placeId from days[dayNum][placeIds]
@@ -611,6 +616,29 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       setTripState(tripStateCopy);
 
       // tell Kate - update database
+    },
+    database: {
+      updateDayId: function (db_place_id, db_day_id) {
+        let url = `https://routewise-backend.onrender.com/itinerary/update-place/${db_place_id}`
+        const response = axios.patch(url, { "day_id": db_day_id, "in_itinerary": db_day_id ? true : false }, {
+          headers: { "Content-Type": "application/json" }
+        }).then((response) => {
+          console.log(response.data);
+        }).catch((error) => {
+          console.log(error);
+        })
+      },
+      deletePlace: function (placeId) {
+        let place_id = tripState.places[placeId].place_id
+        if (tripState.trip_id) {
+          const response = axios.delete(`https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`)
+            .then((response) => {
+              console.log(response.data);
+            }).catch((error) => {
+              console.log(error);
+            })
+        }
+      }
     }
   };
 
@@ -699,13 +727,15 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   }
   // delete place from database
   const deletePlaceFromDatabase = (placeId) => {
-    let place_id = tripState.places[placeId].place_id
-    const response = axios.delete(`https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`)
-      .then((response) => {
-        console.log(response.data)
-      }).catch((error) => {
-        console.log(error)
-      })
+    if (tripState.trip_id) {
+      let place_id = tripState.places[placeId].place_id
+      const response = axios.delete(`https://routewise-backend.onrender.com/itinerary/delete-place/${place_id}`)
+        .then((response) => {
+          console.log(response.data)
+        }).catch((error) => {
+          console.log(error)
+        })
+    };
   }
   // update place in database ($test$)
   const updatePlaceInDatabase = (db_place_id, db_day_id) => {
@@ -743,20 +773,14 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
   // [place to confirm code]
   const [placeToConfirm, setPlaceToConfirm] = useState(null);
-  const [placeToConfirmAnimation, setPlaceToConfirmAnimation] = useState(false);
   useEffect(() => {
-    if (placeToConfirm) {
-      wait(100).then(() => {
-        setPlaceToConfirmAnimation(true);
-      })
-    } else {
-      setPlaceToConfirmAnimation(false);
-    }
+    console.log(placeToConfirm)
   }, [placeToConfirm])
   const [lightbulbDays, setLightbulbDays] = useState([]);
   const clearPlaceToConfirm = () => {
-    setPlaceToConfirm(null)
-  }
+    setPlaceToConfirm(null);
+    closeDaySelection();
+  };
   const addPlaceToConfirm = async (place) => {
     let newPlace = { ...place, favorite: false };
 
@@ -1769,40 +1793,40 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     })
   }
 
-  const numberToBgColor = (num) => {
-    let lastDigit = num.slice(-1)
-    if (lastDigit === "1") {
-      return "#FF4856" // RED
-    }
-    if (lastDigit === "2") {
-      return "#FFD84E" // YELLOW
-    }
-    if (lastDigit === "3") {
-      return "#2185F9" // BLUE
-    }
-    if (lastDigit === "4") {
-      return "#4CDE08" // GREEN
-    }
-    if (lastDigit === "5") {
-      return "#FFA80A" // ORANGE
-    }
-    if (lastDigit === "6") {
-      return "#FF52FF" // PINK
-    }
-    if (lastDigit === "7") {
-      return "#14DCDC" // LIGHT BLUE
-    }
-    if (lastDigit === "8") {
-      return "#CECDFE" // PURPLE
-    }
-    if (lastDigit === "9") {
-      return "#A9743A" // BROWN
-    }
-    if (lastDigit === "0") {
-      return "#42F2A8" // LIGHT GREEN
-    }
-    return null;
-  }
+  // const numberToBgColor = (num) => {
+  //   let lastDigit = num.slice(-1)
+  //   if (lastDigit === "1") {
+  //     return "#FF4856" // RED
+  //   }
+  //   if (lastDigit === "2") {
+  //     return "#FFD84E" // YELLOW
+  //   }
+  //   if (lastDigit === "3") {
+  //     return "#2185F9" // BLUE
+  //   }
+  //   if (lastDigit === "4") {
+  //     return "#4CDE08" // GREEN
+  //   }
+  //   if (lastDigit === "5") {
+  //     return "#FFA80A" // ORANGE
+  //   }
+  //   if (lastDigit === "6") {
+  //     return "#FF52FF" // PINK
+  //   }
+  //   if (lastDigit === "7") {
+  //     return "#14DCDC" // LIGHT BLUE
+  //   }
+  //   if (lastDigit === "8") {
+  //     return "#CECDFE" // PURPLE
+  //   }
+  //   if (lastDigit === "9") {
+  //     return "#A9743A" // BROWN
+  //   }
+  //   if (lastDigit === "0") {
+  //     return "#42F2A8" // LIGHT GREEN
+  //   }
+  //   return null;
+  // }
 
   const confirmationModalRef = useRef(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
@@ -2037,58 +2061,67 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                           let savedPlace = tripState.places[placeId]
                           let category = savedPlace.category ? savedPlace.category.split(", ")[0].charAt(0).toUpperCase() + savedPlace.category.split(", ")[0].slice(1) : "No Category";
 
-                          return <div key={index} className="placeCard2 flx-r position-relative">
-                            <div className="placeCard-img-div flx-3">
-                              <img onClick={() => addPlaceToConfirm(savedPlace)} className="placeCard2-img" src={savedPlace.imgURL} />
-                            </div>
-                            <div className="placeCard-body flx-5">
-                              {/* <div className="popUp d-none">{savedPlace.info}</div> */}
-                              <p className="body-title ">{savedPlace.placeName}</p>
-                              <p className="body-category">{category}</p>
-                              {savedPlace.info &&
-                                <>
-                                  {savedPlace.info.includes(":") ?
-                                    <OpeningHoursMap
-                                      idTree={`saved-${index}`}
-                                      placeInfo={savedPlace.info}
-                                    />
-                                    :
-                                    <p className="body-info">{savedPlace.info}</p>
-                                  }
-                                </>
-                              }
-                              {savedPlace.summary ?
-                                <p className="body-address">{savedPlace.summary}</p>
-                                :
-                                <p className="body-address">{savedPlace.address}</p>
-                              }
-                            </div>
-                            <div className="placeCard-options py-2h flx-c just-sb align-c">
+                          return <SavedPlaceCard
+                            index={index}
+                            place={savedPlace}
+                            placeFunctions={placeFunctions}
+                            tripState={tripState}
+                            setTripState={setTripState}
+                          />
 
-                              <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
-                                <div onClick={() => { addPlaceToConfirm(savedPlace); closeOptionDropdown(index) }} className="option">
-                                  <div className="material-symbols-outlined icon">location_on</div>
-                                  <p className="m-0 text">View on map</p>
-                                </div>
-                                <div onClick={() => openDaySelector(savedPlace, "savedToItinerary")} className="option">
-                                  <div className="material-symbols-outlined icon">map</div>
-                                  <p className="m-0 text">Move to Itinerary</p>
-                                </div>
-                                <div onClick={() => removeFromSavedPlaces(savedPlace.id)} className="option">
-                                  <div className="material-symbols-outlined icon red-text">delete</div>
-                                  <p className="m-0 text red-text">Remove from list</p>
-                                </div>
-                              </div>
+                          // <div key={index} className="placeCard2 flx-r position-relative">
+                          //   <div className="placeCard-img-div flx-3">
+                          //     <img onClick={() => addPlaceToConfirm(savedPlace)} className="placeCard2-img" src={savedPlace.imgURL} />
+                          //   </div>
+                          //   <div className="placeCard-body flx-5">
+                          //     {/* <div className="popUp d-none">{savedPlace.info}</div> */}
+                          //     <p className="body-title ">{savedPlace.placeName}</p>
+                          //     <p className="body-category">{category}</p>
+                          //     {savedPlace.info &&
+                          //       <>
+                          //         {savedPlace.info.includes(":") ?
+                          //           <OpeningHoursMap
+                          //             idTree={`saved-${index}`}
+                          //             placeInfo={savedPlace.info}
+                          //           />
+                          //           :
+                          //           <p className="body-info">{savedPlace.info}</p>
+                          //         }
+                          //       </>
+                          //     }
+                          //     {savedPlace.summary ?
+                          //       <p className="body-address">{savedPlace.summary}</p>
+                          //       :
+                          //       <p className="body-address">{savedPlace.address}</p>
+                          //     }
+                          //   </div>
+                          //   <div className="placeCard-options py-2h flx-c just-sb align-c">
+
+                          //     <div id={`optionDropdown-${index}`} className="placeCard-menu hidden">
+                          //       <div onClick={() => { addPlaceToConfirm(savedPlace); closeOptionDropdown(index) }} className="option">
+                          //         <div className="material-symbols-outlined icon">location_on</div>
+                          //         <p className="m-0 text">View on map</p>
+                          //       </div>
+                          //       <div onClick={() => openDaySelector(savedPlace, "savedToItinerary")} className="option">
+                          //         <div className="material-symbols-outlined icon">map</div>
+                          //         <p className="m-0 text">Move to Itinerary</p>
+                          //       </div>
+                          //       <div onClick={() => removeFromSavedPlaces(savedPlace.id)} className="option">
+                          //         <div className="material-symbols-outlined icon red-text">delete</div>
+                          //         <p className="m-0 text red-text">Remove from list</p>
+                          //       </div>
+                          //     </div>
 
 
-                              <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
-                                more_vert
-                              </span>
-                              <span onClick={() => removeFromSavedPlaces(savedPlace.id)} className="material-symbols-outlined gray-text showOnHover-50 pointer">
-                                delete
-                              </span>
-                            </div>
-                          </div>
+                          //     <span id={`optionBtn-${index}`} onClick={() => toggleOptionDropdown(index)} className="material-symbols-outlined gray-text more_vert">
+                          //       more_vert
+                          //     </span>
+                          //     <span onClick={() => removeFromSavedPlaces(savedPlace.id)} className="material-symbols-outlined gray-text showOnHover-50 pointer">
+                          //       delete
+                          //     </span>
+                          //   </div>
+                          // </div>
+
                         })
                         :
                         <div className="add-places-card">
@@ -2397,7 +2430,6 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                         clearPlaceToConfirm={clearPlaceToConfirm}
                         addressList={itineraryAddressList}
                         savedAddressList={tripState.saved_places.addresses}
-
                         forItinerary
                       />
                       // <div id='placeToConfirmCard' className={`placeToConfirmCard position-absolute ${placeToConfirmAnimation ? "show" : "hide"}`}>

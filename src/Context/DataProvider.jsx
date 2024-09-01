@@ -829,7 +829,7 @@ const DataProvider = (props) => {
             return "#FF4856" // RED
         }
         if (lastDigit === "2") {
-            return "#FFD84E" // YELLOW
+            return "#FFED4E" // YELLOW
         }
         if (lastDigit === "3") {
             return "#2185F9" // BLUE
@@ -838,7 +838,7 @@ const DataProvider = (props) => {
             return "#4CDE08" // GREEN
         }
         if (lastDigit === "5") {
-            return "#FFA80A" // ORANGE
+            return "#FF8A00" // ORANGE
         }
         if (lastDigit === "6") {
             return "#FF52FF" // PINK
@@ -856,7 +856,7 @@ const DataProvider = (props) => {
             return "#42F2A8" // LIGHT GREEN
         }
         return null;
-    }
+    };
 
     return (
         <DataContext.Provider value={{

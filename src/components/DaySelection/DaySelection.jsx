@@ -53,10 +53,20 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
     }
     useEffect(() => {
         if (place) {
-            getLightbulbDays()
+            getLightbulbDays();
         }
     }, [])
 
+    const updatePlaceInDatabase = (db_place_id, db_day_id) => {
+        let url = `https://routewise-backend.onrender.com/itinerary/update-place/${db_place_id}`
+        const response = axios.patch(url, { "day_id": db_day_id, "in_itinerary": db_day_id ? true : false }, {
+            headers: { "Content-Type": "application/json" }
+        }).then((response) => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.log(error)
+        })
+    };
     const itineraryFunctions = {
         swapDays: function (sourceDayNum, destinationDayNum) {
             // send updates to Kate Backend
@@ -112,7 +122,33 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
                 setTripState(tripStateCopy);
             }
         },
+        savedToItinerary: function (dayNum, place) {
+            // remove id and from saved_places placesIds
+            let tripStateCopy = { ...tripState };
+            let placeId = place.id;
+            // let place = tripStateCopy.places[placeId];
+            let indexOfPlaceId = tripStateCopy.saved_places.placesIds.indexOf(placeId);
+            let indexOfAddress = tripStateCopy.saved_places.placesIds.indexOf(place.address);
+            tripStateCopy.saved_places.placesIds.splice(indexOfPlaceId, 1);
+            tripStateCopy.saved_places.addresses.splice(indexOfAddress, 1);
+
+
+            // places[placeId].day_id = days[dayNum].day_id
+            tripStateCopy.places[placeId].day_id = tripStateCopy.days[dayNum].day_id;
+
+            // add placeId to days[dayNum].placeIds
+            tripStateCopy.days[dayNum].placeIds.push(placeId);
+
+            // tell Kate - send to database ($test$)
+            if (tripStateCopy.trip_id) {
+                updatePlaceInDatabase(place.place_id, place.day_id);
+            };
+
+            // set state
+            setTripState(tripStateCopy);
+        },
     }
+    
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(true);
     const [confirmationModalProps, setConfirmationModalProps] = useState({
         confirmAction: null,
@@ -155,7 +191,7 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
         // console.log(addPlace);
     }, [confirmationModalProps])
 
-    
+
 
 
     return (
@@ -184,7 +220,29 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
                                         >
                                             <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
                                             <div className="text">
-                                                <p className="m-0 mr-4"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
+                                                <p className="m-0 ws-nowrap"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
+                                            </div>
+                                            <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
+                                                <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>
+                                                <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
+                                            </div>
+                                        </div>
+                                    })}
+                                </>
+                            }
+                            {action === "add place from saved" &&
+                                <>
+                                    {tripState.day_order.map((dayNum, i) => {
+                                        const day = tripState.days[dayNum];
+                                        return <div
+                                            key={i}
+                                            id='day-option'
+                                            onClick={() => itineraryFunctions.savedToItinerary(dayNum, place)}
+                                            className="day-option"
+                                        >
+                                            <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
+                                            <div className="text">
+                                                <p className="m-0 ws-nowrap"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
                                             </div>
                                             <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
                                                 <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>

@@ -2913,6 +2913,7 @@ p {
   height: 100%;
   object-fit: cover;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .placeCard2.gone {
@@ -4276,6 +4277,7 @@ selection-box-landing.mobile {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 .daySelection {
+  /* width: 220px; */
   background-color: white;
   padding-bottom: 5px;
   border-radius: 12px;
@@ -4360,7 +4362,7 @@ selection-box-landing.mobile {
 }
 
 .day-color {
-  width: 12px;
+  min-width: 12px;
   height: 12px;
   border-radius: 50%;
   display: flex;
@@ -7179,10 +7181,10 @@ div:has(>.gm-control-active) {
   width: 300px;
   border-radius: 12px;
   box-sizing: border-box;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   padding: 12px;
-  margin: 8px 0px;
+  margin: 8px;
   cursor: pointer;
   transition: 0.2s;
 }

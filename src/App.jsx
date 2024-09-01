@@ -180,8 +180,8 @@ function App() {
   }
   useEffect(() => {
     nearbySearch();
-    console.log("user preferences was updated");
-  }, [userPreferences, currentTrip.geocode])
+    console.log("nearby search was reloaded");
+  }, [userPreferences, currentTrip.geocode, currentTrip]);
 
   const getSelectedPreferences = (userPreferencesObj) => {
     let selectedPreferences = [];

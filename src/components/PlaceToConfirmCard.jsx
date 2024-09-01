@@ -109,7 +109,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
     return (
         <>
             <div ref={placeToConfirmRef} className="placeToConfirmCardDiv position-absolute hide">
-                <span onClick={() => clearPlaceToConfirm()} className={`closeBtn-PTC material-symbols-outlined position-absolute x-large`}>
+                <span onClick={() => {clearPlaceToConfirm()}} className={`closeBtn-PTC material-symbols-outlined position-absolute x-large`}>
                     close
                 </span>
                 <div className="placeCard-PTC w-97 position-relative flx-r my-2">
@@ -119,15 +119,11 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                         <div onClick={() => togglePopUp('PTC')} id='popUp-PTC' className="popUp d-none position-absolute">{placeToConfirm.info}</div>
                         <p className="body-title truncated">{textFunctions.capitalize(placeToConfirm.placeName)}</p>
                         <CategoryAndRating place={placeToConfirm} />
-                        {/* {placeToConfirm.info &&
-                            <p className="body-info truncated">{placeToConfirm.info}</p>
-                        } */}
                         {placeToConfirm.info.includes(":") ?
                             <OpeningHoursMap idTree={"PTC"} placeInfo={placeToConfirm.info} />
                             :
                             <div className="body-info">{placeToConfirm.info}</div>
                         }
-                        {/* <p onClick={() => togglePopUp('PTC')} className="body-info-PTC pointer mb-1">{placeToConfirm.info}</p> */}
                         {placeToConfirm.summary &&
                             <p className="body-summary truncated-2 m-0">{placeToConfirm.summary}</p>
                         }
@@ -237,7 +233,6 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                                     :
                                     <div className="w-100 position-bottom">
                                         <div onClick={() => addToSavedPlaces(placeToConfirm)} className="add-saved-btn position-relative">
-                                            {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
                                             <div className="flx pointer">
                                                 <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
                                                     bookmark

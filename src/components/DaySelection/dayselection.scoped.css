@@ -16,7 +16,8 @@
 }
 .daySelection.itinerary {
     top: 12px;
-    left: -12px;
+    /* left: -12px; */
+    right: 0;
 }
 .daySelection.map {
     height: auto;
