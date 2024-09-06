@@ -605,7 +605,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
 
     // [places lists code]
-    const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Added Places")
+    const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Top sites")
     const beamRef = useRef(null);
 
     // suggested places
