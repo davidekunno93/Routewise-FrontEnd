@@ -25,8 +25,8 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const {
         user, setUser, textFunctions,
         userPreferences, currentTrip, setCurrentTrip, clearCurrentTrip,
-        setSignUpIsOpen, setAuthIndex, loadCityImg, mapBoxCategoryKey, mobileMode, mobileModeNarrow,
-        geoToLatLng, toLatitudeLongitude, modifyInfo, getBestCategory, getGoogleImg
+        setSignUpIsOpen, setAuthIndex, mapBoxCategoryKey, mobileMode, mobileModeNarrow,
+        geoToLatLng
     } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
@@ -50,7 +50,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const [mapCenterToggle, setMapCenterToggle] = useState(false);
     const [country, setCountry] = useState(currentTrip.country_2letter ? currentTrip.country_2letter : 'gb');
     // const [suggestedPlaces, setSuggestedPlaces] = useState([]);
-    const { suggestedPlaces } = useContext(DataContext);
+    const { suggestedPlaces, topSites } = useContext(DataContext);
     const [auto, setAuto] = useState([]);
 
     // date functions
@@ -608,16 +608,76 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Added Places")
     const beamRef = useRef(null);
 
-    const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null)
+    // suggested places
+    const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null);
     const updateSuggestedPlacesFilter = (num, categoryTitle) => {
         // let category = document.getElementById(`suggestedCategory-${num}`)
         if (categoryTitle === "All") {
-            setSuggestedPlacesFilter(null)
+            setSuggestedPlacesFilter(null);
         } else {
-            setSuggestedPlacesFilter(categoryTitle)
-        }
+            setSuggestedPlacesFilter(categoryTitle);
+        };
 
-    }
+    };
+    const [topSiteControls, setTopSiteControls] = useState({
+        hiddenPlaces: [],
+    });
+    const topSiteFunctions = {
+        confirmationAnimation: function (index) {
+            let addedOverlay = document.getElementById(`added-${index}`);
+            if (addedOverlay) {
+                addedOverlay.classList.remove('hidden-o');
+                wait(1200).then(() => {
+                    addedOverlay.classList.add('hidden-o');
+                });
+            };
+        },
+        hidePlace: function (placeName) {
+            let topSitesControlsCopy = { ...topSiteControls };
+            topSitesControlsCopy.hiddenPlaces.push(placeName);
+            setTopSiteControls(topSitesControlsCopy);
+        },
+        undoHidePlace: function () {
+            let topSitesControlsCopy = { ...topSiteControls };
+            topSitesControlsCopy.hiddenPlaces.pop();
+            setTopSiteControls(topSitesControlsCopy);
+        },
+    };
+    const [suggestedPlaceControls, setSuggestedPlaceControls] = useState({
+        filter: null,
+        hiddenPlaces: [],
+    });
+    const suggestedPlaceFunctions = {
+        confirmationAnimation: function (index) {
+            let addedOverlay = document.getElementById(`added-${index}`);
+            if (addedOverlay) {
+                addedOverlay.classList.remove('hidden-o');
+                wait(1200).then(() => {
+                    addedOverlay.classList.add('hidden-o');
+                });
+            };
+        },
+        hidePlace: function (placeName) {
+            let suggestedPlacesControlsCopy = { ...suggestedPlaceControls };
+            suggestedPlacesControlsCopy.hiddenPlaces.push(placeName);
+            setSuggestedPlaceControls(suggestedPlacesControlsCopy);
+        },
+        undoHidePlace: function () {
+            let suggestedPlacesControlsCopy = { ...suggestedPlaceControls };
+            suggestedPlacesControlsCopy.hiddenPlaces.pop();
+            setSuggestedPlaceControls(suggestedPlacesControlsCopy);
+        },
+        updateFilter: function () {
+            let suggestedPlacesControlsCopy = { ...suggestedPlaceControls };
+            if (categoryTitle === "All") {
+                suggestedPlacesControlsCopy.filter(null);
+            } else {
+                suggestedPlacesControlsCopy.filter(categoryTitle);
+            };
+            setSuggestedPlaceControls(suggestedPlacesControlsCopy);
+        },
+    };
+    // suggestedPlaceFunctions ? addToPlaces, addToItinerary, addToSaved, addToBlacklist, confirmationAnimation, hidePlace
     const [blacklist, setBlacklist] = useState([])
     const addToBlacklist = (placeName) => {
         let blacklistCopy = [...blacklist]
@@ -638,7 +698,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
         wait(1200).then(() => {
             added.classList.add('hidden-o')
-        })
+        });
 
     }
     const [scrollDownStandBy, setScrollDownStandby] = useState(false);
@@ -668,9 +728,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         } else {
             placesAddressListCopy = []
         }
-        // console.log(addedPlaceAddressesCopy)
         setPlacesAddressList(placesAddressListCopy)
-        // console.log('updated added place addresses')
     }
     // const [justAddedIsAnimating, setJustAddedIsAnmimating] = useState(false);
 
@@ -862,18 +920,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
 
-    // const getGoogleImg = async (photoName) => {
-    //     let url = `https://places.googleapis.com/v1/${photoName}/media?key=${import.meta.env.VITE_APP_GOOGLE_API_KEY}&maxWidthPx=512`;
-    //     const response = await fetch(url)
-    //     .then((response) => {
-    //         console.log(response)
-    //     })
-    // }
-    // useEffect(() => {
-    //     let photoName = "places/ChIJ6_3yMNUEdkgRgYFYwtACqqo/photos/AelY_CtbfsnKukDYm-tYgkvkJuPMvbO3kYkwQj8-Us61dZactA-jP6wO9cTG8qR8ojeQGu4daKbjIeUym4xEojC5uEBfjPYoKFXoy_UKnx2m0MUyNisIJLa5Rl-nn1nUhQAneHvn_7qqYRmqvk27FWrrhnX7RU1GTJvJeG-H"
-    //     getGoogleImg(photoName)
-    // }, []);
-    
+
     return (
         <>
             {/* <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} /> */}
@@ -1150,10 +1197,13 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                     return <SuggestedPlaceCard
                                                         index={index}
                                                         place={suggestedPlace}
+
                                                         addPlaceToConfirm={addPlaceToConfirm}
                                                         addPlace={addPlace}
                                                         removePlace={removePlace}
+
                                                         placesAddressList={placesAddressList}
+
                                                         suggestedPlacesFilter={suggestedPlacesFilter}
                                                         blacklist={blacklist}
                                                         addToBlacklist={addToBlacklist}
@@ -1161,65 +1211,64 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                     />
 
 
-                                                    // <div key={index} className="placeCard2 position-relative flx-r my-2">
+                                                })}
+                                        </Scrollbars>
+                                    </div>
 
-                                                    //     <div id={`added-${index}`} className="added-overlay abs-center font-jakarta x-large hidden-o">
-                                                    //         <p className="m-0 purple-text">Added!</p>
-                                                    //     </div>
-                                                    //     <div className="placeCard-img-div flx-3">
-                                                    //         <img onClick={() => addPlaceToConfirm(suggestedPlace)} className="placeCard2-img" src={suggestedPlace.imgURL} />
-                                                    //     </div>
-                                                    //     <div ref={suggestedCardBodyRef} className="placeCard-body flx-5">
-                                                    //         {/* <div onClick={() => togglePopUp(id)} id={`popUp-${id}`} className="popUp d-none">{suggestedPlace.categoryTitle}</div> */}
-                                                    //         <div className={`scroll-over-text ${suggestedPlace.placeName.length <= suggestedCardTitleCharLimit && "disabled"}`}>
-                                                    //             <p className="static-text body-title truncated">{suggestedPlace.placeName}</p>
-                                                    //             <div className="scroller" data-animated="true">
-                                                    //                 <div className="scroller-inner">
-                                                    //                     <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
-                                                    //                     <p className="scroll-text body-title">{suggestedPlace.placeName}</p>
-                                                    //                 </div>
-                                                    //             </div>
-                                                    //         </div>
-                                                    //         <CategoryAndRating place={suggestedPlace} />
-                                                    //         {suggestedPlace.info.includes(":") ?
-                                                    //             <OpeningHoursMap
-                                                    //                 idTree={index}
-                                                    //                 placeInfo={suggestedPlace.info}
-                                                    //             />
-                                                    //             :
-                                                    //             <p className="m-0">{suggestedPlace.info}</p>
-                                                    //         }
-                                                    //         {suggestedPlace.summary ?
-                                                    //             <p className={`body-address truncated-2`}>{suggestedPlace.summary}</p>
-                                                    //             :
-                                                    //             <p className={`body-address truncated`}>{suggestedPlace.address}</p>
-                                                    //         }
-                                                    //     </div>
-                                                    //     <div className="placeCard-starOrDelete flx-c just-sb align-c">
-                                                    //         {added ?
-                                                    //             <div onClick={() => { removePlace(placesAddressList.indexOf(suggestedPlace.address)) }} className="addIcon-filled-green-small flx mx-2 mt-2 pointer">
-                                                    //                 <span className="material-symbols-outlined m-auto mt-h medium white-text">
-                                                    //                     done
-                                                    //                 </span>
-                                                    //             </div>
-                                                    //             :
-                                                    //             <div onClick={() => { addPlace(suggestedPlace); flashAdded(index) }} className="addIcon-medium flx pointer mx-2 mt-2 onHover-fadelite">
-                                                    //                 <span className="material-symbols-outlined m-auto medium purple-text">
-                                                    //                     add
-                                                    //                 </span>
-                                                    //             </div>}
+                                </>
+                            }
+                            {selectedPlacesList === "Top sites" &&
+                                <>
+                                    <div className="flx-r align-r">
+                                        {topSiteControls.hiddenPlaces.length > 0 &&
+                                            <div onClick={() => topSiteFunctions.undoHidePlace()} className="flx-r align-c onHover-fadelite">
+                                                <span className="material-symbols-outlined purple-text medium mr-1">
+                                                    undo
+                                                </span>
+                                                <p className="m-0 purple-text pointer small">Undo Hide</p>
+                                            </div>
+                                        }
+                                        <p className="m-0 purple-text pointer mt-1 smedium">&nbsp;</p>
+                                    </div>
+                                    <div className={`placeCards ${topSites.places.length > 0 ? "h482" : null}`}>
+                                        <Scrollbars autoHide>
+                                            {!topSites.isLoaded && topSites.places.length === 0 ?
+                                                <div className="add-places-card">
+                                                    <span className="material-symbols-outlined xx-large">
+                                                        location_on
+                                                    </span>
+                                                    <p className="large bold700 my-1 o-50">0 popular sites in this area</p>
+                                                    {/* <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p> */}
+                                                </div>
+                                                :
+                                                null
+                                            }
 
-                                                    //         <span onClick={() => addToBlacklist(suggestedPlace.placeName)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                    //             visibility_off
-                                                    //         </span>
-                                                    //     </div>
-                                                    // </div> : null
+                                            {topSites.places.length > 0 &&
+                                                topSites.places.map((topSite, index) => {
+                                                    return <SuggestedPlaceCard
+                                                        index={index}
+                                                        place={topSite}
+
+                                                        addPlaceToConfirm={addPlaceToConfirm}
+                                                        addPlace={addPlace}
+                                                        removePlace={removePlace}
+
+                                                        placesAddressList={placesAddressList}
+
+                                                        blacklist={topSiteControls.hiddenPlaces}
+                                                        addToBlacklist={topSiteFunctions.hidePlace}
+                                                        flashAdded={topSiteFunctions.confirmationAnimation}
+                                                    // suggestedPlacesFilter={suggestedPlacesFilter}
+                                                    // blacklist={blacklist}
+                                                    // addToBlacklist={addToBlacklist}
+                                                    // flashAdded={flashAdded}
+                                                    />
 
 
                                                 })}
                                         </Scrollbars>
                                     </div>
-
                                 </>
                             }
 

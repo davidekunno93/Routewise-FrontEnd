@@ -5,8 +5,8 @@ import Dropdown from '../../Dropdown/Dropdown';
 
 const SuggestedPlaceCard = ({ index, place, addPlaceToConfirm, addPlace, placesAddressList, addToBlacklist, blacklist, suggestedPlacesFilter, flashAdded, removePlace, forItinerary = false, tripState, setTripState, placeFunctions }) => {
     let filteredIn = suggestedPlacesFilter ? place.categoryTitles.includes(suggestedPlacesFilter) : true;
-    let blacklisted = blacklist.includes(place.placeName);
-    if (!filteredIn || blacklisted || !place.placeName) return null;
+    let hiddenPlace = blacklist.includes(place.placeName);
+    if (!filteredIn || hiddenPlace || !place.placeName) return null;
     if (placeFunctions) {
         addPlace = placeFunctions.addPlace;
         addPlaceToConfirm = placeFunctions.addPlaceToConfirm;

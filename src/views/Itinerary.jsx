@@ -265,7 +265,8 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       addresses: []
     },
     "day_order": ["day-1", "day-2", "day-3", "day-4"]
-  }
+  };
+
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
 
 
@@ -281,10 +282,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         place['day_id'] = tripStateCopy.days[dayNum].day_id
       } else {
         place['day_id'] = tripStateCopy.days[dayNum].db_id
-      }
+      };
       place['trip_id'] = tripStateCopy.trip_id
 
-      // key made for lightbulb icon purposes only - indicating day w closest activities
+      // remove key made for lightbulb icon purposes only - indicating day w closest activities
       if (place.lightbulb_days) {
         delete place.lightbulb_days
       }
@@ -301,22 +302,22 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
         const response = await axios.post(`https://routewise-backend.onrender.com/itinerary/add-one-place/${sendPlace.trip_id}`, JSON.stringify(data), {
           headers: { "Content-Type": "application/json" }
         }).then((response) => {
-          console.log(response.status)
-          let place_id = response.data
-
-          // create a new place id for the place
+          // response is database place id
+          let place_id = response.data;
+          console.log(".then fork")
+          // create a new local place id for the place
           tripStateCopy.places[parseInt(tripStateCopy.places_last) + 1] = {
             id: parseInt(tripStateCopy.places_last) + 1,
             ...place,
             place_id: place_id // also adding place_id from database (from Kate response)
           }
-          tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
-          tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
-          setTripState(tripStateCopy)
+          // tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1;
+          // tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last);
+          // setTripState(tripStateCopy);
 
-          setPlaceToConfirm(null);
-          closeDaySelection();
-          setShowPlaceAddedBox(true);
+          // setPlaceToConfirm(null);
+          // closeDaySelection();
+          // setShowPlaceAddedBox(true);
         }).catch((error) => {
           console.log(error)
         })
@@ -326,13 +327,14 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
           id: parseInt(tripStateCopy.places_last) + 1,
           ...place,
         }
-        tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1
-        tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last)
-        setTripState(tripStateCopy)
-        setPlaceToConfirm(null);
-        closeDaySelection();
-        setShowPlaceAddedBox(true);
-      }
+      };
+      console.log("after .then resume");
+      tripStateCopy.places_last = parseInt(tripStateCopy.places_last) + 1;
+      tripStateCopy.days[dayNum].placeIds.push(tripStateCopy.places_last);
+      setTripState(tripStateCopy)
+      setPlaceToConfirm(null);
+      closeDaySelection();
+      setShowPlaceAddedBox(true);
     },
     addPlaceToConfirm: function (place) {
       let newPlace = { ...place, favorite: false };
@@ -668,7 +670,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     if (tripStateCopy.trip_id) {
 
       // send place details to Kate for db update - return db place_id
-      let sendPlace = { id: parseInt(tripStateCopy.places_last) + 1, ...place }
+      let sendPlace = { ...place, id: parseInt(tripStateCopy.places_last) + 1 }
       let data = {
         place: sendPlace,
         day_id: sendPlace.day_id
@@ -2378,7 +2380,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
                     <div id='daySelection' className="daySelection map d-none">
                       <div className="day-selector">
-                        <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} />
+                        {/* <DaySelected open={openDaySelected} placeToConfirm={placeToConfirm} dateToConfirm={dateToConfirm} /> */}
                         {/* <div className="daySelected position-absolute white-bg">
                     <p className="m-0 mt-3 mb-2 bold700">Added!</p>
                     <img className="daySelected-img" src={placeToConfirm.imgURL} />
@@ -2392,21 +2394,13 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                         </div>
                         {tripState.day_order.map((dayNum, i) => {
                           const day = tripState.days[dayNum]
-                          // const lightbulb_days = placeToConfirm ? placeToConfirm.lightbulb_days : []
-                          // const lightbulb = lightbulb_days.includes(dayNum) ? true : false
-                          return <div id='day-option' onClick={() => { addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="day-option">
-                            {/* <div className={`day-lightBulb flx ${placeToConfirm && placeToConfirm.lightbulb_days.includes(dayNum) ? null : "o-none"} tooltip`}> */}
+                          return <div id='day-option' onClick={() => { placeFunctions.addPlace(`day-${i + 1}`), updateDateToConfirm(day.day_short, day.date_short) }} className="day-option">
                             <div className="day-color" style={{ backgroundColor: numberToBgColor(dayNum.split("-")[1]) }}></div>
                             <div className="text">
                               <p className="m-0 bold500"><strong>Day {dayNum.split("-")[1]}:</strong> <span className='gray-text'>{day.day_short}, {day.date_converted.split(",").slice(1)}</span> </p>
-                              {/* <p className="m-0 bold500 small gray-text">{day.date_converted.split(",").slice(1)}</p> */}
                             </div>
                             <div className={`day-lightBulb flx ${lightbulbDays && lightbulbDays.includes(dayNum) ? null : "o-none"}`}>
                               <div className="tooltip"><strong>RouteWise recommended:</strong> Most optimal date!</div>
-                              {/* <img src="https://i.imgur.com/mplOdwv.png" alt="" className="lightbulb-icon" /> */}
-                              {/* <span class="material-symbols-outlined m-auto gray-text normal-cursor">
-                              emoji_objects
-                            </span> */}
                               <img src="https://i.imgur.com/T3ZIaA5.png" alt="" className="img" />
                             </div>
                           </div>

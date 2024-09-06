@@ -2,6 +2,7 @@ import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'r
 import { DataContext } from '../Context/DataProvider';
 import OpeningHoursMap from './OpeningHoursMap';
 import Dropdown from './Dropdown/Dropdown';
+import CategoryAndRating from './CategoryAndRating/CategoryAndRating';
 
 export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSnapshot, addPlaceToConfirm, itineraryToSaved, isSavedPlace }) => {
     const { textFunctions, convertInfoToMap, renderRating, gIcon } = useContext(DataContext);
@@ -95,25 +96,9 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                 <div className="placeCard-body flx-3">
                     {/* <p className="body-title">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit)+"..." : place.placeName}</p> */}
                     <p className="body-title">{place.placeName}</p>
-                    <div className="align-all-items">
-                        <p className="body-category">{place.category ? textFunctions.capitalize(place.category.split(',')[0]) : "No category"}</p>
-                        {place.rating &&
-                            <>
-                                <p className='m-0 x-small mx-1 gray-text'>&bull;</p>
-                                <div className="rating">
-                                    <p className='score-text'>{place.rating}</p>
-                                    {renderRating(place.rating).map((star, index) => {
-                                        let noStar = star === 0;
-                                        let fullStar = star === 1;
-                                        let halfStar = star === 0.5;
-                                        return <img key={index} src={`${fullStar ? "https://i.imgur.com/3eEFOjj.png" : noStar ? "https://i.imgur.com/ZhvvgPZ.png" : "https://i.imgur.com/SWExJbv.png"}`} alt="" className="star-img" />
-                                    })}
-
-                                </div>
-                            </>
-                        }
-
-                    </div>
+                    <CategoryAndRating 
+                    place={place}
+                    />
                     {place.info &&
                         <>
                             {place.info.includes(":") ?
@@ -142,31 +127,7 @@ export const PlaceCardDraggable = ({ id, place, removePlace, dayId, draggableSna
                     offsetX={"100%"}
                     onClose={() => setDropdownOpen(false)}
                     />
-                    {/* <img src="https://i.imgur.com/S0wE009.png" alt="" className="star-empty my-2" /> */}
-                    {/* <img src="https://i.imgur.com/HkwkRjn.png" alt="" className={`star-full my-2 ${place.favorite ? null : "hidden"}`} /> */}
-                    {/* <div id={`itineraryPlaceCardDropdown-${dayId + "-" + id}`} className="placeCard-menu itinerary hidden">
-                        <div onClick={() => { addPlaceToConfirm(place); closeDropdown(dayId, id) }} className="option">
-                            <div className="material-symbols-outlined icon">location_on</div>
-                            <p className="m-0 text">View on map</p>
-                        </div>
-                        {isSavedPlace(place.address) ?
-                            <div className="option-cold">
-                                <div className="material-symbols-outlined icon lightgray-text">bookmark</div>
-                                <p className="m-0 text lightgray-text">Already in Saved Places</p>
-                            </div>
-                            :
-                            <div onClick={() => itineraryToSaved(dayId, place.id)} className="option">
-                                <div className="material-symbols-outlined icon">bookmark</div>
-                                <p className="m-0 text">Move to Saved Places</p>
-                            </div>
-                        }
-                        <div onClick={() => removePlace(dayId, place.id)} className="option">
-                            <div className="material-symbols-outlined icon red-text">delete</div>
-                            <p className="m-0 text red-text">Remove place</p>
-                        </div>
-                    </div> */}
 
-                    {/* <span ref={pointerRef} id={`itineraryPlaceCardDropper-${dayId + "-" + id}`} onClick={() => toggleDropdown(dayId, id)} className="material-symbols-outlined mt-2 o-50 pointer more_vert"> */}
                     <span ref={pointerRef} id={`itineraryPlaceCardDropper-${dayId + "-" + id}`} onClick={() => setDropdownOpen(!dropdownOpen)} className={`${gIcon} mt-2 o-50 pointer more_vert ${dropdownOpen && "pressed"}`}>
                         more_vert
                     </span>

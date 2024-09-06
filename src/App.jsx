@@ -31,7 +31,7 @@ function App() {
   const userData = window.localStorage.getItem("userData");
   const userPref = window.localStorage.getItem("userPref");
   const { user, setUser, userPreferences, setUserPreferences,
-    currentTrip, mapBoxCategoryKey, suggestedPlaces, setSuggestedPlaces,
+    currentTrip, mapBoxCategoryKey, suggestedPlaces, setSuggestedPlaces, topSites, setTopSites,
     loadCityImg, getGoogleImg, modifyInfo, textFunctions, toLatitudeLongitude, 
     getBestCategory, googleCategoryKey, googlePlaceTypeKey } = useContext(DataContext);
 
@@ -85,6 +85,33 @@ function App() {
   };
 
   // [suggested places code]
+  const topSitesFunctions = {
+    empty: function () {
+      let topSitesCopy = { ...topSites };
+      topSitesCopy.places = [];
+      topSitesCopy.isLoaded = false;
+      setTopSites(topSitesCopy);
+    },
+    reset: function () {
+      // currently the same as empty
+      setTopSites({
+        isLoaded: false,
+        places: [],
+      });
+    },
+    returnNone: function () {
+      let topSitesCopy = { ...topSites };
+      topSitesCopy.places = [];
+      topSitesCopy.isLoaded = true;
+      setTopSites(topSitesCopy);
+    },
+    setPlaces: function (resultPlaces) {
+      setTopSites({
+        isLoaded: true,
+        places: resultPlaces,
+      });
+    }
+  }
   const suggestedPlacesFunctions = {
     empty: function () {
       let suggestedPlacesCopy = { ...suggestedPlaces };
@@ -106,15 +133,15 @@ function App() {
       setSuggestedPlaces(suggestedPlacesCopy);
       // setSuggestedPlaces({...suggestedPlaces, places: [], isLoaded: true});
     },
-    setPlaces: function (placeSuggestions) {
+    setPlaces: function (resultPlaces) {
       setSuggestedPlaces({
         isLoaded: true,
-        places: placeSuggestions,
+        places: resultPlaces,
       });
     }
-  }
+  };
 
-  // suggested places api call
+  // suggested places api call - vestigial
   const loadSuggestedPlaces = async () => {
     suggestedPlacesFunctions.empty()
 
@@ -164,7 +191,7 @@ function App() {
         suggestedPlacesFunctions.setPlaces(placeSuggestions);
       }
     }
-  }
+  };
   const getSuggestedPlaces = async (category) => {
     // implement try / catch block for errors
     const categoryQueries = mapBoxCategoryKey[category].categoryQueries;
@@ -177,8 +204,9 @@ function App() {
     const url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
     const response = await axios.get(url)
     return response.status === 200 ? response.data.features : "error"
-  }
+  };
   useEffect(() => {
+    nearbySearch(true);
     nearbySearch();
     console.log("nearby search was reloaded");
   }, [userPreferences, currentTrip.geocode, currentTrip]);
@@ -199,7 +227,7 @@ function App() {
     };
     return categoryQueries;
   }
-  const nearbySearch = async () => {
+  const nearbySearch = async (useTravelPreferences) => {
     // console.log(userPreferences);
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let categoryQueries = getCategoryQueries(selectedPreferences)
@@ -214,8 +242,9 @@ function App() {
         'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.photos,places.id,places.regularOpeningHours,places.editorialSummary,places.location,places.types,places.rating,places.internationalPhoneNumber,places.websiteUri', // address, summary, biz info
       },
       body: JSON.stringify({
-        includedTypes: categoryQueries,
+        includedTypes: useTravelPreferences ? categoryQueries : undefined,
         maxResultCount: 10,
+        // rankPreference: "POPULARITY", // default by POPULARITY
         locationRestriction: {
           circle: {
             center: toLatitudeLongitude(currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776]),
@@ -229,7 +258,12 @@ function App() {
       .then(async (response) => {
         let data = await response.json();
         let resultPlaces = await handleNearbySearchData(data);
-        suggestedPlacesFunctions.setPlaces(resultPlaces);
+        if (useTravelPreferences) {
+          suggestedPlacesFunctions.setPlaces(resultPlaces);
+          // topSitesFunctions.setPlaces(resultPlaces);
+        } else {
+          topSitesFunctions.setPlaces(resultPlaces);
+        };
         // console.log(resultPlaces);
       })
       .catch(error => console.log('error', error));
@@ -237,7 +271,7 @@ function App() {
   };
   const handleNearbySearchData = async (data) => {
     data = data.places;
-    // console.log(data)
+    console.log("search attempt: ", data)
     let resultPlaces = [];
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let googleCategoryPlaceTypesArr = Object.keys(googlePlaceTypeKey);
@@ -279,10 +313,6 @@ function App() {
   };
 
 
-  // other functions
-  function wait(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms))
-  }
 
 
 

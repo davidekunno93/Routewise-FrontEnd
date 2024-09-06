@@ -597,6 +597,9 @@ Fix loadPlaces route to serve the correct place keys
 - check placeId/geoapify_placeId??
 - save and serve googlePlaceIds!!
 
+<!-- 02Sep24 Team Meeting -->
+Third party authO for handling user authentication and changing password when forgotten
+Top Sites?
 
 LinkedIn message:
 Hi...

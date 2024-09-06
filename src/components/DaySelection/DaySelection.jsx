@@ -189,7 +189,7 @@ export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlac
             setStandby(false);
         };
         // console.log(addPlace);
-    }, [confirmationModalProps])
+    }, [confirmationModalProps]);
 
 
 

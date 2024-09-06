@@ -507,6 +507,10 @@ const DataProvider = (props) => {
             userPreference: "nightclub",
         },
     };
+    const [topSites, setTopSites] = useState({
+        loaded: false,
+        places: [],
+    });
     const [suggestedPlaces, setSuggestedPlaces] = useState({
         loaded: false,
         places: [],
@@ -867,9 +871,10 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, gIcon, numberToBgColor,
-            toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv, generateTripMapBounds,
-            modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, googlePlaceTypeKey, userPreferenceItems
+            'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, 
+            gIcon, numberToBgColor, toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, 
+            isStateAbbv, generateTripMapBounds, modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, 
+            googlePlaceTypeKey, userPreferenceItems, topSites, setTopSites
         }}>
             {props.children}
         </DataContext.Provider>

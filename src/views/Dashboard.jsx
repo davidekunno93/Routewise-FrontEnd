@@ -1628,8 +1628,10 @@ export const Dashboard = () => {
                 const index = cityName.indexOf(',')
                 // if the user input includes a "," -- it contains city and state/country
                 if (index > -1) {
-                    let cityNoSpaces = cityName.replace(/ /g, '')
-                    const cityArr = cityNoSpaces.split(',')
+                    // let cityNoSpaces = cityName.replace(/ /g, '')
+                    const cityArr = cityName.split(', ')
+                    console.log(cityArr)
+                    console.log(convertAbbvToState(cityArr[1]))
                     let url = "";
                     if (isStateAbbv(cityArr[1])) {
                         url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&state=${convertAbbvToState(cityArr[1])}&country=US`
@@ -1639,7 +1641,9 @@ export const Dashboard = () => {
                     }
                     const response = await axios.get(url, {
                         headers: { 'X-Api-Key': apiKey }
-                    }).then((response => openNewTrip(response)))
+                    }).then((response => {
+                        openNewTrip(response)
+                    }))
                         .catch((error) => {
                             console.log(error)
                             stopLoading()
@@ -1681,10 +1685,10 @@ export const Dashboard = () => {
             geocode: geocode,
             startDate: format(range[0].startDate, "MM/dd/yyyy"),
             endDate: format(range[0].endDate, "MM/dd/yyyy"),
-        }
+        };
         if (typeof tripInfo.state === 'undefined') {
             tripInfo.state = ""
-        }
+        };
         let dataNew = []
         let states = []
         for (let i = 0; i < data.length; i++) {
@@ -1692,7 +1696,8 @@ export const Dashboard = () => {
                 dataNew.push(data[i])
             }
             states.push(data[i].state)
-        }
+        };
+        console.log(tripInfo);
         setCityOptions(dataNew)
 
         setTripData(tripInfo)
@@ -2182,7 +2187,7 @@ export const Dashboard = () => {
                     for (let i = 0; i < data.length; i++) {
                         if (results.length === limit) {
                             break;
-                        } else if (data[i].city_name.toLowerCase().includes(citySearchQuery)) {
+                        } else if (data[i].city_name.toLowerCase().includes(citySearchQuery.toLowerCase())) {
                             results.push(data[i]);
                         }
                     };
@@ -2352,7 +2357,7 @@ export const Dashboard = () => {
                                             <img onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} src={trip.dest_img} alt="" className="destImg pointer" />
                                         </div>
                                         <div className="box-text-container">
-                                            <p className="m-0 box-title">{trip.trip_name}</p>
+                                            <p className="m-0 box-title truncated">{trip.trip_name}</p>
                                             <div className="flx-r">
                                                 <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
                                                 <p className="m-0 gray-text">&nbsp; &#9679; &nbsp;</p>

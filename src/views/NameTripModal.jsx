@@ -127,7 +127,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
             if (docData.hasAccess) {
                 // no blockage of access
 
-                let tripNameInput = document.getElementById('tripNameInput')
+                let tripNameInput = document.getElementById('tripNameInput');
                 if (tripName.length > 0) {
                     // updateCurrentTrip()
                     if (auth.currentUser) {
@@ -137,7 +137,7 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
                     }
                     // navigate('/add-places')
                 } else {
-                    tripNameInput.classList.add('entry-error')
+                    tripNameInput.classList.add('entry-error');
                 }
             } else {
                 alert(accessDeniedMessage);

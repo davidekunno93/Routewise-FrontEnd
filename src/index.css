@@ -1415,6 +1415,10 @@ input:-webkit-autofill {
   transition-duration: 0.3s;
 }
 
+.input-model.entry-error {
+  border: 2px solid red;
+}
+
 .input-model.mobile {
   width: 100%;
 }
@@ -5507,13 +5511,20 @@ selection-box-landing.mobile {
 
 .userTrip-box .box-text-container {
   padding: 12px;
+  font-size: 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .userTrip-box .box-title {
   width: 90%;
+  font-size: 20px;
   overflow: hidden;
   /* background-color: #55ca46; */
 }
+
 
 .userTrip-box .vertIcon {
   position: absolute;
@@ -5869,7 +5880,7 @@ selection-box-landing.mobile {
   content: "";
   position: absolute;
   right: calc(100%);
-  top: 170px;
+  top: 135px;
   width: 0;
   height: 0;
   border-top: 12px solid transparent;
@@ -5888,14 +5899,14 @@ selection-box-landing.mobile {
 }
 
 .sidebar-tooltip.suggested-places {
-  top: 160px;
+  top: 110px;
 }
 
 .sidebar-tooltip.suggested-places::after {
   content: "";
   position: absolute;
   right: calc(100%);
-  top: 98px;
+  top: 90px;
   width: 0;
   height: 0;
   border-top: 12px solid transparent;

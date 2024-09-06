@@ -101,7 +101,7 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                 hoursTextFunctions.open(id);
             }
         },
-    }
+    };
 
 
 
@@ -211,7 +211,6 @@ const PlaceToConfirmCard = ({ addPlace, removePlace, placeToConfirm, clearPlaceT
                                     :
                                     <div className="w-100 position-bottom">
                                         <div onClick={() => openDaySelection()} className="add-place-btn position-relative">
-                                            {/* <div id='placeRemovedText' className={`overlayFull-text position-absolute w-100 h-100 d-non ${justAddedIsAnimating ? null : "hidden-o"}`}>Removed from places</div> */}
                                             <div className="flx pointer">
                                                 <span className={`material-symbols-outlined ${mobileModeNarrow ? "smedium" : "medium"} purple-text`}>
                                                     add
