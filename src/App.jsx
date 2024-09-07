@@ -243,7 +243,7 @@ function App() {
       },
       body: JSON.stringify({
         includedTypes: useTravelPreferences ? categoryQueries : undefined,
-        excludedTypes: useTravelPreferences ? undefined : ['hospital', 'doctor', 'dentist', 'medical_lab'],
+        excludedTypes: useTravelPreferences ? undefined : ['hospital', 'doctor', 'dentist', 'medical_lab', 'subway_station', 'university', 'department_store', 'bus_station', 'bicycle_store', 'grocery_store'],
         maxResultCount: 10,
         // rankPreference: "POPULARITY", // default by POPULARITY
         locationRestriction: {
