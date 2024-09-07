@@ -110,8 +110,18 @@ function App() {
         isLoaded: true,
         places: resultPlaces,
       });
-    }
-  }
+    },
+    setIsLoading: function () {
+      let topSitesCopy = { ...topSites };
+      topSitesCopy.isLoaded = false;
+      setTopSites(topSitesCopy);
+    },
+    setIsLoaded: function () {
+      let topSitesCopy = { ...topSites };
+      topSitesCopy.isLoaded = true;
+      setTopSites(topSitesCopy);
+    },
+  };
   const suggestedPlacesFunctions = {
     empty: function () {
       let suggestedPlacesCopy = { ...suggestedPlaces };
@@ -138,7 +148,17 @@ function App() {
         isLoaded: true,
         places: resultPlaces,
       });
-    }
+    },
+    setIsLoading: function () {
+      let suggestedPlacesCopy = { ...suggestedPlaces };
+      suggestedPlacesCopy.isLoaded = false;
+      setSuggestedPlaces(suggestedPlacesCopy);
+    },
+    setIsLoaded: function () {
+      let suggestedPlacesCopy = { ...suggestedPlaces };
+      suggestedPlacesCopy.isLoaded = true;
+      setSuggestedPlaces(suggestedPlacesCopy);
+    },
   };
 
   // suggested places api call - vestigial
@@ -229,6 +249,11 @@ function App() {
   }
   const nearbySearch = async (useTravelPreferences) => {
     // console.log(userPreferences);
+    if (useTravelPreferences) {
+      suggestedPlacesFunctions.setIsLoading();
+    } else {
+      topSitesFunctions.setIsLoading();
+    };
     let selectedPreferences = getSelectedPreferences(userPreferences);
     let categoryQueries = getCategoryQueries(selectedPreferences)
     // console.log(selectedPreferences);
@@ -261,13 +286,19 @@ function App() {
         let resultPlaces = await handleNearbySearchData(data);
         if (useTravelPreferences) {
           suggestedPlacesFunctions.setPlaces(resultPlaces);
-          // topSitesFunctions.setPlaces(resultPlaces);
         } else {
           topSitesFunctions.setPlaces(resultPlaces);
         };
         // console.log(resultPlaces);
       })
-      .catch(error => console.log('error', error));
+      .catch(error => {
+        console.log('error', error);
+        if (useTravelPreferences) {
+          suggestedPlacesFunctions.setIsLoaded();
+        } else {
+          topSitesFunctions.setIsLoaded();
+        };
+      });
 
   };
   const handleNearbySearchData = async (data) => {

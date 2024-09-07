@@ -1232,7 +1232,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                     </div>
                                     <div className={`placeCards ${topSites.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
-                                            {!topSites.isLoaded && topSites.places.length === 0 ?
+                                            {topSites.isLoaded && topSites.places.length === 0 ?
                                                 <div className="add-places-card">
                                                     <span className="material-symbols-outlined xx-large">
                                                         location_on
@@ -1243,8 +1243,15 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                 :
                                                 null
                                             }
+                                            {!topSites.isLoaded &&
+                                                <>
+                                                    <div className="loadingBox-inline">
+                                                        <Loading noMascot={true} innerText={"Loading..."} />
+                                                    </div>
+                                                </>
+                                            }
 
-                                            {topSites.places.length > 0 &&
+                                            {topSites.isLoaded && topSites.places.length > 0 &&
                                                 topSites.places.map((topSite, index) => {
                                                     return <SuggestedPlaceCard
                                                         index={index}
