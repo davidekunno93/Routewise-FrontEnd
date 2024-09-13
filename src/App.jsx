@@ -25,7 +25,7 @@ import PrintItineraryPage from './views/PrintItineraryPage'
 import { doc, getDoc } from 'firebase/firestore'
 import ProtectedRoute from './components/Privatizer/ProtectedRoute'
 import TestItinerary from './views/TestItinerary'
-import Scratch from './views/Scratch/Scratch'
+// import Scratch from './views/Scratch/Scratch'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -374,7 +374,7 @@ function App() {
           <Route children path='/map2' element={<OpenMapBox />} />
           <Route children path='/hero' element={<HeroFade />} />
           <Route children path='/print-itinerary' element={<PrintItineraryPage />} />
-          <Route children path='/scratch' element={<Scratch />} />
+          {/* <Route children path='/scratch' element={<Scratch />} /> */}
         </Routes>
         {/* <h1 className='empty-3'></h1> */}
         {/* <h1 className='empty-6'></h1> */}
