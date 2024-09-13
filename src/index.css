@@ -227,7 +227,7 @@ button:focus-visible {
 }
 
 .white-text {
-  color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255) !important;
 }
 
 .yellow-text {
@@ -2327,7 +2327,7 @@ h1 {
 
 p {
   font-family: 'Plus Jakarta Sans';
-  color: #242424;
+  color: #242424; 
 }
 
 .font-jakarta {

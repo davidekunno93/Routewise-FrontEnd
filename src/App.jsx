@@ -25,6 +25,7 @@ import PrintItineraryPage from './views/PrintItineraryPage'
 import { doc, getDoc } from 'firebase/firestore'
 import ProtectedRoute from './components/Privatizer/ProtectedRoute'
 import TestItinerary from './views/TestItinerary'
+import Scratch from './views/Scratch/Scratch'
 
 function App() {
   const loggedIn = window.localStorage.getItem("isLoggedIn");
@@ -229,7 +230,7 @@ function App() {
     nearbySearch(true);
     nearbySearch();
     console.log("nearby search was reloaded");
-  }, [userPreferences, currentTrip.geocode, currentTrip]);
+  }, [userPreferences, currentTrip.geocode]);
 
   const getSelectedPreferences = (userPreferencesObj) => {
     let selectedPreferences = [];
@@ -268,7 +269,7 @@ function App() {
       },
       body: JSON.stringify({
         includedTypes: useTravelPreferences ? categoryQueries : undefined,
-        excludedTypes: useTravelPreferences ? undefined : ['hospital', 'doctor', 'dentist', 'medical_lab', 'subway_station', 'university', 'department_store', 'bus_station', 'bicycle_store', 'grocery_store'],
+        excludedTypes: useTravelPreferences ? undefined : ['hospital', 'doctor', 'dentist', 'medical_lab', 'subway_station', 'university', 'department_store', 'bus_station', 'bicycle_store', 'grocery_store', 'airport'],
         maxResultCount: 10,
         // rankPreference: "POPULARITY", // default by POPULARITY
         locationRestriction: {
@@ -373,6 +374,7 @@ function App() {
           <Route children path='/map2' element={<OpenMapBox />} />
           <Route children path='/hero' element={<HeroFade />} />
           <Route children path='/print-itinerary' element={<PrintItineraryPage />} />
+          <Route children path='/scratch' element={<Scratch />} />
         </Routes>
         {/* <h1 className='empty-3'></h1> */}
         {/* <h1 className='empty-6'></h1> */}

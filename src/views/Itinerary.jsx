@@ -46,74 +46,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
-
-  // ['elements code']
-
-  // [trip information code]
-  const tripNameInputRef = useRef(null);
-  const tripNameSpanRef = useRef(null);
-  const tripNameWrapperRef = useRef(null);
-  const [tripName, setTripName] = useState(currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!")
-  const [tripNameIsUpdating, setTripNameIsUpdating] = useState(false);
-  const [tripNameSendStandby, setTripNameSendStandby] = useState(false);
-  useEffect(() => {
-    if (tripNameIsUpdating) {
-      console.log('tripName is updating...');
-      setTripNameSendStandby(true);
-      tripNameInputRef.current.focus()
-    } else if (!tripNameIsUpdating && tripNameSendStandby) {
-      let oldName = currentTrip.tripName
-      // console.log("old name: "+oldName)
-      if (tripName.trim() !== oldName) {
-
-        console.log("tripName: Send data now")
-        // tripUpdate function -> tripName
-        // if failed revert tripName back to oldName
-      } else {
-        console.log("tripName: False alarm")
-      }
-    }
-  }, [tripNameIsUpdating])
-  const loadTripName = () => {
-    if (tripNameInputRef.current) {
-      // declare initial input value
-      tripNameInputRef.current.value = tripName;
-      // resize input to span width
-      tripNameInputRef.current.style.width = tripNameSpanRef.current.offsetWidth + 'px';
-    }
-  }
-  const updateTripName = (e) => {
-    // name char limit: 24
-    if (e.target.value.length <= 24) {
-      setTripName(e.target.value)
-    } else {
-      tripNameInputRef.current.value = tripName
-    }
-  }
-  useEffect(() => {
-    loadTripName()
-  }, [selectedPlacesList])
-  useEffect(() => {
-    // console.log(tripNameSpanRef.current.offsetWidth)
-    if (tripNameInputRef.current) {
-      tripNameInputRef.current.style.width = tripNameSpanRef.current.offsetWidth + 'px';
-    }
-  }, [tripName])
-
-  // issues with cleanup ?
-  useEffect(() => {
-    window.addEventListener('click', clickOutsideTripName);
-    return () => window.removeEventListener('click', clickOutsideTripName);
-  }, [])
-  const clickOutsideTripName = (e) => {
-    if (tripNameWrapperRef.current && !tripNameWrapperRef.current.contains(e.target)) {
-      setTripNameIsUpdating(false);
-    }
-  }
-
-
-  // [places code]
-  // drag n drop code test data
+  // tripState & test data
   const tripTestData = {
     tripID: "",
     places_last: 8,
@@ -266,9 +199,176 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     },
     "day_order": ["day-1", "day-2", "day-3", "day-4"]
   };
-
   const [tripState, setTripState] = useState(currentTrip.itinerary ? currentTrip.itinerary : tripTestData);
 
+  // ['elements code']
+
+  // [trip information code]
+  const tripNameInputRef = useRef(null);
+  const tripNameSpanRef = useRef(null);
+  const tripNameWrapperRef = useRef(null);
+
+  const [tripNameControls, setTripNameControls] = useState({
+    previousText: currentTrip.tripName ?? "Londo-Fundo!",
+    text: currentTrip.tripName ?? "Londo-Fundo!",
+    isUpdating: false,
+    standBy: false,
+  });
+  const [tripNameEndEditEvent, setTripNameEndEditEvent] = useState(false);
+  // connecting event listener to updated state 
+  useEffect(() => {
+    if (tripNameEndEditEvent) {
+      tripNameFunctions.endEdit();
+      setTripNameEndEditEvent(false);
+    };
+  }, [tripNameEndEditEvent]);
+
+  const tripNameFunctions = {
+    startEdit: function () {
+      // set isUpdating/standby - true
+      setTripNameControls({ ...tripNameControls, isUpdating: true, standBy: true });
+      tripNameInputRef.current.focus();
+    },
+    endEdit: function () {
+      // set isUpdating - false
+      setTripNameControls({ ...tripNameControls, isUpdating: false });
+    },
+    updateText: function (tripName) {
+      // realtime update of tripName text
+      setTripNameControls({ ...tripNameControls, text: tripName });
+    },
+    checkToSendData: function () {
+      if (!tripNameControls.isUpdating && tripNameControls.standBy) {
+        console.log('standby')
+        // setTripNameControls({ ...tripNameControls, standBy: false });
+        if (tripNameControls.text.trim() !== tripNameControls.previousText) {
+          console.log("senddd");
+          // send data patch function
+          tripNameControls.sendData();
+        } else {
+          console.log("no need to send");
+        };
+      };
+    },
+    sendData: async function () {
+      if (currentTrip.tripID) {
+        let url = "";
+        let data = {
+          tripId: currentTrip.tripID,
+          tripName: tripNameControls.text,
+        };
+        const response = await axios.patch(url, data, {
+          headers: { "Content-Type": "application/json" }
+        })
+        if (response.status === 200) {
+          setTripNameControls({ ...tripNameControls, previousText: tripNameControls.text });
+        } else {
+          setTripNameControls({ ...tripNameControls, text: tripNameControls.previousText });
+          alert("Your new trip name was not able to be saved. Please try again.");
+        };
+      } else {
+        setTripNameControls({ ...tripNameControls, previousText: tripNameControls.text });
+      }
+    },
+  };
+
+  useEffect(() => {
+    tripNameFunctions.checkToSendData();
+  }, [tripNameControls.isUpdating]);
+
+  // update tripName width
+  useEffect(() => {
+    if (tripNameInputRef.current) {
+      tripNameInputRef.current.style.width = tripNameSpanRef.current.offsetWidth + 'px';
+    };
+  }, [tripNameControls.text]);
+
+  // click outside tripName
+  useEffect(() => {
+    window.addEventListener('click', clickOutsideTripName);
+    return () => window.removeEventListener('click', clickOutsideTripName);
+  }, []);
+  const clickOutsideTripName = (e) => {
+    if (tripNameWrapperRef.current && !tripNameWrapperRef.current.contains(e.target)) {
+      // setTripNameIsUpdating(false);
+      setTripNameEndEditEvent(true);
+    };
+  };
+  // load tripName to input box
+  const loadTripName = () => {
+    if (tripNameInputRef.current) {
+      // declare initial input value
+      tripNameInputRef.current.value = tripNameControls.text;
+      // resize input to span width
+      tripNameInputRef.current.style.width = tripNameSpanRef.current.offsetWidth + 'px';
+    }
+  };
+  useEffect(() => {
+    loadTripName();
+  }, [selectedPlacesList]);
+
+
+
+  // trip days subheading update
+  const createTripDaysControls = (dayOrder) => {
+    let results = {};
+    for (let dayNum of dayOrder) {
+      results[dayNum] = {
+        subheading: tripState.days[dayNum].dayName,
+        isUpdating: false,
+        standBy: false,
+      };
+    };
+    return results;
+  };
+  const [tripDaysControls, setTripDaysControls] = useState({
+    isLoaded: false,
+    dayNumUpdating: null,
+  });
+  const tripDaysFunctions = {
+    initialize: function () {
+      let tripDayControlsCopy = createTripDaysControls(tripState.day_order)
+      setTripDaysControls({ isLoaded: true, ...tripDayControlsCopy })
+    },
+    startEdit: function (dayId) {
+      // set isUpdating/standBy - true
+      let tripDaysControlsCopy = { ...tripDaysControls };
+      tripDaysControlsCopy[dayId].isUpdating = true;
+      tripDaysControlsCopy[dayId].standBy = true;
+      tripDaysControlsCopy.dayNumUpdating = dayId;
+      setTripDaysControls(tripDaysControlsCopy);
+    },
+    endEdit: function (dayId) {
+      // set isUpdating - false
+      let tripDaysControlsCopy = { ...tripDaysControls };
+      tripDaysControlsCopy[dayId].isUpdating = false;
+      setTripDaysControls(tripDaysControlsCopy);
+    },
+    checkToSendData: function () {
+      let tripDaysControlsCopy = { ...tripDaysControls };
+      if (tripDaysControlsCopy.dayNumUpdating) {
+        const dayId = tripDaysControlsCopy.dayNumUpdating;
+        tripDaysControlsCopy[dayId].isUpdating = true;
+      };
+    },
+  };
+  useEffect(() => {
+    tripDaysFunctions.initialize();
+  }, [])
+  useEffect(() => {
+    // if isUpdating is false and standBy is true - send data to Backend (days)
+    if (tripDaysControls) {
+      console.log(tripDaysControls)
+    }
+
+  }, [tripDaysControls]);
+
+
+
+
+
+  // [places code]
+  // drag n drop code test data
 
   const placeFunctions = {
     addPlace: async function (dayNum, place) {
@@ -1948,9 +2048,9 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                     <div className="align-all-items my-1 gap-2">
                       {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
                       <div ref={tripNameWrapperRef} className="tripName-wrapper flx align-c gap-2">
-                        <span ref={tripNameSpanRef} onClick={() => setTripNameIsUpdating(true)} className={`page-subheading-bold input-text ${tripNameIsUpdating && "hidden-away"}`}>{tripName}</span>
-                        <input ref={tripNameInputRef} onChange={(e) => updateTripName(e)} onClick={() => setTripNameIsUpdating(true)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameIsUpdating && "hidden-away"}`} autoComplete='off' />
-                        <span onClick={() => setTripNameIsUpdating(true)} className={`material-symbols-outlined large gains-text pointer ${tripNameIsUpdating && "d-none"}`}>edit</span>
+                        <span ref={tripNameSpanRef} onClick={() => tripNameFunctions.startEdit()} className={`page-subheading-bold input-text ${tripNameControls.isUpdating && "hidden-away"}`}>{tripNameControls.text}</span>
+                        <input ref={tripNameInputRef} onChange={(e) => tripNameFunctions.updateText(e.target.value)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameControls.isUpdating && "hidden-away"}`} autoComplete='off' />
+                        <span onClick={() => tripNameFunctions.startEdit()} className={`material-symbols-outlined large gains-text pointer ${tripNameControls.isUpdating && "d-none"}`}>edit</span>
                       </div>
                       <Link to='/print-itinerary' className='position-right'><button className="btn-primary-small align-all-items gap-2">
                         <span className="material-symbols-outlined white-text small">share</span>
