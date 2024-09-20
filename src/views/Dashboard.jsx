@@ -10,12 +10,12 @@ import { DateRange } from 'react-date-range';
 import format from 'date-fns/format';
 import { addDays, isWithinInterval, set } from 'date-fns'
 import { SpecifyCity } from './SpecifyCity';
-import { Loading } from '../components/Loading';
-import { LoadingModal } from '../components/LoadingModal';
+import { Loading } from '../components/Loading/Loading';
+import { LoadingModal } from '../components/Loading/LoadingModal';
 import { auth, firestore } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
 import { Link, useNavigate, useRouteError } from 'react-router-dom';
-import { LoadingScreen } from '../components/LoadingScreen';
+import { LoadingScreen } from '../components/Loading/LoadingScreen';
 import EditTripModal from '../components/EditTripModal';
 import PassCodeModal from '../components/PassCodeModal';
 import { doc, getDoc } from 'firebase/firestore';
@@ -110,18 +110,17 @@ export const Dashboard = () => {
         },
     }
     // login require
-    const { user, setUser } = useContext(DataContext);
+    const { user } = useContext(DataContext);
     const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
-    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
+    const { mobileMode } = useContext(DataContext);
     const { userPreferences, setPreferences } = useContext(DataContext);
-    const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
-    const { pageOpen, setPageOpen } = useContext(DataContext);
-    const { timeFunctions, gIcon, convertStateToAbbv, convertAbbvToState, isUSState, isStateAbbv } = useContext(DataContext);
+    const { setSignUpIsOpen } = useContext(DataContext);
+    const { setPageOpen } = useContext(DataContext);
+    const { timeFunctions, gIcon, convertStateToAbbv, convertAbbvToState, isStateAbbv } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
     const [fullTranslated, setFullTranslated] = useState(false);
-    const [mapCenter, setMapCenter] = useState([51.50735, -0.12776]);
     const [calendarOpen, setCalendarOpen] = useState(false)
     const [cityText, setCityText] = useState(null);
     const [tripData, setTripData] = useState(null);
@@ -1624,13 +1623,10 @@ export const Dashboard = () => {
             } else {
                 // if there is a city entered
                 startLoading();
-                const cityName = cityInput.value;
-                const index = cityName.indexOf(',')
                 // if the user input includes a "," -- it contains city and state/country
-                if (index > -1) {
+                if (cityName.includes(",")) {
                     // let cityNoSpaces = cityName.replace(/ /g, '')
                     const cityArr = cityName.split(', ')
-                    console.log(cityArr)
                     console.log(convertAbbvToState(cityArr[1]))
                     let url = "";
                     if (isStateAbbv(cityArr[1])) {
@@ -1638,7 +1634,7 @@ export const Dashboard = () => {
                         // console.log(url)
                     } else {
                         url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`
-                    }
+                    };
                     const response = await axios.get(url, {
                         headers: { 'X-Api-Key': apiKey }
                     }).then((response => {
@@ -1733,7 +1729,7 @@ export const Dashboard = () => {
         } else {
             setAutoCompleteCities(null);
         }
-    }, [cityText])
+    }, [cityText]);
     const updateCityInput = (city) => {
         const cityInput = document.getElementById('cityInput');
         if (city.state) {
@@ -1742,14 +1738,7 @@ export const Dashboard = () => {
             cityInput.value = city.city_name;
         }
     }
-    const clearCitySearch = () => {
-        setAutoCompleteCities(null);
-        // setCityText(null);
-    }
 
-    const updateCityText = (text, tog) => {
-        setCityText(text)
-    }
     const closeSpecifyCity = () => {
         setSpecifyCityOpen(false);
     }
@@ -2195,10 +2184,10 @@ export const Dashboard = () => {
                 })
         } else {
             setCityAutocomplete([]);
-        }
-    }
+        };
+    };
     useEffect(() => {
-        getWorldCities()
+        getWorldCities();
     }, [citySearchQuery]);
 
 

@@ -1,4 +1,4 @@
-import React, { useContext, useDebugValue, useEffect, useRef, useState } from 'react'
+import React, { useContext, useDebugValue, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { AuthModal } from './auth/AuthModal';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
@@ -9,88 +9,36 @@ import SurveyModal from './SurveyModal';
 import PassCodeModal from './PassCodeModal';
 
 export const Navbar = () => {
-  const { mobileMode, mobileModeNarrow } = useContext(DataContext);
-  const { showNavbar } = useContext(DataContext);
-  const { sidebarDisplayed, placeListDisplay } = useContext(DataContext);
-  const { pageOpen, setPageOpen } = useContext(DataContext);
-  const { user, setUser } = useContext(DataContext);
-  // auth modal open and close states
-  const { signUpIsOpen, setSignUpIsOpen } = useContext(DataContext);
-  const { authIndex, setAuthIndex } = useContext(DataContext);
+  const { mobileMode, pageOpen, user, setUser, signUpIsOpen, setSignUpIsOpen
+    , authIndex, setAuthIndex } = useContext(DataContext);
 
 
-  // load user
-  useEffect(() => {
-    auth.currentUser ? setUser(auth.currentUser) : null
-  }, [auth])
+  // load user (useLayoutEffect or useEffect)?
+  useLayoutEffect(() => {
+    auth.currentUser ? setUser(auth.currentUser) : null;
+  }, [auth]);
 
-  const checkAuth = () => {
-    if (!user && auth.currentUser) {
-      setUser(auth.currentUser)
-    }
-  }
-  useEffect(() => {
-    window.addEventListener('click', checkAuth)
-  }, [])
+  // const checkAuth = () => {
+  //   if (!user && auth.currentUser) {
+  //     setUser(auth.currentUser)
+  //   };
+  // };
+  // useEffect(() => {
+  //   window.addEventListener('click', checkAuth)
+  // }, []);
 
 
   // show auth modal
   const openSignUp = () => {
     setAuthIndex(0);
     setSignUpIsOpen(true);
-  }
+  };
   const openSignIn = () => {
     setAuthIndex(1);
     setSignUpIsOpen(true);
-  }
+  };
 
 
-
-
-
-
-
-  // send Kate data testing
-  const sendData = async () => {
-    // let authUser = auth.currentUser
-    let data = {
-      uid: "strings",
-      displayName: "displayName",
-      email: "authUsers@email.com",
-      // photoURL: authUser.photoURL
-    }
-    console.log(data)
-    // kate's url = https://routewise-backend.onrender.com
-    const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" }
-    }).then((response => console.log(response)))
-      .catch((error) => console.log(error))
-  }
-  const sendDataTest = async () => {
-    let data = {
-      uid: 'helloMotto123',
-      displayName: 'displayName1',
-      email: 'pleasework@email.com',
-      // photoURL: authUser.photoURL
-    }
-    console.log(data)
-    // kate's url = https://routewise-backend.onrender.com
-    const response = await axios.post("https://routewise-backend.onrender.com/profile/user", JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" }
-    }).then((response => console.log(response)))
-      .catch((error) => console.log(error))
-  }
-  // Demo trip data
-  const sendTripDataTest = () => {
-    let data = {
-      uid: "1234567",
-      tripName: "Big Apple",
-      Destination: "New York City, New York",
-      DestinationImgUrl: "https://i.imgur.com/RxO0dfy.jpg",
-      startDate: "11/17/2023",
-      endDate: "11/20/2023"
-    }
-  }
 
 
   // [User (profile icon click) menu]
@@ -101,18 +49,18 @@ export const Navbar = () => {
   useEffect(() => {
     document.addEventListener('click', hideOnClickOutside, true);
     return document.removeEventListener('click', hideOnClickOutside);
-  }, [])
+  }, []);
   const hideOnClickOutside = (e) => {
     if (refUserDropdown.current && !refUserDropdown.current.contains(e.target)) {
       const userMenu = document.getElementById('userMenu')
       userMenu.classList.add('hide')
-    }
-  }
+    };
+  };
   const refUserDropdown = useRef(null);
   const closeUserMenu = () => {
     let userMenu = document.getElementById('userMenu')
     userMenu.classList.add('hide')
-  }
+  };
 
 
   // [nav menu mobile]
@@ -121,17 +69,17 @@ export const Navbar = () => {
   useEffect(() => {
     document.addEventListener('click', hideOnClickOutsideMobileMenu, true);
     return () => document.removeEventListener('click', hideOnClickOutsideMobileMenu, true)
-  }, [])
+  }, []);
   const hideOnClickOutsideMobileMenu = (e) => {
     if (navMenuMobileRef.current && hamburgerRef.current) {
       if (navMenuMobileRef.current && !navMenuMobileRef.current.contains(e.target) && !hamburgerRef.current.contains(e.target)) {
         setNavMenuMobileOpen(false);
-      }
-    }
-  }
+      };
+    };
+  };
 
 
-  // [Prototype Menu]
+  // [Prototype Menu] - make function library
   const openPrototypeMenu = () => {
     let prototypeMenu = document.getElementById('prototype-menu')
     prototypeMenu.classList.remove('d-none')
@@ -163,8 +111,7 @@ export const Navbar = () => {
     signOut(auth).then(() => {
       setUser(null)
       setLogoutStandby(true);
-      console.log('signed out')
-      console.log("auth = ", auth.currentUser)
+      console.log("signed out user", auth.currentUser)
     })
   }
   const [logoutStandby, setLogoutStandby] = useState(false);
@@ -186,15 +133,14 @@ export const Navbar = () => {
     } else {
       alert("Please sign in to get Website access")
     }
-  }
+  };
 
   return (
     <>
       <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
       <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
       {/* <SurveyModal /> */}
-      <div className={`navbar bg-white w-100 flx-r just-sb ${!showNavbar ? "d-none" : null} `}>
-        {/* <img src="https://i.imgur.com/Xj94sDN.gifv" alt="" className="med-pic" /> */}
+      <div className={`navbar bg-white w-100 flx-r just-sb`}>
         {mobileMode &&
           <div ref={hamburgerRef} onClick={() => setNavMenuMobileOpen((navMenuMobileOpen) => !navMenuMobileOpen)} className="hamburger-icon ml-2">
             <span className="line-1"></span>
@@ -206,9 +152,6 @@ export const Navbar = () => {
         <div ref={navMenuMobileRef} className={`nav-menu-mobile ${!navMenuMobileOpen && "hide"}`}>
           <Link onClick={() => setNavMenuMobileOpen(false)} to='/dashboard'><div className="option">
             <img src="https://i.imgur.com/N6JGq3D.png" alt="" className="navbar-icon ml-h" />
-            {/* <span className="material-symbols-outlined gray-tex">
-              cottage
-            </span> */}
             <p className="m-0 gray-text">Dashboard</p>
           </div></Link>
           <Link onClick={() => setNavMenuMobileOpen(false)} to='/mytrips'><div className="option">
@@ -231,7 +174,6 @@ export const Navbar = () => {
             <img src={`${mobileMode ? "https://i.imgur.com/Eu8Uf2u.png" : "https://i.imgur.com/VvcOzlX.png"}`} alt="Routewise" className={`routewise-logo ${mobileMode ? "m-aut mobile mt-  position-absolute abs-center" : "ml15-disappear768"}`} />
 
           </Link>
-          {/* <Link className='ml15' to='/'><img src="https://i.imgur.com/VvcOzlX.png" alt="Routewise" className="routewise-logo" /></Link> */}
         </div>
         <div ref={refMenu} id='prototype-menu' className="prototype-menu d-none">
           <div className="option-head">PROTOTYPE MENU</div>
@@ -243,44 +185,23 @@ export const Navbar = () => {
           <Link onClick={() => closePrototypeMenu()} to='/itinerary'><div className="option">Itinerary</div></Link>
 
         </div>
-        {!mobileMode &&
+        {!mobileMode && auth.currentUser &&
           <div className="navbar-left-side gap-7 position-left">
             <Link to='/dashboard'>
               <div className={`${pageOpen === "dashboard" ? "option-selected" : "option"}`}>
                 <div className="flx-r gap-2">
-                  {/* {pageOpen === "dashboard" ?
-                    <img src="https://i.imgur.com/K594sfY.png" alt="" className="navbar-icon" />
-                    :
-                    <img src="https://i.imgur.com/N6JGq3D.png" alt="" className="navbar-icon" />
-                  } */}
                   <p className="m-0">Dashboard</p>
                 </div>
               </div>
             </Link>
 
-            {/* <div className="option">
-            <div className="flx-r gap-2">
-
-              <img src="https://i.imgur.com/7ewt7zr.png" alt="" className="navbar-icon" />
-              <p className="m-0">My Profile</p>
-            </div>
-          </div> */}
             <Link to='/mytrips'><div className={`${pageOpen === "my trips" ? "option-selected" : "option"}`}>
               <div className="flx-r gap-2">
-                {/* <span className={`material-symbols-outlined`}>
-                  flight_takeoff
-                </span> */}
+
                 <p className="m-0">My Trips</p>
               </div>
             </div></Link>
-            {/* <div className="option">
-            <div className="flx-r gap-2">
-            <span className="material-symbols-outlined">
-            explore
-            </span>
-            <p className="m-0">Discover</p>
-            </div>
-          </div> */}
+
             <div onClick={() => openPasscodeModal()} className={`option`}>
               <div className="flx-r gap-2">
                 <span className={`material-symbols-outlined`}>
@@ -295,7 +216,7 @@ export const Navbar = () => {
         }
 
         {auth.currentUser ?
-          <div ref={refUserDropdown} className="z-1 right-btns flx-c just-ce position-relative">
+          <div ref={refUserDropdown} className="z-1 right-side-btns flx-c just-ce position-relative">
             <div className="flx-r">
               <div className="flx-c just-ce">
                 <p className={`username-text ${mobileMode && "d-none"} m-0 mt- inline mx-2`}>{auth.currentUser.displayName}</p>
@@ -333,17 +254,15 @@ export const Navbar = () => {
             </div>
           </div>
           :
-          <div className="right-btns flx-c just-ce">
-            <div className="flx-r just-se">
+          <div className="right-side-btns">
               {!mobileMode ?
-                <button onClick={() => openSignUp()} className={`signUp ${mobileMode ? "btn-outline-narrow" : "btn-outlineflex"} small mx10`}>Sign Up</button>
+                <button onClick={() => openSignUp()} className={`btn-tertiaryflex small`}>Sign Up</button>
                 :
                 <p onClick={() => openSignUp()} className="m-0 purple-text">Sign Up</p>
               }
               {!mobileMode &&
-                <button onClick={() => openSignIn()} className="signIn btn-primaryflex small">Log in</button>
+                <button onClick={() => openSignIn()} className="btn-outlineflex small">Log in</button>
               }
-            </div>
           </div>
         }
       </div>

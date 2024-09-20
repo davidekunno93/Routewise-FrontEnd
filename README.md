@@ -16,7 +16,6 @@ Google Maps JavaScript, Google Places, Google Places (New), Google Place Details
 
     ``` 
     npm install
-    npm install react-router-dom
     ```
 
 2. Create a `.env` file in the root directory and add the following ('****' should be replaced a working Google API Key that has Google Places, Places (New), Geocoding, Maps JavaScript, Place Details, and Photos API enabled):

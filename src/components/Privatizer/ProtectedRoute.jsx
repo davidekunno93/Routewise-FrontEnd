@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { auth, firestore } from '../../firebase';
 import { AddPlaces } from '../../views/AddPlaces';
 import { Dashboard } from '../../views/Dashboard';
-import { Landing } from '../../views/Landing';
+import { Landing } from '../../views/Landing/Landing';
 import { DataContext } from '../../Context/DataProvider';
 import { useNavigate } from 'react-router-dom';
 import PageBlock from './PageBlock';

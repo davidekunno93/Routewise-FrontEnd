@@ -1,5 +1,5 @@
 import React, { useState, lazy, Suspense, useRef, useEffect, useCallback, useMemo } from 'react'
-import { Loading } from '../components/Loading'
+import { Loading } from '../components/Loading/Loading'
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 import "leaflet/dist/leaflet.css";
 import { Draggable, Icon } from 'leaflet';

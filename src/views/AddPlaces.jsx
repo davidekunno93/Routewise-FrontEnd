@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
-import { LoadingScreen } from '../components/LoadingScreen'
-import { Loading } from '../components/Loading'
+import { LoadingScreen } from '../components/Loading/LoadingScreen'
+import { Loading } from '../components/Loading/Loading'
 import { DataContext } from '../Context/DataProvider'
 import StarPlacesToolTip from '../components/StarPlacesToolTip'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
@@ -18,6 +18,7 @@ import PlaceCard from '../components/PlaceCard'
 import OpeningHoursMap from '../components/OpeningHoursMap'
 import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
 import SuggestedPlaceCard from '../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
+import LoadingFillElement from '../components/Loading/LoadingFillElement'
 
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
@@ -1232,48 +1233,57 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                     </div>
                                     <div className={`placeCards ${topSites.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
-                                            {topSites.isLoaded && topSites.places.length === 0 ?
-                                                <div className="add-places-card">
-                                                    <span className="material-symbols-outlined xx-large">
-                                                        location_on
-                                                    </span>
-                                                    <p className="large bold700 my-1 o-50">0 popular sites in this area</p>
-                                                    {/* <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p> */}
-                                                </div>
-                                                :
-                                                null
-                                            }
-                                            {!topSites.isLoaded &&
+                                            
+                                            {/* <LoadingFillElement
+                                                color={"whitelite"}
+                                                innerText={"Loading..."}
+                                                noMascot
+                                            /> */}
+                                            {!topSites.isLoaded ?
                                                 <>
                                                     <div className="loadingBox-inline">
                                                         <Loading noMascot={true} innerText={"Loading..."} />
                                                     </div>
                                                 </>
+                                                :
+                                                <>
+                                                    {topSites.places.length === 0 ?
+                                                        <div className="add-places-card">
+                                                            <span className="material-symbols-outlined xx-large">
+                                                                location_on
+                                                            </span>
+                                                            <p className="large bold700 my-1 o-50">0 popular sites in this area</p>
+                                                            {/* <p className="m-0 w-60 center-text o-50 addPlace-text">Update travel preferences to get place suggestions</p> */}
+                                                        </div>
+                                                        :
+                                                        <>
+                                                            {topSites.places.map((topSite, index) => {
+                                                                return <SuggestedPlaceCard
+                                                                    index={index}
+                                                                    place={topSite}
+
+                                                                    addPlaceToConfirm={addPlaceToConfirm}
+                                                                    addPlace={addPlace}
+                                                                    removePlace={removePlace}
+
+                                                                    placesAddressList={placesAddressList}
+
+                                                                    blacklist={topSiteControls.hiddenPlaces}
+                                                                    addToBlacklist={topSiteFunctions.hidePlace}
+                                                                    flashAdded={topSiteFunctions.confirmationAnimation}
+                                                                // suggestedPlacesFilter={suggestedPlacesFilter}
+                                                                // blacklist={blacklist}
+                                                                // addToBlacklist={addToBlacklist}
+                                                                // flashAdded={flashAdded}
+                                                                />
+
+
+                                                            })}
+                                                        </>
+                                                    }
+
+                                                </>
                                             }
-
-                                            {topSites.isLoaded && topSites.places.length > 0 &&
-                                                topSites.places.map((topSite, index) => {
-                                                    return <SuggestedPlaceCard
-                                                        index={index}
-                                                        place={topSite}
-
-                                                        addPlaceToConfirm={addPlaceToConfirm}
-                                                        addPlace={addPlace}
-                                                        removePlace={removePlace}
-
-                                                        placesAddressList={placesAddressList}
-
-                                                        blacklist={topSiteControls.hiddenPlaces}
-                                                        addToBlacklist={topSiteFunctions.hidePlace}
-                                                        flashAdded={topSiteFunctions.confirmationAnimation}
-                                                    // suggestedPlacesFilter={suggestedPlacesFilter}
-                                                    // blacklist={blacklist}
-                                                    // addToBlacklist={addToBlacklist}
-                                                    // flashAdded={flashAdded}
-                                                    />
-
-
-                                                })}
                                         </Scrollbars>
                                     </div>
                                 </>

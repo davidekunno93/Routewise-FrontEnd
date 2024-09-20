@@ -5,7 +5,7 @@ import './App.css'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { SignUp } from './components/auth/SignUp'
 import { Navbar } from './components/Navbar'
-import { Landing } from './views/Landing'
+import { Landing } from './views/Landing/Landing'
 import { Survey } from './views/Survey'
 import { Dashboard } from './views/Dashboard'
 import { Footer } from './components/Footer'
@@ -68,6 +68,7 @@ function App() {
   //   }
   // }, [auth])
   const setPreferences = async () => {
+    if (!auth.currentUser) return;
     let prefs = await getDoc(doc(firestore, `userPreferences/${auth.currentUser.uid}`))
     // console.log(prefs.data())
     prefs = prefs.data()

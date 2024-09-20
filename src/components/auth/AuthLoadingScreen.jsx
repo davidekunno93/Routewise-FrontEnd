@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import { Loading } from '../Loading'
+import { Loading } from '../Loading/Loading'
 import { updateProfile } from 'firebase/auth'
 import { auth } from '../../firebase'
 import { useNavigate } from 'react-router-dom'

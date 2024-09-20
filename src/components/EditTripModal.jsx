@@ -3,9 +3,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Fade } from 'react-awesome-reveal';
 import format from 'date-fns/format';
 import { DateRange } from 'react-date-range';
-import { LoadingScreen } from './LoadingScreen';
-import { LoadingModal } from './LoadingModal';
-import LoadOnTop from './LoadOnTop';
+import { LoadingScreen } from './Loading/LoadingScreen';
+import { LoadingModal } from './Loading/LoadingModal';
+import LoadOnTop from './Loading/LoadOnTop';
 import ItineraryUpdatedModal from './ItineraryUpdatedModal';
 import { DataContext } from '../Context/DataProvider';
 

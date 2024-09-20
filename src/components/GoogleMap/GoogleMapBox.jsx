@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import GoogleSearch from '../GoogleSearch';
-import { Loading } from '../Loading';
+import { Loading } from '../Loading/Loading';
 import { createRoot } from 'react-dom/client';
 import { APIProvider, AdvancedMarker, InfoWindow, Map, Pin, useMap } from '@vis.gl/react-google-maps';
 import './googlemapbox.scoped.css'
@@ -275,6 +275,18 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
         }
     }, [showPlaceAddedBox])
 
+    const renderGoogleSearch = useMemo(() => {
+        return <GoogleSearch 
+            // isLoaded={isLoaded}
+            tripMapBounds={tripMapBounds}
+            mapViewBounds={mapMonitor.bounds}
+            addPlaceFunction={addPlaceToConfirm}
+            searchMapViewBounds={searchMapViewBounds}
+            searchLimit={5}
+            styleProfile={"googlemap"}
+        />
+    }, []);
+
 
     return (
         <>
@@ -293,7 +305,8 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                 </div>
             }
             {!removeSearch &&
-                <GoogleSearch isLoaded={isLoaded}
+                <GoogleSearch 
+                    isLoaded={isLoaded}
                     tripMapBounds={tripMapBounds}
                     mapViewBounds={mapMonitor.bounds}
                     addPlaceFunction={addPlaceToConfirm}
@@ -338,7 +351,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     </button>
                 }
             </div>
-            {isLoaded ?
+            {/* {isLoaded ? */}
                 <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_API_KEY}>
                     <Map
                         defaultZoom={9}
@@ -388,11 +401,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                         })}
                     </Map>
                 </APIProvider>
-                :
+                {/* :
                 <div className="fillDivAndCenter">
                     <Loading noMascot noText />
-                </div>
-            }
+                </div> */}
+            {/* } */}
 
 
         </>

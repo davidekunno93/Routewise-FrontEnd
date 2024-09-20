@@ -3,7 +3,7 @@ import GoogleMapBox from '../components/GoogleMap/GoogleMapBox';
 import './test.scoped.css'
 import { DataContext } from '../Context/DataProvider';
 import axios from 'axios';
-import { Loading } from '../components/Loading';
+import { Loading } from '../components/Loading/Loading';
 
 const TestItinerary = () => {
     // imports

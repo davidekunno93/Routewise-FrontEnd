@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { auth, firestore } from '../firebase';
 import { DataContext } from '../Context/DataProvider';
-import { Loading } from '../components/Loading';
+import { Loading } from '../components/Loading/Loading';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import EditTripModal from '../components/EditTripModal';

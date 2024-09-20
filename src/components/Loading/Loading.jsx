@@ -1,19 +1,17 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
+import { DataContext } from '../../Context/DataProvider'
 
 export const Loading = ({ innerText, noMascot, noText }) => {
-
-    function wait(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms))
-    }
+    const { wait } = useContext(DataContext);
 
     useEffect(() => {
         let loading = document.getElementById('loading')
         if (loading) {
             wait(10000).then(() => {
-                loading.innerText = innerText ? innerText : "This may take up to a minute..."
-            })
-        }
-    }, [])
+                loading.innerText = innerText ? innerText : "This may take up to a minute...";
+            });
+        };
+    }, []);
 
     return (
         <>

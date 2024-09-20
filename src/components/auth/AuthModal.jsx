@@ -10,8 +10,8 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import facebookProvider from '../../firebaseFacebook';
 import axios from 'axios';
 import { Fade, Slide } from 'react-awesome-reveal';
-import { LoadingScreen } from '../LoadingScreen';
-import { Loading } from '../Loading';
+import { LoadingScreen } from '../Loading/LoadingScreen';
+import { Loading } from '../Loading/Loading';
 
 export const AuthModal = ({ open, authIndex, onClose }) => {
     if (!open) return null
@@ -227,11 +227,10 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             <div className="auth-modal-imgDiv">
                                 <div className="caption">
                                     {/* <span className="material-symbols-outlined white-text">location_on</span> */}
-                                    <img src="https://i.imgur.com/nTZTn9C.png" alt="" className="img-xxxsmall" />
+                                    <img src="https://i.imgur.com/Wg1jAcU.png" alt="" className="img-xxxsmall" />
                                     <p className='m-0 white-text'>Lisbon, Portugal&nbsp;</p>
                                 </div>
                                 <img src="https://i.imgur.com/8WWTVLl.png" alt="" className="auth-modal-img" />
-                                {/* <img src="https://i.imgur.com/9HR2xh9.png" alt="" className="auth-modal-img" /> */}
                             </div>
                         }
                         <CreatePassword showPassword={showPassword} hidePassword={hidePassword} open={createPasswordOpen} email={registerEmail} onClose={() => closeCreatePassword()} closeAll={() => closeAll1()} />

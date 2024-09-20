@@ -14,6 +14,9 @@
   -webkit-text-size-adjust: 100%;
 
   --offwhite: rgb(242, 242, 242);
+  --purple: #6663FC;
+  --lightpurple: #F0EFFF;
+  --darkpurple: #0F0680;
 }
 
 a {
@@ -440,7 +443,9 @@ w-0 {
   top: 128px;
 }
 
-
+.w670 {
+  width: 670px; 
+}
 .w-25 {
   width: 25%;
 }
@@ -681,7 +686,7 @@ w-0 {
 }
 
 .navbar {
-  height: 56px;
+  height: 64px;
   /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
   z-index: 20000;
   border-bottom: 1px solid gainsboro;
@@ -754,8 +759,12 @@ w-0 {
   color: #529aff;
 }
 
-.right-btns {
+.right-side-btns {
   margin-right: 5%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px; 
 }
 
 .profile-icon {
@@ -989,18 +998,20 @@ w-0 {
 .hero-title {
   font-size: 50px;
   text-align: left;
-  font-family: "Noto Serif", serif;
+  font-family: 'Plus Jakarta Sans';
+  margin: 0;
+  font-weight: 600;  
 }
 
 .hero-title.mobile {
   font-size: calc(3vw + 20px);
   text-align: center;
-  font-family: "Noto Serif", serif;
+  font-family: 'Plus Jakarta Sans';
 }
 
 .heroFade-img {
   width: 100%;
-  height: calc(100vh);
+  height: calc(100vh - 64px);
   /* height: 610px; */
   object-fit: cover;
   transition: 1.0s;
@@ -1008,7 +1019,7 @@ w-0 {
 
 .heroFadeContainer .placeholder {
   width: 100%;
-  height: calc(100vh - 85px);
+  height: calc(100vh - 149px);
   /* height: 610px; */
 }
 
@@ -1660,28 +1671,6 @@ input:-webkit-autofill {
   transition: 0.3s;
 }
 
-.btn-outlineflex {
-  padding: 11px 36px;
-  background-color: white;
-  color: #6663FC;
-  border-radius: 8px;
-  border: 2px solid #6663FC;
-  transition: 0.3s;
-  white-space: nowrap;
-}
-
-.btn-outlineflex:hover {
-  /* filter: brightness(95%); */
-  /* transform: translateY(-5px); */
-  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
-  background-color: #E7E6F2;
-  transition: 0.3s;
-}
-
-.btn-outlineflex:active {
-  /* filter: brightness(85%); */
-  background-color: #B2AFD6;
-}
 
 .btn-secondaryflex {
   padding: 12px 20px;
@@ -1695,9 +1684,6 @@ input:-webkit-autofill {
 }
 
 .btn-secondaryflex:hover {
-  /* filter: brightness(95%); */
-  /* transform: translateY(-5px); */
-  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
   background-color: #3F3899;
   transition: 0.3s;
 }
@@ -1756,6 +1742,22 @@ input:-webkit-autofill {
 .btn-primaryflex-disabled span,
 .btn-primaryflex.disabled span {
   color: gray;
+}
+
+.btn-tertiaryflex {
+  padding: 10px 24px;
+  color: white;
+  border-radius: 23px; 
+  background-color: #0F0680;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+.btn-tertiaryflex:hover {
+  background-color: #0b055f;
+  transition: 0.2s; 
+}
+.btn-tertiaryflex:active {
+  background-color: #0b055f;
 }
 
 
@@ -1902,12 +1904,12 @@ input:-webkit-autofill {
 .btn-outlineflex {
   /* width: 380px; */
   background-color: white;
-  padding: 0.6em, 1.2em;
+  padding: 10px 24px; 
   /* height: 55px; */
-  color: #6663FC;
+  color: #0F0680; 
   border-radius: 8px;
   border: 2px solid #6663FC;
-  transition: 0.3s;
+  transition: 0.2s;
   white-space: nowrap;
 
   /* rounded btns */
@@ -1916,11 +1918,8 @@ input:-webkit-autofill {
 }
 
 .btn-outlineflex:hover {
-  /* filter: brightness(95%); */
-  /* transform: translateY(-5px); */
-  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.15); */
   background-color: #E7E6F2;
-  transition: 0.3s;
+  transition: 0.2s;
 }
 
 .btn-outlineflex:active {
@@ -1979,7 +1978,9 @@ input:-webkit-autofill {
 .blend-bg {
   background-color: rgb(245, 245, 245);
 }
-
+.bold400 {
+  font-weight: 400;
+}
 .bold500 {
   font-weight: 500;
 }
@@ -1991,9 +1992,16 @@ input:-webkit-autofill {
 .bold700 {
   font-weight: 700;
 }
+.italic {
+  font-style: italic;
+} 
 
 .purple-text {
   color: #6663FC;
+}
+.darkpurple-text {
+  color: #0F0680;
+
 }
 
 .lightpurple-text {
@@ -2330,6 +2338,11 @@ p {
   color: #242424; 
 }
 
+.font-merriweather {
+  font-family: 'Merriweather', serif !important; 
+  font-weight: 500; 
+}
+
 .font-jakarta {
   font-family: 'Plus Jakarta Sans';
 }
@@ -2369,15 +2382,39 @@ p {
   width: 100%;
 }
 
+/* .page-title-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  text-align: center;
+  width: 50%;
+  margin: auto;
+}
+
 .page-title {
-  /* font-size: xxx-large;  */
-  font-size: 36px;
-  color: #242424;
+  font-size: 40px;
+  font-family: 'Plus Jakarta Sans';
+  font-weight: 700;
+  margin: auto;
+  text-align: center;
+} 
+.page-title.darkpurple {
+  color: #0F0680;
+}
+.page-title.black {
+  color: black;
 }
 
 .page-title.mobile {
   font-size: 24px;
 }
+
+.page-subtitle {
+  font-family: 'Plus Jakarta Sans' serif;
+  color: gray;
+  font-size: 18px;
+} */
 
 .page-heading {
   font-family: 'Plus Jakarta Sans';
@@ -5214,8 +5251,8 @@ selection-box-landing.mobile {
 }
 
 .planning-section {
-  /* background-color: rgb(245, 245, 245); */
-  background-color: #FFFAEF;
+  /* background-color: #FFFAEF; */
+  background-color: #FFFCF9;
 }
 
 .planning-section .text {
@@ -5308,6 +5345,67 @@ selection-box-landing.mobile {
 
 .page-card2 .item {
   height: 75px;
+}
+
+.fuji-section {
+  height: 720px;
+  width: 100%;
+  position: relative; 
+}
+.fuji-section .left-side {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  padding: 40px 60px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.fuji-section .right-side {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  right: 0;
+  top: 0;
+  padding: 40px 60px;
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.fuji-section .right-side img {
+  position: absolute;
+  left: 0;
+  height: calc(100% - 80px); 
+  border-radius: 12px;
+}
+.fuji-section .left-side .content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: auto 0 64px 0; 
+}
+
+.fuji-section .left-side .content .text {
+  font-family: 'Plus Jakarta Sans';
+  color: white;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+
+
+
+
+
+.full-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .explore-section {
@@ -6271,7 +6369,7 @@ selection-box-landing.mobile {
 
 .point .title {
   font-size: 24px;
-  font-family: "Noto Serif", serif;
+  font-family: "Plus Jakarta Sans", serif;
   font-weight: 600;
   color: black;
 }
