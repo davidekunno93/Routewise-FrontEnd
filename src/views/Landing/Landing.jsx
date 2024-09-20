@@ -388,7 +388,7 @@ export const Landing = () => {
                 bottomColor='transparent'
             />
 
-            <div className="section">
+            <div className="section pt-0">
                 <Fade delay={300} triggerOnce>
                     <Slide direction='up' triggerOnce>
                         <div className="page-title-box">

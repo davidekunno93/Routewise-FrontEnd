@@ -251,9 +251,7 @@ button:focus-visible {
 }
 
 
-.pt-3h {
-  padding-top: 20px;
-}
+
 
 
 .pr-1 {
@@ -4955,6 +4953,10 @@ selection-box-landing.mobile {
   margin-right: 40px;
 }
 
+.pt-0 {
+  padding-top: 0px;
+}
+
 .pt-1 {
   padding-top: 4px;
 }
@@ -4966,7 +4968,9 @@ selection-box-landing.mobile {
 .pt-3 {
   padding-top: 12px;
 }
-
+.pt-3h {
+  padding-top: 20px;
+}
 .pt-4 {
   padding-top: 24px;
 }
