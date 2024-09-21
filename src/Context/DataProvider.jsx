@@ -823,7 +823,7 @@ const DataProvider = (props) => {
         return bestCategory;
     };
 
-    // const gLibrary = ["core", "maps", "places", "marker"];
+    const gLibrary = ["core", "maps", "places", "marker"];
     // const { googleScriptIsLoaded } = useLoadScript({
     //     id: 'google-maps-script',
     //     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
@@ -884,7 +884,7 @@ const DataProvider = (props) => {
             'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, 
             gIcon, numberToBgColor, toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, 
             isStateAbbv, generateTripMapBounds, modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, 
-            googlePlaceTypeKey, userPreferenceItems, topSites, setTopSites, authFunctions, getCountryName
+            googlePlaceTypeKey, userPreferenceItems, topSites, setTopSites, authFunctions, getCountryName, gLibrary
         }}>
             {props.children}
         </DataContext.Provider>

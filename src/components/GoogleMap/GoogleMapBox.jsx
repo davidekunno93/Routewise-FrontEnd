@@ -12,10 +12,9 @@ import { DataContext } from '../../Context/DataProvider';
 // tripMapBounds
 
 const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterToggle, markers, setMarkers, markerColors, markerColorsDefaultOn, removeSearch, showPlaceAddedBox, setShowPlaceAddedBox, placeAddedBoxText }) => {
-    const { wait, generateTripMapBounds, numberToBgColor } = useContext(DataContext);
+    const { wait, generateTripMapBounds, numberToBgColor, gLibrary } = useContext(DataContext);
 
     // loading the map -- not needed for vis.gl library however this allows loading screen before map renders
-    const gLibrary = ["core", "maps", "places", "marker"];
     const { isLoaded } = useLoadScript({
         id: 'google-maps-script',
         googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
@@ -276,7 +275,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
     }, [showPlaceAddedBox])
 
     const renderGoogleSearch = useMemo(() => {
-        return <GoogleSearch 
+        return <GoogleSearch
             // isLoaded={isLoaded}
             tripMapBounds={tripMapBounds}
             mapViewBounds={mapMonitor.bounds}
@@ -305,7 +304,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                 </div>
             }
             {!removeSearch &&
-                <GoogleSearch 
+                <GoogleSearch
                     isLoaded={isLoaded}
                     tripMapBounds={tripMapBounds}
                     mapViewBounds={mapMonitor.bounds}
@@ -351,7 +350,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                     </button>
                 }
             </div>
-            {/* {isLoaded ? */}
+            {isLoaded ?
                 <APIProvider apiKey={import.meta.env.VITE_APP_GOOGLE_API_KEY}>
                     <Map
                         defaultZoom={9}
@@ -401,11 +400,11 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                         })}
                     </Map>
                 </APIProvider>
-                {/* :
+                :
                 <div className="fillDivAndCenter">
                     <Loading noMascot noText />
-                </div> */}
-            {/* } */}
+                </div>
+            }
 
 
         </>

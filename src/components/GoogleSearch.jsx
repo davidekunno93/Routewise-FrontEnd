@@ -3,13 +3,6 @@ import usePlacesAutocomplete from 'use-places-autocomplete';
 import { DataContext } from '../Context/DataProvider';
 import { useLoadScript } from '@react-google-maps/api';
 const GoogleSearch = ({ addPlaceFunction, tripMapBounds, mapViewBounds, isLoaded, searchMapViewBounds,  searchLimit, styleProfile }) => {
-    const gLibrary = ["core", "maps", "places", "marker"];
-    // const { isLoaded } = useLoadScript({
-    //     id: 'google-maps-script',
-    //     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_API_KEY,
-    //     libraries: gLibrary
-    // });
-    
     if (!isLoaded) return null;
     const { textFunctions, modifyInfo, getBestCategory } = useContext(DataContext);
 
