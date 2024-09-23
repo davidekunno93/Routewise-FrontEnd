@@ -113,50 +113,9 @@ export const SurveyUpdate = () => {
                 setCategories(categoryCopy);
             };
         }
-
-
-        // const card = document.getElementById(`${id}-card2`)
-        // const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        // if (!card.classList.contains('selected')) {
-        //     addToCategories(id)
-        // } else if (card.classList.contains('selected')) {
-        //     card.classList.remove('selected')
-        //     greenCheck.classList.add('d-none')
-        //     removeFromCategories(id)
-        // }
     }
 
-    // function wait(ms) {
-    //     return new Promise((resolve) => setTimeout(resolve, ms))
-    // }
 
-
-    // const addToCategories = (id) => {
-    //     let categoriesCopy = { ...categories };
-    //     let category_list = Object.keys(categories);
-    //     let category_booleans = Object.values(categories);
-    //     const card = document.getElementById(`${id}-card2`)
-    //     const greenCheck = document.getElementById(`${id}-green-checkbox`)
-    //     console.log(category_list[id])
-
-    //     let true_count = category_booleans.filter(val => val === true).length;
-    //     let maxCategoryErrorMessage = document.getElementById('maxCategoryError');
-    //     if (true_count > 2) {
-    //         maxCategoryErrorMessage.classList.remove('d-none')
-    //         // console.log('max interests reached')
-    //     } else {
-    //         card.classList.add('selected')
-    //         greenCheck.classList.remove('d-none')
-    //         categoriesCopy[category_list[id]] = true;
-    //         setCategories(categoriesCopy);
-    //     }
-    // }
-    // const removeFromCategories = (id) => {
-    //     let categoriesCopy = { ...categories };
-    //     let category_list = Object.keys(categories);
-    //     categoriesCopy[category_list[id]] = false;
-    //     setCategories(categoriesCopy);
-    // }
 
 
     const setfb = async () => {
@@ -223,8 +182,6 @@ export const SurveyUpdate = () => {
             </div>
 
             <div className="page-container90">
-                {/* <h1 className="page-title">Personalize your recommendations</h1> */}
-                {/* <p className="page-text">Routewise suggests places and activities based on your interests and preferences.</p> */}
                 <div onClick={() => goBack()} className="inline-block">
                     <div className="flx-r mt-4 onHover-fade">
                         <span className="material-symbols-outlined purple-text mr-2">
@@ -233,19 +190,22 @@ export const SurveyUpdate = () => {
                         <p className="page-text m-0 purple-text">Back</p>
                     </div>
                 </div>
-                <h1 onClick={() => openUpdatedOverlay()} className="page-title mt-2">Update your travel preferences</h1>
-                <p className={`${mobileModeNarrow ? "medium" : "page-text"}`}>How do you prefer to explore?</p>
-                <p className={`${mobileModeNarrow ? "smedium" : "page-text"}`}>Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
-                    error
-                </span></span></p>
-                <div className="cards flx-r flx-wrap just-ce">
+                <div className="title-section">
+                    <h1 onClick={() => openUpdatedOverlay()} className="page-title mt-2">Update your travel preferences</h1>
+                    <div className="subtitle-text">
+                        <p className={`${mobileModeNarrow ? "medium" : "page-text"}`}>How do you prefer to explore?</p>
+                        <p className={`${mobileModeNarrow ? "smedium" : "page-text"}`}>Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(Please select a maximum of 3 categories)<span className="material-symbols-outlined red-text v-ttop">
+                            error
+                        </span></span></p>
+                    </div>
+                </div>
+                <div className="cards-list">
                     {userPreferenceItems.order.map((userPreference, index) => {
                         let card = userPreferenceItems.cards[userPreference];
                         return <div
                             onClick={() => toggleSelection(userPreference)}
                             key={index}
-                            // id={`${index}-card2`}
-                            className={`card2 ${categories[userPreference] ? "selected" : "unselected"} ${mobileModeNarrow && "flex"} mx2 my-3 position-relative`}
+                            className={`card2 ${categories[userPreference] ? "selected" : "unselected"} ${mobileModeNarrow && "flex"}`}
                         >
                             <div className="green-checkbox">
                                 <span className="material-symbols-outlined white-text m-auto">

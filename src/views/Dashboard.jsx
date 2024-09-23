@@ -2363,7 +2363,7 @@ export const Dashboard = () => {
 
                 {/* user preferences selection */}
                 <div className="myTravelPreferences-section mt-5">
-                    <div className="flx-r align-c gap-8">
+                    <div className="flx-r align-c gap-8 mb-4">
                         <p className="page-subsubheading-bold">My Travel Preferences</p>
                         <Link to='/survey-update'><p className="m-0 purple-text mt-h">Edit</p></Link>
                     </div>
