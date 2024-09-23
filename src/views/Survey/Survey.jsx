@@ -1,27 +1,53 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { DataContext } from '../Context/DataProvider';
+import { DataContext } from '../../Context/DataProvider';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { auth, firestore } from '../firebase';
+import { auth, firestore } from '../../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Fade, Slide } from 'react-awesome-reveal';
+import './survey.scoped.css';
 
 export const Survey = () => {
     // login require
-    const { user, setUser } = useContext(DataContext);
-    const { userPreferences, setUserPreferences } = useContext(DataContext);
+    const { setUserPreferences } = useContext(DataContext);
     const { mobileMode, mobileModeNarrow } = useContext(DataContext);
-    const [categories, setCategories] = useState(
-        {
-            landmarks: false,
-            nature: false,
-            shopping: false,
-            food: false,
-            relaxation: false,
-            entertainment: false,
-            arts: false
-        }
-    );
+
+    const [numberOfSelectedPreferences, setNumberOfSelectedPreferences] = useState(0);
+    const [preferenceSelections, setPreferenceSelections] = useState({
+        landmarks: false,
+        nature: false,
+        shopping: false,
+        food: false,
+        nightclub: false,
+        relaxation: false,
+        entertainment: false,
+        arts: false
+    });
+    useEffect(() => {
+        setNumberOfSelectedPreferences(Object.values(preferenceSelections).filter(value => value === true).length);
+    }, [preferenceSelections]);
+    const preferenceFunctions = {
+        add: function (preference) {
+            if (numberOfSelectedPreferences >= 3) {
+                // let maxCategoryError = document.getElementById('maxCategoryError');
+                // maxCategoryError.classList.remove('d-none')
+                alert('You can only select up to 3 preferences');
+            } else {
+                setPreferenceSelections({ ...preferenceSelections, [preference]: true });
+            };
+        },
+        remove: function (preference) {
+            setPreferenceSelections({ ...preferenceSelections, [preference]: false });
+        },
+        toggle: function (preference) {
+            if (preferenceSelections[preference]) {
+                preferenceFunctions.remove(preference);
+            } else {
+                preferenceFunctions.add(preference);
+            };
+        },
+    };
+
 
     const navigate = useNavigate()
 
@@ -31,50 +57,7 @@ export const Survey = () => {
             navigate('/dashboard')
         })
     }
-    const sendDataTest = async () => {
-        let data = {
-            uid: '1234567',
-            categories: {
-                landmarks: false,
-                nature: true,
-                shopping: true,
-                food: true,
-                relaxation: false,
-                entertainment: false,
-                arts: false
-            }
-        }
-        console.log(data)
-        const response = await axios.post('https://routewise-backend.onrender.com/profile/user_info', JSON.stringify(data), {
-            headers: { "Content-Type": "application/json" }
-        })
-            .then((response) => console.log(response))
-            .catch((error) => console.log(error))
-    }
 
-    const sendData = async () => {
-        if (!user) {
-
-        } else {
-
-        }
-        let data = {
-            uid: user.uid,
-            categories: categories
-        }
-        console.log(data)
-        const response = await axios.post('https://routewise-backend.onrender.com/profile/user_info', JSON.stringify(data), {
-            headers: { "Content-Type": "application/json" }
-        })
-        // .then((response) => console.log(response))
-        // .catch((error) => console.log(error))
-        progressLoadingAnimationStall()
-        return response.status === 200 ? completeSurvey() : handleError(response)
-    }
-
-    // useEffect(() => {
-    //     console.log(categories)
-    // }, [categories])
     useEffect(() => {
         const progressCheckmark = document.getElementById('progress-checkmark')
 
@@ -91,8 +74,6 @@ export const Survey = () => {
     }
 
     const [progressBarSpace, setProgressBarSpace] = useState(window.innerWidth < 600 ? 10 : 0);
-
-
     const progressAnimation = () => {
         const progressBar = document.getElementById('progress-bar-full')
         const nodeFlex = document.getElementById('node-flex')
@@ -120,12 +101,6 @@ export const Survey = () => {
     const progressLoadingAnimation = () => {
         const progressBar = document.getElementById('progress-bar-full')
         const node2Flex = document.getElementById('node2-flex')
-        // const progressCheckmark2 = document.getElementById('progress-checkmark2')
-        // progressBar.style.transition = '1.5s ease'
-        // progressCheckmark2.classList.remove('o-none')
-        // wait(200).then(() => {
-        //     progressBar.style.width = '93%'
-        // })
         wait(500).then(() => {
             progressBar.style.transition = '0.2s ease'
             progressBar.style.right = '44px'
@@ -178,63 +153,64 @@ export const Survey = () => {
             imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
             title: 'Spa & Relaxation'
         },
-    ]
+    ];
 
-    const toggleSelection = (id) => {
-        const card = document.getElementById(`${id}-card2`)
-        const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        console.log(card.classList)
-        if (!card.classList.contains('selected')) {
-            // card.classList.replace('card2', 'card2-selected')
-            // greenCheck.classList.remove('d-none')
-            addToCategories(id)
-        } else if (card.classList.contains('selected')) {
-            console.log("removing styles")
-            card.classList.remove('selected')
-            greenCheck.classList.add('d-none')
-            removeFromCategories(id)
-        }
-    }
+    const cards2_dict = {
+        "landmarks": {
+            userPreference: "landmarks",
+            imgUrl: 'https://i.imgur.com/nixatab.png',
+            title: 'Landmarks & Attractions'
+        },
+        "nature": {
+            userPreference: "nature",
+            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
+            title: 'Nature'
+        },
+        "shopping": {
+            userPreference: "shopping",
+            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
+            title: 'Shopping'
+        },
+        "food": {
+            userPreference: "food",
+            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
+            title: 'Food & Restaurants'
+        },
+        "arts": {
+            userPreference: "arts",
+            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
+            title: 'Arts & Culture'
+        },
+        "nightclub": {
+            userPreference: "nightclub",
+            imgUrl: 'https://i.imgur.com/9fVucq9.png',
+            title: 'Nightlife'
+        },
+        "entertainment": {
+            userPreference: "entertainment",
+            imgUrl: 'https://i.imgur.com/A8Impx2.png',
+            title: 'Music & Entertainment'
+        },
+        "relaxation": {
+            userPreference: "relaxation",
+            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
+            title: 'Spa & Relaxation'
+        },
+    };
 
-    const addToCategories = (id) => {
-        let categoriesCopy = { ...categories };
-        let category_list = Object.keys(categories);
-        let category_booleans = Object.values(categories);
-        const card = document.getElementById(`${id}-card2`)
-        const greenCheck = document.getElementById(`${id}-green-checkbox`)
-        console.log(category_list[id])
-        let true_count = category_booleans.filter(val => val === true).length;
-        let maxCategoryError = document.getElementById('maxCategoryError')
-        if (true_count > 2) {
-            maxCategoryError.classList.remove('d-none')
-            console.log('max interests reached')
-        } else {
-            card.classList.add('selected')
-            greenCheck.classList.remove('d-none')
-            categoriesCopy[category_list[id]] = true;
-            setCategories(categoriesCopy);
-        }
-    }
-    const removeFromCategories = (id) => {
-        let categoriesCopy = { ...categories };
-        let category_list = Object.keys(categories);
-        categoriesCopy[category_list[id]] = false;
-        setCategories(categoriesCopy);
-    }
 
     const updateFirestore = () => {
         // userId should be auth.currentUser.uid
         let userId = auth.currentUser.uid ? auth.currentUser.uid : "testUser2"
-        let userPreferences = { ...categories, uid: userId }
+        let userPreferences = { ...preferenceSelections, uid: userId }
         setDoc(doc(firestore, `userPreferences/${userId}`), userPreferences)
         console.log("firestore updated!")
         progressLoadingAnimationStall()
         completeSurvey()
-
     }
 
     const updateUserPreferences = () => {
-        setUserPreferences(categories)
+        setUserPreferences(preferenceSelections)
     }
 
     const openContinueOverlay = () => {
@@ -259,7 +235,6 @@ export const Survey = () => {
                     </Fade>
                 </Slide>
             </div>
-
 
             <div id='progressBarContainer' className="progress-bar-container">
                 <div className="progress-bar w-95 m-auto flx-r just-sb my-5">
@@ -292,29 +267,41 @@ export const Survey = () => {
                     <div className="progress-bar-empty"></div>
                 </div>
             </div>
+
             <div className="page-container90">
-                {/* <h1 className="page-title">Personalize your recommendations</h1> */}
-                {/* <p className="page-text">Routewise suggests places and activities based on your interests and preferences.</p> */}
-                <h1 className="page-title">Set up your traveler profile</h1>
-                <p className={`${mobileModeNarrow ? "medium" : "page-text"}`}>Adventure awaits! How do you prefer to explore the world?</p>
-                <p className={`${mobileModeNarrow ? "smedium" : "page-text"}`}>Select up to <strong>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(max 3 categories) <span className={`material-symbols-outlined red-text v-ttop ${mobileModeNarrow && "large"}`}>
-                    error
-                </span></span></p>
-                <div className="cards flx-r flx-wrap just-ce">
-                {/* <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className="card2 mx2 my-3 position-relative">
-                            <div id={`${index}-green-checkbox`} className="green-checkbox d-none">
-                                <span className="material-symbols-outlined white-text m-auto">
-                                    check
-                                </span>
-                            </div>
+                <div className="title-section">
+                    <h1 className="page-title">Set up your traveler profile</h1>
+                    <div className="subtitle-text">
+                        <p className={`${mobileModeNarrow ? "medium" : "page-text"}`}>Adventure awaits! How do you prefer to explore the world?</p>
+                        <p className={`${mobileModeNarrow ? "smedium" : "page-text"}`}>Select up to <strong className='purple-text'>3 categories</strong> <span id='maxCategoryError' className="red-text bold500 ml-1 d-none">(max 3 categories) <span className={`material-symbols-outlined red-text v-ttop ${mobileModeNarrow && "large"}`}>
+                            error
+                        </span></span></p>
+                    </div>
+                </div>
+                <div className="cards-list">
+                    {Object.keys(preferenceSelections).map((preference, index) => {
+                        let card = cards2_dict[preference]
+                        return <div
+                            key={index}
+                            className={`card2 ${mobileModeNarrow && "flex"} ${preferenceSelections[preference] && "selected"}`}
+                            onClick={() => preferenceFunctions.toggle(preference)}
+                        >
+                            {preferenceSelections[preference] &&
+                                <div className="green-checkbox">
+                                    <span className="material-symbols-outlined white-text m-auto">
+                                        check
+                                    </span>
+                                </div>
+                            }
                             <div className="card2-imgDiv flx-1">
-                                <img src={card2.imgUrl} alt="" className="card2-img" />
+                                <img src={card.imgUrl} alt="" className="card2-img" />
                             </div>
                             <div className="card2-text flx-1">
-                                <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
+                                <div className="card2-title">{card.title}</div>
                             </div>
-                        </div> */}
-                    {cards2.map((card2, index) => {
+                        </div>
+                    })}
+                    {/* {cards2.map((card2, index) => {
                         return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className={`card2 ${mobileModeNarrow && "flex"} mx2 my-3 position-relative`}>
                             <div id={`${index}-green-checkbox`} className="green-checkbox d-none">
                                 <span className="material-symbols-outlined white-text m-auto">
@@ -328,7 +315,7 @@ export const Survey = () => {
                                 <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
                             </div>
                         </div>
-                    })}
+                    })} */}
 
                 </div>
                 <button onClick={() => { updateFirestore(), updateUserPreferences(), openContinueOverlay() }} className="btn-primaryflex2 right mt-4">

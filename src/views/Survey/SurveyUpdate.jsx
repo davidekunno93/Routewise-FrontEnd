@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { DataContext } from '../Context/DataProvider';
-import { auth, firestore } from '../firebase';
+import { DataContext } from '../../Context/DataProvider';
+import { auth, firestore } from '../../firebase';
 import { collection, setDoc, doc, getDoc } from 'firebase/firestore';
 import { Fade, Slide } from 'react-awesome-reveal';
+import './survey.scoped.css';
 
 export const SurveyUpdate = () => {
     const location = useLocation();

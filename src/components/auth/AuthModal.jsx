@@ -227,7 +227,7 @@ export const AuthModal = ({ open, authIndex, onClose }) => {
                             <div className="auth-modal-imgDiv">
                                 <div className="caption">
                                     {/* <span className="material-symbols-outlined white-text">location_on</span> */}
-                                    <img src="https://i.imgur.com/Wg1jAcU.png" alt="" className="img-xxxsmall" />
+                                    <img src="https://i.imgur.com/l4ePvPJ.png" alt="" className="img-xxxsmall" />
                                     <p className='m-0 white-text'>Lisbon, Portugal&nbsp;</p>
                                 </div>
                                 <img src="https://i.imgur.com/8WWTVLl.png" alt="" className="auth-modal-img" />

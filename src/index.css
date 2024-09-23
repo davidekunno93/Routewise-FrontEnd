@@ -2681,10 +2681,6 @@ p {
 
 }
 
-/* .card2-flex.selected {
-  border: 3px solid #D1CDF0;
-  background-color: #F0EFFF;
-} */
 .card2.flex .card2-imgDiv {
   display: flex;
   flex: 1;
@@ -2699,14 +2695,7 @@ p {
   margin: auto 0 0 0;
 }
 
-/* .card2-flex:hover {
-  filter: brightness(95%);
-  transition: 0.2s;
-}
 
-.card2-flex:active {
-  filter: brightness(85%);
-} */
 .card2.flex .card2-title {
   font-size: 4vw;
   text-align: center;
@@ -3447,7 +3436,7 @@ p {
   margin: auto;
 }
 
-.progress-bar-container {
+/* .progress-bar-container {
   position: -webkit-sticky;
   position: sticky;
   z-index: 20;
@@ -3475,7 +3464,6 @@ p {
 
 .progress-bar-empty {
   height: 12px;
-  /* width: 93%; */
   background-color: #E7E6F2;
   left: 44px;
   right: 44px;
@@ -3486,7 +3474,6 @@ p {
 
 .progress-bar-full {
   height: 12px;
-  /* width: 0%; */
   background-color: #3F3899;
   left: 40px;
   right: 100%;
@@ -3506,9 +3493,6 @@ p {
 }
 
 #test {
-  /* width: 0px;
-  height: 0px; */
-  /* background-color: #3F3899; */
   transition: 0.2s;
 }
 
@@ -3542,7 +3526,7 @@ p {
   height: 30px;
   border-radius: 16px;
   background-color: #E7E6F2;
-}
+} */
 
 
 .selection-box {
@@ -7440,3 +7424,4 @@ div:has(>.gm-control-active) {
     font-size: small;
   }
 }
+

@@ -1624,6 +1624,7 @@ export const Dashboard = () => {
                 // if there is a city entered
                 startLoading();
                 // if the user input includes a "," -- it contains city and state/country
+                let cityName = cityInput.value;
                 if (cityName.includes(",")) {
                     // let cityNoSpaces = cityName.replace(/ /g, '')
                     const cityArr = cityName.split(', ')
@@ -1709,27 +1710,27 @@ export const Dashboard = () => {
         setSpecifyCityOpen(true)
     }
 
-    const [autoCompleteCities, setAutoCompleteCities] = useState(null);
-    const getAutoCompleteCities = async () => {
-        console.log("fetching...")
-        const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
-        const response = await axios.get(url)
-            .then((response) => {
-                // console.log(response.data.data)
-                setAutoCompleteCities(response.data.data);
-            })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+    // const [autoCompleteCities, setAutoCompleteCities] = useState(null);
+    // const getAutoCompleteCities = async () => {
+    //     console.log("fetching...")
+    //     const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
+    //     const response = await axios.get(url)
+    //         .then((response) => {
+    //             // console.log(response.data.data)
+    //             // setAutoCompleteCities(response.data.data);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    // }
 
-    useEffect(() => {
-        if (cityText && cityText.length > 2) {
-            getAutoCompleteCities();
-        } else {
-            setAutoCompleteCities(null);
-        }
-    }, [cityText]);
+    // useEffect(() => {
+    //     if (cityText && cityText.length > 2) {
+    //         getAutoCompleteCities();
+    //     } else {
+    //         setAutoCompleteCities(null);
+    //     }
+    // }, [cityText]);
     const updateCityInput = (city) => {
         const cityInput = document.getElementById('cityInput');
         if (city.state) {
@@ -1744,7 +1745,6 @@ export const Dashboard = () => {
     }
 
     useEffect(() => {
-        // console.log(city)
         if (cityText) {
             if (cityText.length > 0) {
                 let cityInput = document.getElementById('cityInput')
