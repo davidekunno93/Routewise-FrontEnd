@@ -143,12 +143,12 @@ export const Navbar = () => {
             </span>
             <p className="m-0 gray-text">My Trips</p>
           </div></Link>
-          <Link onClick={() => { openPasscodeModal(); setNavMenuMobileOpen(false) }}><div className="option">
+          {/* <Link onClick={() => { openPasscodeModal(); setNavMenuMobileOpen(false) }}><div className="option">
             <span className="material-symbols-outlined gray-text">
               lock
             </span>
             <p className="m-0 gray-text">Access</p>
-          </div></Link>
+          </div></Link> */}
         </div>
         {/* end nav menu mobile */}
         <div className="flx-c just-ce">
