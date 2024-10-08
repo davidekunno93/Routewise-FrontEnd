@@ -1,4 +1,4 @@
-import React, { Suspense, createRef, useContext, useEffect, useState } from 'react'
+import React, { Suspense, createRef, useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { PlaceCard } from '../components/PlaceCard'
 import { Link } from 'react-router-dom'
 import { SearchPlace } from '../components/SearchPlace'
@@ -17,7 +17,7 @@ import { Loading } from '../components/Loading/Loading'
 import OpenMapBox from '../components/OpenMapBox'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
-import ConfirmationModal from '../components/ConfirmationModal'
+import ConfirmationModal from '../components/ConfirmationModal/ConfirmationModal'
 import OpeningHoursMap from '../components/OpeningHoursMap'
 import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
 import Dropdown from '../components/Dropdown/Dropdown'
@@ -208,11 +208,14 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
   const tripNameSpanRef = useRef(null);
   const tripNameWrapperRef = useRef(null);
 
+
+
+  
   const [tripNameControls, setTripNameControls] = useState({
     previousText: currentTrip.tripName ?? "Londo-Fundo!",
     text: currentTrip.tripName ?? "Londo-Fundo!",
     isUpdating: false,
-    standBy: false,
+    onStandby: false,
   });
   const [tripNameEndEditEvent, setTripNameEndEditEvent] = useState(false);
   // connecting event listener to updated state 
@@ -225,12 +228,10 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
 
   const tripNameFunctions = {
     startEdit: function () {
-      // set isUpdating/standby - true
-      setTripNameControls({ ...tripNameControls, isUpdating: true, standBy: true });
+      setTripNameControls({ ...tripNameControls, isUpdating: true, onStandby: true });
       tripNameInputRef.current.focus();
     },
     endEdit: function () {
-      // set isUpdating - false
       setTripNameControls({ ...tripNameControls, isUpdating: false });
     },
     updateText: function (tripName) {
@@ -238,13 +239,13 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       setTripNameControls({ ...tripNameControls, text: tripName });
     },
     checkToSendData: function () {
-      if (!tripNameControls.isUpdating && tripNameControls.standBy) {
-        console.log('standby')
-        // setTripNameControls({ ...tripNameControls, standBy: false });
+      if (!tripNameControls.isUpdating && tripNameControls.onStandby) {
+        // console.log('standby')
+        // setTripNameControls({ ...tripNameControls, onStandby: false });
         if (tripNameControls.text.trim() !== tripNameControls.previousText) {
           console.log("senddd");
           // send data patch function
-          tripNameControls.sendData();
+          tripNameFunctions.sendData();
         } else {
           console.log("no need to send");
         };
@@ -252,25 +253,31 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
     },
     sendData: async function () {
       if (currentTrip.tripID) {
-        let url = "";
+        let tripId = currentTrip.tripID;
+        let dispo_local = "http://localhost:5000";
+        let dispo_hosted = "https://routewise-backend.onrender.com"
+        let url = `${dispo_hosted}/places/update-trip/${tripId}`;
         let data = {
-          tripId: currentTrip.tripID,
           tripName: tripNameControls.text,
+          startDate: null,
+          endDate: null,
         };
         const response = await axios.patch(url, data, {
           headers: { "Content-Type": "application/json" }
-        })
-        if (response.status === 200) {
+        }).then(() => {
+          console.log("trip name update was successful")
           setTripNameControls({ ...tripNameControls, previousText: tripNameControls.text });
-        } else {
+        }).catch(() => {
+          console.log("trip name update was unsuccessful")
           setTripNameControls({ ...tripNameControls, text: tripNameControls.previousText });
           alert("Your new trip name was not able to be saved. Please try again.");
-        };
+        })
       } else {
         setTripNameControls({ ...tripNameControls, previousText: tripNameControls.text });
       }
     },
   };
+
 
   useEffect(() => {
     tripNameFunctions.checkToSendData();
@@ -615,7 +622,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
       placeFunctions.database.deletePlace(placeId);
 
 
-      const tripStateCopy = { ...tripState };
+      let tripStateCopy = { ...tripState };
       let index = tripStateCopy.days[dayNum].placeIds.indexOf(placeId);
       tripStateCopy.days[dayNum].placeIds.splice(index, 1);
       delete tripStateCopy.places[placeId];
@@ -2049,7 +2056,7 @@ export const Itinerary = ({ selectedPlacesListOnLoad }) => {
                       {/* <p className="page-heading-bold m-0">{currentTrip.tripName ? currentTrip.tripName : "Londo-Fundo!"}</p> */}
                       <div ref={tripNameWrapperRef} className="tripName-wrapper flx align-c gap-2">
                         <span ref={tripNameSpanRef} onClick={() => tripNameFunctions.startEdit()} className={`page-subheading-bold input-text ${tripNameControls.isUpdating && "hidden-away"}`}>{tripNameControls.text}</span>
-                        <input ref={tripNameInputRef} onChange={(e) => tripNameFunctions.updateText(e.target.value)} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameControls.isUpdating && "hidden-away"}`} autoComplete='off' />
+                        <input ref={tripNameInputRef} onChange={(e) => tripNameFunctions.updateText(e.target.value)} value={tripNameControls.text} id='tripNameInput' type="text" className={`page-subheading-bold input-edit ${!tripNameControls.isUpdating && "hidden-away"}`} autoComplete='off' />
                         <span onClick={() => tripNameFunctions.startEdit()} className={`material-symbols-outlined large gains-text pointer ${tripNameControls.isUpdating && "d-none"}`}>edit</span>
                       </div>
                       <Link to='/print-itinerary' className='position-right'><button className="btn-primary-small align-all-items gap-2">

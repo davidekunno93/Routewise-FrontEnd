@@ -1,0 +1,59 @@
+
+.preference-card {
+    width: 200px;
+    width: 224px;
+    height: 68px;
+    border-radius: 8px;
+    background-color: white;
+    border: 2px solid gainsboro;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.preference-card:hover {
+    filter: brightness(95%);
+}
+.preference-card[data-cardselected="true"] {
+    border: 2px solid var(--purplelite);
+    background-color: #F0EFFF;
+}
+.preference-icon {
+    height: 100%;
+    object-fit: contain;
+}
+.preference-card .title {
+    font-size: 14px;
+    white-space: normal;
+    font-weight: 500;
+}
+.preference-card[data-cardselected="true"] .green-checkbox {
+    visibility: visible;
+    opacity: 1;
+}
+.preference-card .green-checkbox {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--green);
+    transition: 0.2s;
+
+    visibility: hidden;
+    opacity: 0;
+}
+.preference-card .green-checkbox span {
+    color: white;
+    font-size: 16px;
+}

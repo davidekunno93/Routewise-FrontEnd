@@ -1,0 +1,20 @@
+
+
+.confirmation-modal {
+    /* height: 240px; */
+    width: 480px;
+    padding: 24px;
+    box-sizing: border-box;
+    background-color: white;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    justify-content: space-between;
+    margin: auto;
+    position: relative;
+  }
+  
+  .confirmation-modal .text {
+    margin: 12px 0px 24px 0px;
+  }

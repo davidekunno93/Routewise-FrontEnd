@@ -1,45 +1,28 @@
 import React, { useContext, useDebugValue, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { AuthModal } from './auth/AuthModal';
+import { AuthModal } from '../auth/AuthModal/AuthModal';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
-import { DataContext } from '../Context/DataProvider';
+import { auth } from '../../firebase';
+import { DataContext } from '../../Context/DataProvider';
 import { signOut } from 'firebase/auth';
 import axios from 'axios';
-import SurveyModal from './SurveyModal';
-import PassCodeModal from './PassCodeModal';
+import SurveyModal from '../SurveyModal';
+import PassCodeModal from '../PassCodeModal';
+import EmailVerificationModal from '../EmailVerificationModal/EmailVerificationModal';
+import LoadingFullscreen from '../Loading/LoadingFullscreen';
+import { set } from 'date-fns';
 
 export const Navbar = () => {
-  const { mobileMode, pageOpen, user, setUser, signUpIsOpen, setSignUpIsOpen
-    , authIndex, setAuthIndex } = useContext(DataContext);
+  const { mobileMode, pageOpen, user, setUser, signUpIsOpen, setSignUpIsOpen,
+    authControls, authFunctions, wait } = useContext(DataContext);
 
 
-  // load user (useLayoutEffect or useEffect)?
   useLayoutEffect(() => {
     auth.currentUser ? setUser(auth.currentUser) : null;
   }, [auth]);
 
-  // const checkAuth = () => {
-  //   if (!user && auth.currentUser) {
-  //     setUser(auth.currentUser)
-  //   };
-  // };
-  // useEffect(() => {
-  //   window.addEventListener('click', checkAuth)
-  // }, []);
 
-
-  // show auth modal
-  const openSignUp = () => {
-    setAuthIndex(0);
-    setSignUpIsOpen(true);
-  };
-  const openSignIn = () => {
-    setAuthIndex(1);
-    setSignUpIsOpen(true);
-  };
-
-
-
+  // fullscreen loading state
+  const [fullPageLoading, setFullPageLoading] = useState(false);
 
   // [User (profile icon click) menu]
   const toggleUserMenu = () => {
@@ -108,12 +91,22 @@ export const Navbar = () => {
   const navigate = useNavigate()
 
   const logOut = () => {
+    setFullPageLoading(true);
     signOut(auth).then(() => {
       setUser(null)
       setLogoutStandby(true);
       console.log("signed out user", auth.currentUser)
+      wait(1000).then(() => {
+        setFullPageLoading(false);
+      });
+    }).catch((error) => {
+      console.log(error)
+      alert("Something went wrong. Please try again.")
+      wait(1000).then(() => {
+        setFullPageLoading(false);
+      });
     })
-  }
+  };
   const [logoutStandby, setLogoutStandby] = useState(false);
   useEffect(() => {
     if (logoutStandby && !user) {
@@ -135,9 +128,14 @@ export const Navbar = () => {
     }
   };
 
+  // email verification modal
+  const [emailVerificationModalOpen, setEmailVerificationModalOpen] = useState(false);
+
   return (
     <>
-      <AuthModal open={signUpIsOpen} authIndex={authIndex} onClose={() => setSignUpIsOpen(false)} />
+      <LoadingFullscreen open={fullPageLoading} loading={fullPageLoading} />
+      <EmailVerificationModal open={emailVerificationModalOpen} onClose={() => setEmailVerificationModalOpen(false)} />
+      <AuthModal open={authControls.isOpen} onClose={() => authFunctions.close()} />
       <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
       {/* <SurveyModal /> */}
       <div className={`navbar bg-white w-100 flx-r just-sb`}>
@@ -160,12 +158,12 @@ export const Navbar = () => {
             </span>
             <p className="m-0 gray-text">My Trips</p>
           </div></Link>
-          <Link onClick={() => {openPasscodeModal(); setNavMenuMobileOpen(false)}}><div className="option">
+          {/* <Link onClick={() => { openPasscodeModal(); setNavMenuMobileOpen(false) }}><div className="option">
             <span className="material-symbols-outlined gray-text">
               lock
             </span>
             <p className="m-0 gray-text">Access</p>
-          </div></Link>
+          </div></Link> */}
         </div>
         {/* end nav menu mobile */}
         <div className="flx-c just-ce">
@@ -202,14 +200,14 @@ export const Navbar = () => {
               </div>
             </div></Link>
 
-            <div onClick={() => openPasscodeModal()} className={`option`}>
+            {/* <div onClick={() => openPasscodeModal()} className={`option`}>
               <div className="flx-r gap-2">
                 <span className={`material-symbols-outlined`}>
                   lock
                 </span>
                 <p className="m-0 bold500">Access</p>
               </div>
-            </div>
+            </div> */}
 
 
           </div>
@@ -245,6 +243,17 @@ export const Navbar = () => {
                   settings
                 </span>
                 <p className="m-0 ml-2">Account Settings</p></div></Link>
+              <Link onClick={() => { setEmailVerificationModalOpen(true); closeUserMenu()}}><div className="option">
+                <span className="material-symbols-outlined">
+                  lock
+                </span>
+                <p className="m-0 ml-2">Email
+                  {user && user.emailVerified ?
+                    <span className='green-text'>&nbsp;Verified</span>
+                    :
+                    <span className='red-text'>&nbsp;Not Verified</span>
+                  }
+                </p></div></Link>
               <Link onClick={() => { logOut(); closeUserMenu() }}>
                 <div className="option">
                   <span className="material-symbols-outlined">
@@ -255,14 +264,14 @@ export const Navbar = () => {
           </div>
           :
           <div className="right-side-btns">
-              {!mobileMode ?
-                <button onClick={() => openSignUp()} className={`btn-tertiaryflex small`}>Sign Up</button>
-                :
-                <p onClick={() => openSignUp()} className="m-0 purple-text">Sign Up</p>
-              }
-              {!mobileMode &&
-                <button onClick={() => openSignIn()} className="btn-outlineflex small">Log in</button>
-              }
+            {!mobileMode ?
+              <button onClick={() => authFunctions.openSignUp()} className={`btn-tertiaryflex small`}>Sign Up</button>
+              :
+              <p onClick={() => authFunctions.openSignUp()} className="m-0 purple-text">Sign Up</p>
+            }
+            {!mobileMode &&
+              <button onClick={() => authFunctions.openSignIn()} className="btn-outlineflex small">Log in</button>
+            }
           </div>
         }
       </div>

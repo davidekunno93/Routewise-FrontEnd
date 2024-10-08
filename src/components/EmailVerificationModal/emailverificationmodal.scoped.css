@@ -1,0 +1,35 @@
+
+.email-verification-modal {
+    position: fixed;
+    height: 360px;
+    width: 500px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    text-align: center;
+    padding: 16px 32px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.email-verification-modal .title {
+    font-size: 24px;
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 600;
+}
+
+.verified-checkbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--green); 
+}

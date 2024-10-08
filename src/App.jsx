@@ -4,10 +4,10 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { SignUp } from './components/auth/SignUp'
-import { Navbar } from './components/Navbar'
+import { Navbar } from './components/Navbar/Navbar'
 import { Landing } from './views/Landing/Landing'
 import { Survey } from './views/Survey/Survey'
-import { Dashboard } from './views/Dashboard'
+import { Dashboard } from './views/Dashboard/Dashboard'
 import { Footer } from './components/Footer'
 import { AddPlaces } from './views/AddPlaces'
 import { Itinerary } from './views/Itinerary'
@@ -36,37 +36,19 @@ function App() {
     loadCityImg, getGoogleImg, modifyInfo, textFunctions, toLatitudeLongitude, 
     getBestCategory, googleCategoryKey, googlePlaceTypeKey } = useContext(DataContext);
 
-
   // wakeup function
   useEffect(() => {
-    wakeUpBackEnd()
-    // console.log(auth.currentUser)
-    // docRef = doc, docSnap = getDoc, if docSnap.exists() --> docSnap.data()
     // fetch user details
     auth.onAuthStateChanged((userCred) => {
-      setUser(userCred)
+      setUser(userCred);
+      // add get name data from firebase code
       setPreferences();
     });
 
 
-  }, [])
-  const wakeUpBackEnd = async () => {
-    let url = "https://routewise-backend.onrender.com/profile/test"
-    let data = "wakeUp"
-    console.log("waking up...")
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" }
-    })
-    console.log('woken up')
-    return response.status === 200 ? response.data : null
-  }
+  }, []);
 
-  // [user preferences code]
-  // useEffect(() => {
-  //   if (auth.currentUser) {
-  //     setPreferences()
-  //   }
-  // }, [auth])
+
   const setPreferences = async () => {
     if (!auth.currentUser) return;
     let prefs = await getDoc(doc(firestore, `userPreferences/${auth.currentUser.uid}`))
@@ -163,73 +145,9 @@ function App() {
     },
   };
 
-  // suggested places api call - vestigial
-  const loadSuggestedPlaces = async () => {
-    suggestedPlacesFunctions.empty()
-
-    let placeSuggestions = [];
-    let userPreferencesCount = 0;
-    for (let userPreference of Object.entries(userPreferences)) {
-      // userPreference = [category: bool]
-      let category = userPreference[0]
-      let selected = userPreference[1]
-      // console.log(userPreference)
-      if (selected) {
-        userPreferencesCount++
-        let resultPlaces = await getSuggestedPlaces(category);
-        if (resultPlaces.length > 0) {
-
-          for (let place of resultPlaces) {
-            let imgUrl = await loadCityImg(place.properties.name)
-            let placeSuggestion = {
-              placeName: place.properties.name,
-              info: "",
-              address: place.properties.full_address.split(", ").slice(0, -1).join(", "),
-              imgURL: imgUrl,
-              category: place.properties.poi_category.join(", "),
-              categoryTitle: mapBoxCategoryKey[category].categoryTitle,
-              // favorite: false,
-              lat: place.geometry.coordinates[1],
-              long: place.geometry.coordinates[0],
-              geocode: [place.geometry.coordinates[1], place.geometry.coordinates[0]],
-              placeId: place.properties.mapbox_id,
-            }
-            if (!placeSuggestions.includes(placeSuggestion)) {
-              placeSuggestions.push(placeSuggestion)
-            }
-          }
-        }
-      }
-    }
-    if (userPreferencesCount === 0) {
-      // no user preferences currently selected
-      suggestedPlacesFunctions.returnNone()
-    } else {
-      if (placeSuggestions.length === 0) {
-        // no places found for the user (even though they have selected preferences)
-        suggestedPlacesFunctions.returnNone()
-      } else {
-        // suggested places found
-        suggestedPlacesFunctions.setPlaces(placeSuggestions);
-      }
-    }
-  };
-  const getSuggestedPlaces = async (category) => {
-    // implement try / catch block for errors
-    const categoryQueries = mapBoxCategoryKey[category].categoryQueries;
-    const apiKey = "pk.eyJ1Ijoicm91dGV3aXNlMTAyMyIsImEiOiJjbHZnMGo4enEwcHMxMmpxZncxMzJ6cXJuIn0.becg64t48O9U4HViiduAGA"
-    const bias = currentTrip.geocode ? currentTrip.geocode : [51.50735, -0.12776];
-    const lat = bias[0];
-    const lon = bias[1];
-    const limit = 5;
-    const country_2letter = currentTrip.country_2letter ? currentTrip.country_2letter.toLowerCase() : "gb";
-    const url = `https://api.mapbox.com/search/searchbox/v1/category/${categoryQueries.join(",")}?access_token=${apiKey}&language=en&limit=${limit}&proximity=${lon}%2C${lat}&country=${country_2letter}`;
-    const response = await axios.get(url)
-    return response.status === 200 ? response.data.features : "error"
-  };
   useEffect(() => {
-    nearbySearch(true);
-    nearbySearch();
+    // nearbySearch(true);
+    // nearbySearch();
     console.log("nearby search was reloaded");
   }, [userPreferences, currentTrip.geocode]);
 
@@ -251,6 +169,7 @@ function App() {
   }
   const nearbySearch = async (useTravelPreferences) => {
     // console.log(userPreferences);
+    if (!auth.currentUser || !auth.currentUser.emailVerified) return;
     if (useTravelPreferences) {
       suggestedPlacesFunctions.setIsLoading();
     } else {
@@ -271,7 +190,7 @@ function App() {
       body: JSON.stringify({
         includedTypes: useTravelPreferences ? categoryQueries : undefined,
         excludedTypes: useTravelPreferences ? undefined : ['hospital', 'doctor', 'dentist', 'medical_lab', 'subway_station', 'university', 'department_store', 'bus_station', 'bicycle_store', 'grocery_store', 'airport'],
-        maxResultCount: 10,
+        maxResultCount: 8,
         // rankPreference: "POPULARITY", // default by POPULARITY
         locationRestriction: {
           circle: {

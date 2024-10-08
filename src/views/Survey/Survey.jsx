@@ -301,21 +301,6 @@ export const Survey = () => {
                             </div>
                         </div>
                     })}
-                    {/* {cards2.map((card2, index) => {
-                        return <div onClick={() => toggleSelection(index)} key={index} id={`${index}-card2`} className={`card2 ${mobileModeNarrow && "flex"} mx2 my-3 position-relative`}>
-                            <div id={`${index}-green-checkbox`} className="green-checkbox d-none">
-                                <span className="material-symbols-outlined white-text m-auto">
-                                    check
-                                </span>
-                            </div>
-                            <div className="card2-imgDiv flx-1">
-                                <img src={card2.imgUrl} alt="" className="card2-img" />
-                            </div>
-                            <div className="card2-text flx-1">
-                                <div className="card2-title center-text w-80 m-auto dark-text">{card2.title}</div>
-                            </div>
-                        </div>
-                    })} */}
 
                 </div>
                 <button onClick={() => { updateFirestore(), updateUserPreferences(), openContinueOverlay() }} className="btn-primaryflex2 right mt-4">

@@ -1,12 +1,16 @@
-import React from 'react'
-import App from './App'
-import DataProvider from './Context/DataProvider'
+import React from 'react';
+import App from './App';
+import DataProvider from './Context/DataProvider';
+import { Provider } from 'react-redux'
+import { store } from './reduxStore/store';
 
 const ProviderLayer = () => {
   return (
-    <DataProvider>
+    <Provider store={store}>
+      <DataProvider>
         <App />
-    </DataProvider>
+      </DataProvider>
+    </Provider>
   )
 }
 export default ProviderLayer;

@@ -3,6 +3,11 @@ user = {
     displayName: "",
     photoURL: "",
     email: ""
+
+    adding...
+    firstName: "",
+    lastName: "",
+    username: "", (same as displayName)
 }
 testUser = {
     uid: FDg0qeNWvrSTrE54et5r4wCRE1C3,

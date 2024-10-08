@@ -1,6 +1,6 @@
 import React from 'react'
 
-const PageBlock = ({ open, loading }) => {
+const LoadingFullscreen = ({ open, loading }) => {
     if (!open) return null;
 
     return (
@@ -11,4 +11,4 @@ const PageBlock = ({ open, loading }) => {
         </div>
     )
 }
-export default PageBlock;
+export default LoadingFullscreen;

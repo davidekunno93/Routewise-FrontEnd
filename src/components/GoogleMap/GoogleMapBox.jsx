@@ -371,7 +371,7 @@ const GoogleMapBox = ({ tripMapCenter, mapCenter, addPlaceToConfirm, mapCenterTo
                                 <AdvancedMarker key={index} position={marker.position} onClick={() => infoWindowFunctions.toggle(marker.id)} zIndex={marker.isPlaceToConfirm ? 1 : null} >
                                     {marker.isPlaceToConfirm ?
                                         <Pin
-                                            background={markerColorsOn ? "#ff0000" : "#6663FC"}
+                                            background={markerColorsOn ? "#6663FC" : "#6663FC"}
                                             borderColor={markerColorsOn ? "#000000" : "#5553d7"}
                                             glyphColor={markerColorsOn ? "#000000" : "#5553d7"}
                                         />

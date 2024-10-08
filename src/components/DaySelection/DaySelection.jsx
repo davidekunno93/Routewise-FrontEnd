@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import DaySelected from '../DaySelected'
 import { DataContext } from '../../Context/DataProvider';
 import './dayselection.scoped.css'
-import ConfirmationModal from '../ConfirmationModal';
+import ConfirmationModal from '../ConfirmationModal/ConfirmationModal';
 import axios from 'axios';
 
 export const DaySelection = ({ open, tripState, setTripState, sourceDay, addPlace, place, titleText, action, renderLocation, openConfirmationModal, onClose, closeTree }) => {

@@ -13,6 +13,8 @@ import WorldCitiesSearchBar from '../../components/WorldCitiesSearchBar/WorldCit
 import FeaturedTripCard from '../../components/FeaturedTripCard/FeaturedTripCard'
 import LinearGradient from '../../components/LinearGradient/LinearGradient'
 import NavigationTabs from '../../components/NavigationTabs/NavigationTabs'
+import { auth } from '../../firebase'
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth'
 
 export const Landing = () => {
     const { user, setCurrentTrip, mobileMode, authFunctions, getCountryName, timeFunctions,
@@ -101,12 +103,15 @@ export const Landing = () => {
     const tabs = [
         {
             tabName: "Create a trip",
+            imgUrl: "https://i.imgur.com/b3MWD7T.gif",
         },
         {
             tabName: "Add Places",
+            imgUrl: "https://i.imgur.com/LIwYn0h.gif",
         },
         {
             tabName: "Modify Itinerary",
+            imgUrl: "",
         },
     ];
 
@@ -176,7 +181,6 @@ export const Landing = () => {
             });
         },
         updateTripDates: function (itemSelection) {
-            console.log(itemSelection[0])
             setCreateTripControls({
                 ...createTripControls,
                 startDate: timeFunctions.datify(format(itemSelection[0].startDate, "MM/dd/yyyy")),
@@ -201,7 +205,7 @@ export const Landing = () => {
             if (cityInput.includes(",")) {
                 // let cityNoSpaces = cityInput.replace(/ /g, '')
                 const cityArr = cityInput.split(', ')
-                console.log(cityArr[0], convertAbbvToState(cityArr[1]))
+                // console.log(cityArr[0], convertAbbvToState(cityArr[1]))
                 let url = "";
                 if (isStateAbbv(cityArr[1])) {
                     url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&state=${convertAbbvToState(cityArr[1])}&country=US`
@@ -270,16 +274,12 @@ export const Landing = () => {
     };
 
 
+    // maximize travel xp tabs code
     const [activeTabIndex, setActiveTabIndex] = useState(0);
-    useEffect(() => {
-        console.log(activeTabIndex);
-    }, [activeTabIndex]);
 
 
 
-    useEffect(() => {
-        console.log(createTripControls)
-    }, [createTripControls])
+
 
 
     return (
@@ -354,10 +354,10 @@ export const Landing = () => {
             </div>
 
 
-            <div className="planning-section mt-8">
+            <div className="section planning">
                 <Fade delay={300} triggerOnce>
                     <Slide direction='up' triggerOnce>
-                        <h1 className={`page-title ${mobileMode ? "w-90" : "w670"} my-8 darkpurple-text`}>Planning your day-to-day travel itinerary just got <span className="font-merriweather bold500 italic">a whole lot easier</span></h1>
+                        <h1 className={`page-title ${mobileMode ? "w-90" : "w670"} py-4 darkpurple-text`}>Planning your day-to-day travel itinerary just got <span className="font-merriweather bold500 italic">a whole lot easier</span></h1>
                         <div className={`action-points  ${mobileMode && "mobile"}`}>
                             {actionPoints.map((point, index) => {
                                 let first = 0
@@ -377,9 +377,6 @@ export const Landing = () => {
 
 
                         </div>
-
-
-                        {/* <div className="empty-3"></div> */}
                     </Slide>
                 </Fade>
             </div>
@@ -404,7 +401,11 @@ export const Landing = () => {
                                 paddingX={24}
                                 setActiveTabIndex={setActiveTabIndex}
                             />
-                            <img src="https://i.imgur.com/Nq80bAJ.gif" alt="" className="gif" />
+                            <div className="tab-imgDiv">
+                                {tabs.map((tab, index) => {
+                                    return <img key={index} src={tab.imgUrl} alt={tab.tabName} className="gif" data-hiddendirection={index < activeTabIndex ? "left" : index > activeTabIndex ? "right" : false} />
+                                })}
+                            </div>
                         </div>
                     </Slide>
                 </Fade>
@@ -502,7 +503,7 @@ export const Landing = () => {
             </div>
 
             <div className="explore-section">
-                <div className="page-title black-text my-5">Explore with us on Instagram!</div>
+                <div className="page-title black-text py-5">Explore with us on Instagram!</div>
                 <div className="ig-carousel-window">
 
                     {/* <div className="inner-no-flex"> */}

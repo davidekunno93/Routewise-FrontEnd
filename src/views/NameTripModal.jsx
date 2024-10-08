@@ -117,36 +117,19 @@ export const NameTripModal = ({ open, tripData, currentTrip, setCurrentTrip, cle
     // }
 
     const startPlanningWithName = async () => {
-        // check hasAccess
-        let uid = auth.currentUser ? auth.currentUser.uid : "no_uid"
-        let docModel = await getDoc(doc(firestore, `itineraryAccess/${uid}`))
-        let docData = docModel.data()
-        let accessDeniedMessage = `You need an account with access to create a trip. Please ${auth.currentUser ? "" : "login and "}navigate to the access option in the navbar to gain access.`
-        console.log(docData);
-        if (docData) {
-            if (docData.hasAccess) {
-                // no blockage of access
-
-                let tripNameInput = document.getElementById('tripNameInput');
-                if (tripName.length > 0) {
-                    // updateCurrentTrip()
-                    if (auth.currentUser) {
-                        sendData()
-                    } else {
-                        processData()
-                    }
-                    // navigate('/add-places')
-                } else {
-                    tripNameInput.classList.add('entry-error');
-                }
+        let tripNameInput = document.getElementById('tripNameInput');
+        if (tripName.length > 0) {
+            // updateCurrentTrip()
+            if (auth.currentUser) {
+                sendData()
             } else {
-                alert(accessDeniedMessage);
+                processData()
             }
+            // navigate('/add-places')
         } else {
-            alert(accessDeniedMessage);
-        }
-        
-    }
+            tripNameInput.classList.add('entry-error');
+        };
+    };
 
     const startPlanningWithoutName = async () => {
         // updateCurrentTrip()
