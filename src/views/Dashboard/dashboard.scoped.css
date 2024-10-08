@@ -1,0 +1,53 @@
+.slider-buttons {
+    width: 100%;
+    /* background-color: salmon; */
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 8px 0px;
+}
+button.slider-button {
+    background-color: var(--purple);
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+}
+button.slider-button[data-disabled="true"],
+button.slider-button[data-disabled="true"]:hover {
+    background-color: gainsboro;
+    pointer-events: none;
+}
+
+
+button.slider-button:hover {
+    background-color: var(--darkpurple);
+}
+
+.slider-button span {
+    color: white;
+}
+
+.slider-window {
+    width: 100%;
+    /* border: 1px solid salmon; */ 
+    overflow: hidden;
+    padding: 12px 8px;
+}
+
+.slider-inner {
+    width: min-content;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    transition: 0.3s;
+}
+
+.slider-item {
+    display: inline-flex;
+}

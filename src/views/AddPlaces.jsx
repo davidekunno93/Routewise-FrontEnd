@@ -11,7 +11,7 @@ import { auth, firestore } from '../firebase'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange, DateRangePicker } from 'react-date-range';
-import ConfirmationModal from '../components/ConfirmationModal'
+import ConfirmationModal from '../components/ConfirmationModal/ConfirmationModal'
 import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
 import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
 import PlaceCard from '../components/PlaceCard'
@@ -19,6 +19,7 @@ import OpeningHoursMap from '../components/OpeningHoursMap'
 import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
 import SuggestedPlaceCard from '../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
 import LoadingFillElement from '../components/Loading/LoadingFillElement'
+import { set } from 'date-fns'
 
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
@@ -27,7 +28,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         user, setUser, textFunctions,
         userPreferences, currentTrip, setCurrentTrip, clearCurrentTrip,
         setSignUpIsOpen, setAuthIndex, mapBoxCategoryKey, mobileMode, mobileModeNarrow,
-        geoToLatLng
+        geoToLatLng, gIcon
     } = useContext(DataContext);
     const [firstTimeOnPage, setFirstTimeOnPage] = useState(true);
     const navigate = useNavigate();
@@ -304,7 +305,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         if (currentTrip.tripID) {
 
             // add place in database
-            let url = `https://routewise-backend.onrender.com/places/add-get-place/${currentTrip.tripID}`
+            let disposition_hosted = "https://routewise-backend.onrender.com"
+            let disposition_local = "http://localhost:5000"
+            let url = `${disposition_hosted}/places/add-get-place/${currentTrip.tripID}`
             const response = await axios.post(url, newPlace, {
                 headers: { "Content-Type": "application/json" }
             }).then((response) => {
@@ -462,11 +465,40 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         autoComplete.classList.add('d-none')
     }
 
-    const clearAllPlaces = () => {
-        setPlaces([]);
-        let currentTripCopy = { ...currentTrip }
-        currentTripCopy.places = []
-        setCurrentTrip(currentTripCopy)
+    const [clearPlacesLoading, setClearPlacesLoading] = useState(false);
+    const clearAllPlaces = async () => {
+        if (currentTrip.tripID) {
+            const dispo_local = "http://localhost:5000";
+            const dispo_hosted = "https://routewise-backend.onrender.com";
+            let url = `${dispo_hosted}/itinerary/delete-all-places/${currentTrip.tripID}`
+            let data = {
+                uid: auth.currentUser.uid
+            };
+            setClearPlacesLoading(true);
+            // const response = await axios.delete(url, {
+            //     headers: { "Content-Type": "application/json" },
+            //     data: data,
+            // })
+            const response = await axios.delete(url)
+                .then((response) => {
+                    console.log("successfully cleared places")
+                    if (response.status === 200) {
+                        setPlaces([]);
+                        setCurrentTrip({ ...currentTrip, places: [] });
+                        setClearPlacesLoading(false);
+                    } else {
+                        console.log(response)
+                        alert("Action failed. Please try again.");
+                        setClearPlacesLoading(false);
+                    };
+                })
+                .catch((error) => {
+                    console.log("failed to clear places")
+                    console.log(error);
+                    alert("Action failed. Please try again.");
+                    setClearPlacesLoading(false);
+                })
+        };
     }
 
     const sendPlaces = async () => {
@@ -529,7 +561,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const [isLoading, setIsLoading] = useState(false);
     const stopLoading = () => {
         setIsLoading(false)
-    }
+    };
 
     const checkPTC = () => {
         console.log(placeToConfirm)
@@ -608,6 +640,80 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     // [places lists code]
     const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Top sites")
     const beamRef = useRef(null);
+    // notifications
+    const [notifications, setNotifications] = useState({
+        topSites: {
+            isShowing: false,
+            isJumping: false,
+        },
+        suggestedPlaces: {
+            isShowing: false,
+            isJumping: false,
+        },
+        addedPlaces: {
+            isShowing: false,
+            isJumping: false,
+        },
+    });
+    const notificationFunctions = {
+        showNotification: function (placeList) {
+            setNotifications({
+                ...notifications,
+                [placeList]: {
+                    isShowing: true,
+                    isJumping: false,
+                },
+            });
+        },
+        jumpNotification: function (placeList) {
+            setNotifications({
+                ...notifications,
+                [placeList]: {
+                    isShowing: true,
+                    isJumping: true,
+                },
+            });
+            wait(500).then(() => {
+                notificationFunctions.resetJumpNotification(placeList);
+            });
+        },
+        hideNotification: function (placeList) {
+            setNotifications({
+                ...notifications,
+                [placeList]: {
+                    isShowing: false,
+                    isJumping: false,
+                },
+            });
+        },
+        resetJumpNotification: function (placeList) {
+            setNotifications({
+                ...notifications,
+                [placeList]: {
+                    isShowing: true,
+                    isJumping: false,
+                },
+            });
+        },
+    };
+    useEffect(() => {
+        if (places.length > 0 && selectedPlacesList !== "Added Places") {
+            if (notifications.addedPlaces.isShowing) {
+                notificationFunctions.jumpNotification("addedPlaces");
+            } else {
+                notificationFunctions.showNotification("addedPlaces");
+            };
+        };
+    }, [places]);
+    useEffect(() => {
+        if (selectedPlacesList === "Added Places") {
+            notificationFunctions.hideNotification("addedPlaces");
+        };
+    }, [selectedPlacesList]);
+    useEffect(() => {
+        console.log(notifications)
+    }, [notifications])
+
 
     // suggested places
     const [suggestedPlacesFilter, setSuggestedPlacesFilter] = useState(null);
@@ -731,21 +837,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
         }
         setPlacesAddressList(placesAddressListCopy)
     }
-    // const [justAddedIsAnimating, setJustAddedIsAnmimating] = useState(false);
 
-    // const justRemovedAnimation = () => {
-    //     const removedText = document.getElementById('placeRemovedText')
-    //     console.log(removedText)
-    //     removedText.style.transition = "0.3s"
-    //     // removedText.classList.remove('hidden-o')
-    //     setJustAddedIsAnmimating(true)
-
-    //     wait(2000).then(() => {
-    //         // removedText.classList.add('hidden-o')
-    //         setJustAddedIsAnmimating(false)
-    //         removedText.style.removeProperty('transition')
-    //     })
-    // }
     useEffect(() => {
         updatePlaceAddresses()
     }, [places])
@@ -925,9 +1017,9 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     return (
         <>
             {/* <ItineraryUpdatedModal open={itineraryUpdatedModalOpen} onClose={() => setItineraryUpdateModalOpen(false)} /> */}
-            <ConfirmationModal open={confirmationModalOpen} questionText={"Are you sure you want to Clear list?"} descText={"This action is irreversible."} confirmAction={() => clearAllPlaces()} onClose={() => setConfirmationModalOpen(false)} />
+            <ConfirmationModal open={confirmationModalOpen} questionText={"Clear list?"} descText={"This action cannot be reversed."} confirmAction={() => clearAllPlaces()} onClose={() => setConfirmationModalOpen(false)} />
             <StarPlacesToolTip open={starPlacesToolTipOpen} currentTrip={currentTrip} onClose={() => setStarPlacesToolTipOpen(false)} />
-            <LoadingScreen open={isLoading} loadingMessage={"Please wait while your itinerary is generated..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
+            <LoadingScreen open={isLoading} loadingMessage={"Please wait..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoading} />
 
             <div className="page-container90 mt-4">
 
@@ -1046,9 +1138,18 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                         <div className={`places-section ${mobileMode && "mt-4"}`}>
                             <div className="placesList flx-r gap-6">
-                                <p onClick={() => setSelectedPlacesList("Top sites")} className={`${selectedPlacesList === "Top sites" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Top Sites</p>
-                                <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Suggested places</p>
-                                <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Added places <span className={`numberBox ${selectedPlacesList === "Added Places" ? "selected" : ""}`}>{places.length}</span></p>
+                                <div className="tab-option">
+                                    <p onClick={() => setSelectedPlacesList("Top sites")} className={`${selectedPlacesList === "Top sites" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Top Sites</p>
+                                </div>
+                                <div className="tab-option">
+                                    <p onClick={() => setSelectedPlacesList("Suggested Places")} className={`${selectedPlacesList === "Suggested Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Suggested places</p>
+                                </div>
+                                <div className="tab-option">
+                                    <span className="notification-icon" data-hidden={!notifications.addedPlaces.isShowing} data-jump={notifications.addedPlaces.isJumping}>
+                                        <span className={gIcon}>exclamation</span>
+                                    </span>
+                                    <p onClick={() => setSelectedPlacesList("Added Places")} className={`${selectedPlacesList === "Added Places" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Added places <span className={`numberBox ${selectedPlacesList === "Added Places" ? "selected" : ""}`}>{places.length}</span></p>
+                                </div>
                             </div>
                             <div className="box-bar">
                                 <div ref={beamRef} className={`beam ${mobileModeNarrow && "mobileModeNarrow"} ${selectedPlacesList === "Top sites" && "topSites"} ${selectedPlacesList === "Added Places" && "addedPlaces"} ${selectedPlacesList === "Suggested Places" && "suggestedPlaces"}`}></div>
@@ -1063,7 +1164,14 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                     </div>
                                     <div id='placeCardsList' className={`placeCards ${places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars ref={placesScrollBarRef} autoHide>
-
+                                            {clearPlacesLoading &&
+                                                <LoadingFillElement
+                                                    color={"whitelite"}
+                                                    noText
+                                                    noMascot
+                                                    fadeIn
+                                                />
+                                            }
                                             {Array.isArray(places) && places.length > 0 ? places.map((place, index) => {
 
                                                 return <PlaceCard
@@ -1076,50 +1184,6 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                                     removeStar={removeStar}
                                                     removePlace={removePlace}
                                                 />
-
-
-
-
-                                                let firstCategory = place.category.split(",")[0]
-                                                firstCategory = firstCategory.charAt(0).toUpperCase() + firstCategory.slice(1)
-
-                                                // return <Fade duration={300} triggerOnce><div className="div-to-create-space-from-fade-for-ref">
-                                                //     <div id={`placeholderBefore-${index}`} className="placeCard2-placeholder hidden"></div>
-                                                //     <div ref={e => placeCardRefs.current[index] = e} key={index} className={`placeCard2 position-relative flx-r o-none gone shown`}>
-
-                                                //         <div className="placeCard-img-div flx-3">
-                                                //             <img onClick={() => updateMapCenter(place.geocode)} className="placeCard2-img" src={place.imgURL} />
-                                                //         </div>
-                                                //         <div ref={cardBodyRef} className="placeCard-body flx-5">
-                                                //             <div onClick={() => togglePopUp(index)} id={`popUp-${index}`} className="popUp d-none">{place.info}</div>
-                                                //             <div className={`scroll-over-text ${place.placeName.length <= placeCardTitleCharLimit && "disabled"}`}>
-                                                //                 <p className="static-text body-title m-0 ws-nowrap">{place.placeName.length > placeCardTitleCharLimit ? place.placeName.slice(0, placeCardTitleCharLimit).trim() + "..." : place.placeName}</p>
-                                                //                 <div className="scroller" data-animated="true">
-                                                //                     <div className="scroller-inner">
-                                                //                         <p className="scroll-text body-title">{place.placeName}</p>
-                                                //                         <p className="scroll-text body-title">{place.placeName}</p>
-                                                //                     </div>
-                                                //                 </div>
-                                                //             </div>
-                                                //             {/* <p onClick={() => togglePopUp(index)} className="body-info pointer">{place.info}</p> */}
-                                                //             <p className="body-info">{firstCategory}</p>
-                                                //             <p className="m-0 body-address">{place.address}</p>
-                                                //         </div>
-                                                //         <div className="placeCard-starOrDelete flx-c just-sb align-c">
-
-                                                //             {place.favorite !== true ?
-                                                //                 <img onClick={() => addStar(index)} id={`star-empty-${index}`} src="https://i.imgur.com/ZzbFaMA.png" alt="" className="star-empty my-2" />
-                                                //                 :
-                                                //                 <img onClick={() => removeStar(index)} id={`star-full-${index}`} src="https://i.imgur.com/M5Yj2Nu.png" alt="" className="star-full my-2" />
-                                                //             }
-                                                //             <span onClick={() => removePlace(index)} className="material-symbols-outlined mx-3 my-2 onHover-50 pointer">
-                                                //                 delete
-                                                //             </span>
-                                                //         </div>
-                                                //     </div>
-                                                // </div>
-                                                //     <div id={`placeholderAfter-${index}`} className="placeCard2-placeholder hidden"></div>
-                                                // </Fade>
 
 
                                             })
@@ -1233,7 +1297,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                                     </div>
                                     <div className={`placeCards ${topSites.places.length > 0 ? "h482" : null}`}>
                                         <Scrollbars autoHide>
-                                            
+
                                             {/* <LoadingFillElement
                                                 color={"whitelite"}
                                                 innerText={"Loading..."}

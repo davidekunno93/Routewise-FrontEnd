@@ -12,7 +12,7 @@ const PassCodeModal = ({ open, onClose }) => {
     // [onload code]
     useEffect(() => {
         focusOnFirstDigit();
-    }, [])
+    }, []);
 
     // [passcode element code]
     const [passcodeInputArr, setPasscodeInputArr] = useState([]);
@@ -157,9 +157,9 @@ const PassCodeModal = ({ open, onClose }) => {
                                             <span className="material-symbols-outlined white-text xxx-large">done</span>
                                         </div>
                                         <div>
-                                            <p className="center-text bold500">You are free to access the itinerary features
+                                            <p className="center-text bold500 mb-3">You are free to access the itinerary features
                                                 of RouteWise. Thank you for being a test user for our product!</p>
-                                            <button onClick={() => onClose()} className={`btn-primaryflex large center`}>Done</button>
+                                            <button onClick={() => onClose()} className={`btn-primaryflex2 medium center`}>Done</button>
                                         </div>
                                     </div>
                                     :

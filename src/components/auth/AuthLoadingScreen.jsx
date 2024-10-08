@@ -10,8 +10,8 @@ import axios from 'axios'
 
 export const AuthLoadingScreen = ({ loading, displayName, onClose, closeAll }) => {
     if (!loading) return null
-    const { user, setUser } = useContext(DataContext);
-    const navigate = useNavigate()
+    const { setUser } = useContext(DataContext);
+    const navigate = useNavigate();
     
 
     function wait(ms) {

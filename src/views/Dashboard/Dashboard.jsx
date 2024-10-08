@@ -1,72 +1,27 @@
-import React, { useContext, useEffect, useLayoutEffect, useReducer, useRef, useState } from 'react'
-import DatePicker from 'react-datepicker';
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import 'react-datepicker/dist/react-datepicker.css'
-import { NameTripModal } from './NameTripModal';
-import { OpenMap } from '../components/OpenMap';
+import { NameTripModal } from '../NameTripModal';
 import axios from 'axios';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import format from 'date-fns/format';
-import { addDays, isWithinInterval, set } from 'date-fns'
-import { SpecifyCity } from './SpecifyCity';
-import { Loading } from '../components/Loading/Loading';
-import { LoadingModal } from '../components/Loading/LoadingModal';
-import { auth, firestore } from '../firebase';
-import { DataContext } from '../Context/DataProvider';
+import { SpecifyCity } from '../SpecifyCity';
+import { Loading } from '../../components/Loading/Loading';
+import { LoadingModal } from '../../components/Loading/LoadingModal';
+import { auth, firestore } from '../../firebase';
+import { DataContext } from '../../Context/DataProvider';
 import { Link, useNavigate, useRouteError } from 'react-router-dom';
-import { LoadingScreen } from '../components/Loading/LoadingScreen';
-import EditTripModal from '../components/EditTripModal';
-import PassCodeModal from '../components/PassCodeModal';
+import { LoadingScreen } from '../../components/Loading/LoadingScreen';
+import EditTripModal from '../../components/EditTripModal';
 import { doc, getDoc } from 'firebase/firestore';
-import PageBlock from '../components/Privatizer/PageBlock';
+import PageBlock from '../../components/Privatizer/PageBlock';
+import './dashboard.scoped.css';
 
 
 
 export const Dashboard = () => {
-    // library
-    const cards2 = [
-        {
-            userPreference: "landmarks",
-            imgUrl: 'https://i.imgur.com/nixatab.png',
-            title: 'Landmarks & Attractions'
-        },
-        {
-            userPreference: "nature",
-            imgUrl: 'https://i.imgur.com/kmZtRbp.png',
-            title: 'Nature'
-        },
-        {
-            userPreference: "shopping",
-            imgUrl: 'https://i.imgur.com/Fo8WLyJ.png',
-            title: 'Shopping'
-        },
-        {
-            userPreference: "food",
-            imgUrl: 'https://i.imgur.com/K6ADmfR.png',
-            title: 'Food & Restaurants'
-        },
-        {
-            userPreference: "arts",
-            imgUrl: 'https://i.imgur.com/ExY7HDK.png',
-            title: 'Arts & Culture'
-        },
-        {
-            userPreference: "nightlife",
-            imgUrl: 'https://i.imgur.com/9fVucq9.png',
-            title: 'Nightlife'
-        },
-        {
-            userPreference: "entertainment",
-            imgUrl: 'https://i.imgur.com/A8Impx2.png',
-            title: 'Music & Entertainment'
-        },
-        {
-            userPreference: "relaxation",
-            imgUrl: 'https://i.imgur.com/o8PJDZ5.png',
-            title: 'Spa & Relaxation'
-        },
-    ]
+
     const cards2_dict = {
         "landmarks": {
             userPreference: "landmarks",
@@ -110,13 +65,10 @@ export const Dashboard = () => {
         },
     }
     // login require
-    const { user } = useContext(DataContext);
-    const { currentTrip, setCurrentTrip, clearCurrentTrip } = useContext(DataContext);
-    const { mobileMode } = useContext(DataContext);
-    const { userPreferences, setPreferences } = useContext(DataContext);
-    const { setSignUpIsOpen } = useContext(DataContext);
-    const { setPageOpen } = useContext(DataContext);
-    const { timeFunctions, gIcon, convertStateToAbbv, convertAbbvToState, isStateAbbv } = useContext(DataContext);
+    const { user, currentTrip, setCurrentTrip, clearCurrentTrip,
+        mobileMode, userPreferences, setPreferences, setSignUpIsOpen,
+        setPageOpen, timeFunctions, gIcon, convertStateToAbbv, convertAbbvToState, isStateAbbv
+    } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
     const [loading, setLoading] = useState(false);
     const [translationIndex, setTranslationIndex] = useState(0);
@@ -142,20 +94,22 @@ export const Dashboard = () => {
             country: "US"
         }
     ]);
-    const [userTrips, setUserTrips] = useState(null)
+    const [userTrips, setUserTrips] = useState({
+        isLoaded: false,
+        trips: []
+    });
     const resetPageOpen = () => {
         setPageOpen(null);
     }
 
     useLayoutEffect(() => {
-        console.log(Object.entries(userPreferences));
-        // console.log(auth.currentUser);
+        // console.log(user, Object.entries(userPreferences));
         setPreferences();
         setPageOpen('dashboard');
         return resetPageOpen;
     }, []);
 
-
+    const cityInputRef = useRef(null);
 
     const [isLoadingTrips, setIsLoadingTrips] = useState(false);
     // get user trips code
@@ -167,8 +121,6 @@ export const Dashboard = () => {
     const loadUserTripsData = async () => {
         setIsLoadingTrips(true);
         let data = await getUserTripsData();
-        // setUserTrips(data);
-        // console.log(data);
 
         let upcomingTripsArr = []
         let pastTripsArr = []
@@ -187,40 +139,28 @@ export const Dashboard = () => {
             upcomingTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(a.start_date)) - new Date(timeFunctions.datiundash(b.start_date)))
             pastTripsArr.sort((a, b) => new Date(timeFunctions.datiundash(b.start_date)) - new Date(timeFunctions.datiundash(a.start_date)))
             const allTripsArr = upcomingTripsArr.concat(pastTripsArr);
-            // console.log(allTripsArr)
-            setUserTrips(allTripsArr);
+            setUserTrips({ trips: allTripsArr, isLoaded: true });
             // sort upcoming trips from old to future
             // add past trips ordered from new to old
             // the page will grab the first ~5 trips
 
-
-
-        }
+        } else {
+            setUserTrips({
+                isLoaded: true,
+                trips: []
+            });
+        };
 
 
 
         setIsLoadingTrips(false);
-    }
+    };
 
-    const [userPreferencesCount, setUserPreferencesCount] = useState(null);
-    const [userPreferencesEmpty, setUserPreferencesEmpty] = useState(true);
-    useEffect(() => {
-        if (auth.currentUser) {
-            loadUserTripsData();
-        }
-        let userPreferencesBooleans = Object.values(userPreferences);
-        let count = 0;
-        for (let i = 0; i < userPreferencesBooleans.length; i++) {
-            if (userPreferencesBooleans[i] === true) {
-                count++
-            }
-        }
-        setUserPreferencesCount(count);
-    }, [])
+    useLayoutEffect(() => {
+        if (!auth.currentUser) return;
+        loadUserTripsData();
+    }, [user]);
 
-    useEffect(() => {
-        loadUserTripsData()
-    }, [user])
 
     const apiKey = 'ka/g7nybqosAgLyFNCod1A==WBv07XT0PI2TrXTO'
 
@@ -1123,377 +1063,377 @@ export const Dashboard = () => {
                 places: [],
                 itinerary: {
                     "day_order": [
-                      "day-1",
-                      "day-2",
-                      "day-3"
+                        "day-1",
+                        "day-2",
+                        "day-3"
                     ],
                     "days": {
-                      "day-1": {
-                        "date_converted": "Saturday, August 31",
-                        "date_formatted": "Sat, 31 Aug 2024 00:00:00 GMT",
-                        "date_short": "08/31",
-                        "day_id": 1852,
-                        "day_short": "Sat",
-                        "id": "day-1",
-                        "placeIds": [3, 2, 13, 15]
-                      },
-                      "day-2": {
-                        "date_converted": "Sunday, September 01",
-                        "date_formatted": "Sun, 01 Sep 2024 00:00:00 GMT",
-                        "date_short": "09/01",
-                        "day_id": 1853,
-                        "day_short": "Sun",
-                        "id": "day-2",
-                        "placeIds": [11, 10, 12, 17]
-                      },
-                      "day-3": {
-                        "date_converted": "Monday, September 02",
-                        "date_formatted": "Mon, 02 Sep 2024 00:00:00 GMT",
-                        "date_short": "09/02",
-                        "day_id": 1854,
-                        "day_short": "Mon",
-                        "id": "day-3",
-                        "placeIds": [9, 5, 6, 7]
-                      }
+                        "day-1": {
+                            "date_converted": "Saturday, August 31",
+                            "date_formatted": "Sat, 31 Aug 2024 00:00:00 GMT",
+                            "date_short": "08/31",
+                            "day_id": 1852,
+                            "day_short": "Sat",
+                            "id": "day-1",
+                            "placeIds": [3, 2, 13, 15]
+                        },
+                        "day-2": {
+                            "date_converted": "Sunday, September 01",
+                            "date_formatted": "Sun, 01 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/01",
+                            "day_id": 1853,
+                            "day_short": "Sun",
+                            "id": "day-2",
+                            "placeIds": [11, 10, 12, 17]
+                        },
+                        "day-3": {
+                            "date_converted": "Monday, September 02",
+                            "date_formatted": "Mon, 02 Sep 2024 00:00:00 GMT",
+                            "date_short": "09/02",
+                            "day_id": 1854,
+                            "day_short": "Mon",
+                            "id": "day-3",
+                            "placeIds": [9, 5, 6, 7]
+                        }
                     },
                     "places": {
-                      1: {
-                        "address": "4-chōme-2-8 Shibakōen, Minato City, Tokyo 105-0011, Japan",
-                        "category": "Shopping mall",
-                        "day_id": 1852,
-                        "favorite": false,
-                        "geocode": [35.6585805, 139.7454329],
-                        "id": 1,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJCewJkL2LGGAR3Qmk0vCTGkg/photos/AelY_Ctu5-_Q1XsZdyfdJQaoNMvEfG0jPlXU04VVkHEn5oV6xQLENNus1XJ-9ct0BWHChLgV4bl8rZSemsajS1zQF0-ReGol8FAvPfJKi5DhTq4Ptsev_ixGHEjMRGekWUjkgHlokG-OSFTBBHfPx4KnFomXZptQemhIO6os/media?maxWidthPx=3600&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": false,
-                        "info": "Mon: 9:00 AM - 10:30 PM, Tue: 9:00 AM - 10:30 PM, Wed: 9:00 AM - 10:30 PM, Thu: 9:00 AM - 10:30 PM, Fri: 9:00 AM - 10:30 PM, Sat: 9:00 AM - 10:30 PM, Sun: 9:00 AM - 10:30 PM",
-                        "lat": 35.6585805,
-                        "long": 139.7454329,
-                        "phoneNumber": "+81 3-3433-5111",
-                        "placeName": "Tokyo Tower",
-                        "place_id": 3392,
-                        "rating": "4.5",
-                        "summary": "Reminiscent of the Eiffel Tower, this landmark features observation areas & other attractions.",
-                        "website": "https://www.tokyotower.co.jp/"
-                      },
-                      2: {
-                        "address": "1-1 Maihama, Urayasu, Chiba 279-0031, Japan",
-                        "category": "Amusement park",
-                        "day_id": 1852,
-                        "favorite": false,
-                        "geocode": [35.6306579, 139.8828695],
-                        "id": 2,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJzaLT0Bl9GGARX3OJ1IrbKdo/photos/AelY_CvWeoh2KnljyUkuku8WayJIkB8zQCJCilYuXRpE1lVL3VUMZ4GKlYa18_yDLn-OmxPdBKssprr0kTEY9xbzxwZnUfLCriijFBVVWNEJFhltpxRAzKRpvFzOXcN1WBg5hIr8hWOor9nKCKQ7Y39XhJHGyYkYJXqzCYAN/media?maxWidthPx=2993&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.6306579,
-                        "long": 139.8828695,
-                        "phoneNumber": "+81 45-330-5211",
-                        "placeName": "Tokyo Disney Resort",
-                        "place_id": 3393,
-                        "rating": "4.6",
-                        "summary": null,
-                        "website": "https://www.tokyodisneyresort.jp/"
-                      },
-                      3: {
-                        "address": "1-13 Maihama, Urayasu, Chiba 279-8511, Japan",
-                        "category": "Tourist attraction",
-                        "day_id": 1852,
-                        "favorite": false,
-                        "geocode": [35.6267108, 139.8850779],
-                        "id": 3,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJszdHEQN9GGARJS23SnAdR0E/photos/AelY_CseeFQRe4BxOaBTct6Gr8aMiwl-dDtzacwjAI4A8MlhTvihJW5TjVQ3PAkfY69hflmeFZqpS0zLpsWqPbhezBu4oeE8GwZAHgbKnmmQ5WttixO88kN5Y8XfyokiVMlt4add9PguE4DNOnUOuYinPjnI29WDDHXPLvzY/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.6267108,
-                        "long": 139.8850779,
-                        "phoneNumber": "+81 45-330-5211",
-                        "placeName": "Tokyo DisneySea",
-                        "place_id": 3394,
-                        "rating": "4.6",
-                        "summary": "Part of the Disney resort, this large park has 7 themed ports of call with rides, shows & dining.",
-                        "website": "https://www.tokyodisneyresort.jp/tds/"
-                      },
-                      4: {
-                        "address": "Japan, 〒150-6145 Tokyo, Shibuya City, Shibuya, 2-chōme−24−１２ 14階・45階・46階・屋上",
-                        "category": "Tourist attraction",
-                        "day_id": 1854,
-                        "favorite": false,
-                        "geocode": [35.6584466, 139.7021636],
-                        "id": 4,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJ4Rr2JWiLGGARcyRSHuZ-9G8/photos/AelY_Ct1qiZo6TD1qDDVPkuSSsSwgy7usoUKTggV08m-8fcggkMEUUnfUzLAJMC33UicO320wOfNx6nJ7d5jhDLeLDdNC8JOdrVTnigqfnm6qcgoROTf0YURzxx0tfxPKqv9dmPUM6V7PLtmwtPsuUQxy2LAceBSaHP27hVr/media?maxWidthPx=3024&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": false,
-                        "info": "Mon: 10:00 AM - 10:30 PM, Tue: 10:00 AM - 10:30 PM, Wed: 10:00 AM - 10:30 PM, Thu: 10:00 AM - 10:30 PM, Fri: 10:00 AM - 10:30 PM, Sat: 10:00 AM - 10:30 PM, Sun: 10:00 AM - 10:30 PM",
-                        "lat": 35.6584466,
-                        "long": 139.7021636,
-                        "phoneNumber": "+81 3-4221-0229",
-                        "placeName": "SHIBUYA SKY",
-                        "place_id": 3395,
-                        "rating": "4.6",
-                        "summary": "A 360° open-air observation deck located on the roof of the Shibuya Scramble Square skyscraper.",
-                        "website": "https://www.shibuya-scramble-square.com/sky/"
-                      },
-                      5: {
-                        "address": "21 Udagawacho, Shibuya City, Tokyo 150-0042, Japan",
-                        "category": "Establishment",
-                        "day_id": 1854,
-                        "favorite": false,
-                        "geocode": [35.659482, 139.7005596],
-                        "id": 5,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJK9EM68qLGGARacmu4KJj5SA/photos/AelY_CtzJpPFvs5uTpByBAt67Oyer41NKa8t3rtm3tcavjaPvi3KJzV5SLwT0NyFa389ejWgTrW80QC_qvGcD9rdLXjeUeDqVMKE-2JwNUd3UYzF7r8844v-EVil0AECOqSW5KyB8PL3Ke1AL_bmNs3mamv8YKSHlXDaTGz5/media?maxWidthPx=3840&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.659482,
-                        "long": 139.7005596,
-                        "phoneNumber": null,
-                        "placeName": "Shibuya Scramble Crossing",
-                        "place_id": 3396,
-                        "rating": "4.5",
-                        "summary": null,
-                        "website": null
-                      },
-                      6: {
-                        "address": "3-chōme-38-1 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",
-                        "category": "Transit station",
-                        "day_id": 1854,
-                        "favorite": false,
-                        "geocode": [35.6896067, 139.7005713],
-                        "id": 6,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJH7qx1tCMGGAR1f2s7PGhMhw/photos/AelY_CtbGf91s4FmStKAiwobhMIYci19Fg7kzTySpesrmZaIWYCo8x0e8sP2bhl45_nhMPpqLWRGbrIm56HdPeiZwjK_Jyn7vD3KKwQu1mygzqB1SpzZOamakCSfribOCrUaAawvo3BoiAuNv5bu-gwOgmCTzZFDtqXH7_xI/media?maxWidthPx=3205&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.6896067,
-                        "long": 139.7005713,
-                        "phoneNumber": null,
-                        "placeName": "Shinjuku Station",
-                        "place_id": 3397,
-                        "rating": "3.8",
-                        "summary": null,
-                        "website": "http://www.jreast.co.jp/estation/station/info.aspx?StationCd=866"
-                      },
-                      7: {
-                        "address": "1-1 Yoyogikamizonochō, Shibuya City, Tokyo 151-8557, Japan",
-                        "category": "Establishment",
-                        "day_id": 1854,
-                        "favorite": false,
-                        "geocode": [35.6763976, 139.6993259],
-                        "id": 7,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJ5SZMmreMGGARcz8QSTiJyo8/photos/AelY_CtqqfHoAfg7pgefCcU_Aes0ts4GrIKJq2q9DH0NUNIffkOcOh6D3kZ-omOiU2rf212-UdM2XdlcvnraXzwN9HuV1xzuPnOtAQNs3M9Uo7S-SPBphvd0fgOc0azu3OshJ_JcknitrYkq3lcvjVCbv3C1kScPkzUIhThY/media?maxWidthPx=1719&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.6763976,
-                        "long": 139.6993259,
-                        "phoneNumber": "+81 3-3379-5511",
-                        "placeName": "Meiji Jingu",
-                        "place_id": 3398,
-                        "rating": "4.6",
-                        "summary": "Surrounded by forest, this venerable Shinto shrine features a seasonal iris garden.",
-                        "website": "https://www.meijijingu.or.jp/"
-                      },
-                      8: {
-                        "address": "1 Chome-2 Nishishinjuku, Shinjuku City, Tokyo 160-0023, Japan",
-                        "category": "Establishment",
-                        "day_id": 1853,
-                        "favorite": false,
-                        "geocode": [35.6929614, 139.6995724],
-                        "id": 8,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJP9eKBdeMGGAR0zzBXJNVj5A/photos/AelY_Cs1AM7RI1i_44ODmAtovG-pkc4Iy81oEda3TKIScAEOzBo2D27JvTDwa1HUcQgH3ZZjHojyUY2tx9Q1f1HPZ6_FI6OLmVNNdknsACB3jf9p2dRMaTBh6YwESPFIM7DUJc8cSz9dptglP9zP0m9fZ9sy9eMW6vn20ss8/media?maxWidthPx=3024&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": false,
-                        "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
-                        "lat": 35.6929614,
-                        "long": 139.6995724,
-                        "phoneNumber": null,
-                        "placeName": "Omoide Yokocho",
-                        "place_id": 3399,
-                        "rating": "4.1",
-                        "summary": "Landmark alleyway featuring a selection of food stalls for simple fare & alcoholic drinks.",
-                        "website": "http://shinjuku-omoide.com/"
-                      },
-                      9: {
-                        "address": "6-chōme-1-16 Toyosu, Koto City, Tokyo 135-0061, Japan",
-                        "category": "Amusement park",
-                        "day_id": 1854,
-                        "favorite": false,
-                        "geocode": [35.6491207, 139.7897739],
-                        "id": 9,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJSeco5wiJGGARItbTS8lQ5G0/photos/AelY_CsdJl8stvldQwwndNSdxUWSntSnuqS6rqi3WJsG8NiWoCDcBOMWIWuru-0359QlgZ4cXz21w--eULrmZOHB2mc-Is3qWbOhVXmAjIfybVgpYm6UA12J0CW2u8X2cjVaMSoXysFyCZHYr8iI69G5BdN03ACrZM_bN8sf/media?maxWidthPx=3648&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "Mon: 9:00 AM - 10:00 PM, Tue: 9:00 AM - 10:00 PM, Wed: 9:00 AM - 10:00 PM, Thu: 9:00 AM - 10:00 PM, Fri: 9:00 AM - 10:00 PM, Sat: 9:00 AM - 10:00 PM, Sun: 9:00 AM - 10:00 PM",
-                        "lat": 35.6491207,
-                        "long": 139.7897739,
-                        "phoneNumber": null,
-                        "placeName": "teamLab Planets",
-                        "place_id": 3400,
-                        "rating": "4.5",
-                        "summary": null,
-                        "website": "https://www.teamlab.art/jp/e/planets/"
-                      },
-                      10: {
-                        "address": "2-chōme-3-1 Asakusa, Taito City, Tokyo 111-0032, Japan",
-                        "category": "Establishment",
-                        "day_id": 1853,
-                        "favorite": false,
-                        "geocode": [35.7147651, 139.7966553],
-                        "id": 10,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJ8T1GpMGOGGARDYGSgpooDWw/photos/AelY_CsXn8N6SutVyl77sLjYxSI95HL-gaF6canGaTVtckb0qm5INSVWAFrJT2dhZo-a3QXh00faXQ0wWb8MYoHDXrFVun9Mjden2pH-XrOfjukcQqQugX0SFTIm8d4mwbRl9JC5mpPPimyPie_iwS5hYK_giWcvKq3-xTGq/media?maxWidthPx=4800&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.7147651,
-                        "long": 139.7966553,
-                        "phoneNumber": "+81 3-3842-0181",
-                        "placeName": "Senso-Ji Tempel",
-                        "place_id": 3401,
-                        "rating": "4.5",
-                        "summary": "Completed in 645, this temple, Tokyo's oldest, was built to honor Kannon, the goddess of mercy.",
-                        "website": "https://www.senso-ji.jp/"
-                      },
-                      11: {
-                        "address": "Asakusa, Taito City, Tokyo 111-0032, Japan",
-                        "category": "Geocode",
-                        "day_id": 1853,
-                        "favorite": false,
-                        "geocode": [35.7185858, 139.7958849],
-                        "id": 11,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJM1N_BMKOGGARZ0DHgTj9hHw/photos/AelY_Cv-RUYq7xKNEeYUxjhg3X6tS4PsbFeMO_4Vk0iM9yZBISR31w4eInLn3p3wI-DUQXtp7mLHvUJ80AJ2wfKmWZ8ZjInKsr9I08ByA-L3uxth8QiqPgUoGRGNQz6xieL_2Mmo5OjPOPaiB0JJanztVdzGT6ucxTv-1yIR/media?maxWidthPx=3464&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.7185858,
-                        "long": 139.7958849,
-                        "phoneNumber": null,
-                        "placeName": "Asakusa",
-                        "place_id": 3402,
-                        "rating": null,
-                        "summary": "Traditional district featuring an ancient Buddhist temple, street-food stalls, craft shops & more.",
-                        "website": null
-                      },
-                      12: {
-                        "address": "6 Chome-10 Ueno, Taito City, Tokyo 110-0005, Japan",
-                        "category": "Tourist attraction",
-                        "day_id": 1853,
-                        "favorite": false,
-                        "geocode": [35.708978, 139.7747155],
-                        "id": 12,
-                        "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqEJvIW8B2fcyqZAERApPTMck1vPtKqzTQs-W3WGrdrCHSOsUTI9OpfMDsaBIj3062EXNKjl9LhVnG0_AzDv8Bo9ToLGE8eesPg=s4800-w512",
-                        "in_itinerary": true,
-                        "info": "Mon: 10:00 AM - 8:00 PM, Tue: 10:00 AM - 8:00 PM, Wed: 10:00 AM - 8:00 PM, Thu: 10:00 AM - 8:00 PM, Fri: 10:00 AM - 8:00 PM, Sat: 10:00 AM - 8:00 PM, Sun: 10:00 AM - 8:00 PM",
-                        "lat": 35.708978,
-                        "long": 139.7747155,
-                        "phoneNumber": "+81 3-3832-5053",
-                        "placeName": "Ueno Ameyoko Shopping Street",
-                        "place_id": 3447,
-                        "rating": "4.2",
-                        "summary": "",
-                        "website": "http://www.ameyoko.net/"
-                      },
-                      13: {
-                        "address": "2-chōme-16-2 Sotokanda, Chiyoda City, Tokyo 101-0021, Japan",
-                        "category": "Tourist attraction",
-                        "day_id": 1852,
-                        "favorite": false,
-                        "geocode": [35.7020186, 139.7678943],
-                        "id": 13,
-                        "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqF8BgjgHyBVFkYphnmesbEsoIeeXPrAvmQ10xvr9EhW2lopaI85uTdF1_R88lIHixqOI3ieB8NZwVWxR7JS4ESEcwMKpuMMlnA=s4800-w512",
-                        "in_itinerary": true,
-                        "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
-                        "lat": 35.7020186,
-                        "long": 139.7678943,
-                        "phoneNumber": "+81 3-3254-0753",
-                        "placeName": "Kanda Myoujin Shrine",
-                        "place_id": 3448,
-                        "rating": "4.4",
-                        "summary": "Venerable Shinto shrine moved to its current locale in 1616, with vibrant vermilion & gold coloring.",
-                        "website": "http://www.kandamyoujin.or.jp/"
-                      },
-                      14: {
-                        "address": "1-chōme-3-61 Kōraku, Bunkyo City, Tokyo 112-0004, Japan",
-                        "category": "Stadium",
-                        "day_id": 1852,
-                        "favorite": false,
-                        "geocode": [35.7056396, 139.7518913],
-                        "id": 14,
-                        "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqFI1KuO8rc63pPA4aPL3HyHE2EgmpPTF5ilq_2OU96QrMKX3-oBk6Hocy7HYIUclgxWOQ2lFIGuIX2wi7_lT72c18jO8OlVlnI=s4800-w512",
-                        "in_itinerary": false,
-                        "info": "",
-                        "lat": 35.7056396,
-                        "long": 139.7518913,
-                        "phoneNumber": "+81 3-5800-9999",
-                        "placeName": "Tokyo Dome",
-                        "place_id": 3449,
-                        "rating": "4.2",
-                        "summary": "This iconic domed stadium hosts baseball games & other sporting events, plus concerts & exhibitions.",
-                        "website": "https://www.tokyo-dome.co.jp/dome/"
-                      },
-                      15: {
-                        "address": "1 Chome-3 Azabudai, Minato City, Tokyo 106-0041, Japan",
-                        "category": "Tourist attraction",
-                        "day_id": 1852,
-                        "favorite": false,
-                        "geocode": [35.6615447, 139.7408302],
-                        "id": 15,
-                        "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqEPxRV5q5Z6JyqkC5FUw5cGJbJDrJwHnFzZdOK8UnKdOUfhHxg2sJWrKkUcaC3K-FfC9zD1zVQLtbIajkARqJQYgvabRM5W-DA=s4800-w512",
-                        "in_itinerary": true,
-                        "info": "",
-                        "lat": 35.6615447,
-                        "long": 139.7408302,
-                        "phoneNumber": "",
-                        "placeName": "Azabudai Hills",
-                        "place_id": 3450,
-                        "rating": "4.2",
-                        "summary": "",
-                        "website": "https://www.azabudai-hills.com/index.html"
-                      },
-                      16: {
-                        "address": "Japan, 〒160-0022 Tokyo, Shinjuku City, Shinjuku, 3-chōme−38−１ ルミネエスト新宿 地下 ２階",
-                        "category": "Bakery",
-                        "day_id": 1854,
-                        "favorite": false,
-                        "geocode": [35.6912505, 139.7011419],
-                        "id": 16,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJ13PJM1CNGGAR0s9NCyVpyHE/photos/AXCi2Q5By9fMKTAmddPaLk4eSM47UxdZTZ25YixY9uVC8snvYaGIkLH0MFh6uVgBfvlyo_N-vIpEhDQjLY7uapZIjTc8-u5Aj1UYKSKdsJfO1FQiIpdXraXFtK-s0EANrTJn7yCkfn_IG_K_f90bheQCvEff2TYvmJ8dRCEg/media?maxWidthPx=2448&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": false,
-                        "info": "Mon: 11:00 AM - 8:00 PM, Tue: 11:00 AM - 8:00 PM, Wed: 11:00 AM - 8:00 PM, Thu: 11:00 AM - 8:00 PM, Fri: 11:00 AM - 8:00 PM, Sat: 11:00 AM - 8:00 PM, Sun: 11:00 AM - 8:00 PM",
-                        "lat": 35.6912505,
-                        "long": 139.7011419,
-                        "phoneNumber": "+81 3-5366-1538",
-                        "placeName": "HARBS ハーブス ルミネエスト新宿店",
-                        "place_id": 3451,
-                        "rating": "4.2",
-                        "summary": null,
-                        "website": "http://www.harbs.co.jp/harbs/concept.html"
-                      },
-                      17: {
-                        "address": "Japan, 〒160-0021 Tokyo, Shinjuku City, Kabukichō, 1-chōme−17−１０ CR.B&Vビル 地下 1 階",
-                        "category": "Restaurant",
-                        "day_id": 1853,
-                        "favorite": false,
-                        "geocode": [35.6943949, 139.7015417],
-                        "id": 17,
-                        "imgURL": "https://places.googleapis.com/v1/places/ChIJp1Kx1dmMGGARvbZ_YYRx0vQ/photos/AXCi2Q5NFPJICrK36V0Q6fY3LNfQ-8Bk6UPgzzpn_hviBtgSxuVeBsG39s8UgXKlia0DzML267HvIK7RRF-Fm7UQz8nNAgM6WlCmVT8S-tZiZuS-IL-ooOgkN8hLw2bkYJJbo-AHllOdLaHdVdvjzNIYDDxJUs1R72vjaq4D/media?maxWidthPx=960&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
-                        "in_itinerary": true,
-                        "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
-                        "lat": 35.6943949,
-                        "long": 139.7015417,
-                        "phoneNumber": "+81 50-3733-3393",
-                        "placeName": "Ichiran Shinjuku Kabuki-cho",
-                        "place_id": 3467,
-                        "rating": "4.3",
-                        "summary": "Informal ramen restaurant with a specialty for tonkotsu ramen in a pork bone broth.",
-                        "website": "https://ichiran.com/shop/tokyo/kabukicho/"
-                      }
+                        1: {
+                            "address": "4-chōme-2-8 Shibakōen, Minato City, Tokyo 105-0011, Japan",
+                            "category": "Shopping mall",
+                            "day_id": 1852,
+                            "favorite": false,
+                            "geocode": [35.6585805, 139.7454329],
+                            "id": 1,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJCewJkL2LGGAR3Qmk0vCTGkg/photos/AelY_Ctu5-_Q1XsZdyfdJQaoNMvEfG0jPlXU04VVkHEn5oV6xQLENNus1XJ-9ct0BWHChLgV4bl8rZSemsajS1zQF0-ReGol8FAvPfJKi5DhTq4Ptsev_ixGHEjMRGekWUjkgHlokG-OSFTBBHfPx4KnFomXZptQemhIO6os/media?maxWidthPx=3600&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: 9:00 AM - 10:30 PM, Tue: 9:00 AM - 10:30 PM, Wed: 9:00 AM - 10:30 PM, Thu: 9:00 AM - 10:30 PM, Fri: 9:00 AM - 10:30 PM, Sat: 9:00 AM - 10:30 PM, Sun: 9:00 AM - 10:30 PM",
+                            "lat": 35.6585805,
+                            "long": 139.7454329,
+                            "phoneNumber": "+81 3-3433-5111",
+                            "placeName": "Tokyo Tower",
+                            "place_id": 3392,
+                            "rating": "4.5",
+                            "summary": "Reminiscent of the Eiffel Tower, this landmark features observation areas & other attractions.",
+                            "website": "https://www.tokyotower.co.jp/"
+                        },
+                        2: {
+                            "address": "1-1 Maihama, Urayasu, Chiba 279-0031, Japan",
+                            "category": "Amusement park",
+                            "day_id": 1852,
+                            "favorite": false,
+                            "geocode": [35.6306579, 139.8828695],
+                            "id": 2,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJzaLT0Bl9GGARX3OJ1IrbKdo/photos/AelY_CvWeoh2KnljyUkuku8WayJIkB8zQCJCilYuXRpE1lVL3VUMZ4GKlYa18_yDLn-OmxPdBKssprr0kTEY9xbzxwZnUfLCriijFBVVWNEJFhltpxRAzKRpvFzOXcN1WBg5hIr8hWOor9nKCKQ7Y39XhJHGyYkYJXqzCYAN/media?maxWidthPx=2993&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.6306579,
+                            "long": 139.8828695,
+                            "phoneNumber": "+81 45-330-5211",
+                            "placeName": "Tokyo Disney Resort",
+                            "place_id": 3393,
+                            "rating": "4.6",
+                            "summary": null,
+                            "website": "https://www.tokyodisneyresort.jp/"
+                        },
+                        3: {
+                            "address": "1-13 Maihama, Urayasu, Chiba 279-8511, Japan",
+                            "category": "Tourist attraction",
+                            "day_id": 1852,
+                            "favorite": false,
+                            "geocode": [35.6267108, 139.8850779],
+                            "id": 3,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJszdHEQN9GGARJS23SnAdR0E/photos/AelY_CseeFQRe4BxOaBTct6Gr8aMiwl-dDtzacwjAI4A8MlhTvihJW5TjVQ3PAkfY69hflmeFZqpS0zLpsWqPbhezBu4oeE8GwZAHgbKnmmQ5WttixO88kN5Y8XfyokiVMlt4add9PguE4DNOnUOuYinPjnI29WDDHXPLvzY/media?maxWidthPx=4032&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.6267108,
+                            "long": 139.8850779,
+                            "phoneNumber": "+81 45-330-5211",
+                            "placeName": "Tokyo DisneySea",
+                            "place_id": 3394,
+                            "rating": "4.6",
+                            "summary": "Part of the Disney resort, this large park has 7 themed ports of call with rides, shows & dining.",
+                            "website": "https://www.tokyodisneyresort.jp/tds/"
+                        },
+                        4: {
+                            "address": "Japan, 〒150-6145 Tokyo, Shibuya City, Shibuya, 2-chōme−24−１２ 14階・45階・46階・屋上",
+                            "category": "Tourist attraction",
+                            "day_id": 1854,
+                            "favorite": false,
+                            "geocode": [35.6584466, 139.7021636],
+                            "id": 4,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ4Rr2JWiLGGARcyRSHuZ-9G8/photos/AelY_Ct1qiZo6TD1qDDVPkuSSsSwgy7usoUKTggV08m-8fcggkMEUUnfUzLAJMC33UicO320wOfNx6nJ7d5jhDLeLDdNC8JOdrVTnigqfnm6qcgoROTf0YURzxx0tfxPKqv9dmPUM6V7PLtmwtPsuUQxy2LAceBSaHP27hVr/media?maxWidthPx=3024&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: 10:00 AM - 10:30 PM, Tue: 10:00 AM - 10:30 PM, Wed: 10:00 AM - 10:30 PM, Thu: 10:00 AM - 10:30 PM, Fri: 10:00 AM - 10:30 PM, Sat: 10:00 AM - 10:30 PM, Sun: 10:00 AM - 10:30 PM",
+                            "lat": 35.6584466,
+                            "long": 139.7021636,
+                            "phoneNumber": "+81 3-4221-0229",
+                            "placeName": "SHIBUYA SKY",
+                            "place_id": 3395,
+                            "rating": "4.6",
+                            "summary": "A 360° open-air observation deck located on the roof of the Shibuya Scramble Square skyscraper.",
+                            "website": "https://www.shibuya-scramble-square.com/sky/"
+                        },
+                        5: {
+                            "address": "21 Udagawacho, Shibuya City, Tokyo 150-0042, Japan",
+                            "category": "Establishment",
+                            "day_id": 1854,
+                            "favorite": false,
+                            "geocode": [35.659482, 139.7005596],
+                            "id": 5,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJK9EM68qLGGARacmu4KJj5SA/photos/AelY_CtzJpPFvs5uTpByBAt67Oyer41NKa8t3rtm3tcavjaPvi3KJzV5SLwT0NyFa389ejWgTrW80QC_qvGcD9rdLXjeUeDqVMKE-2JwNUd3UYzF7r8844v-EVil0AECOqSW5KyB8PL3Ke1AL_bmNs3mamv8YKSHlXDaTGz5/media?maxWidthPx=3840&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.659482,
+                            "long": 139.7005596,
+                            "phoneNumber": null,
+                            "placeName": "Shibuya Scramble Crossing",
+                            "place_id": 3396,
+                            "rating": "4.5",
+                            "summary": null,
+                            "website": null
+                        },
+                        6: {
+                            "address": "3-chōme-38-1 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",
+                            "category": "Transit station",
+                            "day_id": 1854,
+                            "favorite": false,
+                            "geocode": [35.6896067, 139.7005713],
+                            "id": 6,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJH7qx1tCMGGAR1f2s7PGhMhw/photos/AelY_CtbGf91s4FmStKAiwobhMIYci19Fg7kzTySpesrmZaIWYCo8x0e8sP2bhl45_nhMPpqLWRGbrIm56HdPeiZwjK_Jyn7vD3KKwQu1mygzqB1SpzZOamakCSfribOCrUaAawvo3BoiAuNv5bu-gwOgmCTzZFDtqXH7_xI/media?maxWidthPx=3205&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.6896067,
+                            "long": 139.7005713,
+                            "phoneNumber": null,
+                            "placeName": "Shinjuku Station",
+                            "place_id": 3397,
+                            "rating": "3.8",
+                            "summary": null,
+                            "website": "http://www.jreast.co.jp/estation/station/info.aspx?StationCd=866"
+                        },
+                        7: {
+                            "address": "1-1 Yoyogikamizonochō, Shibuya City, Tokyo 151-8557, Japan",
+                            "category": "Establishment",
+                            "day_id": 1854,
+                            "favorite": false,
+                            "geocode": [35.6763976, 139.6993259],
+                            "id": 7,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ5SZMmreMGGARcz8QSTiJyo8/photos/AelY_CtqqfHoAfg7pgefCcU_Aes0ts4GrIKJq2q9DH0NUNIffkOcOh6D3kZ-omOiU2rf212-UdM2XdlcvnraXzwN9HuV1xzuPnOtAQNs3M9Uo7S-SPBphvd0fgOc0azu3OshJ_JcknitrYkq3lcvjVCbv3C1kScPkzUIhThY/media?maxWidthPx=1719&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.6763976,
+                            "long": 139.6993259,
+                            "phoneNumber": "+81 3-3379-5511",
+                            "placeName": "Meiji Jingu",
+                            "place_id": 3398,
+                            "rating": "4.6",
+                            "summary": "Surrounded by forest, this venerable Shinto shrine features a seasonal iris garden.",
+                            "website": "https://www.meijijingu.or.jp/"
+                        },
+                        8: {
+                            "address": "1 Chome-2 Nishishinjuku, Shinjuku City, Tokyo 160-0023, Japan",
+                            "category": "Establishment",
+                            "day_id": 1853,
+                            "favorite": false,
+                            "geocode": [35.6929614, 139.6995724],
+                            "id": 8,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJP9eKBdeMGGAR0zzBXJNVj5A/photos/AelY_Cs1AM7RI1i_44ODmAtovG-pkc4Iy81oEda3TKIScAEOzBo2D27JvTDwa1HUcQgH3ZZjHojyUY2tx9Q1f1HPZ6_FI6OLmVNNdknsACB3jf9p2dRMaTBh6YwESPFIM7DUJc8cSz9dptglP9zP0m9fZ9sy9eMW6vn20ss8/media?maxWidthPx=3024&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
+                            "lat": 35.6929614,
+                            "long": 139.6995724,
+                            "phoneNumber": null,
+                            "placeName": "Omoide Yokocho",
+                            "place_id": 3399,
+                            "rating": "4.1",
+                            "summary": "Landmark alleyway featuring a selection of food stalls for simple fare & alcoholic drinks.",
+                            "website": "http://shinjuku-omoide.com/"
+                        },
+                        9: {
+                            "address": "6-chōme-1-16 Toyosu, Koto City, Tokyo 135-0061, Japan",
+                            "category": "Amusement park",
+                            "day_id": 1854,
+                            "favorite": false,
+                            "geocode": [35.6491207, 139.7897739],
+                            "id": 9,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJSeco5wiJGGARItbTS8lQ5G0/photos/AelY_CsdJl8stvldQwwndNSdxUWSntSnuqS6rqi3WJsG8NiWoCDcBOMWIWuru-0359QlgZ4cXz21w--eULrmZOHB2mc-Is3qWbOhVXmAjIfybVgpYm6UA12J0CW2u8X2cjVaMSoXysFyCZHYr8iI69G5BdN03ACrZM_bN8sf/media?maxWidthPx=3648&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: 9:00 AM - 10:00 PM, Tue: 9:00 AM - 10:00 PM, Wed: 9:00 AM - 10:00 PM, Thu: 9:00 AM - 10:00 PM, Fri: 9:00 AM - 10:00 PM, Sat: 9:00 AM - 10:00 PM, Sun: 9:00 AM - 10:00 PM",
+                            "lat": 35.6491207,
+                            "long": 139.7897739,
+                            "phoneNumber": null,
+                            "placeName": "teamLab Planets",
+                            "place_id": 3400,
+                            "rating": "4.5",
+                            "summary": null,
+                            "website": "https://www.teamlab.art/jp/e/planets/"
+                        },
+                        10: {
+                            "address": "2-chōme-3-1 Asakusa, Taito City, Tokyo 111-0032, Japan",
+                            "category": "Establishment",
+                            "day_id": 1853,
+                            "favorite": false,
+                            "geocode": [35.7147651, 139.7966553],
+                            "id": 10,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ8T1GpMGOGGARDYGSgpooDWw/photos/AelY_CsXn8N6SutVyl77sLjYxSI95HL-gaF6canGaTVtckb0qm5INSVWAFrJT2dhZo-a3QXh00faXQ0wWb8MYoHDXrFVun9Mjden2pH-XrOfjukcQqQugX0SFTIm8d4mwbRl9JC5mpPPimyPie_iwS5hYK_giWcvKq3-xTGq/media?maxWidthPx=4800&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.7147651,
+                            "long": 139.7966553,
+                            "phoneNumber": "+81 3-3842-0181",
+                            "placeName": "Senso-Ji Tempel",
+                            "place_id": 3401,
+                            "rating": "4.5",
+                            "summary": "Completed in 645, this temple, Tokyo's oldest, was built to honor Kannon, the goddess of mercy.",
+                            "website": "https://www.senso-ji.jp/"
+                        },
+                        11: {
+                            "address": "Asakusa, Taito City, Tokyo 111-0032, Japan",
+                            "category": "Geocode",
+                            "day_id": 1853,
+                            "favorite": false,
+                            "geocode": [35.7185858, 139.7958849],
+                            "id": 11,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJM1N_BMKOGGARZ0DHgTj9hHw/photos/AelY_Cv-RUYq7xKNEeYUxjhg3X6tS4PsbFeMO_4Vk0iM9yZBISR31w4eInLn3p3wI-DUQXtp7mLHvUJ80AJ2wfKmWZ8ZjInKsr9I08ByA-L3uxth8QiqPgUoGRGNQz6xieL_2Mmo5OjPOPaiB0JJanztVdzGT6ucxTv-1yIR/media?maxWidthPx=3464&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.7185858,
+                            "long": 139.7958849,
+                            "phoneNumber": null,
+                            "placeName": "Asakusa",
+                            "place_id": 3402,
+                            "rating": null,
+                            "summary": "Traditional district featuring an ancient Buddhist temple, street-food stalls, craft shops & more.",
+                            "website": null
+                        },
+                        12: {
+                            "address": "6 Chome-10 Ueno, Taito City, Tokyo 110-0005, Japan",
+                            "category": "Tourist attraction",
+                            "day_id": 1853,
+                            "favorite": false,
+                            "geocode": [35.708978, 139.7747155],
+                            "id": 12,
+                            "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqEJvIW8B2fcyqZAERApPTMck1vPtKqzTQs-W3WGrdrCHSOsUTI9OpfMDsaBIj3062EXNKjl9LhVnG0_AzDv8Bo9ToLGE8eesPg=s4800-w512",
+                            "in_itinerary": true,
+                            "info": "Mon: 10:00 AM - 8:00 PM, Tue: 10:00 AM - 8:00 PM, Wed: 10:00 AM - 8:00 PM, Thu: 10:00 AM - 8:00 PM, Fri: 10:00 AM - 8:00 PM, Sat: 10:00 AM - 8:00 PM, Sun: 10:00 AM - 8:00 PM",
+                            "lat": 35.708978,
+                            "long": 139.7747155,
+                            "phoneNumber": "+81 3-3832-5053",
+                            "placeName": "Ueno Ameyoko Shopping Street",
+                            "place_id": 3447,
+                            "rating": "4.2",
+                            "summary": "",
+                            "website": "http://www.ameyoko.net/"
+                        },
+                        13: {
+                            "address": "2-chōme-16-2 Sotokanda, Chiyoda City, Tokyo 101-0021, Japan",
+                            "category": "Tourist attraction",
+                            "day_id": 1852,
+                            "favorite": false,
+                            "geocode": [35.7020186, 139.7678943],
+                            "id": 13,
+                            "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqF8BgjgHyBVFkYphnmesbEsoIeeXPrAvmQ10xvr9EhW2lopaI85uTdF1_R88lIHixqOI3ieB8NZwVWxR7JS4ESEcwMKpuMMlnA=s4800-w512",
+                            "in_itinerary": true,
+                            "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
+                            "lat": 35.7020186,
+                            "long": 139.7678943,
+                            "phoneNumber": "+81 3-3254-0753",
+                            "placeName": "Kanda Myoujin Shrine",
+                            "place_id": 3448,
+                            "rating": "4.4",
+                            "summary": "Venerable Shinto shrine moved to its current locale in 1616, with vibrant vermilion & gold coloring.",
+                            "website": "http://www.kandamyoujin.or.jp/"
+                        },
+                        14: {
+                            "address": "1-chōme-3-61 Kōraku, Bunkyo City, Tokyo 112-0004, Japan",
+                            "category": "Stadium",
+                            "day_id": 1852,
+                            "favorite": false,
+                            "geocode": [35.7056396, 139.7518913],
+                            "id": 14,
+                            "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqFI1KuO8rc63pPA4aPL3HyHE2EgmpPTF5ilq_2OU96QrMKX3-oBk6Hocy7HYIUclgxWOQ2lFIGuIX2wi7_lT72c18jO8OlVlnI=s4800-w512",
+                            "in_itinerary": false,
+                            "info": "",
+                            "lat": 35.7056396,
+                            "long": 139.7518913,
+                            "phoneNumber": "+81 3-5800-9999",
+                            "placeName": "Tokyo Dome",
+                            "place_id": 3449,
+                            "rating": "4.2",
+                            "summary": "This iconic domed stadium hosts baseball games & other sporting events, plus concerts & exhibitions.",
+                            "website": "https://www.tokyo-dome.co.jp/dome/"
+                        },
+                        15: {
+                            "address": "1 Chome-3 Azabudai, Minato City, Tokyo 106-0041, Japan",
+                            "category": "Tourist attraction",
+                            "day_id": 1852,
+                            "favorite": false,
+                            "geocode": [35.6615447, 139.7408302],
+                            "id": 15,
+                            "imgURL": "https://lh3.googleusercontent.com/places/ANXAkqEPxRV5q5Z6JyqkC5FUw5cGJbJDrJwHnFzZdOK8UnKdOUfhHxg2sJWrKkUcaC3K-FfC9zD1zVQLtbIajkARqJQYgvabRM5W-DA=s4800-w512",
+                            "in_itinerary": true,
+                            "info": "",
+                            "lat": 35.6615447,
+                            "long": 139.7408302,
+                            "phoneNumber": "",
+                            "placeName": "Azabudai Hills",
+                            "place_id": 3450,
+                            "rating": "4.2",
+                            "summary": "",
+                            "website": "https://www.azabudai-hills.com/index.html"
+                        },
+                        16: {
+                            "address": "Japan, 〒160-0022 Tokyo, Shinjuku City, Shinjuku, 3-chōme−38−１ ルミネエスト新宿 地下 ２階",
+                            "category": "Bakery",
+                            "day_id": 1854,
+                            "favorite": false,
+                            "geocode": [35.6912505, 139.7011419],
+                            "id": 16,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJ13PJM1CNGGAR0s9NCyVpyHE/photos/AXCi2Q5By9fMKTAmddPaLk4eSM47UxdZTZ25YixY9uVC8snvYaGIkLH0MFh6uVgBfvlyo_N-vIpEhDQjLY7uapZIjTc8-u5Aj1UYKSKdsJfO1FQiIpdXraXFtK-s0EANrTJn7yCkfn_IG_K_f90bheQCvEff2TYvmJ8dRCEg/media?maxWidthPx=2448&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": false,
+                            "info": "Mon: 11:00 AM - 8:00 PM, Tue: 11:00 AM - 8:00 PM, Wed: 11:00 AM - 8:00 PM, Thu: 11:00 AM - 8:00 PM, Fri: 11:00 AM - 8:00 PM, Sat: 11:00 AM - 8:00 PM, Sun: 11:00 AM - 8:00 PM",
+                            "lat": 35.6912505,
+                            "long": 139.7011419,
+                            "phoneNumber": "+81 3-5366-1538",
+                            "placeName": "HARBS ハーブス ルミネエスト新宿店",
+                            "place_id": 3451,
+                            "rating": "4.2",
+                            "summary": null,
+                            "website": "http://www.harbs.co.jp/harbs/concept.html"
+                        },
+                        17: {
+                            "address": "Japan, 〒160-0021 Tokyo, Shinjuku City, Kabukichō, 1-chōme−17−１０ CR.B&Vビル 地下 1 階",
+                            "category": "Restaurant",
+                            "day_id": 1853,
+                            "favorite": false,
+                            "geocode": [35.6943949, 139.7015417],
+                            "id": 17,
+                            "imgURL": "https://places.googleapis.com/v1/places/ChIJp1Kx1dmMGGARvbZ_YYRx0vQ/photos/AXCi2Q5NFPJICrK36V0Q6fY3LNfQ-8Bk6UPgzzpn_hviBtgSxuVeBsG39s8UgXKlia0DzML267HvIK7RRF-Fm7UQz8nNAgM6WlCmVT8S-tZiZuS-IL-ooOgkN8hLw2bkYJJbo-AHllOdLaHdVdvjzNIYDDxJUs1R72vjaq4D/media?maxWidthPx=960&key=AIzaSyDSb_2EDA9dG4bMW6QtRcTrqHy3MkLmxPU",
+                            "in_itinerary": true,
+                            "info": "Mon: Open 24 hours, Tue: Open 24 hours, Wed: Open 24 hours, Thu: Open 24 hours, Fri: Open 24 hours, Sat: Open 24 hours, Sun: Open 24 hours",
+                            "lat": 35.6943949,
+                            "long": 139.7015417,
+                            "phoneNumber": "+81 50-3733-3393",
+                            "placeName": "Ichiran Shinjuku Kabuki-cho",
+                            "place_id": 3467,
+                            "rating": "4.3",
+                            "summary": "Informal ramen restaurant with a specialty for tonkotsu ramen in a pork bone broth.",
+                            "website": "https://ichiran.com/shop/tokyo/kabukicho/"
+                        }
                     },
                     "places_last": 17,
                     "saved_places": {
-                      "addresses": [
-                        "1-chōme-3-61 Kōraku, Bunkyo City, Tokyo 112-0004, Japan",
-                        "Japan, 〒160-0022 Tokyo, Shinjuku City, Shinjuku, 3-chōme−38−１ ルミネエスト新宿 地下 ２階",
-                        "4-chōme-2-8 Shibakōen, Minato City, Tokyo 105-0011, Japan",
-                        "1 Chome-2 Nishishinjuku, Shinjuku City, Tokyo 160-0023, Japan",
-                        "Japan, 〒150-6145 Tokyo, Shibuya City, Shibuya, 2-chōme−24−１２ 14階・45階・46階・屋上"
-                      ],
-                      "placesIds": [14, 16, 1, 8, 4]
+                        "addresses": [
+                            "1-chōme-3-61 Kōraku, Bunkyo City, Tokyo 112-0004, Japan",
+                            "Japan, 〒160-0022 Tokyo, Shinjuku City, Shinjuku, 3-chōme−38−１ ルミネエスト新宿 地下 ２階",
+                            "4-chōme-2-8 Shibakōen, Minato City, Tokyo 105-0011, Japan",
+                            "1 Chome-2 Nishishinjuku, Shinjuku City, Tokyo 160-0023, Japan",
+                            "Japan, 〒150-6145 Tokyo, Shibuya City, Shibuya, 2-chōme−24−１２ 14階・45階・46階・屋上"
+                        ],
+                        "placesIds": [14, 16, 1, 8, 4]
                     },
                     "trip_id": "413"
-                  },
+                },
                 itineraryFirstLoad: false,
             },
         },
@@ -1506,7 +1446,6 @@ export const Dashboard = () => {
         let fullTranslateWidth = carouselWidth - window.innerWidth * 0.9
         let test = cities.length * 350 - 50 - 350
         if (translatedWidth > cities.length * 350 - 50 - 350) {
-            // console.log(translatedWidth, test, carouselWidth, fullTranslateWidth)
             carousel.style.transform = `translateX(-${fullTranslateWidth}px)`
             setFullTranslated(true)
         } else {
@@ -1522,15 +1461,6 @@ export const Dashboard = () => {
 
 
     const openNameTripModal = () => {
-        // let tripInfo = {
-        //     cityName: city,
-        //     state: state,
-        //     country: country,
-        //     geocode: geocode,
-        //     startDate: range[0].startDate,
-        //     endDate: range[0].endDate,
-        // }
-        // setTripData(tripInfo)
         setOpenTripModal(true)
     }
     const closeNameTripModal = () => {
@@ -1613,6 +1543,8 @@ export const Dashboard = () => {
         let cityInput = document.getElementById('cityInput');
         if (!user) {
             openSignUp()
+        } else if (user.emailVerified === false) {
+            alert("Please verify your email first. Check your email for a verification link.");
         } else {
             if (!cityInput.value) {
                 // if there is no city entered --> please enter city name
@@ -1628,11 +1560,9 @@ export const Dashboard = () => {
                 if (cityName.includes(",")) {
                     // let cityNoSpaces = cityName.replace(/ /g, '')
                     const cityArr = cityName.split(', ')
-                    console.log(convertAbbvToState(cityArr[1]))
                     let url = "";
                     if (isStateAbbv(cityArr[1])) {
                         url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&state=${convertAbbvToState(cityArr[1])}&country=US`
-                        // console.log(url)
                     } else {
                         url = `https://api.api-ninjas.com/v1/geocoding?city=${cityArr[0]}&country=${cityArr[1]}`
                     };
@@ -1659,7 +1589,7 @@ export const Dashboard = () => {
                 }
             }
         }
-    }
+    };
 
     const getCountryName = (country_2letter) => {
         const country_abbr = ['AF', 'AX', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ', 'BH', 'BS', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN', 'BG', 'BF', 'BI', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO', 'KM', 'CG', 'CD', 'CK', 'CR', 'CI', 'HR', 'CU', 'CW', 'CY', 'CZ', 'DK', 'DJ', 'DM', 'DO', 'EC', 'EG', 'SV', 'GQ', 'ER', 'EE', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'GF', 'PF', 'TF', 'GA', 'GM', 'GE', 'DE', 'GH', 'GI', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GG', 'GN', 'GW', 'GY', 'HT', 'HM', 'VA', 'HN', 'HK', 'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IM', 'IL', 'IT', 'JM', 'JP', 'JE', 'JO', 'KZ', 'KE', 'KI', 'KP', 'KR', 'KW', 'KG', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MK', 'MG', 'MW', 'MY', 'MV', 'ML', 'MT', 'MH', 'MQ', 'MR', 'MU', 'YT', 'MX', 'FM', 'MD', 'MC', 'MN', 'ME', 'MS', 'MA', 'MZ', 'MM', 'NA', 'NR', 'NP', 'NL', 'NC', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'MP', 'NO', 'OM', 'PK', 'PW', 'PS', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PT', 'PR', 'QA', 'RE', 'RO', 'RU', 'RW', 'BL', 'SH', 'KN', 'LC', 'MF', 'PM', 'VC', 'WS', 'SM', 'ST', 'SA', 'SN', 'RS', 'SC', 'SL', 'SG', 'SX', 'SK', 'SI', 'SB', 'SO', 'ZA', 'GS', 'SS', 'ES', 'LK', 'SD', 'SR', 'SJ', 'SZ', 'SE', 'CH', 'SY', 'TW', 'TJ', 'TZ', 'TH', 'TL', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UG', 'UA', 'AE', 'GB', 'US', 'UM', 'UY', 'UZ', 'VU', 'VE', 'VN', 'VG', 'VI', 'WF', 'EH', 'YE', 'ZM', 'ZW']
@@ -1694,7 +1624,6 @@ export const Dashboard = () => {
             }
             states.push(data[i].state)
         };
-        console.log(tripInfo);
         setCityOptions(dataNew)
 
         setTripData(tripInfo)
@@ -1710,27 +1639,7 @@ export const Dashboard = () => {
         setSpecifyCityOpen(true)
     }
 
-    // const [autoCompleteCities, setAutoCompleteCities] = useState(null);
-    // const getAutoCompleteCities = async () => {
-    //     console.log("fetching...")
-    //     const url = `http://geodb-free-service.wirefreethought.com/v1/geo/places?limit=5&offset=0&namePrefix=${cityText}&sort=-population`
-    //     const response = await axios.get(url)
-    //         .then((response) => {
-    //             // console.log(response.data.data)
-    //             // setAutoCompleteCities(response.data.data);
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //         })
-    // }
 
-    // useEffect(() => {
-    //     if (cityText && cityText.length > 2) {
-    //         getAutoCompleteCities();
-    //     } else {
-    //         setAutoCompleteCities(null);
-    //     }
-    // }, [cityText]);
     const updateCityInput = (city) => {
         const cityInput = document.getElementById('cityInput');
         if (city.state) {
@@ -1781,34 +1690,8 @@ export const Dashboard = () => {
         }
     }
 
-    const datishort = (date) => {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        const monthNum = date.slice(5, 7)
-        const month = months[monthNum - 1]
-        let day = date.slice(8)
-        if (day[0] === "0") {
-            day = day[1]
-        }
-        return month + " " + day
-    }
-    const datishortRange = (startDate, endDate) => {
-        // const startYear = startDate.slice(0, 5)
-        // const endYear = endDate.slice(0, 4)
-        const start = datishort(startDate)
-        const end = datishort(endDate)
-        const startMonth = start.slice(0, 3)
-        const endMonth = end.slice(0, 3)
-        // console.log(startDate)
-        // console.log(start)
-        // console.log(endDate)
 
-        if (startMonth === endMonth) {
-            return start + " - " + end.slice(4)
-        } else {
-            return start + " - " + end
-        }
 
-    }
     const toggleUserTripPopup = (index) => {
         let popUp = document.getElementById(`userTrip-popUp-${index}`)
         popUp.classList.toggle('d-none')
@@ -1820,6 +1703,60 @@ export const Dashboard = () => {
             popUps[i].classList.add('d-none')
         }
     }
+
+    // [user trip slider code]
+    const sliderWindowRef = useRef(null);
+    const sliderInnerRef = useRef(null);
+    const [sliderControls, setSliderControls] = useState({
+        offset: 0,
+        maxOffset: 0,
+        windowWidth: null,
+        innerWidth: null,
+        scrollSize: 240,
+        buttonsHidden: false,
+    });
+    const sliderFunctions = {
+        initialize: function () {
+            if (!sliderWindowRef.current || !sliderInnerRef.current) return;
+            let extraScrollWidth = 24;
+            let maxOffset = sliderInnerRef.current.scrollWidth > sliderWindowRef.current.clientWidth ? (sliderInnerRef.current.scrollWidth + extraScrollWidth) - sliderWindowRef.current.clientWidth : 0;
+            setSliderControls({
+                ...sliderControls,
+                maxOffset: maxOffset,
+                windowWidth: sliderWindowRef.current.clientWidth,
+                innerWidth: sliderInnerRef.current.scrollWidth + extraScrollWidth,
+                buttonsHidden: maxOffset > 0 ? false : true,
+            });
+        },
+        pushRight: function () {
+            let maxOffset = sliderControls.maxOffset;
+            let offset = sliderControls.offset;
+            let scrollSize = sliderControls.scrollSize;
+            if (maxOffset - scrollSize > offset) {
+                setSliderControls({ ...sliderControls, offset: offset + scrollSize })
+            } else {
+                setSliderControls({ ...sliderControls, offset: maxOffset });
+            };
+        },
+        pushLeft: function () {
+            let minOffset = 0;
+            let offset = sliderControls.offset;
+            let scrollSize = sliderControls.scrollSize;
+            if (minOffset + scrollSize < offset) {
+                setSliderControls({ ...sliderControls, offset: offset - scrollSize })
+            } else {
+                setSliderControls({ ...sliderControls, offset: minOffset });
+            };
+        },
+    };
+    useEffect(() => {
+        // re-initialize slider controls on page resize
+        if (sliderWindowRef.current && sliderInnerRef.current) {
+            sliderFunctions.initialize();
+        };
+        window.addEventListener('resize', sliderFunctions.initialize)
+        return () => window.removeEventListener('resize', sliderFunctions.initialize)
+    }, [sliderWindowRef.current ?? null, sliderInnerRef.current ?? null]);
 
     const navigate = useNavigate()
 
@@ -1990,22 +1927,6 @@ export const Dashboard = () => {
 
 
 
-    // other functions
-    const datify = (normalDate) => {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        let day = normalDate.slice(3, 5)
-        let monthNum = normalDate.slice(0, 2)
-        if (monthNum.charAt(0) === "0") {
-            monthNum = monthNum[1]
-        }
-        let fullYear = normalDate.slice(6)
-        const month = months[monthNum - 1]
-        if (day.charAt(0) === "0") {
-            day = day[1]
-        }
-        let twoYear = fullYear.slice(2)
-        return month + " " + day + ", " + twoYear
-    }
 
     const [awaitingItinerary, setAwaitingItinerary] = useState(false);
     const testItinerary = () => {
@@ -2210,7 +2131,7 @@ export const Dashboard = () => {
                             <div className="">
                                 <div className="box-heading dark-text page-subsubheading">Where are you headed?</div>
                                 <div className="inputBox">
-                                    <input onChange={(e) => setCitySearchQuery(e.target.value)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className={`calendarInput ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 && "drop"} italic-placeholder`} autoComplete='off' required />
+                                    <input ref={cityInputRef} onChange={(e) => setCitySearchQuery(e.target.value)} id='cityInput' type='text' placeholder='City name e.g. Hawaii, Cancun, Rome' className={`calendarInput ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 && "drop"} italic-placeholder`} autoComplete='off' required />
                                     <div className={`auto-dropdown ${cityAutocomplete.length > 0 && citySearchQuery.length > 1 ? "show" : "hide"}`}>
                                         {cityAutocomplete.length > 0 && citySearchQuery.length > 1 && cityAutocomplete.map((city, index) => {
                                             return <div key={index} onClick={() => { updateCityInput(city); setCityAutocomplete([]) }} className="option">
@@ -2248,12 +2169,12 @@ export const Dashboard = () => {
                                     <div onClick={() => toggleCalendarOpen()} className="calendarInput pointer">
                                         <div className="startDateInput flx-1">
                                             <span className={`material-symbols-outlined ${range[0].startDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                            <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
+                                            <p className={`m-0 ${range[0].startDate ? null : "lightgray-text"}`}>{range[0].startDate ? timeFunctions.datify(format(range[0].startDate, "MM/dd/yyyy")) : "Start Date"}</p>
                                         </div>
                                         <hr className='h-40' />
                                         <div className="endDateInput flx-1">
                                             <span className={`material-symbols-outlined ${range[0].endDate ? "purple-text" : "lightgray-text"}`}>date_range</span>
-                                            <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
+                                            <p className={`m-0 ${range[0].endDate ? null : "lightgray-text"}`}>{range[0].startDate ? timeFunctions.datify(format(range[0].endDate, "MM/dd/yyyy")) : "End Date"}</p>
                                         </div>
                                     </div>
                                     <div>
@@ -2281,9 +2202,9 @@ export const Dashboard = () => {
                 {/* end start trip selection box */}
 
                 {/* my trips */}
-                <div className="flx-r align-r just-sb">
+                <div className="flx-r align-r just-sb mb-3">
                     <p className="m-0 page-subsubheading-bold mt-5">My Trips</p>
-                    {userTrips && userTrips.length > 4 ?
+                    {userTrips.isLoaded && userTrips.trips.length > 4 ?
                         <Link to='/mytrips'>
                             <div className="flx-r align-c">
                                 <p className="m-0 purple-text page-text">See all trips</p>
@@ -2300,65 +2221,81 @@ export const Dashboard = () => {
                         <Loading noMascot={true} noText={true} />
                     </div>
                 }
-                {userTrips ?
+                {userTrips.isLoaded ?
                     <>
-                        {!userTrips.length > 0 &&
+                        {!userTrips.trips.length > 0 &&
                             <>
-                                <p className="m-0 gray-text">No trips created. <span onClick={() => getCity()} className="purple-text bold500 pointer">Enter a city</span>  to start!</p>
+                                <p className="m-0 gray-text">No trips created. <span onClick={() => cityInputRef.current && cityInputRef.current.focus()} className="purple-text bold500 pointer">Enter a city</span>  to start!</p>
                                 {/* <p className="m-0 gray-text small">Come back after you've created a trip to view created itineraries</p> */}
                             </>
                         }
+                        <div ref={sliderWindowRef} className="slider-window">
+                            <div ref={sliderInnerRef} className="slider-inner" style={{ transform: `translateX(-${sliderControls.offset}px) ` }}>
 
-                        <div className={`userTrips ${mobileMode && "just-se"} flx-r flx-wrap gap-8`}>
-                            {userTrips.map((trip, index) => {
+                                {/* <div className={`userTrips ${mobileMode && "just-se"} flx-r flx-wrap gap-8`}> */}
+                                {userTrips.trips.map((trip, index) => {
 
-                                if (index < 5) {
+                                    if (index < 5) {
+                                        return <div className="slider-item">
+                                            <div key={index} className="userTrip-box">
+                                                <div ref={refPopUp}>
+                                                    <div id={`userTrip-popUp-${index}`} className="popUp d-none">
+                                                        <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
+                                                            <p className="m-0">Edit trip details</p>
+                                                            <span className="material-symbols-outlined large mx-1">
+                                                                edit
+                                                            </span>
+                                                        </div>
+                                                        <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="option">
+                                                            <p className="m-0">Edit Itinerary</p>
+                                                            <span className="material-symbols-outlined large mx-1">
+                                                                map
+                                                            </span>
+                                                        </div>
 
-
-                                    return <div key={index} className="userTrip-box">
-                                        <div ref={refPopUp}>
-                                            <div id={`userTrip-popUp-${index}`} className="popUp d-none">
-                                                <div onClick={(() => { openEditTripModal(trip); closeUserTripPopup() })} className="option">
-                                                    <p className="m-0">Edit trip details</p>
-                                                    <span className="material-symbols-outlined large mx-1">
-                                                        edit
+                                                        <div onClick={() => deleteTrip(trip)} className="option">
+                                                            <p className="m-0">Delete trip</p>
+                                                            <span className="material-symbols-outlined large mx-1">
+                                                                delete
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
+                                                        more_vert
                                                     </span>
                                                 </div>
-                                                <div onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} className="option">
-                                                    <p className="m-0">Edit Itinerary</p>
-                                                    <span className="material-symbols-outlined large mx-1">
-                                                        map
-                                                    </span>
+                                                <div className="destImgDiv">
+                                                    <img onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} src={trip.dest_img} alt="" className="destImg pointer" />
                                                 </div>
-
-                                                <div onClick={() => deleteTrip(trip)} className="option">
-                                                    <p className="m-0">Delete trip</p>
-                                                    <span className="material-symbols-outlined large mx-1">
-                                                        delete
-                                                    </span>
+                                                <div className="box-text-container">
+                                                    <p className="m-0 box-title truncated">{trip.trip_name}</p>
+                                                    <div className="flx-r">
+                                                        <p className="m-0 gray-text">{timeFunctions.datishortRange(trip.start_date, trip.end_date)}</p>
+                                                        <p className="m-0 gray-text">&nbsp; &#9679; &nbsp;</p>
+                                                        <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <span id={`userTripPopUpBtn-${index}`} onClick={() => toggleUserTripPopup(index)} className="material-symbols-outlined vertIcon">
-                                                more_vert
-                                            </span>
                                         </div>
-                                        <div className="destImgDiv">
-                                            <img onClick={() => viewTrip(trip, trip.is_itinerary ? 'itinerary' : 'places')} src={trip.dest_img} alt="" className="destImg pointer" />
-                                        </div>
-                                        <div className="box-text-container">
-                                            <p className="m-0 box-title truncated">{trip.trip_name}</p>
-                                            <div className="flx-r">
-                                                <p className="m-0 gray-text">{datishortRange(trip.start_date, trip.end_date)}</p>
-                                                <p className="m-0 gray-text">&nbsp; &#9679; &nbsp;</p>
-                                                <p className="m-0 gray-text">{trip.duration} {trip.duration > 1 ? "days" : "day"}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                            })}
+                                    }
+                                })}
+                                {/* </div> */}
+
+                            </div>
                         </div>
+
                     </>
                     : null}
+                {!sliderControls.buttonsHidden && 
+                    <div className="slider-buttons">
+                        <button onClick={() => sliderFunctions.pushLeft()} className="slider-button left" data-disabled={sliderControls.offset === 0}>
+                            <span className={gIcon}>arrow_back</span>
+                        </button>
+                        <button onClick={() => sliderFunctions.pushRight()} className="slider-button right" data-disabled={sliderControls.offset === sliderControls.maxOffset}>
+                            <span className={gIcon}>arrow_forward</span>
+                        </button>
+                    </div>
+                }
                 {/* end my trips */}
 
                 {/* user preferences selection */}
@@ -2399,7 +2336,7 @@ export const Dashboard = () => {
 
                 </div> */}
 
-                <div className="popular-destinations mt-5">
+                <div className="popular-destinations my-6">
                     <div className="page-subsubheading-bold my-3">Featured Trips</div>
 
                     <div className="carousel2-window">
@@ -2439,7 +2376,7 @@ export const Dashboard = () => {
 
                         </div>
                     </div>
-                    <div className="btns mb-10">
+                    {/* <div className="btns mb-10">
                         <button onClick={() => slideCarouselLeft()} className={translationIndex === 0 ? 'btn-primaryflex-disabled' : 'btn-carousel-special hover-left'}>
                             <span className="material-symbols-outlined mt-1 white-text">
                                 arrow_back
@@ -2450,7 +2387,7 @@ export const Dashboard = () => {
                                 arrow_forward
                             </span>
                         </button>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>

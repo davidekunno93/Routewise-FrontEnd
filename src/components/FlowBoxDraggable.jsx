@@ -8,47 +8,21 @@ import './flowbox.scoped.css'
 import { DataContext } from '../Context/DataProvider';
 import Dropdown from './Dropdown/Dropdown';
 import GoogleSearch from './GoogleSearch';
+import axios from 'axios';
 
 
-const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, country, addPlaceToConfirm, itineraryToSaved, isSavedPlace, openConfirmationModal, confirmationModalRef }) => {
-    const { gIcon, generateTripMapBounds } = useContext(DataContext);
-    const [dayTitle, setDayTitle] = useState('');
+const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpen, addSearchClose, toggleFlow, day, places, removePlace, addPlaceFromFlowBox, addPlaceToConfirm, itineraryToSaved, isSavedPlace, openConfirmationModal, confirmationModalRef }) => {
+    const { gIcon, generateTripMapBounds, numberToBgColor } = useContext(DataContext);
 
-
-    const updateDayTitle = (e) => {
-        setDayTitle(e.target.value);
-    }
-
-    useEffect(() => {
-        let editOverlay = document.getElementById(`editOverlay-${id}`)
-        let dayTitleInput = document.getElementById(`dayTitleInput-${id}`)
-        if (dayTitle.length > 0) {
-            editOverlay.classList.add('d-none')
-        } else if (dayTitle.length === 0) {
-            editOverlay.classList.remove('d-none')
-        }
-        if (dayTitle.length >= 32) {
-            dayTitleInput.value = dayTitle.slice(0, 32)
-            // console.log(">31")
-        }
-    }, [dayTitle])
 
 
     // detect narrow window to render # of places in flowbox
     const [narrowWindow, setNarrowWindow] = useState(false);
-    const [placeOrPlaces, setPlaceOrPlaces] = useState(`${day.placeIds.length === 1 ? "place" : "places"}`)
     useEffect(() => {
-        window.addEventListener('resize', updateNarrowWindow,)
-    }, [])
+        window.addEventListener('resize', updateNarrowWindow)
+        return () => window.removeEventListener('resize', updateNarrowWindow)
+    }, []);
 
-    useEffect(() => {
-        // console.log('placeIds length =', day.placeIds.length)
-        if (day.placeIds.length === 1) {
-            setPlaceOrPlaces("place")
-        } else {
-            setPlaceOrPlaces("places")
-        }
-    }, [day.placeIds])
 
     const updateNarrowWindow = () => {
         // console.log(window.innerWidth)
@@ -56,43 +30,78 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpe
             setNarrowWindow(true)
         } else if (window.innerWidth >= 1024) {
             setNarrowWindow(false)
-        }
-    }
+        };
+    };
 
-    const numberToBgColor = (num) => {
-        let lastDigit = num.slice(-1)
-        if (lastDigit === "1") {
-            return "#FF4856" // RED
-        }
-        if (lastDigit === "2") {
-            return "#FFD84E" // YELLOW
-        }
-        if (lastDigit === "3") {
-            return "#2185F9" // BLUE
-        }
-        if (lastDigit === "4") {
-            return "#4CDE08" // GREEN
-        }
-        if (lastDigit === "5") {
-            return "#FFA80A" // ORANGE
-        }
-        if (lastDigit === "6") {
-            return "#FF52FF" // PINK
-        }
-        if (lastDigit === "7") {
-            return "#14DCDC" // LIGHT BLUE
-        }
-        if (lastDigit === "8") {
-            return "#CECDFE" // PURPLE
-        }
-        if (lastDigit === "9") {
-            return "#A9743A" // BROWN
-        }
-        if (lastDigit === "0") {
-            return "#42F2A8" // LIGHT GREEN
-        }
-        return null;
-    }
+    // [day name updates]
+    const dayNameInputRef = useRef(null);
+    const [dayNameControls, setDayNameControls] = useState({
+        dayNum: day.id,
+        db_id: day.db_id,
+        previousText: day.dayName ?? "",
+        text: day.dayName ?? "",
+        isUpdating: false,
+        onStandby: false,
+    });
+    useEffect(() => {
+        console.log(dayNameControls)
+    }, [dayNameControls])
+    const dayNameFunctions = {
+        startEdit: function () {
+            setDayNameControls({ ...dayNameControls, isUpdating: true, onStandby: true });
+        },
+        endEdit: function () {
+            setDayNameControls({ ...dayNameControls, isUpdating: false });
+        },
+        updateText: function (e) {
+            setDayNameControls({ ...dayNameControls, text: e.target.value });
+        },
+        checkToSendData: function () {
+            console.log("checking to send data...")
+            if (!dayNameControls.isUpdating && dayNameControls.onStandby) {
+                if (dayNameControls.text !== dayNameControls.previousText) {
+                    console.log("send day name data", {
+                        db_id: dayNameControls.db_id,
+                        dayName: dayNameControls.text,
+                    })
+                    // handle send data
+                    dayNameFunctions.sendData();
+                } else {
+                    console.log("no need to send day name data");
+                }
+            }
+        },
+        sendData: async function () {
+            // send data to backend
+            let dispo_local = "http://localhost:5000"
+            let dispo_hosted = "https://routewise-backend.onrender.com"
+            let url = `${dispo_local}/places/update-day-name/${day.db_id}`
+            let data = { dayName: dayNameControls.text }
+            const response = await axios.patch(url, data, {
+                headers: { "Content-Type": "application/json" }
+            }).then((response) => {
+                console.log("day name update was successful")
+                // if successful update previous text to current text
+                if (response.status === 200) {
+                    setDayNameControls({ ...dayNameControls, previousText: dayNameControls.text });
+                } else {
+                    console.log(response)
+                    alert("Your day name was not able to be updated. Please try again.");
+                    setDayNameControls({ ...dayNameControls, text: dayNameControls.previousText });
+                };
+            }).catch((error) => {
+                console.log("day name update was unsuccessful")
+                console.log(error)
+                // if unsuccessful revert current text back to previous text
+                alert("Your day name was not able to be updated. Please try again.");
+                setDayNameControls({ ...dayNameControls, text: dayNameControls.previousText });
+            })
+        },
+    };
+    useEffect(() => {
+        dayNameFunctions.checkToSendData();
+    }, [dayNameControls.isUpdating]);
+
 
     // [dropdown code]
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -126,33 +135,7 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpe
     };
     const pointerRef = useRef(null);
 
-    const [searchBoxOpen, setSearchBoxOpen] = useState(false);
-    const openSearchBox = (id) => {
-        const addPlacesBtn = document.getElementById(`addPlacesBtn`)
-        const searchBar = document.getElementById(`searchBar-`)
-        const addPlaceExpand = document.getElementById(`addPlace-expand`)
-        addPlacesBtn.classList.add('d-none')
-        searchBar.classList.remove('d-none')
-        addPlaceExpand.style.height = '70px'
-        wait(100).then(() => {
-            searchBar.classList.remove('o-none')
-        })
-    }
-    const closeSearchBox = (id) => {
-        const addPlacesBtn = document.getElementById(`addPlacesBtn-${id}`)
-        const searchBar = document.getElementById(`searchBar-${id}`)
-        const addPlaceExpand = document.getElementById(`addPlace-expand-${id}`)
-        searchBar.classList.add('o-none')
-        wait(100).then(() => {
-            addPlacesBtn.classList.remove('d-none')
-            searchBar.classList.add('d-none')
-            addPlaceExpand.style.height = '30px'
-        })
-    };
 
-    const addPlaceFromFlowBoxFlow = (place) => {
-        addPlaceFromFlowBox(day.id, place);
-    };
 
     return (
         <div id={`flowBox-${id}`} className="flow-box" style={{ borderLeftColor: numberToBgColor(day.id) }}>
@@ -167,7 +150,7 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpe
                         <span className="smalltext-respond">&nbsp;{day.date_converted.split(' ')[1]} {day.date_converted.split(' ')[2]}</span>
                     </p>
                     <div className="options">
-                        <p id={`placeCount-${id}`} className="placeCount o-none">{narrowWindow ? "(" + day.placeIds.length + ")" : day.placeIds.length + " " + placeOrPlaces}</p>
+                        <p id={`placeCount-${id}`} className="placeCount o-none">{narrowWindow ? "(" + day.placeIds.length + ")" : day.placeIds.length + " " + (day.placeIds.length === 1 ? "place" : "places") }</p>
                         <div className="more_vert-container">
                             <span ref={pointerRef} onClick={(e) => { e.stopPropagation(); toggleDropdown() }} className={`${gIcon} o-50 more_vert`}>more_vert</span>
                         </div>
@@ -186,10 +169,23 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpe
                     </div>
                 </div>
                 <div className="addTitle-input position-relative">
-                    <input onChange={(e) => updateDayTitle(e)} id={`dayTitleInput-${id}`} type="text" className="input-dayTitle ml-5" placeholder='Add subheading' />
-                    <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}><span className={`${gIcon} o-20 edit-overlay small`}>
-                        edit
-                    </span></label>
+                    <input ref={dayNameInputRef}
+                        onFocus={() => dayNameFunctions.startEdit()}
+                        onBlur={() => dayNameFunctions.endEdit()}
+                        onChange={dayNameFunctions.updateText}
+                        value={dayNameControls.text}
+                        id={`dayTitleInput-${id}`}
+                        type="text"
+                        className="input-dayTitle ml-5"
+                        placeholder='Add subheading...'
+                    />
+                    {/* <label id={`editOverlay-${id}`} htmlFor={`dayTitleInput-${id}`}>
+                        {!dayNameControls.isUpdating && !dayNameControls.text &&
+                            <span className={`${gIcon} o-20 edit-overlay small`}>
+                                edit
+                            </span>
+                        }
+                    </label> */}
                 </div>
             </div>
             <div id={`flow-${id}`} className="flowBody-collapsible pr-2">

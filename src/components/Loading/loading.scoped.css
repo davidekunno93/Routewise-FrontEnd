@@ -7,9 +7,8 @@
     bottom: 0;
     /* border: 1px solid salmon; */
     display: flex;
-    /* justify-content: center;
-    align-items: center;  */ 
     z-index: 1; 
+    transition: 0.3s;
 }
 .loading-fillElement[data-color="solid-white"] {
     background-color: white;
@@ -19,4 +18,10 @@
 }
 .loading-fillElement[data-color="whitelite"] {
     background-color: rgba(255, 255, 255, 0.72);
+}
+.loading-fillElement[data-fadeIn="start"] {
+    opacity: 0;
+}
+.loading-fillElement[data-fadeIn="end"] {
+    opacity: 1;
 }
