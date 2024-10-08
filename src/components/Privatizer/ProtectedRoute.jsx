@@ -14,9 +14,9 @@ const ProtectedRoute = ({ children }) => {
         if (auth.updateCurrentUser) {
             console.log("checking access...")
             if (!auth.currentUser || !auth.currentUser.emailVerified) {
-                setPageBlockOpen(false);
-                // navigate('/dashboard', { replace: true });
-                // alert("Please verify your email first. Check your email for a verification link.");
+                // setPageBlockOpen(false);
+                navigate('/dashboard', { replace: true });
+                alert("Please verify your email first. Check your email for a verification link.");
                 return;
             } else if (auth.currentUser && auth.currentUser.emailVerified) {
                 setPageBlockOpen(false);
