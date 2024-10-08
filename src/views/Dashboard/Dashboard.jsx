@@ -15,7 +15,7 @@ import { Link, useNavigate, useRouteError } from 'react-router-dom';
 import { LoadingScreen } from '../../components/Loading/LoadingScreen';
 import EditTripModal from '../../components/EditTripModal';
 import { doc, getDoc } from 'firebase/firestore';
-import PageBlock from '../../components/Privatizer/PageBlock';
+import LoadingFullscreen from '../../components/Loading/LoadingFullscreen';
 import './dashboard.scoped.css';
 
 
@@ -1782,29 +1782,24 @@ export const Dashboard = () => {
     };
 
     const viewTrip = async (trip, navigation) => {
-        // check hasAccess
-        let uid = auth.currentUser ? auth.currentUser.uid : "no_uid";
-        let docModel = await getDoc(doc(firestore, `itineraryAccess/${uid}`));
-        let docData = docModel.data();
-        if (docData && docData.hasAccess) {
-            // no blockage of access
-            clearCurrentTrip()
-            setIsLoading(true)
-            if (navigation === "itinerary") {
-                let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
-                const response = await axios.get(url)
-                console.log({ ...trip, itinerary: response.data });
-                // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-                return response.status === 200 ? loadItinerary({ ...trip, itinerary: response.data }) : alert('Something went wrong. Please try again.')
-            } else if (navigation === "places") {
-                let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
-                const response = await axios.get(url)
-                // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
-                return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
-            };
-        } else {
-            let accessDeniedMessage = `You need an account with access to create a trip. Please ${auth.currentUser ? "" : "login and "}navigate to the access option in the navbar to gain access.`
-            alert(accessDeniedMessage);
+        // check if email verified
+        if (auth.currentUser.emailVerified === false) {
+            alert("Please verify your email first");
+            return;
+        };
+        clearCurrentTrip()
+        setIsLoading(true)
+        if (navigation === "itinerary") {
+            let url = `https://routewise-backend.onrender.com/places/trip/${trip.trip_id}`
+            const response = await axios.get(url)
+            console.log({ ...trip, itinerary: response.data });
+            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+            return response.status === 200 ? loadItinerary({ ...trip, itinerary: response.data }) : alert('Something went wrong. Please try again.')
+        } else if (navigation === "places") {
+            let url = `https://routewise-backend.onrender.com/places/get-places/${trip.trip_id}`
+            const response = await axios.get(url)
+            // const response = await axios.get("https://routewise-backend.onrender.com/places/trip/254")
+            return response.status === 200 ? loadPlaces(response.data, trip) : alert('Something went wrong. Please try again.')
         };
     };
     const loadPlaces = (place_list, trip) => {
@@ -2114,7 +2109,7 @@ export const Dashboard = () => {
 
     return (
         <>
-            <PageBlock />
+            <LoadingFullscreen />
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
             <EditTripModal open={editTripModalOpen} trip={tripToEdit} loadItinerary={loadItinerary} loadUserTripsData={loadUserTripsData} onClose={closeEditTripModal} />
@@ -2286,7 +2281,7 @@ export const Dashboard = () => {
 
                     </>
                     : null}
-                {!sliderControls.buttonsHidden && 
+                {!sliderControls.buttonsHidden &&
                     <div className="slider-buttons">
                         <button onClick={() => sliderFunctions.pushLeft()} className="slider-button left" data-disabled={sliderControls.offset === 0}>
                             <span className={gIcon}>arrow_back</span>

@@ -228,7 +228,7 @@ export const AuthModal = ({ open, onClose }) => {
                 console.log("sent verification email")
 
                 // already navigated to dashboard, close modal (wait a second for smoother transition)
-                wait(2000).then(() => {
+                wait(1500).then(() => {
                     setIsLoading(false);
                     onClose();
                 });
@@ -357,7 +357,7 @@ export const AuthModal = ({ open, onClose }) => {
         // window.localStorage.setItem("userPref", [userPref]);
         // window.localStorage.setItem("isLoggedIn", true);
         setUser(cred.user)
-        wait(2000).then(() => {
+        wait(1500).then(() => {
             // check profile is complete - i.e. name data saved in database
             setIsLoading(false);
             navigate('/dashboard');

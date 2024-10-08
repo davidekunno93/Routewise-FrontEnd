@@ -8,10 +8,12 @@ import axios from 'axios';
 import SurveyModal from '../SurveyModal';
 import PassCodeModal from '../PassCodeModal';
 import EmailVerificationModal from '../EmailVerificationModal/EmailVerificationModal';
+import LoadingFullscreen from '../Loading/LoadingFullscreen';
+import { set } from 'date-fns';
 
 export const Navbar = () => {
   const { mobileMode, pageOpen, user, setUser, signUpIsOpen, setSignUpIsOpen,
-    authControls, authFunctions } = useContext(DataContext);
+    authControls, authFunctions, wait } = useContext(DataContext);
 
 
   useLayoutEffect(() => {
@@ -19,6 +21,8 @@ export const Navbar = () => {
   }, [auth]);
 
 
+  // fullscreen loading state
+  const [fullPageLoading, setFullPageLoading] = useState(false);
 
   // [User (profile icon click) menu]
   const toggleUserMenu = () => {
@@ -87,12 +91,22 @@ export const Navbar = () => {
   const navigate = useNavigate()
 
   const logOut = () => {
+    setFullPageLoading(true);
     signOut(auth).then(() => {
       setUser(null)
       setLogoutStandby(true);
       console.log("signed out user", auth.currentUser)
+      wait(1000).then(() => {
+        setFullPageLoading(false);
+      });
+    }).catch((error) => {
+      console.log(error)
+      alert("Something went wrong. Please try again.")
+      wait(1000).then(() => {
+        setFullPageLoading(false);
+      });
     })
-  }
+  };
   const [logoutStandby, setLogoutStandby] = useState(false);
   useEffect(() => {
     if (logoutStandby && !user) {
@@ -119,6 +133,7 @@ export const Navbar = () => {
 
   return (
     <>
+      <LoadingFullscreen open={fullPageLoading} loading={fullPageLoading} />
       <EmailVerificationModal open={emailVerificationModalOpen} onClose={() => setEmailVerificationModalOpen(false)} />
       <AuthModal open={authControls.isOpen} onClose={() => authFunctions.close()} />
       <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
@@ -185,14 +200,14 @@ export const Navbar = () => {
               </div>
             </div></Link>
 
-            <div onClick={() => openPasscodeModal()} className={`option`}>
+            {/* <div onClick={() => openPasscodeModal()} className={`option`}>
               <div className="flx-r gap-2">
                 <span className={`material-symbols-outlined`}>
                   lock
                 </span>
                 <p className="m-0 bold500">Access</p>
               </div>
-            </div>
+            </div> */}
 
 
           </div>

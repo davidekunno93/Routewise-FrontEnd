@@ -6,7 +6,7 @@ import { Dashboard } from '../../views/Dashboard/Dashboard';
 import { Landing } from '../../views/Landing/Landing';
 import { DataContext } from '../../Context/DataProvider';
 import { useNavigate } from 'react-router-dom';
-import PageBlock from './PageBlock';
+import LoadingFullscreen from '../Loading/LoadingFullscreen';
 
 const ProtectedRoute = ({ children }) => {
     const navigate = useNavigate();
@@ -60,7 +60,7 @@ const ProtectedRoute = ({ children }) => {
     const [pageBlockOpen, setPageBlockOpen] = useState(true);
 
     return <>
-        <PageBlock open={pageBlockOpen} loading={true} />
+        <LoadingFullscreen open={pageBlockOpen} loading={true} />
         {children}
     </>
 
