@@ -139,7 +139,7 @@ export const Navbar = () => {
       <PassCodeModal open={passcodeModalOpen} onClose={() => setPasscodeModalOpen(false)} />
       {/* <SurveyModal /> */}
       <div className={`navbar bg-white w-100 flx-r just-sb`}>
-        {mobileMode &&
+        {mobileMode && auth.currentUser &&
           <div ref={hamburgerRef} onClick={() => setNavMenuMobileOpen((navMenuMobileOpen) => !navMenuMobileOpen)} className="hamburger-icon ml-2">
             <span className="line-1"></span>
             <span className="line-2"></span>
@@ -169,7 +169,7 @@ export const Navbar = () => {
         <div className="flx-c just-ce">
           <Link onClick={() => togglePrototypeMenu()} className=''>
 
-            <img src={`${mobileMode ? "https://i.imgur.com/Eu8Uf2u.png" : "https://i.imgur.com/VvcOzlX.png"}`} alt="Routewise" className={`routewise-logo ${mobileMode ? "m-aut mobile mt-  position-absolute abs-center" : "ml15-disappear768"}`} />
+            <img src={`${mobileMode && auth.currentUser ? "https://i.imgur.com/Eu8Uf2u.png" : "https://i.imgur.com/VvcOzlX.png"}`} alt="Routewise" className={`routewise-logo ${mobileMode && auth.currentUser ? "m-aut mobile mt-  position-absolute abs-center" : "ml15-disappear768"}`} />
 
           </Link>
         </div>
@@ -243,7 +243,7 @@ export const Navbar = () => {
                   settings
                 </span>
                 <p className="m-0 ml-2">Account Settings</p></div></Link>
-              <Link onClick={() => { setEmailVerificationModalOpen(true); closeUserMenu()}}><div className="option">
+              <Link onClick={() => { setEmailVerificationModalOpen(true); closeUserMenu() }}><div className="option">
                 <span className="material-symbols-outlined">
                   lock
                 </span>
@@ -264,11 +264,7 @@ export const Navbar = () => {
           </div>
           :
           <div className="right-side-btns">
-            {!mobileMode ?
-              <button onClick={() => authFunctions.openSignUp()} className={`btn-tertiaryflex small`}>Sign Up</button>
-              :
-              <p onClick={() => authFunctions.openSignUp()} className="m-0 purple-text">Sign Up</p>
-            }
+            <button onClick={() => authFunctions.openSignUp()} className={`btn-tertiaryflex small`}>Sign Up</button>
             {!mobileMode &&
               <button onClick={() => authFunctions.openSignIn()} className="btn-outlineflex small">Log in</button>
             }

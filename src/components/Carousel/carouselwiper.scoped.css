@@ -1,0 +1,68 @@
+.carousel-wiper {
+    /* width: 100%;
+    height: 100%; */
+    position: relative;
+    width: min-content;
+    margin: auto;
+}
+.carousel-wiper button.navigate {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--purple);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: 0.2s;
+    visibility: visible;
+    opacity: 1;
+    z-index: 1;
+}
+.carousel-wiper button.navigate span {
+    color: white;
+    font-size: 28px;
+}
+
+.carousel-wiper .navigate.left {
+    left: 0;
+}
+
+.carousel-wiper .navigate.right {
+    right: 0;
+}
+
+.carousel-wiper .navigate[data-hidden="true"] {
+    visibility: hidden;
+    opacity: 0;
+}
+
+.carousel-wiper-window {
+    width: 100%;
+    height: 100%;
+    width: 320px;
+    height: 440px;
+    overflow: hidden;
+    margin: 24px 36px;
+}
+
+.carousel-wiper-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    white-space: nowrap;
+    transition: 0.4s;
+}
+
+.carousel-wiper-item {
+    width: 100%;
+    /* height: 100%; */
+    display: inline-flex;    
+}

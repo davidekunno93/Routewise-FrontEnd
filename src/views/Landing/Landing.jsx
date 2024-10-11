@@ -15,6 +15,8 @@ import LinearGradient from '../../components/LinearGradient/LinearGradient'
 import NavigationTabs from '../../components/NavigationTabs/NavigationTabs'
 import { auth } from '../../firebase'
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth'
+import CarouselWiper from '../../components/Carousel/CarouselWiper'
+import { max } from 'date-fns'
 
 export const Landing = () => {
     const { user, setCurrentTrip, mobileMode, authFunctions, getCountryName, timeFunctions,
@@ -103,14 +105,17 @@ export const Landing = () => {
     const tabs = [
         {
             tabName: "Create a trip",
+            conciseTabName: "Create",
             imgUrl: "https://i.imgur.com/b3MWD7T.gif",
         },
         {
             tabName: "Add Places",
+            conciseTabName: "Add",
             imgUrl: "https://i.imgur.com/LIwYn0h.gif",
         },
         {
             tabName: "Modify Itinerary",
+            conciseTabName: "Modify",
             imgUrl: "",
         },
     ];
@@ -278,8 +283,11 @@ export const Landing = () => {
     const [activeTabIndex, setActiveTabIndex] = useState(0);
 
 
-
-
+    const items = featuredTrips.map((trip, index) => {
+        return (
+            <FeaturedTripCard key={index} trip={trip} />
+        )
+    });
 
 
     return (
@@ -292,9 +300,7 @@ export const Landing = () => {
 
 
                     <h1 className={`hero-title ${mobileMode && "mobile"} darkpurple-text`}>Create the <span className="font-merriweather bold500 italic">perfect itinerary</span> <br />to fit your travel needs</h1>
-                    {!mobileMode &&
-                        <p className={`hero-text ${mobileMode ? "mobile" : "w-40"} bold600`}>Travel confidently with an itinerary optimized for convenience and catered to you</p>
-                    }
+                    <p className={`hero-text ${mobileMode ? "mobile" : "w-40"} bold600`}>Travel confidently with an itinerary optimized for convenience and catered to you</p>
                     {/* <button onClick={() => goToDashboard()} className="btn-primaryflex"><p className="my-1 mx-2 white-text">Start planning now</p></button> */}
 
                     <div className={`selection-box-landing ${mobileMode && "mobile"}`}>
@@ -357,21 +363,27 @@ export const Landing = () => {
             <div className="section planning">
                 <Fade delay={300} triggerOnce>
                     <Slide direction='up' triggerOnce>
-                        <h1 className={`page-title ${mobileMode ? "w-90" : "w670"} py-4 darkpurple-text`}>Planning your day-to-day travel itinerary just got <span className="font-merriweather bold500 italic">a whole lot easier</span></h1>
-                        <div className={`action-points  ${mobileMode && "mobile"}`}>
+                        <div className="page-title-box wide">
+                            <h1 className={`page-title py-4 darkpurple-text`}>Planning your day-to-day travel itinerary just got <span className="font-merriweather bold500 italic">a whole lot easier</span></h1>
+                        </div>
+                        <div className={`action-points ${mobileMode && "mobile"}`}>
                             {actionPoints.map((point, index) => {
                                 let first = 0
                                 let last = actionPoints.length - 1
                                 return <div key={index} className="point-holder">
                                     <div className={`v-line-divider ${!mobileMode ? index === last ? "d-none" : null : "d-none"}`}></div>
                                     <div className={`point ${mobileMode && "mobile"}`}>
-                                        <img src={point.imgUrl} alt="" className='point-img' />
-                                        <div className="title">{point.title}</div>
-                                        <div className="text">{point.text}</div>
+                                        <div className="imgDiv">
+                                            <img src={point.imgUrl} alt="" className='point-img' />
+                                        </div>
+                                        <div className="description">
+                                            <div className="title">{point.title}</div>
+                                            <div className="text">{point.text}</div>
+                                        </div>
                                     </div>
-                                    {index !== last && mobileMode &&
+                                    {/* {index !== last && mobileMode &&
                                         <hr className='h-line-divider' />
-                                    }
+                                    } */}
                                 </div>
                             })}
 
@@ -383,6 +395,7 @@ export const Landing = () => {
             <LinearGradient
                 topColor='#FFFCF9'
                 bottomColor='transparent'
+                height={64}
             />
 
             <div className="section pt-0">
@@ -397,9 +410,10 @@ export const Landing = () => {
                             <NavigationTabs
                                 tabs={tabs}
                                 beamBackgroundColor={"transparent"}
-                                gap={48}
+                                gap={mobileMode ? 0 : 48}
                                 paddingX={24}
                                 setActiveTabIndex={setActiveTabIndex}
+                                screenPaddingX={36}
                             />
                             <div className="tab-imgDiv">
                                 {tabs.map((tab, index) => {
@@ -418,14 +432,19 @@ export const Landing = () => {
                             <h1 className="page-title darkpurple">Featured Itineraries</h1>
                             <p className="page-subtitle">Explore our featured itineraries for inspiration and a head start on planning your own unique trip</p>
                         </div>
+                        {/* {!mobileMode ? */}
                         <div className="featuredTrips">
                             {featuredTrips.map((trip, index) => {
                                 return <FeaturedTripCard key={index} trip={trip} />
                             })}
                         </div>
+
+                        {/* <CarouselWiper items={items} width={300} height={478} /> */}
+
                     </div>
                 </Slide>
             </Fade>
+
 
             <Fade delay={300} triggerOnce>
                 <Slide direction='up' triggerOnce>
@@ -503,7 +522,9 @@ export const Landing = () => {
             </div>
 
             <div className="explore-section">
-                <div className="page-title black-text py-5">Explore with us on Instagram!</div>
+                <div className="page-title-box">
+                    <div className="page-title black-text py-5">Explore with us on Instagram!</div>
+                </div>
                 <div className="ig-carousel-window">
 
                     {/* <div className="inner-no-flex"> */}

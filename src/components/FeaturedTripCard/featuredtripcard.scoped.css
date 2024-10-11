@@ -10,6 +10,10 @@ p {
     justify-content: center;
     cursor: pointer;
     transition: 0.2s;
+    @media screen and (max-width: 425px) {
+        width: 240px;
+        height: 360px;
+    }
 }
 .featuredTrip-card2:hover {
     transform: translateY(-4px);
@@ -39,9 +43,15 @@ p {
 .featuredTrip-card2 .caption .title {
     font-size: 24px;
     font-weight: bold;
+    @media screen and (max-width: 425px) {
+        font-size: 20px;
+    }
 }
 .featuredTrip-card2 .caption .info {
     font-size: 18px;
     color: gray;
+    @media screen and (max-width: 425px) {
+        font-size: 14px;
+    }
 }
 
