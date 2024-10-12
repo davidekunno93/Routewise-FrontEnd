@@ -243,7 +243,7 @@ export const Navbar = () => {
                   settings
                 </span>
                 <p className="m-0 ml-2">Account Settings</p></div></Link>
-              <Link onClick={() => { setEmailVerificationModalOpen(true); closeUserMenu() }}><div className="option">
+              {/* <Link onClick={() => { setEmailVerificationModalOpen(true); closeUserMenu() }}><div className="option">
                 <span className="material-symbols-outlined">
                   lock
                 </span>
@@ -253,7 +253,7 @@ export const Navbar = () => {
                     :
                     <span className='red-text'>&nbsp;Not Verified</span>
                   }
-                </p></div></Link>
+                </p></div></Link> */}
               <Link onClick={() => { logOut(); closeUserMenu() }}>
                 <div className="option">
                   <span className="material-symbols-outlined">
