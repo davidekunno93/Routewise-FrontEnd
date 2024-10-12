@@ -25,6 +25,7 @@ import PrintItineraryPage from './views/PrintItineraryPage'
 import { doc, getDoc } from 'firebase/firestore'
 import ProtectedRoute from './components/Privatizer/ProtectedRoute'
 import TestItinerary from './views/TestItinerary'
+import AccountSettings from './views/AccountSettings/AccountSettings'
 // import Scratch from './views/Scratch/Scratch'
 
 function App() {
@@ -33,19 +34,17 @@ function App() {
   const userPref = window.localStorage.getItem("userPref");
   const { user, setUser, userPreferences, setUserPreferences,
     currentTrip, mapBoxCategoryKey, suggestedPlaces, setSuggestedPlaces, topSites, setTopSites,
-    loadCityImg, getGoogleImg, modifyInfo, textFunctions, toLatitudeLongitude, 
+    loadCityImg, getGoogleImg, modifyInfo, textFunctions, toLatitudeLongitude,
     getBestCategory, googleCategoryKey, googlePlaceTypeKey } = useContext(DataContext);
 
-  // wakeup function
+
+  // fetch user details
   useEffect(() => {
-    // fetch user details
     auth.onAuthStateChanged((userCred) => {
       setUser(userCred);
       // add get name data from firebase code
       setPreferences();
     });
-
-
   }, []);
 
 
@@ -162,7 +161,7 @@ function App() {
   };
   const getCategoryQueries = (selectedPreferencesArr) => {
     let categoryQueries = [];
-    for (let i = 0; i<selectedPreferencesArr.length; i++) {
+    for (let i = 0; i < selectedPreferencesArr.length; i++) {
       categoryQueries.push(...googleCategoryKey[selectedPreferencesArr[i]].categoryQueries)
     };
     return categoryQueries;
@@ -231,7 +230,7 @@ function App() {
     for (let i = 0; i < data.length; i++) {
       let photoName = data[i].photos[0].name;
       let categoryTitles = [];
-      for (let j = 0; j<data[i].types.length; j++) {
+      for (let j = 0; j < data[i].types.length; j++) {
         // if type match with google keys
         if (googleCategoryPlaceTypesArr.includes(data[i].types[j])) {
           // console.log(data[i].displayName.text, data[i].types[j]);
@@ -258,7 +257,7 @@ function App() {
         imgURL: await getGoogleImg(photoName),
         summary: data[i].editorialSummary ? data[i].editorialSummary.text : "",
         phoneNumber: data[i].internationalPhoneNumber ?? "",
-        website: data[i].websiteUri ?? "",        
+        website: data[i].websiteUri ?? "",
       };
       resultPlaces.push(place);
     }
@@ -295,6 +294,7 @@ function App() {
           <Route children path='/hero' element={<HeroFade />} />
           <Route children path='/print-itinerary' element={<PrintItineraryPage />} />
           {/* <Route children path='/scratch' element={<Scratch />} /> */}
+          <Route children path='/account-settings' element={<AccountSettings />} />
         </Routes>
         {/* <h1 className='empty-3'></h1> */}
         {/* <h1 className='empty-6'></h1> */}

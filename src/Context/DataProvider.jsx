@@ -3,6 +3,7 @@ import { auth, firestore } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import axios from 'axios';
 import { useLoadScript } from '@react-google-maps/api';
+import { sendEmailVerification } from 'firebase/auth';
 
 
 const DataProvider = (props) => {
@@ -101,6 +102,16 @@ const DataProvider = (props) => {
         },
         close: function () {
             setAuthControls({ ...authControls, isOpen: false, index: null });
+        },
+        resetPassword: function () {
+            if (!auth.currentUser) return;
+            auth.sendPasswordResetEmail(auth.currentUser.email);
+            alert("Password reset email link has been sent to your email.");
+        },
+        sendEmailVerification: function () {
+            if (!auth.currentUser) return;
+            sendEmailVerification(auth.currentUser);
+            alert("Email verification link sent. Please check your inbox.");
         },
     };
 
@@ -403,7 +414,7 @@ const DataProvider = (props) => {
             const end = timeFunctions.datishort(endDashDate);
             const startMonth = start.slice(0, 3);
             const endMonth = end.slice(0, 3);
-    
+
             if (startMonth === endMonth) {
                 return start + " - " + end.slice(4);
             } else {
@@ -918,9 +929,9 @@ const DataProvider = (props) => {
             'currentTrip': currentTrip, 'setCurrentTrip': setCurrentTrip, 'clearCurrentTrip': clearCurrentTrip,
             'timeFunctions': timeFunctions, textFunctions, 'tripUpdate': tripUpdate, 'mapBoxCategoryKey': mapBoxCategoryKey,
             'suggestedPlaces': suggestedPlaces, 'setSuggestedPlaces': setSuggestedPlaces, 'loadCityImg': loadCityImg,
-            'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap, 
-            gIcon, numberToBgColor, toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState, 
-            isStateAbbv, generateTripMapBounds, modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey, 
+            'repeatItems': repeatItems, 'handleResize': handleResize, geoToLatLng, renderRating, wait, convertInfoToMap,
+            gIcon, numberToBgColor, toLatitudeLongitude, stateToAbbKey, convertStateToAbbv, convertAbbvToState, isUSState,
+            isStateAbbv, generateTripMapBounds, modifyInfo, getBestCategory, getGoogleImg, googleCategoryKey,
             googlePlaceTypeKey, userPreferenceItems, topSites, setTopSites, authControls, authFunctions, getCountryName, gLibrary,
             emailIsValid
         }}>

@@ -2472,6 +2472,16 @@ p {
   font-size: 18px;
 } */
 
+.page-title-text {
+  font-family: 'Plus Jakarta Sans';
+  font-size: 32px; 
+  font-weight: 600;
+  color: #242424;
+  @media screen and (max-width: 768px) {
+    font-size: calc(3vw + 10px);
+  }
+}
+
 .page-heading {
   font-family: 'Plus Jakarta Sans';
   font-size: 40px;

@@ -238,7 +238,7 @@ export const Navbar = () => {
                 <span className="material-symbols-outlined">
                   favorite
                 </span><p className="m-0 ml-2">Travel Preferences</p></div></Link>
-              <Link><div className="option">
+              <Link onClick={() => closeUserMenu()} to='/account-settings'><div className="option">
                 <span className="material-symbols-outlined">
                   settings
                 </span>
