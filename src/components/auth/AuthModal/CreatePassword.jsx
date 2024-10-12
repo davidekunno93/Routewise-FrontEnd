@@ -10,7 +10,7 @@ import LoadingFillElement from '../../Loading/LoadingFillElement'
 
 export const CreatePassword = ({ open, signUpManager, setSignUpManager, pageFunctions, onClose }) => {
     if (!open) return null;
-    const { mobileMode } = useContext(DataContext);
+    const { mobileMode, mobileModeNarrow } = useContext(DataContext);
     // const [displayName, setDisplayName] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -183,8 +183,8 @@ export const CreatePassword = ({ open, signUpManager, setSignUpManager, pageFunc
                     close
                 </span> */}
                 <div className="title-section">
-                    <p id='welcomeToRoutewise' className="center-text xx-large bold700">Continue with email</p>
-                    <p className="center-text w-90">Sign up with email <span className="purple-text"><strong>{signUpManager.email}</strong></span></p>
+                    <p id='welcomeToRoutewise' className={`center-text xx-large bold700 ${mobileModeNarrow && "mobile"}`}>Continue with email</p>
+                    <p className="center-text w-90 ws-normal">Sign up with email <span className="purple-text"><strong>{signUpManager.email}</strong></span></p>
                 </div>
                 {/* <div className="input-model-title">
                     <p className="m-0 mt-4 mb-2">What should we call you?</p>
@@ -193,18 +193,18 @@ export const CreatePassword = ({ open, signUpManager, setSignUpManager, pageFunc
                     <input id='displayName' onChange={(e) => updateDisplayName(e)} type="text" className="input-model large" placeholder='' required />
                     <span className='title font-jakarta'>Name</span>
                 </div> */}
-                <div id='passwordMatchInvalid' className={`input-model-title ${!createPasswordControls.passwordMatchError && "d-none"}`}>
+                <div id='passwordMatchInvalid' className={`input-model-title ${mobileModeNarrow && "mobile"} ${!createPasswordControls.passwordMatchError && "d-none"}`}>
                     <p className="m-0 small red-text">*Password must match confirm password</p>
                 </div>
-                <div id='passwordInvalid' className={`input-model-title ${!createPasswordControls.passwordInvalid && "d-none"}`}>
+                <div id='passwordInvalid' className={`input-model-title ${mobileModeNarrow && "mobile"} ${!createPasswordControls.passwordInvalid && "d-none"}`}>
                     <p className="m-0 small red-text">*Password must be at least 8 characters long</p>
                     <p className="m-0 small red-text">*Passwords must contain one number and one character</p>
                 </div>
-                <div className="input-model-title">
+                <div className={`input-model-title ${mobileModeNarrow && "mobile"}`}>
                     <p className="m-0 mb-2">Create a password</p>
                 </div>
-                <div className="inputBox">
-                    <input onChange={createPasswordFunctions.updatePassword} id='createPassword' type={createPasswordControls.passwordHidden ? "password" : "text"} className="input-model" placeholder='' required />
+                <div className={`inputBox ${mobileModeNarrow && "mobile"}`}>
+                    <input onChange={createPasswordFunctions.updatePassword} id='createPassword' type={createPasswordControls.passwordHidden ? "password" : "text"} className={`input-model ${mobileModeNarrow && "mobile"}`} placeholder='' required />
                     <span className='title font-jakarta'>Password</span>
                     {createPasswordControls.passwordHidden ?
                         <div id='createPasswordOpen' onClick={() => createPasswordFunctions.showPassword()} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/Lcq4iUU.png" alt="" className="icon-xsmall center o-80" /></div>
@@ -212,8 +212,8 @@ export const CreatePassword = ({ open, signUpManager, setSignUpManager, pageFunc
                         <div id='createPasswordClose' onClick={() => createPasswordFunctions.hidePassword()} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/83fYKqe.png" alt="" className="icon-xsmall center o-80" /></div>
                     }
                 </div>
-                <div className="inputBox mt-2">
-                    <input id='createConfirmPassword' onChange={createPasswordFunctions.updateConfirmPassword} type={createPasswordControls.confirmPasswordHidden ? "password" : "text"} className="input-model" placeholder='' required />
+                <div className={`inputBox ${mobileModeNarrow && "mobile"} mt-2`}>
+                    <input id='createConfirmPassword' onChange={createPasswordFunctions.updateConfirmPassword} type={createPasswordControls.confirmPasswordHidden ? "password" : "text"} className={`input-model ${mobileModeNarrow && "mobile"}`} placeholder='' required />
                     <span className='title font-jakarta'>Confirm Password</span>
                     {createPasswordControls.confirmPasswordHidden ?
                         <div id='createConfirmPasswordOpen' onClick={() => createPasswordFunctions.showConfirmPassword()} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/Lcq4iUU.png" alt="" className="icon-xsmall center o-80" /></div>
@@ -221,7 +221,7 @@ export const CreatePassword = ({ open, signUpManager, setSignUpManager, pageFunc
                         <div id='createConfirmPasswordClose' onClick={() => createPasswordFunctions.hideConfirmPassword()} className='icon-right flx-c just-ce'><img src="https://i.imgur.com/83fYKqe.png" alt="" className="icon-xsmall center o-80" /></div>
                     }
                 </div>
-                <button onClick={() => createUserAccount()} className="btn-primary center mt-4">Join RouteWise</button>
+                <button onClick={() => createUserAccount()} className={`btn-primary ${mobileModeNarrow && "mobile"} mt-4`}>Join RouteWise</button>
                 <p className="small center-text mt-1">Sign up a different way? <Link onClick={onClose}><strong>Go Back</strong></Link> </p>
             </div>
 

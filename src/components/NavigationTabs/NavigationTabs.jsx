@@ -1,8 +1,13 @@
+import { DataContext } from '../../Context/DataProvider';
 import './navigationtabs.scoped.css'
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 
-const NavigationTabs = ({ tabs, setActiveTabIndex, gap, paddingX, beamColor, beamBackgroundColor }) => {
-
+const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamColor, beamBackgroundColor, parentRef, screenPaddingX = 0 }) => {
+    // const { mobileMode } = useContext(DataContext);
+    const [screenWidth, setScreenWidth] = useState(parentRef && parentRef.current ? parentRef.current.offsetWidth : window.innerWidth - screenPaddingX * 2);
+    useEffect(() => {
+        // console.log(screenWidth);
+    }, [screenWidth]);
     const tabRefs = useRef([]);
     const [tabProperties, setTabProperties] = useState({
         activeTab: {
@@ -11,17 +16,51 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap, paddingX, beamColor, bea
             offset: 0,
         },
         tabWidths: [],
-        tabGap: gap ?? 0,
+        paddingX: paddingX,
+        totalTabWidth: 0,
+        nonConciseTabsWidth: 0,
+        conciseTabsWidth: 0,
+        tabGap: gap,
+        numberOfTabs: tabs.length,
+        totalWidth: 0,
+        conciseMode: false,
     });
     const tabFunctions = {
         initializeTabs: function () {
+            let { numberOfTabs, conciseMode, nonConciseTabsWidth, conciseTabsWidth } = tabProperties;
             let tabWidths = [];
             if (!tabRefs.current) return;
             for (let i = 0; i < tabRefs.current.length; i++) {
                 tabWidths.push(tabRefs.current[i].offsetWidth);
             };
-            let activeTab = { index: 0, width: tabRefs.current[0].offsetWidth, offset: 0 };
-            setTabProperties({ ...tabProperties, activeTab: activeTab, tabWidths: tabWidths });
+            const activeTab = { index: 0, width: tabRefs.current[0].offsetWidth, offset: 0 };
+            const totalTabWidth = tabWidths.reduce((a, b) => a + b, 0);
+            const totalWidth = totalTabWidth + (gap * (numberOfTabs - 1));
+            const excessWidth = totalWidth > screenWidth ? totalWidth - screenWidth : 0;
+            let tabGap = gap;
+            if (conciseMode) {
+                conciseTabsWidth = tabWidths.reduce((a, b) => a + b, 0);
+            } else {
+                nonConciseTabsWidth = tabWidths.reduce((a, b) => a + b, 0);
+            }
+            conciseMode = nonConciseTabsWidth > screenWidth ? true : false;
+            if (tabGap * (numberOfTabs - 1) >= excessWidth) {
+                tabGap -= excessWidth / (numberOfTabs - 1);
+            } else {
+                tabGap = 0;
+            };
+            setTabProperties({ 
+                ...tabProperties, 
+                activeTab: activeTab, 
+                tabWidths: tabWidths, 
+                paddingX: paddingX,
+                totalTabWidth: totalTabWidth, 
+                conciseTabsWidth: conciseTabsWidth, 
+                nonConciseTabsWidth: nonConciseTabsWidth, 
+                tabGap: tabGap, 
+                totalWidth: totalWidth, 
+                conciseMode: conciseMode 
+            });
         },
         setActiveTab: function (tabIndex) {
             let activeTabCopy = { ...tabProperties.activeTab };
@@ -34,12 +73,25 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap, paddingX, beamColor, bea
             activeTabCopy.offset = offset;
             setTabProperties({ ...tabProperties, activeTab: activeTabCopy });
         },
+        handleResize: function () {
+            if (parentRef && parentRef.current) {
+                setScreenWidth(parentRef.current.offsetWidth);
+                console.log("parent width: " + parentRef.current.offsetWidth);
+            } else {
+                setScreenWidth(window.innerWidth - screenPaddingX * 2);
+            };
+        },
     };
+
+    useEffect(() => {
+        window.addEventListener("resize", tabFunctions.handleResize);
+        return () => window.removeEventListener("resize", tabFunctions.handleResize);
+    }, []);
 
     // initialization and pass up active index
     useEffect(() => {
         tabFunctions.initializeTabs();
-    }, []);
+    }, [screenWidth, paddingX, gap]);
     useEffect(() => {
         if (!setActiveTabIndex) return;
         setActiveTabIndex(tabProperties.activeTab.index);
@@ -55,10 +107,10 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap, paddingX, beamColor, bea
                         className={`navigation-tab ${tabProperties.activeTab.index === index ? "active" : null}`}
                         onClick={() => tabFunctions.setActiveTab(index)}
                         style={{
-                            padding: `8px ${paddingX ? paddingX+"px" : "12px"}`,
+                            padding: `8px ${tabProperties.paddingX+"px"}`,
                         }}
                     >
-                        <p>{tab.tabName}</p>
+                        <p>{tabProperties.conciseMode ? tab.conciseTabName : tab.tabName}</p>
                     </div>
                 })}
             </div>

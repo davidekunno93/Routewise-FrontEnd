@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { auth, firestore } from '../firebase';
-import { DataContext } from '../Context/DataProvider';
-import { Loading } from '../components/Loading/Loading';
+import { auth, firestore } from '../../firebase';
+import { DataContext } from '../../Context/DataProvider';
+import { Loading } from '../../components/Loading/Loading';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import EditTripModal from '../components/EditTripModal';
+import EditTripModal from '../../components/EditTripModal';
 import { doc, getDoc } from 'firebase/firestore';
+import './mytrips.scoped.css';
 
 const MyTrips = () => {
     const { user } = useContext(DataContext);
@@ -47,7 +48,7 @@ const MyTrips = () => {
             setIsLoadingTrips(true)
             let data = await getUserTripsData()
             setUserTrips(data)
-            console.log(data)
+            // console.log(data)
             // sortMyTrips()
 
             let upcomingTripsArr = []
@@ -317,17 +318,17 @@ const MyTrips = () => {
     return (
         <div>
             <EditTripModal open={editTripModalReducer.open} trip={editTripModalReducer.trip} loadItinerary={loadItinerary} onClose={() => closeEditTripModal()} />
-            <div className="page-container75 flx-c">
+            <div className={`myTrips-page-container ${mobileMode && 'mobile'}`}>
                 <div className={`${mobileMode ? "flx-c gap-4" : "align-all-items"} mt-6 mb-4h`}>
                     <p className="m-0 page-subheading-bold">My Trips</p>
-                    <div className="searchDiv position-right">
+                    <div className={`searchDiv ${!mobileMode && "position-right"}`}>
                         <input onChange={(e) => updateTripSearchQuery(e)} type="text" className={`search-box ${mobileMode && "w-70"}`} placeholder='Search my trips' />
                         <span className="material-symbols-outlined right-icon-overlay gray-text">search</span>
                     </div>
 
                 </div>
 
-                <div className="trip-options">
+                <div className={`trip-options ${mobileMode && 'mobile'}`}>
                     <div className="flx-1 flx-c">
 
                         <div className="flx-r gap-6">
@@ -341,7 +342,7 @@ const MyTrips = () => {
                         </div>
 
                     </div>
-                    <div className="sortBy flx-r align-all-items gap-2 ml-4 position-right">
+                    <div className="sortBy-options">
                         <p className="m-0 gray-text">Sort By:</p>
                         <div className="dropdown-box flx-r">
                             <p className="m-0 selection">Most Recent</p>
@@ -360,7 +361,7 @@ const MyTrips = () => {
                 }
 
 
-                <div className="userTrips flx-r flx-wrap gap-8">
+                <div className="userTrips-container">
                     {/* upcoming trips */}
                     {upcomingTrips ? myTripList === 'upcoming' && upcomingTrips.length === 0 &&
                         <p className="m-0">No Upcoming Trips</p>

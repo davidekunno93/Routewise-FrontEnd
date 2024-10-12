@@ -1,0 +1,77 @@
+.featuredTrip-card {
+    background-color: whitesmoke;
+    height: 300px;
+    width: 300px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-direction: column;
+    padding: 12px;
+    /* margin: 8px; */
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.featuredTrip-card.mobile {
+    width: 70vw;
+    height: 70vw;
+}
+
+.featuredTrip-card:hover {
+    transform: translateY(-4px);
+}
+
+.featuredTrip-card>.imgDiv {
+    flex: 1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.featuredTrip-card>.imgDiv img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.featuredTrip-card .titleDiv {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.featuredTrip-card .titleDiv>.imgDiv {
+    height: 24px;
+    width: 38px;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.featuredTrip-card .country-flag {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.featuredTrip-card .caption {
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+    gap: 4px;
+    box-sizing: border-box;
+}
+
+.featuredTrip-card .caption .summary {
+    font-size: 14px;
+}
+
+.featuredTrip-card .caption .details {
+    font-size: 12px;
+    margin: auto 0 0 0;
+}
+
+.featuredTrip-card p {
+    margin: 0;
+}

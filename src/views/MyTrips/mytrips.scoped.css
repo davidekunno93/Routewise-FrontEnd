@@ -1,0 +1,89 @@
+
+.myTrips-page-container {
+    width: 75%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+.myTrips-page-container.mobile {
+    width: 90%;
+}
+
+.userTrips-container {
+    min-height: 250px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+.trip-options.mobile {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.trip-options {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.trip-options .option-cold {
+    font-family: 'Plus Jakarta Sans';
+    font-size: 16px;
+    color: gainsboro;
+    text-align: center;
+    font-weight: 600;
+    /* border-bottom: 3px solid rgb(240, 240, 240); */
+}
+
+.trip-options .option {
+    font-family: 'Plus Jakarta Sans';
+    font-size: 16px;
+    color: #7A7A7A;
+    font-weight: 600;
+    margin-bottom: 4px;
+    /* border-bottom: 3px solid rgb(240, 240, 240); */
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.trip-options .option:hover {
+    color: #5a5a5a;
+    transition: 0.2s;
+}
+
+.trip-options .option.selected {
+    color: #6663FC;
+    /* border-bottom: 3px solid #6663FC; */
+}
+
+.trip-options .box-bar .beam.upcoming {
+    left: 0px;
+    width: 122px;
+}
+
+.trip-options .box-bar .beam.past {
+    left: 140px;
+    width: 82px;
+}
+
+.trip-options .box-bar .beam.published {
+    left: 238px;
+    width: 163px;
+}
+
+.sortBy-options {
+    display: flex;  
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+
+    /* margin-left: 25px; */
+    margin: 0 0 0 auto;
+}
+.trip-options.mobile .sortBy-options {
+    margin-left: 0;
+}

@@ -2,9 +2,11 @@
 .carousel-window-auth {
     width: 564px;
     height: 600px;
+    margin: auto;
+    display: flex;
+    position: relative;
 
-    /* display: flex;
-    align-items: center;  */
+    /* align-items: center;  */
 
     border-radius: 24px;
     overflow: hidden;
@@ -81,6 +83,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    @media screen and (max-width: 600px) {
+        width: 100%;
+    }
 }
 .warning-signal {
     color: red;
@@ -100,6 +105,7 @@
 [data-warning="true"] .input-model {
     border: 2px solid red;
 }
+
 
 
 

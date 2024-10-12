@@ -1,7 +1,33 @@
+/* global */
 p {
     margin: 0;
-} 
+}
 
+/* hero section */
+.hero-content-box {
+    height: 70vh;
+    width: 75%;
+    z-index: 10000;
+    position: absolute;
+    top: calc(50% + 32px);
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    @media screen and (max-width: 768px) {
+        padding: 0px 12px;
+        box-sizing: border-box;
+    }
+}
+
+.hero-content-box.mobile {
+    width: 90%;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* body */
 
 .section {
     display: flex;
@@ -9,14 +35,26 @@ p {
     align-items: center;
     justify-content: center;
     padding: 84px 0;
-    gap: 36px
+    gap: 36px;
+
+    @media screen and (max-width: 768px) {
+        padding: 48px 0;
+    }
 }
+
 .section.planning {
     padding-top: 96px;
-    padding-bottom: 0px; 
+    padding-bottom: 0px;
+    background-color: #FFFCF9;
 }
+
 .section.light-padding {
     padding: 36px;
+    box-sizing: border-box;
+
+    /* @media screen and (max-width: 768px) {
+        padding: 24px 12px;
+    } */
 }
 
 .page-title-box {
@@ -25,11 +63,26 @@ p {
     gap: 16px;
     align-items: center;
     text-align: center;
-    width: 50%; 
-    margin: auto; 
+    width: 50%;
+    margin: auto;
+
+    @media screen and (max-width: 768px) {
+        width: 100% !important;
+        padding: 0px 6vw;
+        box-sizing: border-box;
+    }
 }
+
+.page-title-box.wide {
+    width: 60%;
+}
+
 .page-title-box.thin .page-subtitle {
     width: 80%;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
 }
 
 .page-title {
@@ -38,6 +91,10 @@ p {
     font-weight: 700;
     margin: auto;
     text-align: center;
+
+    @media screen and (max-width: 768px) {
+        font-size: calc(6vw + 4px) !important;
+    }
 }
 
 .page-title.darkpurple {
@@ -48,21 +105,159 @@ p {
     color: black;
 }
 
-.page-title.mobile {
+/* .page-title.mobile {
     font-size: 24px;
-}
+} */
 
 .page-subtitle {
     font-family: 'Plus Jakarta Sans' serif;
     color: gray;
     font-size: 18px;
+
+    @media screen and (max-width: 425px) {
+        font-size: 4.5vw;
+    }
 }
+
+/* action points */
+.action-points {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    /* gap: 24px; */
+    justify-content: space-evenly;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.action-points.mobile {
+    flex-direction: column;
+}
+
+.action-points .point-holder {
+    flex: 1;
+    /* background-color: beige; */
+    /* border: 2px solid red; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.v-line-divider {
+    position: absolute;
+    height: 75%;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 2px solid #C8BFA9;
+    border-radius: 12px;
+}
+
+.h-line-divider {
+    width: 75%;
+    border: 1px solid #C8BFA9;
+}
+
+.action-points .point {
+    height: 387px;
+    width: 400px;
+    /* background-color: #F0EFFF; */
+    /* border-radius: 12px; */
+    color: #0F0680;
+    padding: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+}
+
+.action-points .point.mobile {
+    height: 387px;
+    width: 65%;
+    color: #0F0680;
+    padding: 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6vw;
+
+    @media screen and (max-width: 768px) {
+        width: 80%;
+        height: 240px;
+
+        @media screen and (max-width: 425px) {
+            width: 90% !important;
+            height: 180px;
+        }
+    }
+}
+
+.point .imgDiv {
+    height: 77px;
+
+    @media screen and (max-width: 425px) {
+        height: 48px;
+
+    }
+}
+
+.point .imgDiv .point-img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.point .description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.point.mobile .description {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 8px;
+}
+
+.point .title {
+    font-size: 24px;
+    font-family: "Plus Jakarta Sans", serif;
+    font-weight: 600;
+    color: black;
+
+    @media screen and (max-width: 425px) {
+        font-size: 5vw;
+    }
+}
+
+.point .text {
+    font-size: 18px;
+    font-family: 'Plus Jakarta Sans';
+    color: black;
+
+    @media screen and (max-width: 425px) {
+        font-size: 4vw;
+    }
+}
+
+
 
 .featuredTrips {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 36px;
+    gap: 64px 36px;
+    padding: 0px 24px;
 }
+
 .tab-imgDiv {
     width: 100%;
     display: flex;
@@ -70,21 +265,31 @@ p {
     align-items: center;
     position: relative;
     height: 40vw;
+
+    @media screen and (max-width: 768px) {
+        height: 50vw;
+    }
 }
+
 .tab-imgDiv .gif[data-hiddendirection="left"] {
     visibility: hidden;
     opacity: 0;
     transform: translateX(-36px);
 }
+
 .tab-imgDiv .gif[data-hiddendirection="right"] {
     visibility: hidden;
     opacity: 0;
     transform: translateX(36px);
 }
 
-.tab-imgDiv .gif { 
+.tab-imgDiv .gif {
+    @media screen and (max-width: 768px) {
+        width: 100% !important;
+    }
+
     position: absolute;
-    /* width: 75%; */
+    width: 75%;
     height: 100%;
     border-radius: 24px;
     transition: 0.4s;
@@ -93,10 +298,227 @@ p {
 }
 
 .section .gif {
+    @media screen and (max-width: 768px) {
+        width: 85%;
+    }
+
     width: 75%;
     border-radius: 24px;
 }
 
-.addplaces-screenshot {
+/* .addplaces-screenshot {
     border-radius: 24px !important;
+} */
+
+
+/* fuji section */
+.fuji-section {
+    height: 720px;
+    width: 100%;
+    position: relative;
+
+    @media screen and (max-width: 600px) {
+        height: 100vh;
+
+        @media screen and (max-width: 425px) {
+            height: 75vh;
+        }
+    }
+}
+
+.fuji-section .left-side {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    padding: 40px 60px;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    @media screen and (max-width: 600px) {
+        width: 100%;
+        height: 50%;
+        top: auto;
+        bottom: 0;
+        padding: 24px;
+    }
+}
+
+.fuji-section .right-side {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    top: 0;
+    padding: 40px 60px;
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    @media screen and (max-width: 600px) {
+        width: 100%;
+        height: 50%;
+        top: 0;
+        bottom: auto;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.fuji-section .right-side img {
+    position: absolute;
+    left: 0;
+    height: calc(100% - 80px);
+    border-radius: 24px;
+
+    @media screen and (max-width: 600px) {
+        position: relative;
+        border-radius: 16px;
+        width: 90%;
+        height: auto;
+        object-fit: contain;
+    }
+}
+
+.fuji-section .left-side .content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: auto 0 64px 0;
+}
+
+.fuji-section .left-side .content .text {
+    font-family: 'Plus Jakarta Sans';
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+
+    @media screen and (max-width: 768px) {
+        font-size: 4vw;
+
+        @media screen and (max-width: 600px) {
+            font-size: calc(6vw + 2px);
+        }
+    }
+}
+
+
+/* explore ig section */
+.full-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.explore-section {
+    height: 500px;
+    width: 100%;
+    background-color: #F7FFD1;
+
+    @media screen and (max-width: 425px) {
+        height: 400px;
+    }
+}
+
+.ig-carousel-window {
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    /* background-color: beige; */
+}
+
+.ig-cards {
+    padding-top: 10px;
+    white-space: nowrap;
+    /* display: flex;
+    flex-direction: row; */
+    overflow-x: auto;
+}
+
+.ig-cards::-webkit-scrollbar {
+    width: 0;
+}
+
+.ig-card {
+    width: 300px;
+    height: 300px;
+    border-radius: 12px;
+    background-color: #D9D9D9;
+    transition: 0.2s;
+    cursor: pointer;
+    display: inline-flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.ig-card .caption {
+    position: absolute;
+    bottom: 0;
+    height: 64px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
+    display: flex;
+    padding: 12px;
+    box-sizing: border-box;
+    gap: 12px;
+}
+
+.ig-card .caption .displayPicture {
+    min-width: 32px;
+    height: 32px;
+    /* background-color: beige; */
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.ig-card .caption .displayPicture>.img {
+    width: 32px;
+    height: 32px;
+}
+
+.ig-card .caption .text p {
+    color: white;
+    margin: 0;
+}
+
+.ig-card .caption .title {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: normal;
+}
+
+.ig-card .caption .desc {
+    font-size: 11px;
+    white-space: normal;
+}
+
+.ig-card.mobile {
+    width: 240px;
+    height: 240px;
+
+    @media screen and (max-width: 425px) {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+.ig-card:hover {
+    transform: translateY(-10px);
+    /* width: 315px;
+    height: 315px; */
+    transition: 0.2s;
+}
+
+.fill-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
 }
