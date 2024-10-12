@@ -17,6 +17,8 @@ import EditTripModal from '../../components/EditTripModal';
 import { doc, getDoc } from 'firebase/firestore';
 import LoadingFullscreen from '../../components/Loading/LoadingFullscreen';
 import './dashboard.scoped.css';
+import FeaturedTripSquare from '../../components/FeaturedTripCard/FeaturedTripSquare';
+import CarouselWiper from '../../components/Carousel/CarouselWiper';
 
 
 
@@ -66,7 +68,7 @@ export const Dashboard = () => {
     }
     // login require
     const { user, currentTrip, setCurrentTrip, clearCurrentTrip,
-        mobileMode, userPreferences, setPreferences, setSignUpIsOpen,
+        mobileMode, mobileModeNarrow, userPreferences, setPreferences, setSignUpIsOpen,
         setPageOpen, timeFunctions, gIcon, convertStateToAbbv, convertAbbvToState, isStateAbbv
     } = useContext(DataContext);
     const [openTripModal, setOpenTripModal] = useState(false)
@@ -2107,6 +2109,18 @@ export const Dashboard = () => {
     }, [citySearchQuery]);
 
 
+    const featuredTripSquares = featuredTrips.map((trip, index) => {
+        return (
+            <FeaturedTripSquare
+                trip={trip}
+                key={index}
+                index={index}
+                loadItinerary={loadItinerary}
+            />
+        )
+    });
+    const popularDestRef = useRef(null);
+
     return (
         <>
             <LoadingFullscreen />
@@ -2331,46 +2345,17 @@ export const Dashboard = () => {
 
                 </div> */}
 
-                <div className="popular-destinations my-6">
+                <div ref={popularDestRef} className="popular-destinations my-6">
                     <div className="page-subsubheading-bold my-3">Featured Trips</div>
-
-                    <div className="carousel2-window">
-                        <div id='cityCarouselInner' className="inner-no-flex" style={{ transform: `translateX(-${translationIndex * 350}px)` }}>
-                            {/* {cities.map((city, index) => {
-                                return <div key={index} className="card3 position-relative">
-                                    <img src={city.imgUrl} alt="" className="card3-img" />
-                                    <div className="model-overlay position-absolute white-text">
-                                        <span className="material-symbols-outlined v-bott white-text">
-                                            favorite
-                                        </span>
-                                        <p className="m-0 inline white-text"> 86 Likes</p>
-                                    </div>
-                                    <div className="page-subheading-bold my-2 black-text">{city.name}</div>
-                                </div>
-                            })} */}
-                            {featuredTrips.map((trip, index) => {
-
-                                return <div onClick={() => loadItinerary(trip.trip)} key={index} className="featuredTrip-card" style={{ marginLeft: index === 0 ? "0px" : "" }}>
-                                    <div className="imgDiv"><img src={trip.imgUrl} alt="" className="img" /></div>
-                                    <div className="caption">
-                                        <div className="titleDiv">
-                                            <div className="imgDiv">
-                                                <img src={trip.flagImgUrl} alt="" className="country-flag" />
-                                            </div>
-                                            <p className="destination">{trip.destination}</p>
-                                        </div>
-                                        <p className="summary">{trip.summary}</p>
-                                        <div className="details">
-                                            <p className="detail">Trip Duration: <span className="purple-text">{trip.numberOfDays}</span></p>
-                                            <p className="detail">Number of places: <span className="purple-text">{trip.numberOfPlaces}</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            })}
+                    <CarouselWiper
+                        items={featuredTripSquares}
+                        width={mobileModeNarrow ? "70vw" : 300}
+                        height={mobileModeNarrow ? "72vw" : 312}
+                        parentRef={popularDestRef}
+                        position={mobileMode ? "center" : "left"}
+                    />
 
 
-                        </div>
-                    </div>
                     {/* <div className="btns mb-10">
                         <button onClick={() => slideCarouselLeft()} className={translationIndex === 0 ? 'btn-primaryflex-disabled' : 'btn-carousel-special hover-left'}>
                             <span className="material-symbols-outlined mt-1 white-text">

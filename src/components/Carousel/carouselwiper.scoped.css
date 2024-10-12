@@ -62,7 +62,7 @@
 }
 
 .carousel-wiper-item {
-    width: 100%;
+    width: min-content;
     /* height: 100%; */
     display: inline-flex;    
 }

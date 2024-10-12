@@ -2,8 +2,21 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../Context/DataProvider';
 import './carouselwiper.scoped.css'
 
-const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, paddingX = 36, paddingY = 24 }) => {
+const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, paddingX = 0, paddingY = 0, position = "center" }) => {
     const { gIcon } = useContext(DataContext);
+    // helper functions
+    const getPx = (value) => {
+        if (typeof value === 'number') {
+            return value;
+        } else if (typeof value === 'string') {
+            if (value.endsWith('vw')) {
+                let vw = value.slice(0, -2);
+                return parseInt(((vw / 100) * screenWidth).toFixed(0));
+            } else if (value.endsWith('px')) {
+                return value.slice(0, -2);
+            };
+        };
+    };
 
     // respond to page resize
     const [screenWidth, setScreenWidth] = useState(parentRef && parentRef.current ? parentRef.current.offsetWidth : window.innerWidth);
@@ -15,34 +28,41 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
         offset: 0,
         maxOffset: 0,
         items: items,
-        itemWidth: width,
+        itemWidth: getPx(width),
         itemGap: gap,
         itemsInView: 1,
         windowWidth: width,
+        position: position,
         paddingX: paddingX,
         paddingY: paddingY,
         scrollable: false,
     });
     const carouselFunctions = {
         initialize: function () {
-            let { items, itemGap, itemWidth } = carouselState;
+            let { items, itemGap } = carouselState;
+            let itemWidth = getPx(width);
             let itemsInView = Math.floor((screenWidth - paddingX * 2) / (itemWidth + itemGap));
             let maxOffset = itemWidth * (items.length - itemsInView) + (itemGap * (items.length - itemsInView));
             setCarouselState({
                 ...carouselState,
-                windowWidth: itemWidth * itemsInView + (itemGap * (itemsInView - 1)),
+                offset: 0,
                 maxOffset: maxOffset,
-                scrollable: itemWidth * items.length + (itemGap * (items.length - 1)) + paddingX * 2 > screenWidth,
+                itemWidth: itemWidth,
+                position: position,
+                windowWidth: itemWidth * itemsInView + (itemGap * (itemsInView - 1)),
+                scrollable: items.length > itemsInView,
+                // scrollable: itemWidth * items.length + (itemGap * (items.length - 1)) + paddingX * 2 > screenWidth,
                 isLoaded: true,
             });
         },
         next: function () {
             let { offset, maxOffset, itemWidth, itemGap } = carouselState;
+            console.log(itemWidth, itemGap)
             if (offset >= maxOffset - (itemWidth + itemGap)) {
                 setCarouselState({
                     ...carouselState,
                     offset: maxOffset,
-            });
+                });
             } else {
                 setCarouselState({
                     ...carouselState,
@@ -74,17 +94,18 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
     };
     useEffect(() => {
         carouselFunctions.initialize();
-    }, [screenWidth]);
+    }, [screenWidth, width]);
 
-    
+
     // respond to window resize
     useEffect(() => {
         window.addEventListener('resize', carouselFunctions.handleResize);
-        return () => window.removeEventListener('resize', carouselFunctions.handleResize);        
+        return () => window.removeEventListener('resize', carouselFunctions.handleResize);
     }, []);
 
+
     return (
-        <div className="carousel-wiper">
+        <div className="carousel-wiper" style={{ margin: position === "center" ? "0 auto" : position === "left" ? "0 auto 0 0" : "", padding: `${paddingY}px ${paddingX}px` }}>
 
             {/* buttons */}
             <button className="navigate left"
@@ -102,7 +123,7 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
             </button>
 
             {/* carousel */}
-            <div className="carousel-wiper-window" style={{ height: height ?? "", width: carouselState.windowWidth }}>
+            <div className="carousel-wiper-window" style={{ height: height ?? "", width: carouselState.windowWidth, marginLeft: !carouselState.scrollable && position === "left" ? 0 : "" }}>
                 <div
                     className="carousel-wiper-inner"
                     style={{ transform: `translateX(-${carouselState.offset}px)` }}
