@@ -52,9 +52,9 @@ p {
     padding: 36px;
     box-sizing: border-box;
 
-    @media screen and (max-width: 425px) {
-        padding: 36px 4vw;
-    }
+    /* @media screen and (max-width: 768px) {
+        padding: 24px 12px;
+    } */
 }
 
 .page-title-box {

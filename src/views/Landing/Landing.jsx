@@ -411,7 +411,7 @@ export const Landing = () => {
                                 tabs={tabs}
                                 beamBackgroundColor={"transparent"}
                                 gap={mobileMode ? 0 : 48}
-                                paddingX={24}
+                                paddingX={mobileMode ? 16 : 24}
                                 setActiveTabIndex={setActiveTabIndex}
                                 screenPaddingX={36}
                             />
@@ -503,7 +503,9 @@ export const Landing = () => {
 
             </div> */}
 
-            <div className="empty-4"></div>
+            {!mobileMode &&
+                <div className="empty-4"></div>
+            }
 
             <div className="fuji-section">
                 <div className="left-side">
@@ -523,7 +525,7 @@ export const Landing = () => {
 
             <div className="explore-section">
                 <div className="page-title-box">
-                    <div className="page-title black-text py-5">Explore with us on Instagram!</div>
+                    <div className={`page-title black-text ${mobileMode ? "py-4" : "py-5"}`}>Explore with us on Instagram!</div>
                 </div>
                 <div className="ig-carousel-window">
 

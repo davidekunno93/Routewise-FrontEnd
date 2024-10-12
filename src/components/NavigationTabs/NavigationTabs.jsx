@@ -16,6 +16,7 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
             offset: 0,
         },
         tabWidths: [],
+        paddingX: paddingX,
         totalTabWidth: 0,
         nonConciseTabsWidth: 0,
         conciseTabsWidth: 0,
@@ -32,10 +33,10 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
             for (let i = 0; i < tabRefs.current.length; i++) {
                 tabWidths.push(tabRefs.current[i].offsetWidth);
             };
-            let activeTab = { index: 0, width: tabRefs.current[0].offsetWidth, offset: 0 };
-            let totalTabWidth = tabWidths.reduce((a, b) => a + b, 0);
-            let totalWidth = totalTabWidth + (gap * (numberOfTabs - 1));
-            let excessWidth = totalWidth > screenWidth ? totalWidth - screenWidth : 0;
+            const activeTab = { index: 0, width: tabRefs.current[0].offsetWidth, offset: 0 };
+            const totalTabWidth = tabWidths.reduce((a, b) => a + b, 0);
+            const totalWidth = totalTabWidth + (gap * (numberOfTabs - 1));
+            const excessWidth = totalWidth > screenWidth ? totalWidth - screenWidth : 0;
             let tabGap = gap;
             if (conciseMode) {
                 conciseTabsWidth = tabWidths.reduce((a, b) => a + b, 0);
@@ -52,6 +53,7 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
                 ...tabProperties, 
                 activeTab: activeTab, 
                 tabWidths: tabWidths, 
+                paddingX: paddingX,
                 totalTabWidth: totalTabWidth, 
                 conciseTabsWidth: conciseTabsWidth, 
                 nonConciseTabsWidth: nonConciseTabsWidth, 
@@ -80,9 +82,6 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
             };
         },
     };
-    useEffect(() => {
-       console.log(parentRef) 
-    }, [parentRef]);
 
     useEffect(() => {
         window.addEventListener("resize", tabFunctions.handleResize);
@@ -92,7 +91,7 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
     // initialization and pass up active index
     useEffect(() => {
         tabFunctions.initializeTabs();
-    }, [screenWidth]);
+    }, [screenWidth, paddingX, gap]);
     useEffect(() => {
         if (!setActiveTabIndex) return;
         setActiveTabIndex(tabProperties.activeTab.index);
@@ -108,7 +107,7 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
                         className={`navigation-tab ${tabProperties.activeTab.index === index ? "active" : null}`}
                         onClick={() => tabFunctions.setActiveTab(index)}
                         style={{
-                            padding: `8px ${paddingX+"px"}`,
+                            padding: `8px ${tabProperties.paddingX+"px"}`,
                         }}
                     >
                         <p>{tabProperties.conciseMode ? tab.conciseTabName : tab.tabName}</p>

@@ -13,6 +13,8 @@ p {
     @media screen and (max-width: 425px) {
         width: 240px;
         height: 360px;
+        width: 80vw;
+        height: 120vw;
     }
 }
 .featuredTrip-card2:hover {

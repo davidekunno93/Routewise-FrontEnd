@@ -1052,10 +1052,10 @@ w-0 {
 .sign-in-box.mobile,
 .create-password.mobile,
 .create-username-box.mobile {
-  width: 95vw;
+  width: 100vw;
   /* height: 90vh; */
   /* height: 100%; */
-  padding: 12px 24px;
+  padding: 12px 48px;
   box-sizing: border-box;
 }
 
@@ -1421,6 +1421,12 @@ input:-webkit-autofill {
 .input-model-title {
   text-align: left;
   width: 360px;
+}
+
+.input-model-title.mobile {
+  width: 100%;
+  text-align: center;
+  white-space: normal;
 }
 
 .input-model {

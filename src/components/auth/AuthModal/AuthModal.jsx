@@ -457,7 +457,7 @@ export const AuthModal = ({ open, onClose }) => {
                         }
 
                         {/* auth modal content */}
-                        <div className={`carousel-window-auth ${mobileMode && "mobile"} ${mobileModeNarrow && "mobileNarrow"} m-auto flx-r position-relative`}>
+                        <div className={`carousel-window-auth ${mobileMode && "mobile"} ${mobileModeNarrow && "mobileNarrow"}`}>
                             <div id='loadingBox' className={`loadingBox-2 lite z-1000000 w-100 h-100 ${isLoading ? null : "hidden-o"}`}>
                                 <Loading innerText={"Logging in..."} />
                             </div>
