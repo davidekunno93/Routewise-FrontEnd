@@ -2351,7 +2351,7 @@ export const Dashboard = () => {
                         items={featuredTripSquares}
                         width={mobileModeNarrow ? "70vw" : 300}
                         height={mobileModeNarrow ? "72vw" : 312}
-                        parentRef={popularDestRef}
+                        containerRef={popularDestRef}
                         position={mobileMode ? "center" : "left"}
                     />
 
