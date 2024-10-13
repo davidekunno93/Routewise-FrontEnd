@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { DataContext } from '../../Context/DataProvider';
 import './carouselwiper.scoped.css'
 
-const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, paddingX = 0, paddingY = 0, position = "center" }) => {
+const CarouselWiper = ({ items = [], height, width, gap = 24, containerRef, paddingX = 0, paddingY = 0, position = "center" }) => {
     const { gIcon } = useContext(DataContext);
     // helper functions
     const getPx = (value) => {
@@ -11,7 +11,7 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
         } else if (typeof value === 'string') {
             if (value.endsWith('vw')) {
                 let vw = value.slice(0, -2);
-                return parseInt(((vw / 100) * screenWidth).toFixed(0));
+                return parseInt(((vw / 100) * windowWidth).toFixed(0));
             } else if (value.endsWith('px')) {
                 return value.slice(0, -2);
             };
@@ -19,8 +19,8 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
     };
 
     // respond to page resize
-    const [screenWidth, setScreenWidth] = useState(parentRef && parentRef.current ? parentRef.current.offsetWidth : window.innerWidth);
-
+    const [containerWidth, setContainerWidth] = useState(containerRef && containerRef.current ? containerRef.current.offsetWidth : window.innerWidth);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     // carousel state
     const [carouselState, setCarouselState] = useState({
@@ -41,15 +41,16 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
         initialize: function () {
             let { items, itemGap } = carouselState;
             let itemWidth = getPx(width);
-            let itemsInView = Math.floor((screenWidth - paddingX * 2) / (itemWidth + itemGap));
+            let itemsInView = Math.floor((containerWidth - paddingX * 2) / (itemWidth + itemGap));
             let maxOffset = itemWidth * (items.length - itemsInView) + (itemGap * (items.length - itemsInView));
+            let windowWidth = itemWidth * itemsInView + (itemGap * (itemsInView - 1));
             setCarouselState({
                 ...carouselState,
                 offset: 0,
                 maxOffset: maxOffset,
                 itemWidth: itemWidth,
                 position: position,
-                windowWidth: itemWidth * itemsInView + (itemGap * (itemsInView - 1)),
+                windowWidth: windowWidth,
                 scrollable: items.length > itemsInView,
                 // scrollable: itemWidth * items.length + (itemGap * (items.length - 1)) + paddingX * 2 > screenWidth,
                 isLoaded: true,
@@ -85,16 +86,17 @@ const CarouselWiper = ({ items = [], height, width, gap = 24, parentRef, padding
             };
         },
         handleResize: function () {
-            if (parentRef && parentRef.current) {
-                setScreenWidth(parentRef.current.offsetWidth);
+            if (containerRef && containerRef.current) {
+                setContainerWidth(containerRef.current.offsetWidth);
             } else {
-                setScreenWidth(window.innerWidth);
+                setContainerWidth(window.innerWidth);
             };
+            setWindowWidth(window.innerWidth);
         },
     };
     useEffect(() => {
         carouselFunctions.initialize();
-    }, [screenWidth, width]);
+    }, [containerWidth, width]);
 
 
     // respond to window resize
