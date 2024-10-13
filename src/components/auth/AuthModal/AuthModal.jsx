@@ -643,6 +643,7 @@ export const AuthModal = ({ open, onClose }) => {
                                                     preference={preference}
                                                     selected={selected}
                                                     toggleSelect={() => signUpFunctions.togglePreference(preference)}
+                                                    cardType="landscape"
                                                 />
                                             })}
                                         </div>
