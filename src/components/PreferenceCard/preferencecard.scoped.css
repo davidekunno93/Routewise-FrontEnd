@@ -1,6 +1,41 @@
 
+
+.preference-card[data-cardtype="portrait"] {
+    width: 167px;
+    height: 200px;
+    flex-direction: column;
+    padding: 24px 12px;
+    border-width: 3px;
+}
+.preference-card[data-cardtype="portrait"] img {
+    flex: 1;
+    width: 45%;
+    object-fit: contain;
+    display: flex;
+    /* padding-top: 20px; */
+}
+.preference-card[data-cardtype="portrait"] .title {
+    flex: 1; 
+    width: 100%;
+    height: 100%;
+    font-size: 16px; 
+    font-weight: 600;
+    padding-right: 0px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.preference-card[data-cardtype="portrait"] .green-checkbox {
+    width: 32px;
+    height: 32px;
+}
+.preference-card[data-cardtype="portrait"] .green-checkbox span {
+    font-size: 20px;
+}
+
+
 .preference-card {
-    width: 200px;
     width: 224px;
     height: 68px;
     border-radius: 8px;
@@ -21,8 +56,11 @@
     filter: brightness(95%);
 }
 .preference-card[data-cardselected="true"] {
-    border: 2px solid var(--purplelite);
+    border-color: var(--purplelite);
     background-color: #F0EFFF;
+}
+.preference-card[data-frozen="true"] {
+    pointer-events: none;
 }
 .preference-icon {
     height: 100%;
@@ -30,10 +68,12 @@
 }
 .preference-card .title {
     font-size: 14px;
-    white-space: normal;
+    white-space: normal; 
     font-weight: 500;
+    padding-right: 24px;
 }
-.preference-card[data-cardselected="true"] .green-checkbox {
+.preference-card[data-cardselected="true"] .green-checkbox,
+.preference-card[data-checkedonly="true"] .green-checkbox {
     visibility: visible;
     opacity: 1;
 }

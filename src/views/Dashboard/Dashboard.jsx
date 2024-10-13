@@ -19,6 +19,7 @@ import LoadingFullscreen from '../../components/Loading/LoadingFullscreen';
 import './dashboard.scoped.css';
 import FeaturedTripSquare from '../../components/FeaturedTripCard/FeaturedTripSquare';
 import CarouselWiper from '../../components/Carousel/CarouselWiper';
+import PreferenceCard from '../../components/PreferenceCard/PreferenceCard';
 
 
 
@@ -2314,8 +2315,8 @@ export const Dashboard = () => {
                         <Link to='/survey-update'><p className="m-0 purple-text mt-h">Edit</p></Link>
                     </div>
 
-                    <div className={`preference-cards flx-r flx-wrap gap-6 ${mobileMode && "just-se"}`}>
-                        {userPreferences && Object.values(userPreferences).includes(true) ? Object.entries(userPreferences).map((category, index) => {
+                    <div className={`preference-cards flx-r flx-wrap gap-6 ${mobileMode && "just-ce"}`}> 
+                        {/* {userPreferences && Object.values(userPreferences).includes(true) ? Object.entries(userPreferences).map((category, index) => {
                             let categoryName = category[0]
                             let selected = category[1] // this is the boolean value of the interest
                             return selected && <div key={index} className="card2-frozen" style={{ maxWidth: 167 }}>
@@ -2331,6 +2332,21 @@ export const Dashboard = () => {
                                     <div className="card2-title">{cards2_dict[categoryName].title}</div>
                                 </div>
                             </div>
+                        })
+                            :
+                            <p className="m-0">Add <span className="purple-text bold500">Travel Preferences</span> to get personalized suggestions for your trips!</p>
+                        } */}
+                        {userPreferences && Object.values(userPreferences).includes(true) ? Object.entries(userPreferences).map((category, index) => {
+                            let categoryName = category[0]
+                            let selected = category[1] // this is the boolean value of the interest
+                            return selected && (
+                                <PreferenceCard
+                                    key={index}
+                                    preference={categoryName}
+                                    checkedOnly
+                                    frozen
+                                />
+                            )
                         })
                             :
                             <p className="m-0">Add <span className="purple-text bold500">Travel Preferences</span> to get personalized suggestions for your trips!</p>
