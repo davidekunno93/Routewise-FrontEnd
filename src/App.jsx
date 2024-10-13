@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -39,7 +39,7 @@ function App() {
 
 
   // fetch user details
-  useEffect(() => {
+  useLayoutEffect(() => {
     auth.onAuthStateChanged((userCred) => {
       setUser(userCred);
       // add get name data from firebase code
@@ -294,7 +294,7 @@ function App() {
           <Route children path='/hero' element={<HeroFade />} />
           <Route children path='/print-itinerary' element={<PrintItineraryPage />} />
           {/* <Route children path='/scratch' element={<Scratch />} /> */}
-          <Route children path='/account-settings' element={<AccountSettings />} />
+          <Route children path='/account-settings' element={<ProtectedRoute><AccountSettings /></ProtectedRoute>} />
         </Routes>
         {/* <h1 className='empty-3'></h1> */}
         {/* <h1 className='empty-6'></h1> */}

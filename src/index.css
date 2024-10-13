@@ -1296,6 +1296,9 @@ w-0 {
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 99999;
 }
+.overlay-white.opaque {
+  background-color: rgba(255, 255, 255, 1);
+}
 
 .overlay-white90 {
   position: fixed;

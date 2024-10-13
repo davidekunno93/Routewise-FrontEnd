@@ -13,7 +13,12 @@ const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         if (auth.updateCurrentUser) {
             console.log("checking access...")
-            if (!auth.currentUser || !auth.currentUser.emailVerified) {
+            if (!auth.currentUser) {
+                console.log("no user!")
+                // alert("Please sign in first.");
+                navigate('/dashboard', { replace: true });
+                return;
+            } else if (!auth.currentUser.emailVerified) {
                 // setPageBlockOpen(false);
                 navigate('/dashboard', { replace: true });
                 alert("Please verify your email first. Check your email for a verification link.");
@@ -60,8 +65,8 @@ const ProtectedRoute = ({ children }) => {
     const [pageBlockOpen, setPageBlockOpen] = useState(true);
 
     return <>
-        <LoadingFullscreen open={pageBlockOpen} loading={true} />
-        {children}
+        <LoadingFullscreen open={pageBlockOpen} loading={true} opacity={1} />
+        {!pageBlockOpen && children}
     </>
 
 }

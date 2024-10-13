@@ -278,7 +278,7 @@ export const Survey = () => {
                         </span></span></p>
                     </div>
                 </div>
-                <div className="cards-list">
+                <div className={`cards-list ${mobileModeNarrow && "mobile"}`}>
                     {Object.keys(preferenceSelections).map((preference, index) => {
                         let card = cards2_dict[preference]
                         return <div
