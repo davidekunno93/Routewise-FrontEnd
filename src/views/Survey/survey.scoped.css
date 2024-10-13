@@ -120,6 +120,9 @@
   justify-content: center;
   gap: 48px;
 }
+.cards-list.mobile {
+  gap: 24px;
+}
 
 .card2-smaller {
   display: flex;

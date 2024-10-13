@@ -1,5 +1,5 @@
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import './accountsettings.scoped.css';
 import { DataContext } from '../../Context/DataProvider';
 import { auth } from '../../firebase';
@@ -7,6 +7,13 @@ import { auth } from '../../firebase';
 const AccountSettings = () => {
     const { mobileMode, mobileModeNarrow, authFunctions, gIcon } = useContext(DataContext);
 
+    const [userInfo, setUserInfo] = useState({
+        firstName: "Josh",
+        lastName: "Anderson",
+        username: auth.currentUser ? auth.currentUser.displayName : null,
+        email: auth.currentUser ? auth.currentUser.email : "joshanderson@email.com",
+        photoURL: auth.currentUser ? auth.currentUser.photoURL : "https://i.imgur.com/cf5lgSl.png"
+    })
 
 
     return (
@@ -18,7 +25,7 @@ const AccountSettings = () => {
             <div className="body">
                 <div className="column profile-picture">
                     <div className="imgDiv">
-                        <img src={auth.currentUser.photoURL} alt="" />
+                        <img src={userInfo.photoURL} alt="" />
                     </div>
                 </div>
                 <div className="column profile-info">
@@ -41,7 +48,7 @@ const AccountSettings = () => {
                             <div className="row">
                                 <div className="field">
                                     <p className="label">Username</p>
-                                    <p className="value">{auth.currentUser.displayName ? "@" + auth.currentUser.displayName : "Undefined"}</p>
+                                    <p className="value">{userInfo.username ? "@" + userInfo.username : "Undefined"}</p>
                                 </div>
                             </div>
                         </div>
@@ -55,9 +62,9 @@ const AccountSettings = () => {
                             <div className="row">
                                 <div className="field w-50">
                                     <p className="label">Email</p>
-                                    <p className="value">{auth.currentUser.email}</p>
+                                    <p className="value">{userInfo.email}</p>
                                 </div>
-                                {auth.currentUser.emailVerified ?
+                                {auth.currentUser && auth.currentUser.emailVerified ?
                                     <p className="green-text align-all-items gap-2">{mobileModeNarrow ? "Verified" : "Email verified"} <span className={gIcon + " green-text"}>done</span></p>
                                     :
                                     <button onClick={() => authFunctions.sendEmailVerification()} className="btn-outlineflex">{mobileModeNarrow ? "Verify" : "Verify email"}</button>

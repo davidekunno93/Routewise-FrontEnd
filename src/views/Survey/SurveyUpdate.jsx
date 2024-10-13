@@ -199,7 +199,7 @@ export const SurveyUpdate = () => {
                         </span></span></p>
                     </div>
                 </div>
-                <div className="cards-list">
+                <div className={`cards-list ${mobileModeNarrow && "mobile"}`}>
                     {userPreferenceItems.order.map((userPreference, index) => {
                         let card = userPreferenceItems.cards[userPreference];
                         return <div
