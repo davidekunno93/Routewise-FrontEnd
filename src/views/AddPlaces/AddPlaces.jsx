@@ -1159,7 +1159,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
 
                         <div ref={placesListRef} className={`places-section ${mobileMode && "mt-4"}`}>
-                        <NavigationTabs
+                        {/* <NavigationTabs
                             tabs={navigationTabs}
                             gap={12}
                             paddingX={0}
@@ -1167,7 +1167,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                             beamBackgroundColor="#F0F0F0"
                             setActiveTabIndex={setSelectedPlacesList(navigationTabs())}
                             maintainGap
-                        />
+                        /> */}
 
                             <div className="placesList flx-r gap-6">
                                 <div className="tab-option">
