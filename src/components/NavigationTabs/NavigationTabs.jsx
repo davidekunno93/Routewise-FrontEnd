@@ -2,12 +2,10 @@ import { DataContext } from '../../Context/DataProvider';
 import './navigationtabs.scoped.css'
 import { useContext, useEffect, useRef, useState } from "react";
 
-const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamColor, beamBackgroundColor, parentRef, screenPaddingX = 0 }) => {
+const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamColor, beamBackgroundColor, parentRef, screenPaddingX = 0, maintainGap = false }) => {
     // const { mobileMode } = useContext(DataContext);
     const [screenWidth, setScreenWidth] = useState(parentRef && parentRef.current ? parentRef.current.offsetWidth : window.innerWidth - screenPaddingX * 2);
-    useEffect(() => {
-        // console.log(screenWidth);
-    }, [screenWidth]);
+
     const tabRefs = useRef([]);
     const [tabProperties, setTabProperties] = useState({
         activeTab: {
@@ -42,24 +40,32 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
                 conciseTabsWidth = tabWidths.reduce((a, b) => a + b, 0);
             } else {
                 nonConciseTabsWidth = tabWidths.reduce((a, b) => a + b, 0);
-            }
-            conciseMode = nonConciseTabsWidth > screenWidth ? true : false;
-            if (tabGap * (numberOfTabs - 1) >= excessWidth) {
-                tabGap -= excessWidth / (numberOfTabs - 1);
-            } else {
-                tabGap = 0;
             };
-            setTabProperties({ 
-                ...tabProperties, 
-                activeTab: activeTab, 
-                tabWidths: tabWidths, 
+
+            if (maintainGap) {
+                tabGap = gap;
+                conciseMode = nonConciseTabsWidth + tabGap > screenWidth
+            } else {
+
+                conciseMode = nonConciseTabsWidth > screenWidth ? true : false;
+                if (tabGap * (numberOfTabs - 1) >= excessWidth) {
+                    tabGap -= excessWidth / (numberOfTabs - 1);
+                } else {
+                    tabGap = 0;
+                };
+
+            };
+            setTabProperties({
+                ...tabProperties,
+                activeTab: activeTab,
+                tabWidths: tabWidths,
                 paddingX: paddingX,
-                totalTabWidth: totalTabWidth, 
-                conciseTabsWidth: conciseTabsWidth, 
-                nonConciseTabsWidth: nonConciseTabsWidth, 
-                tabGap: tabGap, 
-                totalWidth: totalWidth, 
-                conciseMode: conciseMode 
+                totalTabWidth: totalTabWidth,
+                conciseTabsWidth: conciseTabsWidth,
+                nonConciseTabsWidth: nonConciseTabsWidth,
+                tabGap: tabGap,
+                totalWidth: totalWidth,
+                conciseMode: conciseMode
             });
         },
         setActiveTab: function (tabIndex) {
@@ -104,13 +110,19 @@ const NavigationTabs = ({ tabs, setActiveTabIndex, gap = 0, paddingX = 12, beamC
                     return <div
                         ref={(e) => tabRefs.current[index] = e}
                         key={index}
-                        className={`navigation-tab ${tabProperties.activeTab.index === index ? "active" : null}`}
+                        className="navigation-tab"
+                        data-active={tabProperties.activeTab.index === index}
                         onClick={() => tabFunctions.setActiveTab(index)}
                         style={{
-                            padding: `8px ${tabProperties.paddingX+"px"}`,
+                            padding: `8px ${tabProperties.paddingX + "px"}`,
                         }}
                     >
-                        <p>{tabProperties.conciseMode ? tab.conciseTabName : tab.tabName}</p>
+                        <p>
+                            {tabProperties.conciseMode ? tab.conciseTabName : tab.tabName}
+                            {tab.quantity !== undefined &&
+                                <span className="numberBox" style={{ marginLeft: "5px" }}>{tab.quantity}</span>
+                            } 
+                        </p>
                     </div>
                 })}
             </div>

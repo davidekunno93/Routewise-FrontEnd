@@ -75,7 +75,7 @@ const FlowBoxDraggable = ({ id, tripState, setTripState, mapCenter, addSearchOpe
             // send data to backend
             let dispo_local = "http://localhost:5000"
             let dispo_hosted = "https://routewise-backend.onrender.com"
-            let url = `${dispo_local}/places/update-day-name/${day.db_id}`
+            let url = `${dispo_hosted}/places/update-day-name/${day.db_id}`
             let data = { dayName: dayNameControls.text }
             const response = await axios.patch(url, data, {
                 headers: { "Content-Type": "application/json" }
