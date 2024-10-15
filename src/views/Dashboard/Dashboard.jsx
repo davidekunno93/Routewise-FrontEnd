@@ -2127,10 +2127,6 @@ export const Dashboard = () => {
 
     return (
         <>
-        {isMobile &&
-            <h1 className='red-text'>MOBILE DEVICE DETECTED</h1>
-        }
-
             <LoadingFullscreen />
             <LoadingModal open={loading} width={modalWidth} height={500} onClose={() => stopLoading()} />
             <LoadingScreen open={isLoading} loadObject={"itinerary"} loadingMessage={"Please wait while your itinerary is loading..."} waitTime={10000} currentTrip={currentTrip} onClose={stopLoadingScreen} />
