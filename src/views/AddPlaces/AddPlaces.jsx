@@ -1163,7 +1163,7 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
                             tabs={navigationTabs}
                             gap={12}
                             paddingX={0}
-                            parentRef={placesListRef}
+                            containerRef={placesListRef}
                             beamBackgroundColor="#F0F0F0"
                             setActiveTabIndex={setSelectedPlacesList(navigationTabs())}
                             maintainGap
