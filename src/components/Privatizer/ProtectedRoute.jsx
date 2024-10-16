@@ -1,7 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import { auth, firestore } from '../../firebase';
-import { AddPlaces } from '../../views/AddPlaces';
+import { AddPlaces } from '../../views/AddPlaces/AddPlaces';
 import { Dashboard } from '../../views/Dashboard/Dashboard';
 import { Landing } from '../../views/Landing/Landing';
 import { DataContext } from '../../Context/DataProvider';

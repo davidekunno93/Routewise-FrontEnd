@@ -2,24 +2,23 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Scrollbars from 'react-custom-scrollbars-2'
-import { LoadingScreen } from '../components/Loading/LoadingScreen'
-import { Loading } from '../components/Loading/Loading'
-import { DataContext } from '../Context/DataProvider'
-import StarPlacesToolTip from '../components/StarPlacesToolTip'
+import { LoadingScreen } from '../../components/Loading/LoadingScreen'
+import { Loading } from '../../components/Loading/Loading'
+import { DataContext } from '../../Context/DataProvider'
+import StarPlacesToolTip from '../../components/StarPlacesToolTip'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { auth, firestore } from '../firebase'
+import { auth, firestore } from '../../firebase'
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-import { DateRange, DateRangePicker } from 'react-date-range';
-import ConfirmationModal from '../components/ConfirmationModal/ConfirmationModal'
-import GoogleMapBox from '../components/GoogleMap/GoogleMapBox'
-import PlaceToConfirmCard from '../components/PlaceToConfirmCard'
-import PlaceCard from '../components/PlaceCard'
-import OpeningHoursMap from '../components/OpeningHoursMap'
-import CategoryAndRating from '../components/CategoryAndRating/CategoryAndRating'
-import SuggestedPlaceCard from '../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
-import LoadingFillElement from '../components/Loading/LoadingFillElement'
-import { set } from 'date-fns'
+import { DateRange } from 'react-date-range';
+import ConfirmationModal from '../../components/ConfirmationModal/ConfirmationModal'
+import GoogleMapBox from '../../components/GoogleMap/GoogleMapBox'
+import PlaceToConfirmCard from '../../components/PlaceToConfirmCard'
+import PlaceCard from '../../components/PlaceCard'
+import SuggestedPlaceCard from '../../components/PlaceCards/SuggestedPlaceCard/SuggestedPlaceCard'
+import LoadingFillElement from '../../components/Loading/LoadingFillElement'
+import './addplaces.scoped.css';
+import NavigationTabs from '../../components/NavigationTabs/NavigationTabs'
 
 
 export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
@@ -638,7 +637,8 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
 
     // [places lists code]
-    const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Top sites")
+    const [selectedPlacesList, setSelectedPlacesList] = useState(selectedPlacesListOnLoad ?? "Top sites");
+    const [navigationIndex, setNavigationIndex] = useState(0);
     const beamRef = useRef(null);
     // notifications
     const [notifications, setNotifications] = useState({
@@ -1013,6 +1013,26 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
     const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
 
 
+    const [navigationTabs, setNavigationTabs] = useState([
+        {
+            tabName: "Top Sites",
+            conciseTabName: "Top",
+            tabPlaceList: "Top sites",
+        },
+        {
+            tabName: "Suggested Places",
+            conciseTabName: "Suggested",
+            tabPlaceList: "Suggested Places",
+        },
+        {
+            tabName: "Added Places",
+            conciseTabName: "Added",
+            tabPlaceList: "Added Places",
+            quantity: 0,
+        },
+    ]);
+    const placesListRef = useRef(null);
+
 
     return (
         <>
@@ -1136,7 +1156,19 @@ export const AddPlaces = ({ selectedPlacesListOnLoad }) => {
 
                     <div className={`add-places-c2 flx-c ${mobileMode ? "flx-8" : "flx-4"}`}>
 
-                        <div className={`places-section ${mobileMode && "mt-4"}`}>
+
+
+                        <div ref={placesListRef} className={`places-section ${mobileMode && "mt-4"}`}>
+                        {/* <NavigationTabs
+                            tabs={navigationTabs}
+                            gap={12}
+                            paddingX={0}
+                            containerRef={placesListRef}
+                            beamBackgroundColor="#F0F0F0"
+                            setActiveTabIndex={setSelectedPlacesList(navigationTabs())}
+                            maintainGap
+                        /> */}
+
                             <div className="placesList flx-r gap-6">
                                 <div className="tab-option">
                                     <p onClick={() => setSelectedPlacesList("Top sites")} className={`${selectedPlacesList === "Top sites" ? "selectedPlacesList" : "unselectedPlacesList"} tab-title ${mobileModeNarrow && "smedium"} bold600 m-0`}>Top Sites</p>

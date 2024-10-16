@@ -288,6 +288,7 @@ export const Landing = () => {
             <FeaturedTripCard key={index} trip={trip} />
         )
     });
+    const gifSectionRef = useRef(null);
 
 
     return (
@@ -406,7 +407,7 @@ export const Landing = () => {
                             <p className="page-subtitle">RouteWise creates travel itineraries based on the proximity of your desired destinations, ensuring you make the most of your time while exploring</p>
                         </div>
 
-                        <div className="section light-padding">
+                        <div ref={gifSectionRef} className="section light-padding">
                             <NavigationTabs
                                 tabs={tabs}
                                 beamBackgroundColor={"transparent"}
@@ -414,6 +415,7 @@ export const Landing = () => {
                                 paddingX={mobileMode ? 16 : 24}
                                 setActiveTabIndex={setActiveTabIndex}
                                 screenPaddingX={36}
+                                containerRef={gifSectionRef}
                             />
                             <div className="tab-imgDiv">
                                 {tabs.map((tab, index) => {

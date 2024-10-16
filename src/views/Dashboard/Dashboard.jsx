@@ -20,6 +20,7 @@ import './dashboard.scoped.css';
 import FeaturedTripSquare from '../../components/FeaturedTripCard/FeaturedTripSquare';
 import CarouselWiper from '../../components/Carousel/CarouselWiper';
 import PreferenceCard from '../../components/PreferenceCard/PreferenceCard';
+import { isMobile } from 'react-device-detect';
 
 
 
@@ -2121,6 +2122,8 @@ export const Dashboard = () => {
         )
     });
     const popularDestRef = useRef(null);
+
+    
 
     return (
         <>
